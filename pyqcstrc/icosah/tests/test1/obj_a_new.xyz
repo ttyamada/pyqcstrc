@@ -1,0 +1,8 @@
+4
+./test1/obj_a_new.xyz
+Xx 0.236068 0.000000 0.090170                 #   0-the tetrahedron 0-th vertex                 # -8 5 2 8 -5 2 8 -5 2 -8 5 2 8 -5 2 8 -5 2
+Xx 0.236068 -0.145898 0.000000                 #   0-the tetrahedron 1-th vertex                 # 5 -3 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.236068 0.000000 0.000000                 #   0-the tetrahedron 2-th vertex                 # -8 5 2 8 -5 2 8 -5 2 0 0 1 8 -5 2 0 0 1
+Xx 0.000000 0.000000 0.000000                 #   0-the tetrahedron 3-th vertex                 # 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+volume = 233 -144 6 (0.000518)
+  0-the tetrahedron, 233 -144 6 (0.000518)

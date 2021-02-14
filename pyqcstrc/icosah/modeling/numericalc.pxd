@@ -1,0 +1,20 @@
+cimport numpy as np
+
+ctypedef np.float64_t DTYPE_double_t
+ctypedef long DTYPE_int_t
+
+cpdef int point_on_segment(np.ndarray[DTYPE_int_t, ndim=2] point,
+                            np.ndarray[DTYPE_int_t, ndim=2],
+                            np.ndarray[DTYPE_int_t, ndim=2])
+                            
+cpdef double obj_volume_6d_numerical(np.ndarray[DTYPE_int_t, ndim=4])
+
+cpdef double tetrahedron_volume_6d_numerical(np.ndarray[DTYPE_int_t, ndim=3])
+
+cpdef list projection_numerical(DTYPE_double_t, DTYPE_double_t, DTYPE_double_t, DTYPE_double_t, DTYPE_double_t, DTYPE_double_t)
+
+cpdef int inside_outside_tetrahedron(np.ndarray[DTYPE_int_t, ndim=2],
+                                    np.ndarray[DTYPE_int_t, ndim=2],
+                                    np.ndarray[DTYPE_int_t, ndim=2],
+                                    np.ndarray[DTYPE_int_t, ndim=2],
+                                    np.ndarray[DTYPE_int_t, ndim=2])

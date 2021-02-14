@@ -1,0 +1,1 @@
+cpdef double func(double)

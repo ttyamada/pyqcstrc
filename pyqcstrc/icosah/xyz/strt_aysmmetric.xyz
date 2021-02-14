@@ -1,0 +1,18 @@
+12
+strt_aysmmetric
+Xx 0.000000 0.000000 0.000000 #   0-the tetrahedron 0-th vertex # 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.000000 -0.145898 0.000000 #   0-the tetrahedron 1-th vertex # 2 -1 2 -2 1 2 -2 1 2 8 -5 2 -2 1 2 8 -5 2
+Xx 1.000000 0.000000 0.000000 #   0-the tetrahedron 2-th vertex # 2 -1 2 -2 1 2 -2 1 2 0 0 1 -2 1 2 0 0 1
+Xx 1.000000 0.000000 0.381966 #   0-the tetrahedron 3-th vertex # 2 -1 2 -2 1 2 -2 1 2 2 -1 2 -2 1 2 -2 1 2
+Xx 0.000000 0.000000 0.000000 #   1-the tetrahedron 0-th vertex # 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.000000 -0.145898 0.000000 #   1-the tetrahedron 1-th vertex # 2 -1 2 -2 1 2 -2 1 2 8 -5 2 -2 1 2 8 -5 2
+Xx 1.000000 -0.236068 0.236068 #   1-the tetrahedron 2-th vertex # 2 -1 2 -2 1 2 -2 1 2 -8 5 2 -2 1 2 -2 1 2
+Xx 1.000000 0.000000 0.381966 #   1-the tetrahedron 3-th vertex # 2 -1 2 -2 1 2 -2 1 2 2 -1 2 -2 1 2 -2 1 2
+Xx 0.000000 0.000000 0.000000 #   2-the tetrahedron 0-th vertex # 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.809017 -0.500000 0.000000 #   2-the tetrahedron 1-th vertex # 1 0 2 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.000000 -0.145898 0.000000 #   2-the tetrahedron 2-th vertex # 2 -1 2 -2 1 2 -2 1 2 8 -5 2 -2 1 2 8 -5 2
+Xx 1.000000 -0.236068 0.236068 #   2-the tetrahedron 3-th vertex # 2 -1 2 -2 1 2 -2 1 2 -8 5 2 -2 1 2 -2 1 2
+volume = -37 23 6 (0.035797)
+  0-the tetrahedron, 13 -8 6 (0.009288)
+  1-the tetrahedron, -21 13 3 (0.011481)
+  2-the tetrahedron, -8 5 6 (0.015028)
