@@ -2,33 +2,37 @@ from distutils.core import setup, Extension
 from Cython.Build import cythonize
 from numpy import get_include
 
-ext_modules = [
-    Extension('pyqcstrc.icosah.modeling.math1', 
-    sources=['pyqcstrc/icosah/modeling/math1.pyx'],
+extensions = [
+    Extension('pyqcstrc.icosah.math1', 
+    sources=['pyqcstrc/icosah/math1.pyx'],
     include_dirs=['.', get_include()]
     ),
-    Extension('pyqcstrc.icosah.modeling.numericalc', 
-    sources=['pyqcstrc/icosah/modeling/numericalc.pyx'],
+    Extension('pyqcstrc.icosah.numericalc', 
+    sources=['pyqcstrc/icosah/numericalc.pyx'],
     include_dirs=['.', get_include()]
     ),
-    Extension('pyqcstrc.icosah.modeling.symmetry', 
-    sources=['pyqcstrc/icosah/modeling/symmetry.pyx'],
+    Extension('pyqcstrc.icosah.symmetry', 
+    sources=['pyqcstrc/icosah/symmetry.pyx'],
     include_dirs=['.', get_include()]
     ),
-    Extension('pyqcstrc.icosah.modeling.utils', 
-    sources=['pyqcstrc/icosah/modeling/utils.pyx'],
+    Extension('pyqcstrc.icosah.utils', 
+    sources=['pyqcstrc/icosah/utils.pyx'],
     include_dirs=['.', get_include()]
     ),
-    Extension('pyqcstrc.icosah.modeling.intsct', 
-    sources=['pyqcstrc/icosah/modeling/intsct.pyx'],
+    Extension('pyqcstrc.icosah.intsct', 
+    sources=['pyqcstrc/icosah/intsct.pyx'],
     include_dirs=['.', get_include()]
     ),
-    Extension('pyqcstrc.icosah.modeling.mics', 
-    sources=['pyqcstrc/icosah/modeling/mics.pyx'],
+    Extension('pyqcstrc.icosah.mics', 
+    sources=['pyqcstrc/icosah/mics.pyx'],
     include_dirs=['.', get_include()]
     )
 ]
 
-setup(name="pyqcstruc",
-        ext_modules = cythonize(ext_modules,compiler_directives={'language_level':"3"})
-)
+setup(
+    name="pyqcstruc",
+    ext_modules = cythonize(extensions,compiler_directives={'language_level':"3"}),
+    scripts = ['pyqcstrc/icosah/occupation_domain.py',
+                'pyqcstrc/icosah/two_occupation_domains.py'],
+    include_package_data=True,
+    )

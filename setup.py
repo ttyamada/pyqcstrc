@@ -18,28 +18,28 @@ from Cython.Build import cythonize
 __package_name__ = 'pyqcstrc'
 
 extensions = [
-    Extension('pyqcstrc.icosah.modeling.math1', 
-    sources=['pyqcstrc/icosah/modeling/math1.pyx'],
+    Extension('pyqcstrc.icosah.math1', 
+    sources=['pyqcstrc/icosah/math1.pyx'],
     include_dirs=['.', get_include()]
     ),
-    Extension('pyqcstrc.icosah.modeling.numericalc', 
-    sources=['pyqcstrc/icosah/modeling/numericalc.pyx'],
+    Extension('pyqcstrc.icosah.numericalc', 
+    sources=['pyqcstrc/icosah/numericalc.pyx'],
     include_dirs=['.', get_include()]
     ),
-    Extension('pyqcstrc.icosah.modeling.symmetry', 
-    sources=['pyqcstrc/icosah/modeling/symmetry.pyx'],
+    Extension('pyqcstrc.icosah.symmetry', 
+    sources=['pyqcstrc/icosah/symmetry.pyx'],
     include_dirs=['.', get_include()]
     ),
-    Extension('pyqcstrc.icosah.modeling.utils', 
-    sources=['pyqcstrc/icosah/modeling/utils.pyx'],
+    Extension('pyqcstrc.icosah.utils', 
+    sources=['pyqcstrc/icosah/utils.pyx'],
     include_dirs=['.', get_include()]
     ),
-    Extension('pyqcstrc.icosah.modeling.intsct', 
-    sources=['pyqcstrc/icosah/modeling/intsct.pyx'],
+    Extension('pyqcstrc.icosah.intsct', 
+    sources=['pyqcstrc/icosah/intsct.pyx'],
     include_dirs=['.', get_include()]
     ),
-    Extension('pyqcstrc.icosah.modeling.mics', 
-    sources=['pyqcstrc/icosah/modeling/mics.pyx'],
+    Extension('pyqcstrc.icosah.mics', 
+    sources=['pyqcstrc/icosah/mics.pyx'],
     include_dirs=['.', get_include()]
     )
 ]
@@ -70,13 +70,18 @@ setup(
         'Topic :: Scientific/Engineering :: Physics',
     ],
     license = __license__,
-    scripts = ['pyqcstrc/icosah/modeling/occupation_domain.py',
-                'pyqcstrc/icosah/modeling/two_occupation_domains.py'],
+    #scripts = ['pyqcstrc/icosah/occupation_domain.py',
+    #            'pyqcstrc/icosah/two_occupation_domains.py'],
     author='Tsunetomo Yamada',
     author_email='tsunetomo.yamada@rs.tus.ac.jp',
     url = "https://github.com/tsune3/PyQCstrc",
     ext_modules = extensions,
-    packages=find_packages(),
+    #packages=find_packages(),
+    packages = [
+        'pyqcstrc/icosah',
+        'pyqcstrc/examples',
+        'pyqcstrc/xyz'
+    ],
     include_package_data=True,
     #scripts=[],
     python_requires='>=3.7',
