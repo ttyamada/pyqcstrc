@@ -31,6 +31,8 @@ cpdef np.ndarray remove_doubling_dim4_in_perp_space(np.ndarray[DTYPE_int_t, ndim
 
 cpdef np.ndarray remove_doubling_dim3_in_perp_space(np.ndarray[DTYPE_int_t, ndim=3])
 
+#cpdef np.ndarray remove_doubling_dim3_in_perp_space_1(np.ndarray[DTYPE_int_t, ndim=3])
+
 cpdef int generator_xyz_dim4(np.ndarray[DTYPE_int_t, ndim=4],
                             char)
 

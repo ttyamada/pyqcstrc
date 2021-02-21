@@ -657,6 +657,17 @@ def simpl_manual_2(obj, num, obj_partial, verbose_level = 0):
         print(' fail, original obj returned.')
         return obj
 
+def simpl_manual_1(obj, num, verbose_level = 0):
+    # 複雑に四面体分割されたObjectを単純化する
+    # 四面分割を単純化したい部分（凸多面体である必要がある）の四面体インデックス(m)とその頂点インデックス(n)を指定し、
+    # その頂点集合を四面体分割する．
+    # 新しく四面体分割したobjを与える．
+    # Parameters:
+    #  obj: 単純化したいobject(dim4のnumpy.ndarray)
+    #  num: 凸多面体を構成する四面体インデックス(m)とその頂点インデックス(n) (dim2のlist)
+    #        例　num = [[m1,n1],[m2,n2],...]
+    return 0
+    
 if __name__ == "__main__":
     
     # import asymmetric part of STRT OD(occupation domain) located at origin,0,0,0,0,0,0.

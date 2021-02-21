@@ -37,7 +37,7 @@ rtod2 = od.shift(rtod1,pos1)  # move to position_1
 od.write(rtod2, path='./test2', basename='rtod2', format='vesta', color='p')
 od.write(rtod2, path='./test2', basename='rtod2', format='xyz')
 
-common_od = ods.intersection(rtod0, rtod2, verbose=1)
+common_od = ods.intersection(rtod1, rtod2, verbose=1)
 od.write(common_od, path='./test2', basename='common_od', format='vesta', color='b')
 od.write(common_od, path='./test2', basename='common_od', format='xyz')
 

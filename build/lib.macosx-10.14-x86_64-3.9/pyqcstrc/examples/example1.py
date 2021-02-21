@@ -38,12 +38,11 @@ rtod2 = od.shift(rtod1,pos1)  # move to position_1
 od.write(rtod2, path='./test1', basename='rtod2', format='vesta', color='p')
 od.write(rtod2, path='./test1', basename='rtod2', format='xyz')
 
-common_od = ods.intersection_convex(rtod1, rtod2, verbose=2)
+common_od = ods.intersection_convex(rtod1, rtod2, verbose=0)
 
 # intermediate position between v0 and pos1
 pos2 = utils.middle_position(v0,pos1)
-print(pos2)
-common_od = od.simpl_add_point(common_od, pos2, verbose=1)
+common_od = od.simpl_add_point(common_od, pos2, verbose=0)
 od.write(common_od, path='./test1', basename='common_od', format='vesta', color='b')
 od.write(common_od, path='./test1', basename='common_od', format='xyz')
 

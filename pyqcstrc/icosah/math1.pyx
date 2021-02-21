@@ -14,8 +14,8 @@ cpdef np.ndarray centroid(np.ndarray[DTYPE_int_t, ndim=3] tetrahedron):
     # geometric center, centroid of tetrahedron
     cdef int i1,i2
     cdef DTYPE_int_t v1,v2,v3
-    
     cdef np.ndarray[DTYPE_int_t,ndim=1] tmp1a
+    
     tmp1a=np.array([0])
     for i2 in range(6):
         v1,v2,v3=0,0,1
@@ -64,17 +64,24 @@ cpdef list inner_product(np.ndarray[DTYPE_int_t, ndim=2] v1,np.ndarray[DTYPE_int
 @cython.wraparound(False)
 cpdef int coplanar_check(np.ndarray[DTYPE_int_t, ndim=3] point):
     # coplanar check
-    cdef np.ndarray[DTYPE_int_t, ndim=1] x0e,y0e,z0e,x0i,y0i,z0i
-    cdef np.ndarray[DTYPE_int_t, ndim=1] x1e,y1e,z1e,x1i,y1i,z1i
-    cdef np.ndarray[DTYPE_int_t, ndim=1] x2e,y2e,z2e,x2i,y2i,z2i
-    cdef np.ndarray[DTYPE_int_t, ndim=1] x3e,y3e,z3e,x3i,y3i,z3i
+    #cdef np.ndarray[DTYPE_int_t, ndim=1] x0e,y0e,z0e,x0i,y0i,z0i
+    #cdef np.ndarray[DTYPE_int_t, ndim=1] x1e,y1e,z1e,x1i,y1i,z1i
+    #cdef np.ndarray[DTYPE_int_t, ndim=1] x2e,y2e,z2e,x2i,y2i,z2i
+    #cdef np.ndarray[DTYPE_int_t, ndim=1] x3e,y3e,z3e,x3i,y3i,z3i
+    cdef np.ndarray[DTYPE_int_t, ndim=1] x0i,y0i,z0i
+    cdef np.ndarray[DTYPE_int_t, ndim=1] x1i,y1i,z1i
+    cdef np.ndarray[DTYPE_int_t, ndim=1] x2i,y2i,z2i
+    cdef np.ndarray[DTYPE_int_t, ndim=1] x3i,y3i,z3i
     cdef DTYPE_int_t a1,a2,a3,b1,b2,b3,c1,c2,c3,d1,d2,d3
     cdef int i1,flag
     cdef np.ndarray[DTYPE_int_t, ndim=2] v1,v2,v3,v4
     if len(point)>3:
-        x0e,y0e,z0e,x0i,y0i,z0i=projection(point[0][0],point[0][1],point[0][2],point[0][3],point[0][4],point[0][5])
-        x1e,y1e,z1e,x1i,y1i,z1i=projection(point[1][0],point[1][1],point[1][2],point[1][3],point[1][4],point[1][5])
-        x2e,y2e,z2e,x2i,y2i,z2i=projection(point[2][0],point[2][1],point[2][2],point[2][3],point[2][4],point[2][5])
+        #x0e,y0e,z0e,x0i,y0i,z0i=projection(point[0][0],point[0][1],point[0][2],point[0][3],point[0][4],point[0][5])
+        #x1e,y1e,z1e,x1i,y1i,z1i=projection(point[1][0],point[1][1],point[1][2],point[1][3],point[1][4],point[1][5])
+        #x2e,y2e,z2e,x2i,y2i,z2i=projection(point[2][0],point[2][1],point[2][2],point[2][3],point[2][4],point[2][5])
+        _,_,_,x0i,y0i,z0i=projection(point[0][0],point[0][1],point[0][2],point[0][3],point[0][4],point[0][5])
+        _,_,_,x1i,y1i,z1i=projection(point[1][0],point[1][1],point[1][2],point[1][3],point[1][4],point[1][5])
+        _,_,_,x2i,y2i,z2i=projection(point[2][0],point[2][1],point[2][2],point[2][3],point[2][4],point[2][5])
         [a1,a2,a3]=sub(x1i[0],x1i[1],x1i[2],x0i[0],x0i[1],x0i[2]) # e1
         [b1,b2,b3]=sub(y1i[0],y1i[1],y1i[2],y0i[0],y0i[1],y0i[2])
         [c1,c2,c3]=sub(z1i[0],z1i[1],z1i[2],z0i[0],z0i[1],z0i[2])
@@ -86,7 +93,7 @@ cpdef int coplanar_check(np.ndarray[DTYPE_int_t, ndim=3] point):
         v3=outer_product(v1,v2)
         flag=0
         for i1 in range(3,len(point)):
-            x3e,y3e,z3e,x3i,y3i,z3i=projection(point[i1][0],point[i1][1],point[i1][2],point[i1][3],point[i1][4],point[i1][5])
+            _,_,_,x3i,y3i,z3i=projection(point[i1][0],point[i1][1],point[i1][2],point[i1][3],point[i1][4],point[i1][5])
             [a1,a2,a3]=sub(x3i[0],x3i[1],x3i[2],x0i[0],x0i[1],x0i[2])
             [b1,b2,b3]=sub(y3i[0],y3i[1],y3i[2],y0i[0],y0i[1],y0i[2])
             [c1,c2,c3]=sub(z3i[0],z3i[1],z3i[2],z0i[0],z0i[1],z0i[2])
@@ -365,15 +372,15 @@ cpdef double triangle_area(np.ndarray[DTYPE_int_t, ndim=2] v1,
     y2=v3[1]
     z2=v3[2]
     #
-    vx0=(x0[0]+x0[1]*TAU)/float(x0[2])
-    vx1=(x1[0]+x1[1]*TAU)/float(x1[2])
-    vx2=(x2[0]+x2[1]*TAU)/float(x2[2])
-    vy0=(y0[0]+y0[1]*TAU)/float(y0[2])
-    vy1=(y1[0]+y1[1]*TAU)/float(y1[2])
-    vy2=(y2[0]+y2[1]*TAU)/float(y2[2])
-    vz0=(z0[0]+z0[1]*TAU)/float(z0[2])
-    vz1=(z1[0]+z1[1]*TAU)/float(z1[2])
-    vz2=(z2[0]+z2[1]*TAU)/float(z2[2])
+    vx0=(x0[0]+x0[1]*TAU)/(x0[2])
+    vx1=(x1[0]+x1[1]*TAU)/(x1[2])
+    vx2=(x2[0]+x2[1]*TAU)/(x2[2])
+    vy0=(y0[0]+y0[1]*TAU)/(y0[2])
+    vy1=(y1[0]+y1[1]*TAU)/(y1[2])
+    vy2=(y2[0]+y2[1]*TAU)/(y2[2])
+    vz0=(z0[0]+z0[1]*TAU)/(z0[2])
+    vz1=(z1[0]+z1[1]*TAU)/(z1[2])
+    vz2=(z2[0]+z2[1]*TAU)/(z2[2])
     vec1=np.array([vx1-vx0,vy1-vy0,vz1-vz0])
     vec2=np.array([vx2-vx0,vy2-vy0,vz2-vz0])
     

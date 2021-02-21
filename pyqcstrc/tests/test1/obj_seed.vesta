@@ -1,6 +1,8 @@
 #VESTA_FORMAT_VERSION 3.5.0
 
+
 MOLECULE        
+
 TITLE
 ./test1/obj_seed_0
 
