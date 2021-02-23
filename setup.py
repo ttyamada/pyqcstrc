@@ -73,8 +73,8 @@ setup(
     #scripts = ['pyqcstrc/icosah/occupation_domain.py',
     #            'pyqcstrc/icosah/two_occupation_domains.py'],
     author='Tsunetomo Yamada',
-    author_email='tsunetomo.yamada@rs.tus.ac.jp',
-    url = "https://github.com/tsune3/PyQCstrc",
+    #author_email='tsunetomo.yamada@rs.tus.ac.jp',
+    url = "https://github.com/ttyamada/PyQCstrc",
     ext_modules = extensions,
     #packages=find_packages(),
     packages = [

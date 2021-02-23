@@ -1,3 +1,7 @@
+#
+# PyQCstrc - Python tools for Quasi-Crystal structure
+# Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
+#
 cimport numpy as np
 
 ctypedef np.float64_t DTYPE_double_t

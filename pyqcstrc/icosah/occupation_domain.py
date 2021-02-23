@@ -290,9 +290,7 @@ def write_xyz(obj, path, basename):
                                                     obj[i1][i2][3],\
                                                     obj[i1][i2][4],\
                                                     obj[i1][i2][5])
-                f.write('Xx %8.6f %8.6f %8.6f \
-                # %3d-the tetrahedron %d-th vertex \
-                # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
+                f.write('Xx %8.6f %8.6f %8.6f # %3d-the tetrahedron %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
                 ((a4[0]+a4[1]*TAU)/float(a4[2]),\
                 (a5[0]+a5[1]*TAU)/float(a5[2]),\
                 (a6[0]+a6[1]*TAU)/float(a6[2]),\

@@ -1,3 +1,7 @@
+#
+# PyQCstrc - Python tools for Quasi-Crystal structure
+# Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
+#
 import sys
 import numpy as np
 cimport numpy as np

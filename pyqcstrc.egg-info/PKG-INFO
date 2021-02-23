@@ -1,17 +1,45 @@
 Metadata-Version: 2.1
 Name: pyqcstrc
-Version: 2021.2
+Version: 0.0.1a0
 Summary: PyQCstrc provides Python tools for Quasi-Crystal structure.
-Home-page: https://github.com/tsune3/PyQCstrc
+Home-page: https://github.com/ttyamada/PyQCstrc
 Author: Tsunetomo Yamada
-Author-email: tsunetomo.yamada@rs.tus.ac.jp
 License: MIT
-Description: # PyQCstrc - Python tools for Quasi-Crystal structure
+Description: PyQCstrc - Python tools for Quasi-Crystal structure
+        ===================================================
         
-        + Requirements:
-        	- Cython>=0.29.21
-        	- numpy>=1.20.1
-        	- scipy>=1.6.0
+        Main websites:
+        
+         * https://github.com/ttyamada/PyQCstrc
+        
+        
+        Getting PyQCstrc
+        -------------
+        
+        PyQCstrc is available from `PyPI <https://pypi.python.org/pypi/pyqcstrc>`_.
+        
+        Requirements
+        -------------
+        
+        - Cython>=0.29.21
+        - numpy>=1.20.1
+        - scipy>=1.6.0
+        
+        Citation:
+        ---------
+        
+        'PyQCstrc.icosah: A computing toolkit for structure model of icosahedral quasicrystals; T. Yamada, in prep.`_
+        
+        Design Specifications
+        ---------------------
+        
+        Name: 
+        .....
+        
+        PyQCstrc = Python tools for Quasi-Crystal structure
+        
+        
+        
         
 Platform: UNKNOWN
 Classifier: Development Status :: 4 - Beta

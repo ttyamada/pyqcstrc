@@ -1,3 +1,7 @@
+#
+# PyQCstrc - Python tools for Quasi-Crystal structure
+# Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
+#
 import sys
 import numpy as np
 cimport numpy as np
@@ -888,8 +892,7 @@ cpdef int generator_xyz_dim3(np.ndarray[DTYPE_int_t, ndim=3] obj, char filename)
     f.write('%d\n'%(len(tmp3)))
     f.write('%s\n'%(filename))
     for i1 in range(len(tmp3)):
-        #a1,a2,a3,a4,a5,a6=projection(obj[num][i2][0],obj[num][i2][1],obj[num][i2][2],obj[num][i2][3],obj[num][i2][4],obj[num][i2][5])
-        _,_,_,a4,a5,a6=projection(obj[num][i2][0],obj[num][i2][1],obj[num][i2][2],obj[num][i2][3],obj[num][i2][4],obj[num][i2][5])
+        _,_,_,a4,a5,a6=projection(obj[i1][0],obj[i1][1],obj[i1][2],obj[i1][3],obj[i1][4],obj[i1][5])
         f.write('Xx %8.6f %8.6f %8.6f # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
         ((a4[0]+a4[1]*TAU)/float(a4[2]),(a5[0]+a5[1]*TAU)/float(a5[2]),(a6[0]+a6[1]*TAU)/float(a6[2]),\
         tmp3[i1][0][0],tmp3[i1][0][1],tmp3[i1][0][2],\
