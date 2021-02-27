@@ -291,9 +291,9 @@ def write_xyz(obj, path, basename):
                                                     obj[i1][i2][4],\
                                                     obj[i1][i2][5])
                 f.write('Xx %8.6f %8.6f %8.6f # %3d-the tetrahedron %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-                ((a4[0]+a4[1]*TAU)/float(a4[2]),\
-                (a5[0]+a5[1]*TAU)/float(a5[2]),\
-                (a6[0]+a6[1]*TAU)/float(a6[2]),\
+                ((a4[0]+a4[1]*TAU)/(a4[2]),\
+                (a5[0]+a5[1]*TAU)/(a5[2]),\
+                (a6[0]+a6[1]*TAU)/(a6[2]),\
                 i1,i2,\
                 obj[i1][i2][0][0],obj[i1][i2][0][1],obj[i1][i2][0][2],\
                 obj[i1][i2][1][0],obj[i1][i2][1][1],obj[i1][i2][1][2],\
@@ -302,11 +302,11 @@ def write_xyz(obj, path, basename):
                 obj[i1][i2][4][0],obj[i1][i2][4][1],obj[i1][i2][4][2],\
                 obj[i1][i2][5][0],obj[i1][i2][5][1],obj[i1][i2][5][2]))
         w1,w2,w3=utils.obj_volume_6d(obj)
-        f.write('volume = %d %d %d (%8.6f)\n'%(w1,w2,w3,(w1+TAU*w2)/float(w3)))
+        f.write('volume = %d %d %d (%8.6f)\n'%(w1,w2,w3,(w1+TAU*w2)/(w3)))
         for i1 in range(len(obj)):
             [v1,v2,v3]=utils.tetrahedron_volume_6d(obj[i1])
             f.write('%3d-the tetrahedron, %d %d %d (%8.6f)\n'\
-                    %(i1,v1,v2,v3,(v1+TAU*v2)/float(v3)))
+                    %(i1,v1,v2,v3,(v1+TAU*v2)/(v3)))
         f.closed
         return 0
     
@@ -380,9 +380,16 @@ def simple(obj, select, num_cycle = 3, verbose = 0, num_cycle_234 = [3,0,0], num
     elif select == 3:
         obj_new = mics.simplification_convex_polyhedron(obj, num_cycle, verbose)
     elif select == 4:
-        [num2_of_cycle,num3_of_cycle,num4_of_cycle] = num_cycle_234
-        [num2_of_shuffle,num3_of_shuffle,num4_of_shuffle] = num_shuffle_234
-        obj_new = mics.simplification(obj,num2_of_cycle,num3_of_cycle,num4_of_cycle,num2_of_shuffle,num3_of_shuffle,num4_of_shuffle,verbose)
+        [num2_of_cycle, num3_of_cycle, num4_of_cycle] = num_cycle_234
+        [num2_of_shuffle, num3_of_shuffle, num4_of_shuffle] = num_shuffle_234
+        obj_new = mics.simplification(obj,\
+                                    num2_of_cycle,\
+                                    num3_of_cycle,\
+                                    num4_of_cycle,\
+                                    num2_of_shuffle,\
+                                    num3_of_shuffle,\
+                                    num4_of_shuffle,\
+                                    verbose)
     else:
         obj_new=mics.simplification_obj_smart(obj, num_cycle, verbose)
     return obj_new

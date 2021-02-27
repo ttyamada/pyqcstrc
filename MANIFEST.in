@@ -1,3 +1,4 @@
 include pyqcstrc/xyz/*.xyz
-include pyqcstrc/examples/*.py
 include pyqcstrc/tests/*.py
+include pyqcstrc/scripts/*.py
+include pyqcstrc/examples/*.py

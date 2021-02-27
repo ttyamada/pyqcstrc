@@ -29,27 +29,45 @@ cpdef int point_on_segment(np.ndarray[DTYPE_int_t, ndim=2] point, np.ndarray[DTY
     cdef double x0,y0,z0,x1,y1,z1,x2,y2,z2
     cdef np.ndarray[DTYPE_double_t, ndim=1] vecPA,vecBA
     #
-    tmp=projection_numerical((point[0][0]+TAU*point[0][1])/float(point[0][2]),\
-                            (point[1][0]+TAU*point[1][1])/float(point[1][2]),\
-                            (point[2][0]+TAU*point[2][1])/float(point[2][2]),\
-                            (point[3][0]+TAU*point[3][1])/float(point[3][2]),\
-                            (point[4][0]+TAU*point[4][1])/float(point[4][2]),\
-                            (point[5][0]+TAU*point[5][1])/float(point[5][2]))
-    x0,y0,z0=tmp[3],tmp[4],tmp[5]
-    tmp=projection_numerical((lineA[0][0]+TAU*lineA[0][1])/float(lineA[0][2]),\
-                            (lineA[1][0]+TAU*lineA[1][1])/float(lineA[1][2]),\
-                            (lineA[2][0]+TAU*lineA[2][1])/float(lineA[2][2]),\
-                            (lineA[3][0]+TAU*lineA[3][1])/float(lineA[3][2]),\
-                            (lineA[4][0]+TAU*lineA[4][1])/float(lineA[4][2]),\
-                            (lineA[5][0]+TAU*lineA[5][1])/float(lineA[5][2]))
-    x1,y1,z1=tmp[3],tmp[4],tmp[5]
-    tmp=projection_numerical((lineB[0][0]+TAU*lineB[0][1])/float(lineB[0][2]),\
-                            (lineB[1][0]+TAU*lineB[1][1])/float(lineB[1][2]),\
-                            (lineB[2][0]+TAU*lineB[2][1])/float(lineB[2][2]),\
-                            (lineB[3][0]+TAU*lineB[3][1])/float(lineB[3][2]),\
-                            (lineB[4][0]+TAU*lineB[4][1])/float(lineB[4][2]),\
-                            (lineB[5][0]+TAU*lineB[5][1])/float(lineB[5][2]))
-    x2,y2,z2=tmp[3],tmp[4],tmp[5]
+    #tmp=projection_numerical((point[0][0]+TAU*point[0][1])/(point[0][2]),\
+    #                        (point[1][0]+TAU*point[1][1])/(point[1][2]),\
+    #                        (point[2][0]+TAU*point[2][1])/(point[2][2]),\
+    #                        (point[3][0]+TAU*point[3][1])/(point[3][2]),\
+    #                        (point[4][0]+TAU*point[4][1])/(point[4][2]),\
+    #                        (point[5][0]+TAU*point[5][1])/(point[5][2]))
+    #x0,y0,z0=tmp[3],tmp[4],tmp[5]
+    x0,y0,z0=projection3_numerical((point[0][0]+TAU*point[0][1])/(point[0][2]),\
+                                (point[1][0]+TAU*point[1][1])/(point[1][2]),\
+                                (point[2][0]+TAU*point[2][1])/(point[2][2]),\
+                                (point[3][0]+TAU*point[3][1])/(point[3][2]),\
+                                (point[4][0]+TAU*point[4][1])/(point[4][2]),\
+                                (point[5][0]+TAU*point[5][1])/(point[5][2]))
+    #tmp=projection_numerical((lineA[0][0]+TAU*lineA[0][1])/(lineA[0][2]),\
+    #                        (lineA[1][0]+TAU*lineA[1][1])/(lineA[1][2]),\
+    #                        (lineA[2][0]+TAU*lineA[2][1])/(lineA[2][2]),\
+    #                        (lineA[3][0]+TAU*lineA[3][1])/(lineA[3][2]),\
+    #                        (lineA[4][0]+TAU*lineA[4][1])/(lineA[4][2]),\
+    #                        (lineA[5][0]+TAU*lineA[5][1])/(lineA[5][2]))
+    #x1,y1,z1=tmp[3],tmp[4],tmp[5]
+    x1,y1,z1=projection3_numerical((point[0][0]+TAU*point[0][1])/(point[0][2]),\
+                                (lineA[1][0]+TAU*lineA[1][1])/(lineA[1][2]),\
+                                (lineA[2][0]+TAU*lineA[2][1])/(lineA[2][2]),\
+                                (lineA[3][0]+TAU*lineA[3][1])/(lineA[3][2]),\
+                                (lineA[4][0]+TAU*lineA[4][1])/(lineA[4][2]),\
+                                (lineA[5][0]+TAU*lineA[5][1])/(lineA[5][2]))
+    #tmp=projection_numerical((lineB[0][0]+TAU*lineB[0][1])/(lineB[0][2]),\
+    #                        (lineB[1][0]+TAU*lineB[1][1])/(lineB[1][2]),\
+    #                        (lineB[2][0]+TAU*lineB[2][1])/(lineB[2][2]),\
+    #                        (lineB[3][0]+TAU*lineB[3][1])/(lineB[3][2]),\
+    #                        (lineB[4][0]+TAU*lineB[4][1])/(lineB[4][2]),\
+    #                        (lineB[5][0]+TAU*lineB[5][1])/(lineB[5][2]))
+    #x2,y2,z2=tmp[3],tmp[4],tmp[5]
+    x2,y2,z2=projection3_numerical((lineB[0][0]+TAU*lineB[0][1])/(lineB[0][2]),\
+                                (lineB[1][0]+TAU*lineB[1][1])/(lineB[1][2]),\
+                                (lineB[2][0]+TAU*lineB[2][1])/(lineB[2][2]),\
+                                (lineB[3][0]+TAU*lineB[3][1])/(lineB[3][2]),\
+                                (lineB[4][0]+TAU*lineB[4][1])/(lineB[4][2]),\
+                                (lineB[5][0]+TAU*lineB[5][1])/(lineB[5][2]))
     vecPA=np.array([x0-x1,y0-y1,z0-z1])
     vecBA=np.array([x2-x1,y2-y1,z2-z1])
     lPA=length_numerical(vecPA)
@@ -83,15 +101,15 @@ cdef double triangle_area(np.ndarray[DTYPE_int_t, ndim=2] v1,\
     y2=v3[1]
     z2=v3[2]
     #
-    vx0=(x0[0]+x0[1]*TAU)/float(x0[2])
-    vx1=(x1[0]+x1[1]*TAU)/float(x1[2])
-    vx2=(x2[0]+x2[1]*TAU)/float(x2[2])
-    vy0=(y0[0]+y0[1]*TAU)/float(y0[2])
-    vy1=(y1[0]+y1[1]*TAU)/float(y1[2])
-    vy2=(y2[0]+y2[1]*TAU)/float(y2[2])
-    vz0=(z0[0]+z0[1]*TAU)/float(z0[2])
-    vz1=(z1[0]+z1[1]*TAU)/float(z1[2])
-    vz2=(z2[0]+z2[1]*TAU)/float(z2[2])
+    vx0=(x0[0]+x0[1]*TAU)/(x0[2])
+    vx1=(x1[0]+x1[1]*TAU)/(x1[2])
+    vx2=(x2[0]+x2[1]*TAU)/(x2[2])
+    vy0=(y0[0]+y0[1]*TAU)/(y0[2])
+    vy1=(y1[0]+y1[1]*TAU)/(y1[2])
+    vy2=(y2[0]+y2[1]*TAU)/(y2[2])
+    vz0=(z0[0]+z0[1]*TAU)/(z0[2])
+    vz1=(z1[0]+z1[1]*TAU)/(z1[2])
+    vz2=(z2[0]+z2[1]*TAU)/(z2[2])
     vec1=np.array([vx1-vx0,vy1-vy0,vz1-vz0])
     vec2=np.array([vx2-vx0,vy2-vy0,vz2-vz0])
     
@@ -228,18 +246,20 @@ cpdef double tetrahedron_volume_6d_numerical(np.ndarray[DTYPE_int_t, ndim=3] tet
 
 cdef list get_internal_component_numerical(np.ndarray[DTYPE_int_t, ndim=2] vec6d):
     cdef double n1,n2,n3,n4,n5,n6
-    cdef double v1,v2,v3,v4,v5,v6
+    #cdef double v1,v2,v3,v4,v5,v6
+    cdef double v4,v5,v6
     #cdef np.ndarray[DTYPE_double_t, ndim=1] a1,a2,a3,a4,a5,a6
     #print 'a=',vec6d[0][2]
     #print 'b=',float(vec6d[0][2])
-    n1=(vec6d[0][0]+TAU*vec6d[0][1])/float(vec6d[0][2])
+    n1=(vec6d[0][0]+TAU*vec6d[0][1])/(vec6d[0][2])
     #print 'n1=',n1
-    n2=(vec6d[1][0]+TAU*vec6d[1][1])/float(vec6d[1][2])
-    n3=(vec6d[2][0]+TAU*vec6d[2][1])/float(vec6d[2][2])
-    n4=(vec6d[3][0]+TAU*vec6d[3][1])/float(vec6d[3][2])
-    n5=(vec6d[4][0]+TAU*vec6d[4][1])/float(vec6d[4][2])
-    n6=(vec6d[5][0]+TAU*vec6d[5][1])/float(vec6d[5][2])
-    v1,v2,v3,v4,v5,v6=projection_numerical(n1,n2,n3,n4,n5,n6)
+    n2=(vec6d[1][0]+TAU*vec6d[1][1])/(vec6d[1][2])
+    n3=(vec6d[2][0]+TAU*vec6d[2][1])/(vec6d[2][2])
+    n4=(vec6d[3][0]+TAU*vec6d[3][1])/(vec6d[3][2])
+    n5=(vec6d[4][0]+TAU*vec6d[4][1])/(vec6d[4][2])
+    n6=(vec6d[5][0]+TAU*vec6d[5][1])/(vec6d[5][2])
+    #v1,v2,v3,v4,v5,v6=projection_numerical(n1,n2,n3,n4,n5,n6)
+    v4,v5,v6=projection3_numerical(n1,n2,n3,n4,n5,n6)
     return [v4,v5,v6]
 
 cpdef list projection_numerical(double n1, double n2, double n3, double n4, double n5, double n6):
@@ -266,6 +286,30 @@ cpdef list projection_numerical(double n1, double n2, double n3, double n4, doub
     v6 = v[5][0] # z in Eperp
     return [v1,v2,v3,v4,v5,v6]
 
+cpdef list projection3_numerical(double n1, double n2, double n3, double n4, double n5, double n6):
+    #    perpendicular components of a 6D lattice vector in direct space.
+    #cdef double const,v4,v5,v6
+    #cdef np.ndarray[DTYPE_double_t, ndim=2] n,m1,v
+    
+    #n = np.array([[n1],[n2],[n3],[n4],[n5],[n6]])
+    #const = lattice_a
+    #const = 1.0/np.sqrt(2.0+TAU)
+    #const = 1.0
+    #m1 = const*np.array([[ 1.0,  TAU,  TAU,  0.0, -1.0,  0.0],\
+    #                    [ TAU,  0.0,  0.0,  1.0,  TAU,  1.0],\
+    #                    [ 0.0,  1.0, -1.0, -TAU,  0.0,  TAU],\
+    #                    [ TAU, -1.0, -1.0,  0.0, -TAU,  0.0],\
+    #                    [-1.0,  0.0,  0.0,  TAU, -1.0,  TAU],\
+    #                    [ 0.0,  TAU, -TAU,  1.0,  0.0, -1.0]])
+    #v = matrix_dot_cy(m1,n)
+    v4 = -(n2+n3) + TAU*(n1-n5) # x in Eperp
+    v5 = -(n1+n5) + TAU*(n4+n6) # y in Eperp
+    v6 =  (n4-n6) + TAU*(n2-n3) # z in Eperp
+    #v4 = v[3][0] # x in Eperp
+    #v5 = v[4][0] # y in Eperp
+    #v6 = v[5][0] # z in Eperp
+    return [v4,v5,v6]
+
 cdef np.ndarray matrix_dot_cy(np.ndarray array_1, np.ndarray array_2):
 #def matrix_dot_cy(np.ndarray array_1, np.ndarray array_2):
     cdef Py_ssize_t mx1,my1,mx2,my2
@@ -285,6 +329,79 @@ cdef np.ndarray matrix_dot_cy(np.ndarray array_1, np.ndarray array_2):
                 array_3[x][y] += array_1[x][z] * array_2[z][y]
     return array_3
 
-cdef det_matrix_cy(np.ndarray a, np.ndarray b, np.ndarray c):
-    cdef double a1,a2,a3,b1,b2,b3,c1,c2,c3
+cdef double det_matrix(np.ndarray[DTYPE_double_t,ndim=1] a, np.ndarray[DTYPE_double_t,ndim=1] b, np.ndarray[DTYPE_double_t,ndim=1] c):
+    #cdef double a1,a2,a3,b1,b2,b3,c1,c2,c3
     return a[0]*b[1]*c[2]+a[2]*b[0]*c[1]+a[1]*b[2]*c[0]-a[2]*b[1]*c[0]-a[1]*b[0]*c[2]-a[0]*b[2]*c[1]
+
+cdef double get_numerical(np.ndarray[DTYPE_int_t, ndim=1] a):
+    return (a[0]+a[1]*TAU)/a[2]
+    
+cdef list get_vec_numerical(np.ndarray[DTYPE_int_t, ndim=2] b):
+    cdef int i
+    a=[]
+    for i in range(6):
+        a.append(get_numerical(b[i]))
+    return a
+
+cpdef int check_intersection_segment_surface_numerical(np.ndarray[DTYPE_int_t, ndim=2] segment_1,
+                                                np.ndarray[DTYPE_int_t, ndim=2] segment_2,
+                                                np.ndarray[DTYPE_int_t, ndim=2] surface_1,
+                                                np.ndarray[DTYPE_int_t, ndim=2] surface_2,
+                                                np.ndarray[DTYPE_int_t, ndim=2] surface_3):
+    # check intersection between a line segment (line1a,line1b) and a plane
+
+    cdef double s,t,u,a2x,a2y,a2z,b1x,b1y,b1z,b2x,b2y,b2z,b3x,b3y,b3z,bunbo
+    cdef np.ndarray[DTYPE_double_t,ndim=1] line1a,line1b,interval
+    cdef np.ndarray[DTYPE_double_t,ndim=1] vec1,vecBA,vecCD,vecCE,vecCA
+
+    cdef double ea0,ea1,ea2,ea3,ea4,ea5
+    cdef double eb0,eb1,eb2,eb3,eb4,eb5
+    cdef double sa0,sa1,sa2,sa3,sa4,sa5
+    cdef double sb0,sb1,sb2,sb3,sb4,sb5
+    cdef double sc0,sc1,sc2,sc3,sc4,sc5
+    
+    ea0,ea1,ea2,ea3,ea4,ea5=get_vec_numerical(segment_1)
+    eb0,eb1,eb2,eb3,eb4,eb5=get_vec_numerical(segment_2)
+    sa0,sa1,sa2,sa3,sa4,sa5=get_vec_numerical(surface_1)
+    sb0,sb1,sb2,sb3,sb4,sb5=get_vec_numerical(surface_2)
+    sc0,sc1,sc2,sc3,sc4,sc5=get_vec_numerical(surface_3)
+    
+    line1a=np.array([ea0,ea1,ea2,ea3,ea4,ea5])
+    line1b=np.array([eb0,eb1,eb2,eb3,eb4,eb5])
+    aa1=projection3_numerical(ea0,ea1,ea2,ea3,ea4,ea5)
+    aa2=projection3_numerical(eb0,eb1,eb2,eb3,eb4,eb5)
+    bb1=projection3_numerical(sa0,sa1,sa2,sa3,sa4,sa5)
+    bb2=projection3_numerical(sb0,sb1,sb2,sb3,sb4,sb5)
+    bb3=projection3_numerical(sc0,sc1,sc2,sc3,sc4,sc5)
+    # line segment
+    a2x,a2y,a2z=aa2[0]-aa1[0],aa2[1]-aa1[1],aa2[2]-aa1[2] # AB
+    # plane CDE
+    b1x,b1y,b1z=bb1[0]-aa1[0],bb1[1]-aa1[1],bb1[2]-aa1[2] # AC
+    b2x,b2y,b2z=bb2[0]-bb1[0],bb2[1]-bb1[1],bb2[2]-bb1[2] # CD
+    b3x,b3y,b3z=bb3[0]-bb1[0],bb3[1]-bb1[1],bb3[2]-bb1[2] # CE
+    
+    vecBA=np.array([-a2x,-a2y,-a2z]) # line segment BA
+    vecCD=np.array([ b2x, b2y, b2z]) # edge segment of triangle CDE, CD
+    vecCE=np.array([ b3x, b3y, b3z]) # edge segment of triangle CDE, CE
+    vecCA=np.array([-b1x,-b1y,-b1z]) # CA
+
+    bunbo=det_matrix(vecCD,vecCE,vecBA)
+    if abs(bunbo)<EPS:
+        return 1
+    else:
+        u=det_matrix(vecCA,vecCE,vecBA)/bunbo
+        if u>=0.0 and u<=1.0:
+            v=det_matrix(vecCD,vecCA,vecBA)/bunbo
+            if v>=0.0 and u+v<=1.0:
+                t=det_matrix(vecCD,vecCE,vecCA)/bunbo
+                if t>=0.0 and t<=1.0:
+                    #interval=line1a+t*(line1b-line1a)
+                    #interval_1=projection3_numerical(interval[0],interval[1],interval[2],interval[3],interval[4],interval[5])
+                    #return interval[0],interval[1],interval[2],interval[3],interval[4],interval[5],interval_1[0],interval_1[1],interval_1[2],u,v,t,bunbo
+                    return 0 # intersect
+                else:
+                    return 1
+            else:
+                return 1
+        else:
+            return 1

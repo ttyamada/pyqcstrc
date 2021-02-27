@@ -14,17 +14,56 @@ import pyqcstrc.icosah.mics as mics
 import pyqcstrc.icosah.numericalc as numericalc
 import pyqcstrc.icosah.symmetry as symmetry
 import pyqcstrc.icosah.utils as utils
+import pyqcstrc.icosah.occupation_domain as od
 
 TAU=(1+np.sqrt(5))/2.0
 
-def intersection(obj1, obj2, flag = [0,0,0], verbose = 0):
+def intersection(obj1, obj2, flag = 0, fname = 'tmp1', verbose = 0):
+    """
+    flag = 0, rough check intersection of tetrahedron in obj1 and obj2; flag2 = 1, no
+    """
+    
+    if obj1.ndim == 3:
+        obj1=obj1.reshape(int(len(obj1)/4),4,6,3)
+    else:
+        pass
+    if obj2.ndim == 3:
+        obj2=obj2.reshape(int(len(obj2)/4),4,6,3)
+    else:
+        pass
+    
+    common=intsct.intersection_two_obj_1(obj1, obj2, flag, verbose)
+    #if flag1==0:
+    #    common=intsct.intersection_two_obj(obj1, obj2, flag1, flag2, flag3, verbose)
+    #elif flag1!=0:
+    #    common=intsct.intersection_using_tetrahedron_4(obj1, obj2, flag1, verbose, dummy=0)
+    if common.tolist()!=[[[[0]]]]:
+        [v1,v2,v3]=utils.obj_volume_6d(common)
+        print('    common part found: volume = %d %d %d ( = %8.6f).'%(v1,v2,v3,(v1+TAU*v2)/v3))
+        #od.write(common, path='.', basename=fname, format='xyz')
+        return common
+    else:
+        print('    no intersection found.')
+        return np.array([[[[0]]]])
+
+def intersection_convex(obj1, obj2, fname = 'tmp2', verbose = 0):
+    point_common,point_a,point_b = intsct.intersection_two_obj_convex(obj1, obj2, verbose)
+    common=intsct.tetrahedralization_points(point_common,verbose-1)
+    if common.tolist()!=[[[[0]]]]:
+        [v1,v2,v3]=utils.obj_volume_6d(common)
+        print('    common part found: volume = %d %d %d ( = %8.6f).'%(v1,v2,v3,(v1+TAU*v2)/v3))
+        #od.write(common, path='.', basename=fname, format='xyz')
+        return common
+    else:
+        print('    no intersection found.')
+        return np.array([[[[0]]]])
+
+def intersection_old(obj1, obj2, flag = [0,0,0], fname = 'tmp0', verbose = 0):
     """
     flag1 = 0, rough check intersection of obj1 and obj2; flag1 = 1, no
     flag2 = 0, rough check intersection of tetrahedron in obj1 and obj2; flag2 = 1, no
     flag3 = 0, rough check intersection of tetrahedron in obj1 and tetrahedron in obj2; flag3 = 1, no
     """
-    print('    intersecting...')
-    
     if obj1.ndim == 3:
         obj1=obj1.reshape(int(len(obj1)/4),4,6,3)
     else:
@@ -42,23 +81,12 @@ def intersection(obj1, obj2, flag = [0,0,0], verbose = 0):
     if common.tolist()!=[[[[0]]]]:
         [v1,v2,v3]=utils.obj_volume_6d(common)
         print('    common part found: volume = %d %d %d ( = %8.6f).'%(v1,v2,v3,(v1+TAU*v2)/v3))
+        #od.write(common, path='.', basename=fname, format='xyz')
         return common
     else:
         print('    no intersection found.')
         return np.array([[[[0]]]])
 
-def intersection_convex(obj1, obj2, verbose = 0):
-    
-    point_common,point_a,point_b = intsct.intersection_two_obj_convex(obj1, obj2, verbose)
-    common=intsct.tetrahedralization_points(point_common,verbose-1)
-    if common.tolist()!=[[[[0]]]]:
-        [v1,v2,v3]=utils.obj_volume_6d(common)
-        print('    common part found: volume = %d %d %d ( = %8.6f).'%(v1,v2,v3,(v1+TAU*v2)/v3))
-        return common
-    else:
-        print('    no intersection found.')
-        return np.array([[[[0]]]])
-    
 def subtraction(obj1, obj2, obj_common, verbose = 0):
     """ obj1 NOT obj2
     """

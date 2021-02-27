@@ -37,22 +37,24 @@ cpdef np.ndarray remove_doubling_dim3_in_perp_space(np.ndarray[DTYPE_int_t, ndim
 
 #cpdef np.ndarray remove_doubling_dim3_in_perp_space_1(np.ndarray[DTYPE_int_t, ndim=3])
 
+cpdef int generator_xyz_dim4_tmp(np.ndarray[DTYPE_int_t, ndim=4],int)
+
 cpdef int generator_xyz_dim4(np.ndarray[DTYPE_int_t, ndim=4],
-                            char)
+                            str)
 
 cpdef int generator_xyz_dim4_triangle(np.ndarray[DTYPE_int_t, ndim=4],
-                                        char)
+                                        str)
 
 cpdef int generator_xyz_dim4_tetrahedron(np.ndarray[DTYPE_int_t, ndim=4],
-                                        char,
+                                        str,
                                         int)
 
 cpdef int generator_xyz_dim4_tetrahedron_select(np.ndarray[DTYPE_int_t, ndim=4],
-                                                char,
+                                                str,
                                                 int)
 
 cpdef int generator_xyz_dim3(np.ndarray[DTYPE_int_t, ndim=3],
-                            char)
+                            str)
 
 cpdef np.ndarray middle_position(np.ndarray[DTYPE_int_t, ndim=2],
                                  np.ndarray[DTYPE_int_t, ndim=2])

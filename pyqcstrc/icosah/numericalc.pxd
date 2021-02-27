@@ -17,8 +17,16 @@ cpdef double tetrahedron_volume_6d_numerical(np.ndarray[DTYPE_int_t, ndim=3])
 
 cpdef list projection_numerical(DTYPE_double_t, DTYPE_double_t, DTYPE_double_t, DTYPE_double_t, DTYPE_double_t, DTYPE_double_t)
 
+cpdef list projection3_numerical(DTYPE_double_t, DTYPE_double_t, DTYPE_double_t, DTYPE_double_t, DTYPE_double_t, DTYPE_double_t)
+
 cpdef int inside_outside_tetrahedron(np.ndarray[DTYPE_int_t, ndim=2],
                                     np.ndarray[DTYPE_int_t, ndim=2],
                                     np.ndarray[DTYPE_int_t, ndim=2],
                                     np.ndarray[DTYPE_int_t, ndim=2],
                                     np.ndarray[DTYPE_int_t, ndim=2])
+
+cpdef int check_intersection_segment_surface_numerical(np.ndarray[DTYPE_int_t, ndim=2],
+                                                        np.ndarray[DTYPE_int_t, ndim=2],
+                                                        np.ndarray[DTYPE_int_t, ndim=2],
+                                                        np.ndarray[DTYPE_int_t, ndim=2],
+                                                        np.ndarray[DTYPE_int_t, ndim=2])

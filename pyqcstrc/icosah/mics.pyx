@@ -7,9 +7,9 @@ import numpy as np
 cimport numpy as np
 cimport cython
 
-from pyqcstrc.icosah.math1 cimport coplanar_check, projection, add, triangle_area, centroid
+from pyqcstrc.icosah.math1 cimport coplanar_check, projection,projection3, add, triangle_area, centroid
 from pyqcstrc.icosah.numericalc cimport point_on_segment, projection_numerical, tetrahedron_volume_6d_numerical, obj_volume_6d_numerical, inside_outside_tetrahedron
-from pyqcstrc.icosah.utils cimport remove_doubling_dim3_in_perp_space, remove_doubling_dim4_in_perp_space, obj_volume_6d, tetrahedron_volume_6d, generator_xyz_dim4_tetrahedron, generator_edge, generator_surface_1,equivalent_triangle,equivalent_triangle_1
+from pyqcstrc.icosah.utils cimport generator_xyz_dim4_tmp,remove_doubling_dim3_in_perp_space, remove_doubling_dim4_in_perp_space, obj_volume_6d, tetrahedron_volume_6d, generator_xyz_dim4_tetrahedron, generator_edge, generator_surface_1,equivalent_triangle,equivalent_triangle_1
 from pyqcstrc.icosah.intsct cimport tetrahedralization_points, tetrahedralization, intersection_using_tetrahedron_4, intersection_two_tetrahedron_4, intersection_tetrahedron_obj_4
 
 
@@ -98,15 +98,19 @@ cdef np.ndarray check_two_triangles(np.ndarray[DTYPE_int_t, ndim=3] triange_1,
             comb1=[[0,1,3],[0,2,1],[1,2,0]]
             for i1 in range(len(comb1)):
                 [i3,i4,i7]=comb1[i1]
-                t1,t2,t3,a1,a2,a3=projection(tmp3a[i3][0],tmp3a[i3][1],tmp3a[i3][2],tmp3a[i3][3],tmp3a[i3][4],tmp3a[i3][5])
-                t1,t2,t3,c1,c2,c3=projection(tmp3a[i4][0],tmp3a[i4][1],tmp3a[i4][2],tmp3a[i4][3],tmp3a[i4][4],tmp3a[i4][5])
+                #t1,t2,t3,a1,a2,a3=projection(tmp3a[i3][0],tmp3a[i3][1],tmp3a[i3][2],tmp3a[i3][3],tmp3a[i3][4],tmp3a[i3][5])
+                #t1,t2,t3,c1,c2,c3=projection(tmp3a[i4][0],tmp3a[i4][1],tmp3a[i4][2],tmp3a[i4][3],tmp3a[i4][4],tmp3a[i4][5])
+                a1,a2,a3=projection3(tmp3a[i3][0],tmp3a[i3][1],tmp3a[i3][2],tmp3a[i3][3],tmp3a[i3][4],tmp3a[i3][5])
+                c1,c2,c3=projection3(tmp3a[i4][0],tmp3a[i4][1],tmp3a[i4][2],tmp3a[i4][3],tmp3a[i4][4],tmp3a[i4][5])
                 tmp2a=np.array([a1,a2,a3])
                 tmp2c=np.array([c1,c2,c3])
                 counter=0
                 for i2 in range(len(comb1)):
                     [i5,i6,i8]=comb1[i2]
-                    t1,t2,t3,b1,b2,b3=projection(tmp3b[i5][0],tmp3b[i5][1],tmp3b[i5][2],tmp3b[i5][3],tmp3b[i5][4],tmp3b[i5][5])
-                    t1,t2,t3,d1,d2,d3=projection(tmp3b[i6][0],tmp3b[i6][1],tmp3b[i6][2],tmp3b[i6][3],tmp3b[i6][4],tmp3b[i6][5])
+                    #t1,t2,t3,b1,b2,b3=projection(tmp3b[i5][0],tmp3b[i5][1],tmp3b[i5][2],tmp3b[i5][3],tmp3b[i5][4],tmp3b[i5][5])
+                    #t1,t2,t3,d1,d2,d3=projection(tmp3b[i6][0],tmp3b[i6][1],tmp3b[i6][2],tmp3b[i6][3],tmp3b[i6][4],tmp3b[i6][5])
+                    b1,b2,b3=projection3(tmp3b[i5][0],tmp3b[i5][1],tmp3b[i5][2],tmp3b[i5][3],tmp3b[i5][4],tmp3b[i5][5])
+                    d1,d2,d3=projection3(tmp3b[i6][0],tmp3b[i6][1],tmp3b[i6][2],tmp3b[i6][3],tmp3b[i6][4],tmp3b[i6][5])
                     tmp2b=np.array([b1,b2,b3])
                     tmp2d=np.array([d1,d2,d3])
                     if (np.all(tmp2a==tmp2b) and np.all(tmp2c==tmp2d)) or (np.all(tmp2a==tmp2d) and np.all(tmp2c==tmp2b)):
@@ -156,12 +160,14 @@ cdef np.ndarray check_two_triangles(np.ndarray[DTYPE_int_t, ndim=3] triange_1,
             comb1=[[0,1,3],[0,2,1],[1,2,0]]
             for i1 in range(len(comb1)):
                 [i3,i5,i6]=comb1[i1]
-                t1,t2,t3,a1,a2,a3=projection(tmp3a[i3][0],tmp3a[i3][1],tmp3a[i3][2],tmp3a[i3][3],tmp3a[i3][4],tmp3a[i3][5])
+                #t1,t2,t3,a1,a2,a3=projection(tmp3a[i3][0],tmp3a[i3][1],tmp3a[i3][2],tmp3a[i3][3],tmp3a[i3][4],tmp3a[i3][5])
+                a1,a2,a3=projection3(tmp3a[i3][0],tmp3a[i3][1],tmp3a[i3][2],tmp3a[i3][3],tmp3a[i3][4],tmp3a[i3][5])
                 tmp2a=np.array([a1,a2,a3])
                 counter=0
                 for i2 in [0,1,2]:
                     [i4,i7,i8]=comb1[i2]
-                    t1,t2,t3,b1,b2,b3=projection(tmp3b[i4][0],tmp3b[i4][1],tmp3b[i4][2],tmp3b[i4][3],tmp3b[i4][4],tmp3b[i4][5])
+                    #t1,t2,t3,b1,b2,b3=projection(tmp3b[i4][0],tmp3b[i4][1],tmp3b[i4][2],tmp3b[i4][3],tmp3b[i4][4],tmp3b[i4][5])
+                    b1,b2,b3=projection3(tmp3b[i4][0],tmp3b[i4][1],tmp3b[i4][2],tmp3b[i4][3],tmp3b[i4][4],tmp3b[i4][5])
                     tmp2b=np.array([b1,b2,b3])
                     if np.all(tmp2a==tmp2b):
                         tmp1a=np.append(tmp3a[i5],tmp3a[i6],tmp3b[i7],tmp3b[i8],tmp3a[i3])
@@ -1131,9 +1137,13 @@ cpdef np.ndarray simplification_obj_edges_using_parents(np.ndarray[DTYPE_int_t, 
                 for i1 in range(len(obj_edge)):
                     counter1=0
                     for i2 in range(len(tmp3a)):
-                        a1,a2,a3,a4,a5,a6=projection(obj_edge[i1][0][0],obj_edge[i1][0][1],obj_edge[i1][0][2],obj_edge[i1][0][3],obj_edge[i1][0][4],obj_edge[i1][0][5])
-                        a1,a2,a3,b4,b5,b6=projection(obj_edge[i1][1][0],obj_edge[i1][1][1],obj_edge[i1][1][2],obj_edge[i1][1][3],obj_edge[i1][1][4],obj_edge[i1][1][5])
-                        a1,a2,a3,c4,c5,c6=projection(tmp3a[i2][0],tmp3a[i2][1],tmp3a[i2][2],tmp3a[i2][3],tmp3a[i2][4],tmp3a[i2][5])
+                        #a1,a2,a3,a4,a5,a6=projection(obj_edge[i1][0][0],obj_edge[i1][0][1],obj_edge[i1][0][2],obj_edge[i1][0][3],obj_edge[i1][0][4],obj_edge[i1][0][5])
+                        #a1,a2,a3,b4,b5,b6=projection(obj_edge[i1][1][0],obj_edge[i1][1][1],obj_edge[i1][1][2],obj_edge[i1][1][3],obj_edge[i1][1][4],obj_edge[i1][1][5])
+                        #a1,a2,a3,c4,c5,c6=projection(tmp3a[i2][0],tmp3a[i2][1],tmp3a[i2][2],tmp3a[i2][3],tmp3a[i2][4],tmp3a[i2][5])
+                        a4,a5,a6=projection3(obj_edge[i1][0][0],obj_edge[i1][0][1],obj_edge[i1][0][2],obj_edge[i1][0][3],obj_edge[i1][0][4],obj_edge[i1][0][5])
+                        b4,b5,b6=projection3(obj_edge[i1][1][0],obj_edge[i1][1][1],obj_edge[i1][1][2],obj_edge[i1][1][3],obj_edge[i1][1][4],obj_edge[i1][1][5])
+                        c4,c5,c6=projection3(tmp3a[i2][0],tmp3a[i2][1],tmp3a[i2][2],tmp3a[i2][3],tmp3a[i2][4],tmp3a[i2][5])
+
                         if (np.all(a4==c4) and np.all(a5==c5) and np.all(a6==c6)) or (np.all(b4==c4) and np.all(b5==c5) and np.all(b6==c6)):
                             counter1+=1
                             break
@@ -1436,9 +1446,12 @@ cpdef np.ndarray simplification_obj_edges(np.ndarray[DTYPE_int_t, ndim=4] obj, i
                 for i1 in range(len(obj_edge)):
                     counter1=0
                     for i2 in range(len(tmp3a)):
-                        a1,a2,a3,a4,a5,a6=projection(obj_edge[i1][0][0],obj_edge[i1][0][1],obj_edge[i1][0][2],obj_edge[i1][0][3],obj_edge[i1][0][4],obj_edge[i1][0][5])
-                        a1,a2,a3,b4,b5,b6=projection(obj_edge[i1][1][0],obj_edge[i1][1][1],obj_edge[i1][1][2],obj_edge[i1][1][3],obj_edge[i1][1][4],obj_edge[i1][1][5])
-                        a1,a2,a3,c4,c5,c6=projection(tmp3a[i2][0],tmp3a[i2][1],tmp3a[i2][2],tmp3a[i2][3],tmp3a[i2][4],tmp3a[i2][5])
+                        #a1,a2,a3,a4,a5,a6=projection(obj_edge[i1][0][0],obj_edge[i1][0][1],obj_edge[i1][0][2],obj_edge[i1][0][3],obj_edge[i1][0][4],obj_edge[i1][0][5])
+                        #a1,a2,a3,b4,b5,b6=projection(obj_edge[i1][1][0],obj_edge[i1][1][1],obj_edge[i1][1][2],obj_edge[i1][1][3],obj_edge[i1][1][4],obj_edge[i1][1][5])
+                        #a1,a2,a3,c4,c5,c6=projection(tmp3a[i2][0],tmp3a[i2][1],tmp3a[i2][2],tmp3a[i2][3],tmp3a[i2][4],tmp3a[i2][5])
+                        a4,a5,a6=projection3(obj_edge[i1][0][0],obj_edge[i1][0][1],obj_edge[i1][0][2],obj_edge[i1][0][3],obj_edge[i1][0][4],obj_edge[i1][0][5])
+                        b4,b5,b6=projection3(obj_edge[i1][1][0],obj_edge[i1][1][1],obj_edge[i1][1][2],obj_edge[i1][1][3],obj_edge[i1][1][4],obj_edge[i1][1][5])
+                        c4,c5,c6=projection3(tmp3a[i2][0],tmp3a[i2][1],tmp3a[i2][2],tmp3a[i2][3],tmp3a[i2][4],tmp3a[i2][5])
                         if (np.all(a4==c4) and np.all(a5==c5) and np.all(a6==c6)) or (np.all(b4==c4) and np.all(b5==c5) and np.all(b6==c6)):
                             counter1+=1
                             break
@@ -2303,6 +2316,7 @@ cpdef np.ndarray simplification(np.ndarray[DTYPE_int_t, ndim=4] obj,
                 obj_new=obj1
             make_tmp_pod(obj_new,i1)
             b.append(len(obj_new))
+        #print(b)
         index_min=b.index(min(b))
         obj_min=read_tmp_pod(index_min)
     else:
@@ -2383,13 +2397,17 @@ cdef int on_out_surface(np.ndarray[DTYPE_int_t, ndim=2] point,
     cdef np.ndarray[DTYPE_int_t, ndim=2] p1,p2,p3
     cdef double volume0,volume1
 
-    m1,m2,m3,m4,m5,m6=projection(point[0],point[1],point[2],point[3],point[4],point[5])
+    #m1,m2,m3,m4,m5,m6=projection(point[0],point[1],point[2],point[3],point[4],point[5])
+    m4,m5,m6=projection3(point[0],point[1],point[2],point[3],point[4],point[5])
     p0=np.array([m4,m5,m6])
-    m1,m2,m3,m4,m5,m6=projection(triangle[0][0],triangle[0][1],triangle[0][2],triangle[0][3],triangle[0][4],triangle[0][5])
+    #m1,m2,m3,m4,m5,m6=projection(triangle[0][0],triangle[0][1],triangle[0][2],triangle[0][3],triangle[0][4],triangle[0][5])
+    m4,m5,m6=projection3(triangle[0][0],triangle[0][1],triangle[0][2],triangle[0][3],triangle[0][4],triangle[0][5])
     p1=np.array([m4,m5,m6])
-    m1,m2,m3,m4,m5,m6=projection(triangle[1][0],triangle[1][1],triangle[1][2],triangle[1][3],triangle[1][4],triangle[1][5])
+    #m1,m2,m3,m4,m5,m6=projection(triangle[1][0],triangle[1][1],triangle[1][2],triangle[1][3],triangle[1][4],triangle[1][5])
+    m4,m5,m6=projection3(triangle[1][0],triangle[1][1],triangle[1][2],triangle[1][3],triangle[1][4],triangle[1][5])
     p2=np.array([m4,m5,m6])
-    m1,m2,m3,m4,m5,m6=projection(triangle[2][0],triangle[2][1],triangle[2][2],triangle[2][3],triangle[2][4],triangle[2][5])
+    #m1,m2,m3,m4,m5,m6=projection(triangle[2][0],triangle[2][1],triangle[2][2],triangle[2][3],triangle[2][4],triangle[2][5])
+    m4,m5,m6=projection3(triangle[2][0],triangle[2][1],triangle[2][2],triangle[2][3],triangle[2][4],triangle[2][5])
     p3=np.array([m4,m5,m6])
     volume0=triangle_area(p1,p2,p3)
     volume1=triangle_area(p0,p2,p3)+triangle_area(p1,p0,p3)+triangle_area(p1,p2,p0)
@@ -2399,16 +2417,18 @@ cdef int on_out_surface(np.ndarray[DTYPE_int_t, ndim=2] point,
         return 1
 
 cdef int make_tmp_pod(np.ndarray[DTYPE_int_t, ndim=4] pod, int number):
-    generator_xyz_dim4_tetrahedron(pod,'tmp%d'%(number),0)
+    #generator_xyz_dim4_tmp(pod,number)
+    generator_xyz_dim4_tetrahedron(pod,'./junk%d'%(number),0)
     return 0
 
 cdef np.ndarray read_tmp_pod(int number):
     cdef int a1,b1,c1,a2,b2,c2,a3,b3,c3,a4,b4,c4,a5,b5,c5,a6,b6,c6
     cdef int i,num
     cdef np.ndarray[DTYPE_int_t, ndim=1] tmp1
-        
-    file_name='./tmp%d.xyz'%(number)
-    f1=read_file(file_name)
+    
+    #print('%d'%(number))
+    #file_name='./tmp%d.xyz'%(number)
+    f1=read_file('./junk%d.xyz'%(number))
     f0=f1[0].split()
     num=int(f0[0])
     for i in range(2,num+2):
@@ -2438,10 +2458,10 @@ cdef np.ndarray read_tmp_pod(int number):
             tmp1=np.append(tmp1,[a1,b1,c1,a2,b2,c2,a3,b3,c3,a4,b4,c4,a5,b5,c5,a6,b6,c6])
     return tmp1.reshape(int(len(tmp1)/72),4,6,3)
 
-cdef list read_file(char file):
+cdef list read_file(str fname):
     cdef list line
     try:
-        f=open(file,'r')
+        f=open(fname,'r')
     except IOError, e:
         print(e)
         sys.exit(0)

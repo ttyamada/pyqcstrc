@@ -1,6 +1,28 @@
 
+Versions  0.0.1a5 (2021.02.27)
+------------------------------
+
+
+Versions  0.0.1a4 (2021.02.26)
+------------------------------
+a minor modification in ods.intersection_1()
+
+Versions  0.0.1a3 (2021.02.24)
+------------------------------
+add ods.intersection_1()
+add intsct.intersection_two_obj_1
+
+Versions  0.0.1a2 (2021.02.24)
+------------------------------
+linux ubuntu 18 wheel
+windos wheel
+
+Versions  0.0.1a1 (2021.02.24)
+------------------------------
+add math1.projection3()
+
 Versions  0.0.1a (2021.02.23)
-----------------------------
+-----------------------------
 a minor modification in README.rst
 
 

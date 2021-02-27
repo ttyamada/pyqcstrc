@@ -7,7 +7,7 @@ import numpy as np
 cimport numpy as np
 cimport cython
 
-from pyqcstrc.icosah.math1 cimport det_matrix, projection, add, sub, mul, div
+from pyqcstrc.icosah.math1 cimport det_matrix, projection, projection3, add, sub, mul, div
 from pyqcstrc.icosah.numericalc cimport obj_volume_6d_numerical
 
 DTYPE_double = np.float64
@@ -42,102 +42,217 @@ cpdef np.ndarray generator_edge(np.ndarray[DTYPE_int_t, ndim=4] obj, int verbose
     num2=int(len(tmp1a)/36) # 2*6*3=36
     tmp4a=np.array(tmp1a).reshape(num2,2,6,3)
     num1=len(obj)
-    tmp1a=np.array([0])
-    tmp1b=np.array([0])
-    tmp1c=np.array([0])
-    for i in range(1,num1):
-        tmp2a=obj[i][0]
-        tmp2b=obj[i][1]
-        tmp2c=obj[i][2]
-        #tmp1d=np.array([],dtype=long)
-        #tmp1d=np.array([0])
-        counter_ab=0
-        counter_ac=0
-        counter_bc=0
-        for j in range(0,num2):
-            #tmp1a=np.array([],dtype=long)
-            #tmp1a=np.array([0])
-            if np.all(tmp2a==tmp4a[j][0]) and np.all(tmp2b==tmp4a[j][1]):
-                counter_ab+=1
-                break
-            elif np.all(tmp2b==tmp4a[j][0]) and np.all(tmp2a==tmp4a[j][1]):
-                counter_ab+=1
-                break
+    
+    if num1==1:
+        return tmp4a
+    else:
+        tmp1a=np.array([0])
+        tmp1b=np.array([0])
+        tmp1c=np.array([0])
+        tmp1d=np.array([0])
+        for i in range(1,num1):
+            tmp2a=obj[i][0]
+            tmp2b=obj[i][1]
+            tmp2c=obj[i][2]
+            #tmp1d=np.array([],dtype=long)
+            #tmp1d=np.array([0])
+            counter_ab=0
+            counter_ac=0
+            counter_bc=0
+            for j in range(0,num2):
+                #tmp1a=np.array([],dtype=long)
+                #tmp1a=np.array([0])
+                if np.all(tmp2a==tmp4a[j][0]) and np.all(tmp2b==tmp4a[j][1]):
+                    counter_ab+=1
+                    break
+                elif np.all(tmp2b==tmp4a[j][0]) and np.all(tmp2a==tmp4a[j][1]):
+                    counter_ab+=1
+                    break
+                else:
+                    counter_ab+=0
+            if counter_ab==0:
+                tmp1a=np.append(tmp2a,tmp2b)
             else:
-                counter_ab+=0
-        if counter_ab==0:
-            tmp1a=np.append(tmp2a,tmp2b)
-        else:
-            pass
-            #tmp1a=np.array([],dtype=long)
-        for j in range(0,num2):
-            #tmp1b=np.array([])
-            if np.all(tmp2a==tmp4a[j][0]) and np.all(tmp2c==tmp4a[j][1]):
-                counter_ac+=1
-                break
-            elif np.all(tmp2c==tmp4a[j][0]) and np.all(tmp2a==tmp4a[j][1]):
-                counter_ac+=1
-                break
+                pass
+                #tmp1a=np.array([],dtype=long)
+            for j in range(0,num2):
+                #tmp1b=np.array([])
+                if np.all(tmp2a==tmp4a[j][0]) and np.all(tmp2c==tmp4a[j][1]):
+                    counter_ac+=1
+                    break
+                elif np.all(tmp2c==tmp4a[j][0]) and np.all(tmp2a==tmp4a[j][1]):
+                    counter_ac+=1
+                    break
+                else:
+                    counter_ac+=0
+            if counter_ac==0:
+                tmp1b=np.append(tmp2a,tmp2c)
             else:
-                counter_ac+=0
-        if counter_ac==0:
-            tmp1b=np.append(tmp2a,tmp2c)
-        else:
-            pass
-            #tmp1b=np.array([],dtype=long)
-        for j in range(0,num2):
-            #tmp1c=np.array([],dtype=long)
-            if np.all(tmp2b==tmp4a[j][0]) and np.all(tmp2c==tmp4a[j][1]):
-                counter_bc+=1
-                break
-            elif np.all(tmp2c==tmp4a[j][0]) and np.all(tmp2b==tmp4a[j][1]):
-                counter_bc+=1
-                break
+                pass
+                #tmp1b=np.array([],dtype=long)
+            for j in range(0,num2):
+                #tmp1c=np.array([],dtype=long)
+                if np.all(tmp2b==tmp4a[j][0]) and np.all(tmp2c==tmp4a[j][1]):
+                    counter_bc+=1
+                    break
+                elif np.all(tmp2c==tmp4a[j][0]) and np.all(tmp2b==tmp4a[j][1]):
+                    counter_bc+=1
+                    break
+                else:
+                    counter_bc+=0
+            if counter_bc==0:
+                tmp1c=np.append(tmp2b,tmp2c)
             else:
-                counter_bc+=0
-        if counter_bc==0:
-            tmp1c=np.append(tmp2b,tmp2c)
-        else:
-            pass
-            #tmp1c=np.array([],dtype=long)
+                pass
+                #tmp1c=np.array([],dtype=long)
         
-        #tmp1d=np.append(tmp1d,tmp1a)
-        #tmp1d=np.append(tmp1d,tmp1b)
-        #tmp1d=np.append(tmp1d,tmp1c)
-        #tmp1d=np.append(tmp4a,tmp1d)
+            #tmp1d=np.append(tmp1d,tmp1a)
+            #tmp1d=np.append(tmp1d,tmp1b)
+            #tmp1d=np.append(tmp1d,tmp1c)
+            #tmp1d=np.append(tmp4a,tmp1d)
         
-        if len(tmp1a)!=1:
-            tmp1d=tmp1a
-        else:
-            pass
-        if len(tmp1b)!=1:
+            if len(tmp1a)!=1:
+                tmp1d=tmp1a
+            else:
+                pass
+            if len(tmp1b)!=1:
+                if len(tmp1d)!=1:
+                    tmp1d=np.append(tmp1d,tmp1b)
+                else:
+                    tmp1d=tmp1b
+            else:
+                pass
+            if len(tmp1c)!=1:
+                if len(tmp1d)!=1:
+                    tmp1d=np.append(tmp1d,tmp1c)
+                else:
+                    tmp1d=tmp1b
+            else:
+                pass
+        
             if len(tmp1d)!=1:
-                tmp1d=np.append(tmp1d,tmp1b)
+                tmp1d=np.append(tmp4a,tmp1d)
             else:
-                tmp1d=tmp1b
-        else:
-            pass
-        if len(tmp1c)!=1:
-            if len(tmp1d)!=1:
-                tmp1d=np.append(tmp1d,tmp1c)
-            else:
-                tmp1d=tmp1b
-        else:
-            pass
+                pass
+            num2=int(len(tmp1d)/36) # 36=2*6*3
+            tmp4a=tmp1d.reshape(num2,2,6,3)
         
-        if len(tmp1d)!=1:
-            tmp1d=np.append(tmp4a,tmp1d)
+        if verbose>0:
+            print('       Number of edges: %d'%(len(tmp4a)))
         else:
             pass
-        num2=int(len(tmp1d)/36) # 36=2*6*3
-        tmp4a=tmp1d.reshape(num2,2,6,3)
+        return tmp4a
+
+# new version (much faster)
+@cython.boundscheck(False)
+@cython.wraparound(False)
+cpdef np.ndarray generator_surface_1(np.ndarray[DTYPE_int_t, ndim=4] obj,
+                                    int verbose):
+    #
+    # remove doubling surface in a set of tetrahedra in the OD (dim4)
+    #
+    cdef int i,j,k,val,num1,counter1,counter2,counter3
+    cdef list edge,comb,list1
+    cdef np.ndarray[DTYPE_int_t,ndim=1] tmp1,tmp1a,tmp1k,tmp1j
+    cdef np.ndarray[DTYPE_int_t,ndim=2] tmp2a
+    cdef np.ndarray[DTYPE_int_t,ndim=4] tmp4a
         
     if verbose>0:
-        print('       Number of edges: %d'%(len(tmp4a)))
+        print('      generator_surface_1()')
     else:
         pass
-    return tmp4a
+    #
+    # (1) preparing a list of triangle surfaces without doubling (tmp2)
+    #
+    if verbose>1:
+        print('       Number of triangles in POD: %d'%(len(obj)*4))
+    else:
+        pass
+    
+    #
+    # initialization of tmp2 by 1st tetrahedron
+    #
+    # three triangles of tetrahedron: 1-2-3, 1-2-4, 1-3-4, 2-3-4
+    comb=[[0,1,2],[0,1,3],[0,2,3],[1,2,3]] 
+    #
+    # Four triangles of 1-th tetrahedron
+    for k in range(len(comb)):
+        if k==0:
+            tmp1=np.append(obj[0][comb[k][0]],obj[0][comb[k][1]])
+        else:
+            tmp1=np.append(tmp1,obj[0][comb[k][0]])
+            tmp1=np.append(tmp1,obj[0][comb[k][1]])
+        tmp1=np.append(tmp1,obj[0][comb[k][2]])
+    num1=int(len(tmp1)/len(comb))
+    tmp2a=tmp1.reshape(len(comb),num1)
+    #
+    if len(obj)==1:
+        return tmp1.reshape(int(len(tmp1)/54),3,6,3)
+    else:
+        list1=[]
+        for i in range(1,len(obj)): # i-th tetrahedron
+            tmp1=np.array([0])
+            for k in range(len(comb)): # k-th triangle of i-th tetrahedron
+                tmp1k=np.append(obj[i][comb[k][0]],obj[i][comb[k][1]])
+                tmp1k=np.append(tmp1k,obj[i][comb[k][2]])
+                counter1=0
+                for j in range(len(tmp2a)): # j-th triangle in list 'tmp2'
+                    tmp1j=tmp2a[j]
+                    #val=equivalent_triangle(tmp1k,tmp1j) # val=0 (equivalent), 1 (non equivalent)
+                    val=equivalent_triangle_1(tmp1k,tmp1j) # val=0 (equivalent), 1 (non equivalent)
+                    if val==0:
+                        counter1+=1
+                        list1.append(j)
+                        break
+                    else:
+                        pass
+                if counter1==0:
+                    if len(tmp1)==1:
+                        tmp1=tmp1k
+                    else:
+                        tmp1=np.append(tmp1,tmp1k)
+            if len(tmp1)==1:
+                pass
+            else:
+                tmp1=np.append(tmp2a,tmp1)
+                tmp2a=tmp1.reshape(int(len(tmp1)/num1),num1)
 
+        if verbose>1:
+            print('       Number of unique triangles: %d'%(len(tmp2a)))
+        else:
+            pass
+
+        tmp1=np.array([0])
+        for i in range(len(tmp2a)):
+            counter1=0
+            for j in list1:
+                if i==j:
+                    counter1+=1
+                    #break
+                else:
+                    pass
+            if counter1==0:
+                if len(tmp1)==1:
+                    tmp1=tmp2a[i]
+                else:
+                    tmp1=np.append(tmp1,tmp2a[i])
+            elif counter1==1:
+                pass
+            else:
+                if verbose>1:
+                    print('      ERROR_001 %d: check your model.'%(counter1))
+                else:
+                    pass
+                
+        if verbose>=1:
+            print('       Number of triangles on POD surface:%d'%(int(len(tmp1)/54)))
+        else:
+            pass
+    
+        return tmp1.reshape(int(len(tmp1)/54),3,6,3)
+
+
+"""
 # new version (much faster)
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -243,7 +358,7 @@ cpdef np.ndarray generator_surface_1(np.ndarray[DTYPE_int_t, ndim=4] obj,
         pass
     
     return tmp1.reshape(int(len(tmp1)/54),3,6,3)
-
+"""
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -403,12 +518,19 @@ cpdef int equivalent_triangle(np.ndarray[DTYPE_int_t, ndim=1] triangle1,
         #t1,t2,t3,d1,d2,d3=projection(tmp3b[i5][0],tmp3b[i5][1],tmp3b[i5][2],tmp3b[i5][3],tmp3b[i5][4],tmp3b[i5][5])
         #t1,t2,t3,e1,e2,e3=projection(tmp3a[i3][0],tmp3a[i3][1],tmp3a[i3][2],tmp3a[i3][3],tmp3a[i3][4],tmp3a[i3][5])
         #t1,t2,t3,f1,f2,f3=projection(tmp3b[i6][0],tmp3b[i6][1],tmp3b[i6][2],tmp3b[i6][3],tmp3b[i6][4],tmp3b[i6][5])
-        _,_,_,a1,a2,a3=projection(tmp3a[i1][0],tmp3a[i1][1],tmp3a[i1][2],tmp3a[i1][3],tmp3a[i1][4],tmp3a[i1][5])
-        _,_,_,b1,b2,b3=projection(tmp3b[i4][0],tmp3b[i4][1],tmp3b[i4][2],tmp3b[i4][3],tmp3b[i4][4],tmp3b[i4][5])
-        _,_,_,c1,c2,c3=projection(tmp3a[i2][0],tmp3a[i2][1],tmp3a[i2][2],tmp3a[i2][3],tmp3a[i2][4],tmp3a[i2][5])
-        _,_,_,d1,d2,d3=projection(tmp3b[i5][0],tmp3b[i5][1],tmp3b[i5][2],tmp3b[i5][3],tmp3b[i5][4],tmp3b[i5][5])
-        _,_,_,e1,e2,e3=projection(tmp3a[i3][0],tmp3a[i3][1],tmp3a[i3][2],tmp3a[i3][3],tmp3a[i3][4],tmp3a[i3][5])
-        _,_,_,f1,f2,f3=projection(tmp3b[i6][0],tmp3b[i6][1],tmp3b[i6][2],tmp3b[i6][3],tmp3b[i6][4],tmp3b[i6][5])
+        #_,_,_,a1,a2,a3=projection(tmp3a[i1][0],tmp3a[i1][1],tmp3a[i1][2],tmp3a[i1][3],tmp3a[i1][4],tmp3a[i1][5])
+        #_,_,_,b1,b2,b3=projection(tmp3b[i4][0],tmp3b[i4][1],tmp3b[i4][2],tmp3b[i4][3],tmp3b[i4][4],tmp3b[i4][5])
+        #_,_,_,c1,c2,c3=projection(tmp3a[i2][0],tmp3a[i2][1],tmp3a[i2][2],tmp3a[i2][3],tmp3a[i2][4],tmp3a[i2][5])
+        #_,_,_,d1,d2,d3=projection(tmp3b[i5][0],tmp3b[i5][1],tmp3b[i5][2],tmp3b[i5][3],tmp3b[i5][4],tmp3b[i5][5])
+        #_,_,_,e1,e2,e3=projection(tmp3a[i3][0],tmp3a[i3][1],tmp3a[i3][2],tmp3a[i3][3],tmp3a[i3][4],tmp3a[i3][5])
+        #_,_,_,f1,f2,f3=projection(tmp3b[i6][0],tmp3b[i6][1],tmp3b[i6][2],tmp3b[i6][3],tmp3b[i6][4],tmp3b[i6][5])
+        a1,a2,a3=projection3(tmp3a[i1][0],tmp3a[i1][1],tmp3a[i1][2],tmp3a[i1][3],tmp3a[i1][4],tmp3a[i1][5])
+        b1,b2,b3=projection3(tmp3b[i4][0],tmp3b[i4][1],tmp3b[i4][2],tmp3b[i4][3],tmp3b[i4][4],tmp3b[i4][5])
+        c1,c2,c3=projection3(tmp3a[i2][0],tmp3a[i2][1],tmp3a[i2][2],tmp3a[i2][3],tmp3a[i2][4],tmp3a[i2][5])
+        d1,d2,d3=projection3(tmp3b[i5][0],tmp3b[i5][1],tmp3b[i5][2],tmp3b[i5][3],tmp3b[i5][4],tmp3b[i5][5])
+        e1,e2,e3=projection3(tmp3a[i3][0],tmp3a[i3][1],tmp3a[i3][2],tmp3a[i3][3],tmp3a[i3][4],tmp3a[i3][5])
+        f1,f2,f3=projection3(tmp3b[i6][0],tmp3b[i6][1],tmp3b[i6][2],tmp3b[i6][3],tmp3b[i6][4],tmp3b[i6][5])
+
         tmp2a=np.array([a1,a2,a3])
         tmp2b=np.array([b1,b2,b3])
         tmp2c=np.array([c1,c2,c3])
@@ -509,10 +631,15 @@ cpdef list tetrahedron_volume_6d(np.ndarray[DTYPE_int_t, ndim=3] tetrahedron):
     #x1e,y1e,z1e,x2i,y2i,z2i=projection(tetrahedron[1][0],tetrahedron[1][1],tetrahedron[1][2],tetrahedron[1][3],tetrahedron[1][4],tetrahedron[1][5])
     #x1e,y1e,z1e,x3i,y3i,z3i=projection(tetrahedron[2][0],tetrahedron[2][1],tetrahedron[2][2],tetrahedron[2][3],tetrahedron[2][4],tetrahedron[2][5])
     #x1e,y1e,z1e,x4i,y4i,z4i=projection(tetrahedron[3][0],tetrahedron[3][1],tetrahedron[3][2],tetrahedron[3][3],tetrahedron[3][4],tetrahedron[3][5])
-    _,_,_,x1i,y1i,z1i=projection(tetrahedron[0][0],tetrahedron[0][1],tetrahedron[0][2],tetrahedron[0][3],tetrahedron[0][4],tetrahedron[0][5])
-    _,_,_,x2i,y2i,z2i=projection(tetrahedron[1][0],tetrahedron[1][1],tetrahedron[1][2],tetrahedron[1][3],tetrahedron[1][4],tetrahedron[1][5])
-    _,_,_,x3i,y3i,z3i=projection(tetrahedron[2][0],tetrahedron[2][1],tetrahedron[2][2],tetrahedron[2][3],tetrahedron[2][4],tetrahedron[2][5])
-    _,_,_,x4i,y4i,z4i=projection(tetrahedron[3][0],tetrahedron[3][1],tetrahedron[3][2],tetrahedron[3][3],tetrahedron[3][4],tetrahedron[3][5])
+    #_,_,_,x1i,y1i,z1i=projection(tetrahedron[0][0],tetrahedron[0][1],tetrahedron[0][2],tetrahedron[0][3],tetrahedron[0][4],tetrahedron[0][5])
+    #_,_,_,x2i,y2i,z2i=projection(tetrahedron[1][0],tetrahedron[1][1],tetrahedron[1][2],tetrahedron[1][3],tetrahedron[1][4],tetrahedron[1][5])
+    #_,_,_,x3i,y3i,z3i=projection(tetrahedron[2][0],tetrahedron[2][1],tetrahedron[2][2],tetrahedron[2][3],tetrahedron[2][4],tetrahedron[2][5])
+    #_,_,_,x4i,y4i,z4i=projection(tetrahedron[3][0],tetrahedron[3][1],tetrahedron[3][2],tetrahedron[3][3],tetrahedron[3][4],tetrahedron[3][5])
+    x1i,y1i,z1i=projection3(tetrahedron[0][0],tetrahedron[0][1],tetrahedron[0][2],tetrahedron[0][3],tetrahedron[0][4],tetrahedron[0][5])
+    x2i,y2i,z2i=projection3(tetrahedron[1][0],tetrahedron[1][1],tetrahedron[1][2],tetrahedron[1][3],tetrahedron[1][4],tetrahedron[1][5])
+    x3i,y3i,z3i=projection3(tetrahedron[2][0],tetrahedron[2][1],tetrahedron[2][2],tetrahedron[2][3],tetrahedron[2][4],tetrahedron[2][5])
+    x4i,y4i,z4i=projection3(tetrahedron[3][0],tetrahedron[3][1],tetrahedron[3][2],tetrahedron[3][3],tetrahedron[3][4],tetrahedron[3][5])
+
     [v1,v2,v3]=tetrahedron_volume(np.array([x1i,y1i,z1i]),np.array([x2i,y2i,z2i]),np.array([x3i,y3i,z3i]),np.array([x4i,y4i,z4i]))
     return [v1,v2,v3]
 
@@ -718,7 +845,8 @@ cpdef np.ndarray remove_doubling_dim3_in_perp_space(np.ndarray[DTYPE_int_t, ndim
         tmp3a=np.array([[v4,v5,v6]]) # perpendicular components
         tmp3b=np.array([obj[0]]) # 6d
         for i1 in range(1,num):
-            _,_,_,v4,v5,v6=projection(obj[i1][0],obj[i1][1],obj[i1][2],obj[i1][3],obj[i1][4],obj[i1][5])
+            #_,_,_,v4,v5,v6=projection(obj[i1][0],obj[i1][1],obj[i1][2],obj[i1][3],obj[i1][4],obj[i1][5])
+            v4,v5,v6=projection3(obj[i1][0],obj[i1][1],obj[i1][2],obj[i1][3],obj[i1][4],obj[i1][5])
             counter1=0
             for i2 in range(len(tmp3a)):
                 if np.all(v4==tmp3a[i2][0]) and np.all(v5==tmp3a[i2][1]) and np.all(v6==tmp3a[i2][2]):
@@ -737,7 +865,7 @@ cpdef np.ndarray remove_doubling_dim3_in_perp_space(np.ndarray[DTYPE_int_t, ndim
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-cpdef int generator_xyz_dim4(np.ndarray[DTYPE_int_t, ndim=4] obj, char filename):
+cpdef int generator_xyz_dim4(np.ndarray[DTYPE_int_t, ndim=4] obj, str filename):
     cdef int i1
     #cdef np.ndarray[DTYPE_int_t,ndim=1] a1,a2,a3
     cdef np.ndarray[DTYPE_int_t,ndim=1] a4,a5,a6
@@ -749,7 +877,8 @@ cpdef int generator_xyz_dim4(np.ndarray[DTYPE_int_t, ndim=4] obj, char filename)
     f.write('%s\n'%(filename))
     for i1 in range(len(tmp3)):
         #a1,a2,a3,a4,a5,a6=projection(tmp3[i1][0],tmp3[i1][1],tmp3[i1][2],tmp3[i1][3],tmp3[i1][4],tmp3[i1][5])
-        _,_,_,a4,a5,a6=projection(tmp3[i1][0],tmp3[i1][1],tmp3[i1][2],tmp3[i1][3],tmp3[i1][4],tmp3[i1][5])
+        #_,_,_,a4,a5,a6=projection(tmp3[i1][0],tmp3[i1][1],tmp3[i1][2],tmp3[i1][3],tmp3[i1][4],tmp3[i1][5])
+        a4,a5,a6=projection3(tmp3[i1][0],tmp3[i1][1],tmp3[i1][2],tmp3[i1][3],tmp3[i1][4],tmp3[i1][5])
         f.write('Xx %8.6f %8.6f %8.6f # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
         ((a4[0]+a4[1]*TAU)/(a4[2]),(a5[0]+a5[1]*TAU)/(a5[2]),(a6[0]+a6[1]*TAU)/(a6[2]),\
         tmp3[i1][0][0],tmp3[i1][0][1],tmp3[i1][0][2],\
@@ -763,9 +892,9 @@ cpdef int generator_xyz_dim4(np.ndarray[DTYPE_int_t, ndim=4] obj, char filename)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-cpdef int generator_xyz_dim4_triangle(np.ndarray[DTYPE_int_t, ndim=4] obj, char filename):
+cpdef int generator_xyz_dim4_triangle(np.ndarray[DTYPE_int_t, ndim=4] obj, str filename):
     cdef int i1,i2
-    cdef np.ndarray[DTYPE_int_t,ndim=1] a1,a2,a3
+    #cdef np.ndarray[DTYPE_int_t,ndim=1] a1,a2,a3
     cdef np.ndarray[DTYPE_int_t,ndim=1] a4,a5,a6
     f=open('%s'%(filename),'w', encoding="utf-8", errors="ignore")
     f.write('%d\n'%(len(obj)*3))
@@ -773,7 +902,8 @@ cpdef int generator_xyz_dim4_triangle(np.ndarray[DTYPE_int_t, ndim=4] obj, char 
     for i1 in range(len(obj)):
         for i2 in range(3):
             #a1,a2,a3,a4,a5,a6=projection(obj[i1][i2][0],obj[i1][i2][1],obj[i1][i2][2],obj[i1][i2][3],obj[i1][i2][4],obj[i1][i2][5])
-            _,_,_,a4,a5,a6=projection(obj[i1][i2][0],obj[i1][i2][1],obj[i1][i2][2],obj[i1][i2][3],obj[i1][i2][4],obj[i1][i2][5])
+            #_,_,_,a4,a5,a6=projection(obj[i1][i2][0],obj[i1][i2][1],obj[i1][i2][2],obj[i1][i2][3],obj[i1][i2][4],obj[i1][i2][5])
+            a4,a5,a6=projection3(obj[i1][i2][0],obj[i1][i2][1],obj[i1][i2][2],obj[i1][i2][3],obj[i1][i2][4],obj[i1][i2][5])
             f.write('Xx %8.6f %8.6f %8.6f # %3d-the tetrahedron %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
             ((a4[0]+a4[1]*TAU)/(a4[2]),\
             (a5[0]+a5[1]*TAU)/(a5[2]),\
@@ -790,67 +920,91 @@ cpdef int generator_xyz_dim4_triangle(np.ndarray[DTYPE_int_t, ndim=4] obj, char 
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-cpdef int generator_xyz_dim4_tetrahedron(np.ndarray[DTYPE_int_t, ndim=4] obj, char basename, int option):
+
+cpdef int generator_xyz_dim4_tmp(np.ndarray[DTYPE_int_t, ndim=4] obj, int number):
+    cdef int i1,i2
+    cdef np.ndarray[DTYPE_int_t,ndim=1] a4,a5,a6
+    with open('tmp%d'%(number), mode='w') as f:
+        f.write('%d\n'%(len(obj)*4))
+        f.write('tmp%d\n'%(number))
+        for i1 in range(len(obj)):
+            for i2 in range(4):
+                a4,a5,a6=projection3(obj[i1][i2][0],obj[i1][i2][1],obj[i1][i2][2],obj[i1][i2][3],obj[i1][i2][4],obj[i1][i2][5])
+                f.write('Xx %8.6f %8.6f %8.6f # %3d-the tetrahedron %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
+                ((a4[0]+a4[1]*TAU)/(a4[2]),\
+                (a5[0]+a5[1]*TAU)/(a5[2]),\
+                (a6[0]+a6[1]*TAU)/(a6[2]),\
+                i1,i2,\
+                obj[i1][i2][0][0],obj[i1][i2][0][1],obj[i1][i2][0][2],\
+                obj[i1][i2][1][0],obj[i1][i2][1][1],obj[i1][i2][1][2],\
+                obj[i1][i2][2][0],obj[i1][i2][2][1],obj[i1][i2][2][2],\
+                obj[i1][i2][3][0],obj[i1][i2][3][1],obj[i1][i2][3][2],\
+                obj[i1][i2][4][0],obj[i1][i2][4][1],obj[i1][i2][4][2],\
+                obj[i1][i2][5][0],obj[i1][i2][5][1],obj[i1][i2][5][2]))
+    return 0
+
+cpdef int generator_xyz_dim4_tetrahedron(np.ndarray[DTYPE_int_t, ndim=4] obj, str basename, int option):
+    
     cdef int i1,i2
     cdef long w1,w2,w3
     #cdef np.ndarray[DTYPE_int_t,ndim=1] a1,a2,a3
     cdef np.ndarray[DTYPE_int_t,ndim=1] a4,a5,a6
-    
+
     if option==0:
-        f=open('%s.xyz'%(basename),'w', encoding="utf-8", errors="ignore")
-        f.write('%d\n'%(len(obj)*4))
-        f.write('%s.xyz\n'%(basename))
-        for i1 in range(len(obj)):
-            for i2 in range(4):
-                #a1,a2,a3,a4,a5,a6=projection(obj[i1][i2][0],obj[i1][i2][1],obj[i1][i2][2],obj[i1][i2][3],obj[i1][i2][4],obj[i1][i2][5])
-                _,_,_,a4,a5,a6=projection(obj[i1][i2][0],obj[i1][i2][1],obj[i1][i2][2],obj[i1][i2][3],obj[i1][i2][4],obj[i1][i2][5])
-                f.write('Xx %8.6f %8.6f %8.6f # %3d-the tetrahedron %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-                ((a4[0]+a4[1]*TAU)/float(a4[2]),\
-                (a5[0]+a5[1]*TAU)/float(a5[2]),\
-                (a6[0]+a6[1]*TAU)/float(a6[2]),\
-                i1,i2,\
-                obj[i1][i2][0][0],obj[i1][i2][0][1],obj[i1][i2][0][2],\
-                obj[i1][i2][1][0],obj[i1][i2][1][1],obj[i1][i2][1][2],\
-                obj[i1][i2][2][0],obj[i1][i2][2][1],obj[i1][i2][2][2],\
-                obj[i1][i2][3][0],obj[i1][i2][3][1],obj[i1][i2][3][2],\
-                obj[i1][i2][4][0],obj[i1][i2][4][1],obj[i1][i2][4][2],\
-                obj[i1][i2][5][0],obj[i1][i2][5][1],obj[i1][i2][5][2]))
-        w1,w2,w3=obj_volume_6d(obj)
-        f.write('volume = %d %d %d (%8.6f)\n'%(w1,w2,w3,(w1+TAU*w2)/float(w3)))
-        for i1 in range(len(obj)):
-            [v1,v2,v3]=tetrahedron_volume_6d(obj[i1])
-            f.write('%3d-the tetrahedron, %d %d %d (%8.6f)\n'%(i1,v1,v2,v3,(v1+TAU*v2)/float(v3)))
-        f.closed
+        with open('%s.xyz'%(basename), mode='w') as f:
+            f.write('%d\n'%(len(obj)*4))
+            f.write('%s\n'%(basename))
+            for i1 in range(len(obj)):
+                for i2 in range(4):
+                    #a1,a2,a3,a4,a5,a6=projection(obj[i1][i2][0],obj[i1][i2][1],obj[i1][i2][2],obj[i1][i2][3],obj[i1][i2][4],obj[i1][i2][5])
+                    #_,_,_,a4,a5,a6=projection(obj[i1][i2][0],obj[i1][i2][1],obj[i1][i2][2],obj[i1][i2][3],obj[i1][i2][4],obj[i1][i2][5])
+                    a4,a5,a6=projection3(obj[i1][i2][0],obj[i1][i2][1],obj[i1][i2][2],obj[i1][i2][3],obj[i1][i2][4],obj[i1][i2][5])
+                    f.write('Xx %8.6f %8.6f %8.6f # %3d-the tetrahedron %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
+                    ((a4[0]+a4[1]*TAU)/(a4[2]),\
+                    (a5[0]+a5[1]*TAU)/(a5[2]),\
+                    (a6[0]+a6[1]*TAU)/(a6[2]),\
+                    i1,i2,\
+                    obj[i1][i2][0][0],obj[i1][i2][0][1],obj[i1][i2][0][2],\
+                    obj[i1][i2][1][0],obj[i1][i2][1][1],obj[i1][i2][1][2],\
+                    obj[i1][i2][2][0],obj[i1][i2][2][1],obj[i1][i2][2][2],\
+                    obj[i1][i2][3][0],obj[i1][i2][3][1],obj[i1][i2][3][2],\
+                    obj[i1][i2][4][0],obj[i1][i2][4][1],obj[i1][i2][4][2],\
+                    obj[i1][i2][5][0],obj[i1][i2][5][1],obj[i1][i2][5][2]))
+            w1,w2,w3=obj_volume_6d(obj)
+            f.write('volume = %d %d %d (%8.6f)\n'%(w1,w2,w3,(w1+TAU*w2)/(w3)))
+            for i1 in range(len(obj)):
+                [v1,v2,v3]=tetrahedron_volume_6d(obj[i1])
+                f.write('%3d-the tetrahedron, %d %d %d (%8.6f)\n'%(i1,v1,v2,v3,(v1+TAU*v2)/(v3)))
         return 0
     elif option==1:
         for i1 in range(len(obj)):
-            f=open('%s_%d.xyz'%(basename,i1),'w', encoding="utf-8", errors="ignore")
-            f.write('%d\n'%(4))
-            f.write('%s_%d.xyz\n'%(basename,i1))
-            for i2 in range(4):
-                #a1,a2,a3,a4,a5,a6=projection(obj[i1][i2][0],obj[i1][i2][1],obj[i1][i2][2],obj[i1][i2][3],obj[i1][i2][4],obj[i1][i2][5])
-                _,_,_,a4,a5,a6=projection(obj[i1][i2][0],obj[i1][i2][1],obj[i1][i2][2],obj[i1][i2][3],obj[i1][i2][4],obj[i1][i2][5])
-                f.write('Xx %8.6f %8.6f %8.6f # %3d-the tetrahedron %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-                ((a4[0]+a4[1]*TAU)/float(a4[2]),\
-                (a5[0]+a5[1]*TAU)/float(a5[2]),\
-                (a6[0]+a6[1]*TAU)/float(a6[2]),\
-                i1,i2,\
-                obj[i1][i2][0][0],obj[i1][i2][0][1],obj[i1][i2][0][2],\
-                obj[i1][i2][1][0],obj[i1][i2][1][1],obj[i1][i2][1][2],\
-                obj[i1][i2][2][0],obj[i1][i2][2][1],obj[i1][i2][2][2],\
-                obj[i1][i2][3][0],obj[i1][i2][3][1],obj[i1][i2][3][2],\
-                obj[i1][i2][4][0],obj[i1][i2][4][1],obj[i1][i2][4][2],\
-                obj[i1][i2][5][0],obj[i1][i2][5][1],obj[i1][i2][5][2]))
-                [v1,v2,v3]=tetrahedron_volume_6d(obj[i1])
-            f.write('%3d-the tetrahedron, %d %d %d (%8.6f)\n'%(i1,v1,v2,v3,(v1+TAU*v2)/float(v3)))
-        f.closed
+            with open('%s_%d.xyz'%(basename,i1), mode='w') as f:
+                f.write('%d\n'%(4))
+                f.write('%s_%d.xyz\n'%(basename,i1))
+                for i2 in range(4):
+                    #a1,a2,a3,a4,a5,a6=projection(obj[i1][i2][0],obj[i1][i2][1],obj[i1][i2][2],obj[i1][i2][3],obj[i1][i2][4],obj[i1][i2][5])
+                    #_,_,_,a4,a5,a6=projection(obj[i1][i2][0],obj[i1][i2][1],obj[i1][i2][2],obj[i1][i2][3],obj[i1][i2][4],obj[i1][i2][5])
+                    a4,a5,a6=projection3(obj[i1][i2][0],obj[i1][i2][1],obj[i1][i2][2],obj[i1][i2][3],obj[i1][i2][4],obj[i1][i2][5])
+                    f.write('Xx %8.6f %8.6f %8.6f # %3d-the tetrahedron %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
+                    ((a4[0]+a4[1]*TAU)/(a4[2]),\
+                    (a5[0]+a5[1]*TAU)/(a5[2]),\
+                    (a6[0]+a6[1]*TAU)/(a6[2]),\
+                    i1,i2,\
+                    obj[i1][i2][0][0],obj[i1][i2][0][1],obj[i1][i2][0][2],\
+                    obj[i1][i2][1][0],obj[i1][i2][1][1],obj[i1][i2][1][2],\
+                    obj[i1][i2][2][0],obj[i1][i2][2][1],obj[i1][i2][2][2],\
+                    obj[i1][i2][3][0],obj[i1][i2][3][1],obj[i1][i2][3][2],\
+                    obj[i1][i2][4][0],obj[i1][i2][4][1],obj[i1][i2][4][2],\
+                    obj[i1][i2][5][0],obj[i1][i2][5][1],obj[i1][i2][5][2]))
+                    [v1,v2,v3]=tetrahedron_volume_6d(obj[i1])
+                f.write('%3d-the tetrahedron, %d %d %d (%8.6f)\n'%(i1,v1,v2,v3,(v1+TAU*v2)/(v3)))
         return 0
     else:
         return 1
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-cpdef int generator_xyz_dim4_tetrahedron_select(np.ndarray[DTYPE_int_t, ndim=4] obj, char  filename, int num):
+cpdef int generator_xyz_dim4_tetrahedron_select(np.ndarray[DTYPE_int_t, ndim=4] obj, str  filename, int num):
     cdef int i2
     cdef long w1,w2,w3
     #cdef np.ndarray[DTYPE_int_t,ndim=1] a1,a2,a3
@@ -862,11 +1016,12 @@ cpdef int generator_xyz_dim4_tetrahedron_select(np.ndarray[DTYPE_int_t, ndim=4] 
     f.write('%s_%d\n'%(filename,num))
     for i2 in range(4):
         #a1,a2,a3,a4,a5,a6=projection(obj[num][i2][0],obj[num][i2][1],obj[num][i2][2],obj[num][i2][3],obj[num][i2][4],obj[num][i2][5])
-        _,_,_,a4,a5,a6=projection(obj[num][i2][0],obj[num][i2][1],obj[num][i2][2],obj[num][i2][3],obj[num][i2][4],obj[num][i2][5])
+        #_,_,_,a4,a5,a6=projection(obj[num][i2][0],obj[num][i2][1],obj[num][i2][2],obj[num][i2][3],obj[num][i2][4],obj[num][i2][5])
+        a4,a5,a6=projection3(obj[num][i2][0],obj[num][i2][1],obj[num][i2][2],obj[num][i2][3],obj[num][i2][4],obj[num][i2][5])
         print('Xx %8.6f %8.6f %8.6f # %3d-the tetrahedron %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-        ((a4[0]+a4[1]*TAU)/float(a4[2]),\
-        (a5[0]+a5[1]*TAU)/float(a5[2]),\
-        (a6[0]+a6[1]*TAU)/float(a6[2]),\
+        ((a4[0]+a4[1]*TAU)/(a4[2]),\
+        (a5[0]+a5[1]*TAU)/(a5[2]),\
+        (a6[0]+a6[1]*TAU)/(a6[2]),\
         num,i2,\
         obj[num][i2][0][0],obj[num][i2][0][1],obj[num][i2][0][2],\
         obj[num][i2][1][0],obj[num][i2][1][1],obj[num][i2][1][2],\
@@ -875,13 +1030,13 @@ cpdef int generator_xyz_dim4_tetrahedron_select(np.ndarray[DTYPE_int_t, ndim=4] 
         obj[num][i2][4][0],obj[num][i2][4][1],obj[num][i2][4][2],\
         obj[num][i2][5][0],obj[num][i2][5][1],obj[num][i2][5][2]))
         [v1,v2,v3]=tetrahedron_volume_6d(obj[num])
-    f.write('%3d-the tetrahedron, %d %d %d (%8.6f)\n'%(num,v1,v2,v3,(v1+TAU*v2)/float(v3)))
+    f.write('%3d-the tetrahedron, %d %d %d (%8.6f)\n'%(num,v1,v2,v3,(v1+TAU*v2)/(v3)))
     f.close
     return 0
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-cpdef int generator_xyz_dim3(np.ndarray[DTYPE_int_t, ndim=3] obj, char filename):
+cpdef int generator_xyz_dim3(np.ndarray[DTYPE_int_t, ndim=3] obj, str filename):
     cdef int i1
     #cdef np.ndarray[DTYPE_int_t,ndim=1] a1,a2,a3
     cdef np.ndarray[DTYPE_int_t,ndim=1] a4,a5,a6
@@ -892,9 +1047,10 @@ cpdef int generator_xyz_dim3(np.ndarray[DTYPE_int_t, ndim=3] obj, char filename)
     f.write('%d\n'%(len(tmp3)))
     f.write('%s\n'%(filename))
     for i1 in range(len(tmp3)):
-        _,_,_,a4,a5,a6=projection(obj[i1][0],obj[i1][1],obj[i1][2],obj[i1][3],obj[i1][4],obj[i1][5])
+        #_,_,_,a4,a5,a6=projection(obj[i1][0],obj[i1][1],obj[i1][2],obj[i1][3],obj[i1][4],obj[i1][5])
+        a4,a5,a6=projection3(obj[i1][0],obj[i1][1],obj[i1][2],obj[i1][3],obj[i1][4],obj[i1][5])
         f.write('Xx %8.6f %8.6f %8.6f # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-        ((a4[0]+a4[1]*TAU)/float(a4[2]),(a5[0]+a5[1]*TAU)/float(a5[2]),(a6[0]+a6[1]*TAU)/float(a6[2]),\
+        ((a4[0]+a4[1]*TAU)/(a4[2]),(a5[0]+a5[1]*TAU)/(a5[2]),(a6[0]+a6[1]*TAU)/(a6[2]),\
         tmp3[i1][0][0],tmp3[i1][0][1],tmp3[i1][0][2],\
         tmp3[i1][1][0],tmp3[i1][1][1],tmp3[i1][1][2],\
         tmp3[i1][2][0],tmp3[i1][2][1],tmp3[i1][2][2],\

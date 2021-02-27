@@ -14,6 +14,13 @@ cpdef list projection(np.ndarray[DTYPE_int_t, ndim=1],
                     np.ndarray[DTYPE_int_t, ndim=1],
                     np.ndarray[DTYPE_int_t, ndim=1])
 
+cpdef list projection3(np.ndarray[DTYPE_int_t, ndim=1],
+                    np.ndarray[DTYPE_int_t, ndim=1],
+                    np.ndarray[DTYPE_int_t, ndim=1],
+                    np.ndarray[DTYPE_int_t, ndim=1],
+                    np.ndarray[DTYPE_int_t, ndim=1],
+                    np.ndarray[DTYPE_int_t, ndim=1])
+
 cpdef list projection_perp(np.ndarray[DTYPE_int_t, ndim=1],
                             np.ndarray[DTYPE_int_t, ndim=1],
                             np.ndarray[DTYPE_int_t, ndim=1],

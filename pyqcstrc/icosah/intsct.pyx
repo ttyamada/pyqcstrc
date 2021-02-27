@@ -8,8 +8,8 @@ from scipy.spatial import Delaunay
 cimport numpy as np
 cimport cython
 
-from pyqcstrc.icosah.math1 cimport centroid, coplanar_check, projection, det_matrix, dot_product, add, sub, mul, div
-from pyqcstrc.icosah.numericalc cimport obj_volume_6d_numerical, tetrahedron_volume_6d_numerical, inside_outside_tetrahedron
+from pyqcstrc.icosah.math1 cimport centroid, coplanar_check, projection,projection3, det_matrix, dot_product, add, sub, mul, div
+from pyqcstrc.icosah.numericalc cimport obj_volume_6d_numerical, tetrahedron_volume_6d_numerical, inside_outside_tetrahedron, check_intersection_segment_surface_numerical
 from pyqcstrc.icosah.utils cimport obj_volume_6d, tetrahedron_volume_6d, remove_doubling_dim3_in_perp_space, remove_doubling_dim4_in_perp_space, generator_edge, generator_surface_1
 
 DTYPE_double = np.float64
@@ -80,17 +80,17 @@ cpdef list intersection_two_obj_convex(np.ndarray[DTYPE_int_t, ndim=4] obj1,
     else:
         pass
     
-    obj1_surf=generator_surface_1(obj1,verbose-1)
-    obj2_surf=generator_surface_1(obj2,verbose-1)
-    obj1_edge=generator_edge(obj1_surf,verbose-1)
-    obj2_edge=generator_edge(obj2_surf,verbose-1)
+    obj1_surf=generator_surface_1(obj1,verbose)
+    obj2_surf=generator_surface_1(obj2,verbose)
+    obj1_edge=generator_edge(obj1_surf,verbose)
+    obj2_edge=generator_edge(obj2_surf,verbose)
     
     counter=0
     for i1 in range(len(obj1_surf)):
         tr1=obj1_surf[i1]
         for i2 in range(len(obj2_edge)):
             ed2=obj2_edge[i2]
-            tmp=intersection_line_segment_triangle(ed2,tr1,verbose-2)
+            tmp=intersection_line_segment_triangle(ed2,tr1,verbose-1)
             if len(tmp)!=1:
                 if counter==0:
                     p=tmp
@@ -103,7 +103,7 @@ cpdef list intersection_two_obj_convex(np.ndarray[DTYPE_int_t, ndim=4] obj1,
         tr2=obj2_surf[i1]
         for i2 in range(len(obj1_edge)):
             ed1=obj1_edge[i2]
-            tmp=intersection_line_segment_triangle(ed1,tr2,verbose-2)
+            tmp=intersection_line_segment_triangle(ed1,tr2,verbose-1)
             if len(tmp)!=1:
                 if counter==0:
                     p=tmp
@@ -868,7 +868,7 @@ cpdef np.ndarray intersection_two_tetrahedron_4(np.ndarray[DTYPE_int_t, ndim=3] 
                         a1,b1,c1=tetrahedron_volume_6d(tmp4a[0])
                         vol1=(a1+b1*TAU)/c1
                         print('              volume, %d %d %d (%8.6f)'%(a1,b1,c1,vol1))
-                        print('              volume (numerical value)',tetrahedron_volume_6d_numerical(tmp4a[0]))
+                        print('              volume (numerical value) %8.6f'%(tetrahedron_volume_6d_numerical(tmp4a[0])))
                     else:
                         pass
                 else:
@@ -938,6 +938,280 @@ cpdef np.ndarray intersection_two_tetrahedron_4(np.ndarray[DTYPE_int_t, ndim=3] 
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
+cpdef np.ndarray intersection_two_obj_1(np.ndarray[DTYPE_int_t, ndim=4] obj1,
+                                np.ndarray[DTYPE_int_t, ndim=4] obj2,
+                                int fflag,
+                                int verbose):
+    cdef int falg,i1,i2,counter,counter1
+    cdef long a0,b0,c0,a1,b1,c1
+    cdef double dd2
+    cdef np.ndarray[DTYPE_int_t,ndim=2] cent2
+    cdef np.ndarray[DTYPE_int_t,ndim=4] common4,tmp4,tmp_common4
+    
+    if fflag==0: # filtering ON, rough check intersection of tetrahedron in obj1 and obj2
+        cent2=centroid_obj(obj2)
+        dd2=ball_radius_obj(obj2,cent2)
+    else:
+        pass
+        
+    common4=np.array([[[[0]]]])
+    
+    counter=0
+    if fflag==0: # filter ON
+        for i1 in range(len(obj1)):
+            if verbose>0:
+                print('      %d-th tetrahedron in obj1'%(i1))
+            else:
+                pass
+            if rough_check_intersection_tetrahedron_obj(obj1[i1],cent2,dd2)==0:
+                counter1=0
+                tmp_common4=np.array([[[[0]]]])
+                a0,b0,c0=tetrahedron_volume_6d(obj1[i1])
+                for i2 in range(len(obj2)):
+                    flag=check_intersection_two_tetrahedron_4(obj1[i1],obj2[i2],verbose-1)
+                    if flag==3:# tetrahedron_1 and tetrahedron_2 are intersecting
+                        tmp4=intersection_two_tetrahedron_4(obj1[i1],obj2[i2],verbose)
+                        if tmp4.tolist()!=[[[[0]]]]:
+                            if counter1==0:
+                                tmp_common4=tmp4
+                                counter1+=1
+                            else:
+                                tmp_common4=np.vstack((tmp_common4,tmp4))
+                        else:
+                            pass
+                    elif flag==1:# tetrahedron_1 is inside tetrahedron_2
+                        if counter==0:
+                            common4=obj1[i1].reshape(1,4,6,3)
+                            counter+=1
+                        else:
+                            common4=np.vstack((common4,[obj1[i1]]))
+                    elif flag==2:# tetrahedron_2 is inside tetrahedron_1
+                        if counter==0:
+                            common4=obj2[i2].reshape(1,4,6,3)
+                            counter+=1
+                        else:
+                            common4=np.vstack((common4,[obj2[i2]]))
+                    else:
+                        pass
+                if counter1>0:
+                    a1,b1,c1=obj_volume_6d(tmp_common4)
+                    if a1==a0 and b1==b0 and c1==c0:
+                        if counter==0:
+                            common4=obj1[i1].reshape(1,4,6,3)
+                            counter+=1
+                        else:
+                            common4=np.vstack((common4,obj1[i1].reshape(1,4,6,3)))
+                    else:
+                        if counter==0:
+                            common4=tmp_common4
+                            counter+=1
+                        else:
+                            common4=np.vstack((common4,tmp_common4))
+                else:
+                    pass
+            else:
+                pass
+    else:
+        for i1 in range(len(obj1)):
+            if verbose>0:
+                print('      %d-th tetrahedron in obj1'%(i1))
+            else:
+                pass
+            counter1=0
+            tmp_common4=np.array([[[[0]]]])
+            a0,b0,c0=tetrahedron_volume_6d(obj1[i1])
+            for i2 in range(len(obj2)):
+                flag=check_intersection_two_tetrahedron_4(obj1[i1],obj2[i2],verbose-1)
+                if flag==3:# tetrahedron_1 and tetrahedron_2 are intersecting
+                    tmp4=intersection_two_tetrahedron_4(obj1[i1],obj2[i2],verbose)
+                    if tmp4.tolist()!=[[[[0]]]]:
+                        if counter1==0:
+                            tmp_common4=tmp4
+                            counter1+=1
+                        else:
+                            tmp_common4=np.vstack((tmp_common4,tmp4))
+                    else:
+                        pass
+                elif flag==1:# tetrahedron_1 is inside tetrahedron_2
+                    if counter==0:
+                        common4=obj1[i1].reshape(1,4,6,3)
+                        counter+=1
+                    else:
+                        common4=np.vstack((common4,[obj1[i1]]))
+                elif flag==2:# tetrahedron_2 is inside tetrahedron_1
+                    if counter==0:
+                        common4=obj2[i2].reshape(1,4,6,3)
+                        counter+=1
+                    else:
+                        common4=np.vstack((common4,[obj2[i2]]))
+                else:
+                    pass
+            if counter1>0:
+                a1,b1,c1=obj_volume_6d(tmp_common4)
+                if a1==a0 and b1==b0 and c1==c0:
+                    if counter==0:
+                        common4=obj1[i1].reshape(1,4,6,3)
+                        counter+=1
+                    else:
+                        common4=np.vstack((common4,obj1[i1].reshape(1,4,6,3)))
+                else:
+                    if counter==0:
+                        common4=tmp_common4
+                        counter+=1
+                    else:
+                        common4=np.vstack((common4,tmp_common4))
+            else:
+                pass
+    return common4
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+cdef int check_intersection_two_tetrahedron_4(np.ndarray[DTYPE_int_t, ndim=3] tetrahedron_1,
+                                                np.ndarray[DTYPE_int_t, ndim=3] tetrahedron_2,
+                                                int verbose):
+    cdef int i1
+    cdef int counter1,counter2
+    cdef np.ndarray[DTYPE_int_t,ndim=2] comb
+    
+    if verbose>0:
+        print('        check_intersection_two_tetrahedron_4()')
+    else:
+        pass
+    #
+    # -----------------
+    # tetrahedron_1
+    # -----------------
+    # vertex 1: tetrahedron_1[0],  consist of (a1+b1*TAU)/c1, ... (a6+b6*TAU)/c6    a_i,b_i,c_i = tetrahedron_1[0][i:0~5][0],tetrahedron_1[0][i:0~5][1],tetrahedron_1[0][i:0~5][2]
+    # vertex 2: tetrahedron_1[1]
+    # vertex 3: tetrahedron_1[2]
+    # vertex 4: tetrahedron_1[3]
+    #
+    # 4 surfaces of tetrahedron_1
+    # surface 1: v1,v2,v3
+    # surface 2: v1,v2,v4
+    # surface 3: v1,v3,v4
+    # surface 4: v2,v3,v4
+    #
+    # 6 edges of tetrahedron_1
+    # edge 1: v1,v2
+    # edge 2: v1,v3
+    # edge 3: v1,v4
+    # edge 4: v2,v3
+    # edge 5: v2,v4
+    # edge 6: v3,v4
+    #
+    # -----------------
+    # tetrahedron_2
+    # -----------------
+    # vertex 1: tetrahedron_2[0]
+    # vertex 2: tetrahedron_2[1]
+    # vertex 3: tetrahedron_2[2]
+    # vertex 4: tetrahedron_2[3]
+    #
+    # 4 surfaces of tetrahedron_2
+    # surface 1: w1,w2,w3
+    # surface 2: w1,w2,w4
+    # surface 3: w1,w3,w4
+    # surface 4: w2,w3,w4
+    #
+    # 6 edges of tetrahedron_2
+    # edge 1: w1,w2
+    # edge 2: w1,w3
+    # edge 3: w1,w4
+    # edge 4: w2,w3
+    # edge 5: w2,w4
+    # edge 6: w3,w4
+    #
+    # case 1: intersection between (edge of tetrahedron_1) and (surface of tetrahedron_2)
+    # case 2: intersection between (edge of tetrahedron_2) and (surface of tetrahedron_1)
+    #
+    # combination_index
+    # e.g. v1,v2,w1,w2,w3 (edge 1 and surface 1) ...
+    comb=np.array([\
+    [0,1,0,1,2],\
+    [0,1,0,1,3],\
+    [0,1,0,2,3],\
+    [0,1,1,2,3],\
+    [0,2,0,1,2],\
+    [0,2,0,1,3],\
+    [0,2,0,2,3],\
+    [0,2,1,2,3],\
+    [0,3,0,1,2],\
+    [0,3,0,1,3],\
+    [0,3,0,2,3],\
+    [0,3,1,2,3],\
+    [1,2,0,1,2],\
+    [1,2,0,1,3],\
+    [1,2,0,2,3],\
+    [1,2,1,2,3],\
+    [1,3,0,1,2],\
+    [1,3,0,1,3],\
+    [1,3,0,2,3],\
+    [1,3,1,2,3],\
+    [2,3,0,1,2],\
+    [2,3,0,1,3],\
+    [2,3,0,2,3],\
+    [2,3,1,2,3]])
+    
+    counter1=0
+    for i1 in range(24): # len(combination_index) = 24
+        # case 1: intersection between
+        # 6 edges of tetrahedron_1
+        # 4 surfaces of tetrahedron_2
+        segment_1=tetrahedron_1[comb[i1][0]] 
+        segment_2=tetrahedron_1[comb[i1][1]]
+        surface_1=tetrahedron_2[comb[i1][2]]
+        surface_2=tetrahedron_2[comb[i1][3]]
+        surface_3=tetrahedron_2[comb[i1][4]]
+        if check_intersection_segment_surface_numerical(segment_1,segment_2,surface_1,surface_2,surface_3)==0: # intersectiing
+            counter1+=1
+            break
+        else:
+            pass
+        # case 2: intersection between
+        # 6 edges of tetrahedron_2
+        # 4 surfaces of tetrahedron_1
+        segment_1=tetrahedron_2[comb[i1][0]]
+        segment_2=tetrahedron_2[comb[i1][1]]
+        surface_1=tetrahedron_1[comb[i1][2]]
+        surface_2=tetrahedron_1[comb[i1][3]]
+        surface_3=tetrahedron_1[comb[i1][4]]
+        if check_intersection_segment_surface_numerical(segment_1,segment_2,surface_1,surface_2,surface_3)==0: # intersectiing
+            counter1+=1
+            break
+        else:
+            pass
+    
+    counter2=0
+    # get vertces of tetrahedron_1 which are inside tetrahedron_2
+    for i1 in range(4):
+        if inside_outside_tetrahedron(tetrahedron_1[i1],tetrahedron_2[0],tetrahedron_2[1],tetrahedron_2[2],tetrahedron_2[3])==0: # inside
+            pass
+        else:
+            counter2+=1
+            break
+        
+    counter3=0
+    # get vertces of tetrahedron_2 which are inside tetrahedron_1
+    for i1 in range(4):
+        if inside_outside_tetrahedron(tetrahedron_2[i1],tetrahedron_1[0],tetrahedron_1[1],tetrahedron_1[2],tetrahedron_1[3])==0: # inside
+            pass
+        else:
+            counter3+=1
+    
+    if counter2==0 :
+        return 1 # tetrahedron_1 is inside tetrahedron_2
+    elif counter3==0:
+        return 2 # tetrahedron_2 is inside tetrahedron_1
+    else:
+        if counter1>0:
+            return 3 # intersecting
+        else:
+            return 0 # no intersecting
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
 cdef np.ndarray intersection_segment_surface(np.ndarray[DTYPE_int_t, ndim=2] segment_1,
                                                 np.ndarray[DTYPE_int_t, ndim=2] segment_2,
                                                 np.ndarray[DTYPE_int_t, ndim=2] surface_1,
@@ -947,15 +1221,10 @@ cdef np.ndarray intersection_segment_surface(np.ndarray[DTYPE_int_t, ndim=2] seg
 #def intersection_segment_surface(np.ndarray[DTYPE_int_t, ndim=2] segment_1,np.ndarray[DTYPE_int_t, ndim=2] segment_2,np.ndarray[DTYPE_int_t, ndim=2] surface_1,np.ndarray[DTYPE_int_t, ndim=2] surface_2,np.ndarray[DTYPE_int_t, ndim=2] surface_3):
     #
     cdef np.ndarray[DTYPE_int_t,ndim=1] tmp1,tmp1a
-    #cdef np.ndarray[DTYPE_int_t,ndim=1] seg1e1,seg1e2,seg1e3
     cdef np.ndarray[DTYPE_int_t,ndim=1] seg1i1,seg1i2,seg1i3
-    #cdef np.ndarray[DTYPE_int_t,ndim=1] seg2e1,seg2e2,seg2e3
     cdef np.ndarray[DTYPE_int_t,ndim=1] seg2i1,seg2i2,seg2i3
-    #cdef np.ndarray[DTYPE_int_t,ndim=1] sur1e1,sur1e2,sur1e3
     cdef np.ndarray[DTYPE_int_t,ndim=1] sur1i1,sur1i2,sur1i3
-    #cdef np.ndarray[DTYPE_int_t,ndim=1] sur2e1,sur2e2,sur2e3
     cdef np.ndarray[DTYPE_int_t,ndim=1] sur2i1,sur2i2,sur2i3
-    #cdef np.ndarray[DTYPE_int_t,ndim=1] sur3e1,sur3e2,sur3e3
     cdef np.ndarray[DTYPE_int_t,ndim=1] sur3i1,sur3i2,sur3i3
     cdef np.ndarray[DTYPE_int_t,ndim=2] vec1,vecBA,vecCD,vecCE,vecCA
     cdef long bx1,bx2,bx3,by1,by2,by3,bz1,bz2,bz3
@@ -976,17 +1245,18 @@ cdef np.ndarray intersection_segment_surface(np.ndarray[DTYPE_int_t, ndim=2] seg
         print('          intersection_segment_surface()')
     else:
         pass
-    #
-    #seg1e1,seg1e2,seg1e3,seg1i1,seg1i2,seg1i3=projection(segment_1[0],segment_1[1],segment_1[2],segment_1[3],segment_1[4],segment_1[5])
-    #seg2e1,seg2e2,seg2e3,seg2i1,seg2i2,seg2i3=projection(segment_2[0],segment_2[1],segment_2[2],segment_2[3],segment_2[4],segment_2[5])
-    #sur1e1,sur1e2,sur1e3,sur1i1,sur1i2,sur1i3=projection(surface_1[0],surface_1[1],surface_1[2],surface_1[3],surface_1[4],surface_1[5])
-    #sur2e1,sur2e2,sur2e3,sur2i1,sur2i2,sur2i3=projection(surface_2[0],surface_2[1],surface_2[2],surface_2[3],surface_2[4],surface_2[5])
-    #sur3e1,sur3e2,sur3e3,sur3i1,sur3i2,sur3i3=projection(surface_3[0],surface_3[1],surface_3[2],surface_3[3],surface_3[4],surface_3[5])
-    _,_,_,seg1i1,seg1i2,seg1i3=projection(segment_1[0],segment_1[1],segment_1[2],segment_1[3],segment_1[4],segment_1[5])
-    _,_,_,seg2i1,seg2i2,seg2i3=projection(segment_2[0],segment_2[1],segment_2[2],segment_2[3],segment_2[4],segment_2[5])
-    _,_,_,sur1i1,sur1i2,sur1i3=projection(surface_1[0],surface_1[1],surface_1[2],surface_1[3],surface_1[4],surface_1[5])
-    _,_,_,sur2i1,sur2i2,sur2i3=projection(surface_2[0],surface_2[1],surface_2[2],surface_2[3],surface_2[4],surface_2[5])
-    _,_,_,sur3i1,sur3i2,sur3i3=projection(surface_3[0],surface_3[1],surface_3[2],surface_3[3],surface_3[4],surface_3[5])
+    
+    #_,_,_,seg1i1,seg1i2,seg1i3=projection(segment_1[0],segment_1[1],segment_1[2],segment_1[3],segment_1[4],segment_1[5])
+    #_,_,_,seg2i1,seg2i2,seg2i3=projection(segment_2[0],segment_2[1],segment_2[2],segment_2[3],segment_2[4],segment_2[5])
+    #_,_,_,sur1i1,sur1i2,sur1i3=projection(surface_1[0],surface_1[1],surface_1[2],surface_1[3],surface_1[4],surface_1[5])
+    #_,_,_,sur2i1,sur2i2,sur2i3=projection(surface_2[0],surface_2[1],surface_2[2],surface_2[3],surface_2[4],surface_2[5])
+    #_,_,_,sur3i1,sur3i2,sur3i3=projection(surface_3[0],surface_3[1],surface_3[2],surface_3[3],surface_3[4],surface_3[5])
+
+    seg1i1,seg1i2,seg1i3=projection3(segment_1[0],segment_1[1],segment_1[2],segment_1[3],segment_1[4],segment_1[5])
+    seg2i1,seg2i2,seg2i3=projection3(segment_2[0],segment_2[1],segment_2[2],segment_2[3],segment_2[4],segment_2[5])
+    sur1i1,sur1i2,sur1i3=projection3(surface_1[0],surface_1[1],surface_1[2],surface_1[3],surface_1[4],surface_1[5])
+    sur2i1,sur2i2,sur2i3=projection3(surface_2[0],surface_2[1],surface_2[2],surface_2[3],surface_2[4],surface_2[5])
+    sur3i1,sur3i2,sur3i3=projection3(surface_3[0],surface_3[1],surface_3[2],surface_3[3],surface_3[4],surface_3[5])
 
     #
     # Origin: seg1i1,seg1i2,seg1i3
@@ -1155,9 +1425,6 @@ cdef np.ndarray intersection_two_segment(np.ndarray[DTYPE_int_t, ndim=2] segment
     cdef np.ndarray[DTYPE_int_t,ndim=1] tmp1a,tmp1b,tmp1c
     cdef np.ndarray[DTYPE_int_t,ndim=1] seg1ai1,seg1ai2,seg1ai3,seg1bi1,seg1bi2,seg1bi3
     cdef np.ndarray[DTYPE_int_t,ndim=1] seg2ci1,seg2ci2,seg2ci3,seg2di1,seg2di2,seg2di3
-    #cdef int verbose
-    
-    #verbose=0
     
     if verbose>0:
         print('           intersection_two_segment()')
@@ -1171,15 +1438,16 @@ cdef np.ndarray intersection_two_segment(np.ndarray[DTYPE_int_t, ndim=2] segment
         print('           segment_2',segment_2_D)
     else:
         pass
-    #tmp1a,tmp1b,tmp1c,seg1ai1,seg1ai2,seg1ai3=projection(segment_1_A[0],segment_1_A[1],segment_1_A[2],segment_1_A[3],segment_1_A[4],segment_1_A[5])
-    #tmp1a,tmp1b,tmp1c,seg1bi1,seg1bi2,seg1bi3=projection(segment_1_B[0],segment_1_B[1],segment_1_B[2],segment_1_B[3],segment_1_B[4],segment_1_B[5])
-    #tmp1a,tmp1b,tmp1c,seg2ci1,seg2ci2,seg2ci3=projection(segment_2_C[0],segment_2_C[1],segment_2_C[2],segment_2_C[3],segment_2_C[4],segment_2_C[5])
-    #tmp1a,tmp1b,tmp1c,seg2di1,seg2di2,seg2di3=projection(segment_2_D[0],segment_2_D[1],segment_2_D[2],segment_2_D[3],segment_2_D[4],segment_2_D[5])
 
-    _,_,_,seg1ai1,seg1ai2,seg1ai3=projection(segment_1_A[0],segment_1_A[1],segment_1_A[2],segment_1_A[3],segment_1_A[4],segment_1_A[5])
-    _,_,_,seg1bi1,seg1bi2,seg1bi3=projection(segment_1_B[0],segment_1_B[1],segment_1_B[2],segment_1_B[3],segment_1_B[4],segment_1_B[5])
-    _,_,_,seg2ci1,seg2ci2,seg2ci3=projection(segment_2_C[0],segment_2_C[1],segment_2_C[2],segment_2_C[3],segment_2_C[4],segment_2_C[5])
-    _,_,_,seg2di1,seg2di2,seg2di3=projection(segment_2_D[0],segment_2_D[1],segment_2_D[2],segment_2_D[3],segment_2_D[4],segment_2_D[5])
+    #_,_,_,seg1ai1,seg1ai2,seg1ai3=projection(segment_1_A[0],segment_1_A[1],segment_1_A[2],segment_1_A[3],segment_1_A[4],segment_1_A[5])
+    #_,_,_,seg1bi1,seg1bi2,seg1bi3=projection(segment_1_B[0],segment_1_B[1],segment_1_B[2],segment_1_B[3],segment_1_B[4],segment_1_B[5])
+    #_,_,_,seg2ci1,seg2ci2,seg2ci3=projection(segment_2_C[0],segment_2_C[1],segment_2_C[2],segment_2_C[3],segment_2_C[4],segment_2_C[5])
+    #_,_,_,seg2di1,seg2di2,seg2di3=projection(segment_2_D[0],segment_2_D[1],segment_2_D[2],segment_2_D[3],segment_2_D[4],segment_2_D[5])
+
+    seg1ai1,seg1ai2,seg1ai3=projection3(segment_1_A[0],segment_1_A[1],segment_1_A[2],segment_1_A[3],segment_1_A[4],segment_1_A[5])
+    seg1bi1,seg1bi2,seg1bi3=projection3(segment_1_B[0],segment_1_B[1],segment_1_B[2],segment_1_B[3],segment_1_B[4],segment_1_B[5])
+    seg2ci1,seg2ci2,seg2ci3=projection3(segment_2_C[0],segment_2_C[1],segment_2_C[2],segment_2_C[3],segment_2_C[4],segment_2_C[5])
+    seg2di1,seg2di2,seg2di3=projection3(segment_2_D[0],segment_2_D[1],segment_2_D[2],segment_2_D[3],segment_2_D[4],segment_2_D[5])
     
     # vec AB
     [ax1,ax2,ax3]=sub(seg1bi1[0],seg1bi1[1],seg1bi1[2],seg1ai1[0],seg1ai1[1],seg1ai1[2])
@@ -1285,8 +1553,6 @@ cdef np.ndarray intersection_two_segment(np.ndarray[DTYPE_int_t, ndim=2] segment
                     print('           z1,z2 = %d %d'%(z1,z2))
                 else:
                     pass
-                #if ddx**2+ddy**2+ddz**2<EPS:
-                #if ddx1==0 and ddx2==0 and ddy1==0 and ddy2==0 and ddz1==0 and ddz2==0:
                 if z1==0 and z2==0:
                     #
                     #interval=line1a+s*(line1b-line1a)
@@ -1325,10 +1591,6 @@ cdef np.ndarray intersection_two_segment(np.ndarray[DTYPE_int_t, ndim=2] segment
                     [j16,j17,j18]=mul(s1,s2,s3,h16,h17,h18)
                     [j16,j17,j18]=add(j16,j17,j18,i16,i17,i18)
                     tmp1a=np.array([j1,j2,j3,j4,j5,j6,j7,j8,j9,j10,j11,j12,j13,j14,j15,j16,j17,j18])
-                    #if verbose>2:
-                    #    print(tmp1a)
-                    #else:
-                    #    pass
                 else:
                     pass
             else:
@@ -1346,7 +1608,6 @@ cpdef np.ndarray tetrahedralization_points(np.ndarray[DTYPE_int_t, ndim=3] point
     cdef int i,num,counter
     cdef long t1,t2,t3,t4,v1,v2,v3,w1,w2,w3
     cdef double vx,vy,vz
-    #cdef np.ndarray[DTYPE_int_t,ndim=1] xe,ye,ze
     cdef np.ndarray[DTYPE_int_t,ndim=1] tmp1a,xi,yi,zi
     cdef np.ndarray[DTYPE_int_t,ndim=3] tmp3a,tmp3b
     cdef np.ndarray[DTYPE_int_t,ndim=4] tmp4a
@@ -1362,20 +1623,15 @@ cpdef np.ndarray tetrahedralization_points(np.ndarray[DTYPE_int_t, ndim=3] point
     
     tmp3a=points
     for i in range(len(tmp3a)):
-        #xe,ye,ze,xi,yi,zi=projection(tmp3a[i][0],tmp3a[i][1],tmp3a[i][2],tmp3a[i][3],tmp3a[i][4],tmp3a[i][5])
-        _,_,_,xi,yi,zi=projection(tmp3a[i][0],tmp3a[i][1],tmp3a[i][2],tmp3a[i][3],tmp3a[i][4],tmp3a[i][5])
-        #vx=(xi[0]+xi[1]*TAU)/float(xi[2]) # numeric value of xi
-        #vy=(yi[0]+yi[1]*TAU)/float(yi[2])
-        #vz=(zi[0]+zi[1]*TAU)/float(zi[2])
+        #_,_,_,xi,yi,zi=projection(tmp3a[i][0],tmp3a[i][1],tmp3a[i][2],tmp3a[i][3],tmp3a[i][4],tmp3a[i][5])
+        xi,yi,zi=projection3(tmp3a[i][0],tmp3a[i][1],tmp3a[i][2],tmp3a[i][3],tmp3a[i][4],tmp3a[i][5])
         vx=(xi[0]+xi[1]*TAU)/xi[2] # numeric value of xi
         vy=(yi[0]+yi[1]*TAU)/yi[2]
         vz=(zi[0]+zi[1]*TAU)/zi[2]
         if i==0:
             tmp1v=np.array([vx,vy,vz])
-            #print '     %8.6f %8.6f %8.6f'%(vx,vy,vz)
         else:
             tmp1v=np.append(tmp1v,[vx,vy,vz])
-            #print '     %8.6f %8.6f %8.6f'%(vx,vy,vz)
     tmp2v=tmp1v.reshape(int(len(tmp1v)/3),3)
     ltmp=decomposition(tmp2v)
     
@@ -1386,11 +1642,9 @@ cpdef np.ndarray tetrahedralization_points(np.ndarray[DTYPE_int_t, ndim=3] point
     
     tmp4a=np.array([[[[0]]]])
     if ltmp!=[0]:
-        #w1,w2,w3=0,0,1
         counter=0
         for i in range(len(ltmp)):
             tmp3b=np.array([tmp3a[ltmp[i][0]],tmp3a[ltmp[i][1]],tmp3a[ltmp[i][2]],tmp3a[ltmp[i][3]]]).reshape(4,6,3)
-            #print 'tmp3b',tmp3b
             v1,v2,v3=tetrahedron_volume_6d(tmp3b)
             if v1==0 and v2==0:
                 if verbose>0:
@@ -1398,9 +1652,6 @@ cpdef np.ndarray tetrahedralization_points(np.ndarray[DTYPE_int_t, ndim=3] point
                 else:
                     pass
                 pass
-            #elif (v1+v2*TAU)/float(v3)<0.0:
-            #    print '     %d-th tet, volume : %d %d %d (%8.6f) ignored!'%(i,v1,v2,v3,(v1+v2*TAU)/float(v3))
-            #    pass
             else:
                 if counter==0:
                     tmp1a=tmp3b.reshape(72) # 4*6*3=72
@@ -1414,10 +1665,9 @@ cpdef np.ndarray tetrahedralization_points(np.ndarray[DTYPE_int_t, ndim=3] point
                         print('            %d-th tet, volume : %d %d %d (%8.6f)'%(i,v1,v2,v3,(v1+v2*TAU)/v3))
                     else:
                         pass
-                #w1,w2,w3=add(v1,v2,v3,w1,w2,w3)
                 counter+=1
         if counter!=0:
-            tmp4a=tmp1a.reshape(int(len(tmp1a)/72),4,6,3) # 4*6*3=72    
+            tmp4a=tmp1a.reshape(int(len(tmp1a)/72),4,6,3) # 4*6*3=72
             if verbose>0:
                 w1,w2,w3=obj_volume_6d(tmp4a)
                 print('            -> Total : %d %d %d (%8.6f)'%(w1,w2,w3,(w1+w2*TAU)/w3))
@@ -1425,13 +1675,8 @@ cpdef np.ndarray tetrahedralization_points(np.ndarray[DTYPE_int_t, ndim=3] point
                 pass
         else:
             pass
-            #tmp4a=np.array([[[[0]]]])
-        #return tmp4a
     else:
         pass
-        #print('tmp2v',tmp2v)
-        #return np.array([[[[0]]]])
-        #return tmp4a
     return tmp4a
 
 @cython.boundscheck(False)
@@ -1443,7 +1688,6 @@ cpdef np.ndarray tetrahedralization_1(np.ndarray[DTYPE_int_t, ndim=4] obj,
     cdef long v1,v2,v3
     cdef np.ndarray[DTYPE_int_t,ndim=1] tmp1a,tmp1b
     cdef np.ndarray[DTYPE_int_t,ndim=3] tmp3a
-    #cdef np.ndarray[DTYPE_int_t,ndim=4] tmp4
     
     if verbose>0:
         print('    tetrahedralization_1()')
@@ -1464,10 +1708,6 @@ cpdef np.ndarray tetrahedralization_1(np.ndarray[DTYPE_int_t, ndim=4] obj,
             print('      added point is inside obj')
         else:
             pass
-        #tmp1a=obj.reshape(len(obj)*72)
-        #tmp1b=point.reshape(18)
-        #tmp1a=np.append(tmp1a,tmp1b)
-        #tmp3a=tmp1a.reshape(int(len(tmp1a)/18),6,3)
         tmp1a=np.append(obj,point)
         tmp3a=tmp1a.reshape(int(len(tmp1a)/18),6,3)
         tmp3a=remove_doubling_dim3_in_perp_space(tmp3a)
@@ -1486,9 +1726,7 @@ cpdef np.ndarray tetrahedralization(np.ndarray[DTYPE_int_t, ndim=3] tetrahedron,
                                     int verbose):
     cdef int i,num,counter
     cdef long t1,t2,t3,t4,v1,v2,v3,w1,w2,w3
-    #cdef long w1,w2,w3
     cdef double vx,vy,vz
-    #cdef np.ndarray[DTYPE_int_t,ndim=1] xe,ye,ze
     cdef np.ndarray[DTYPE_int_t,ndim=1] tmp1a,xi,yi,zi
     cdef np.ndarray[DTYPE_int_t,ndim=3] tmp3a,tmp3b
     cdef np.ndarray[DTYPE_int_t,ndim=4] tmp4a
@@ -1511,57 +1749,42 @@ cpdef np.ndarray tetrahedralization(np.ndarray[DTYPE_int_t, ndim=3] tetrahedron,
     else:
         pass
     for i in range(len(tmp3a)):
-        #xe,ye,ze,xi,yi,zi=projection(tmp3a[i][0],tmp3a[i][1],tmp3a[i][2],tmp3a[i][3],tmp3a[i][4],tmp3a[i][5])
-        _,_,_,xi,yi,zi=projection(tmp3a[i][0],tmp3a[i][1],tmp3a[i][2],tmp3a[i][3],tmp3a[i][4],tmp3a[i][5])
-        #vx=(xi[0]+xi[1]*TAU)/float(xi[2]) # numeric value of xi
-        #vy=(yi[0]+yi[1]*TAU)/float(yi[2])
-        #vz=(zi[0]+zi[1]*TAU)/float(zi[2])
+        #_,_,_,xi,yi,zi=projection(tmp3a[i][0],tmp3a[i][1],tmp3a[i][2],tmp3a[i][3],tmp3a[i][4],tmp3a[i][5])
+        xi,yi,zi=projection3(tmp3a[i][0],tmp3a[i][1],tmp3a[i][2],tmp3a[i][3],tmp3a[i][4],tmp3a[i][5])
         vx=(xi[0]+xi[1]*TAU)/xi[2] # numeric value of xi
         vy=(yi[0]+yi[1]*TAU)/yi[2]
         vz=(zi[0]+zi[1]*TAU)/zi[2]
         if i==0:
             tmp1v=np.array([vx,vy,vz])
-            #print '     %8.6f %8.6f %8.6f'%(vx,vy,vz)
         else:
             tmp1v=np.append(tmp1v,[vx,vy,vz])
-            #print '     %8.6f %8.6f %8.6f'%(vx,vy,vz)
     tmp2v=tmp1v.reshape(int(len(tmp1v)/3),3)
     ltmp=decomposition(tmp2v)
     tmp4a=np.array([[[[0]]]])
     if ltmp!=[0]:
-        #print '   -> N of tetrahedron: %3d'%(len(ltmp))
-        #w1,w2,w3=0,0,1
         counter=0
         for i in range(len(ltmp)):
             tmp3b=np.array([tmp3a[ltmp[i][0]],tmp3a[ltmp[i][1]],tmp3a[ltmp[i][2]],tmp3a[ltmp[i][3]]]).reshape(4,6,3)
-            #v1,v2,v3=tetrahedron_volume_6d(tmp3b)
             if v1==0 and v2==0:
                 pass
             else:
                 if counter==0:
                     tmp1a=tmp3b.reshape(72) # 4*6*3=72
-                    #print '     volume : (%d+%d*TAU)/%d'%(v1,v2,v3)
                 else:
                     tmp1a=np.append(tmp1a,tmp3b)
-                    #print '     volume : (%d+%d*TAU)/%d'%(v1,v2,v3)
-                    #w1,w2,w3=add(v1,v2,v3,w1,w2,w3)
                 counter+=1
         if counter!=0:
-            tmp4a=tmp1a.reshape(int(len(tmp1a)/72),4,6,3) # 4*6*3=72    
+            tmp4a=tmp1a.reshape(int(len(tmp1a)/72),4,6,3) # 4*6*3=72
             if verbose>0:
                 v1,v2,v3=obj_volume_6d(tmp4a)
                 print('              -> numbre of tetrahedra: %3d:'%(int(len(tmp4a))))
                 print('                 Total volume : %d %d %d (%8.6f)'%(v1,v2,v3,(v1+v2*TAU)/v3))
-                #print('            -> Total2 : %d %d %d (%8.6f)'%(w1,w2,w3,(w1+w2*TAU)/w3))
             else:
                 pass
         else:
             pass
         return tmp4a
     else:
-        #return np.array([[[[0]]]])
-        #return tmp4a
-        #pass
         return tmp4a
 
 @cython.boundscheck(False)
@@ -1610,7 +1833,6 @@ cdef double ball_radius(np.ndarray[DTYPE_int_t, ndim=3] tetrahedron,
     cdef int i1,i2,counter
     cdef long w1,w2,w3
     cdef double dd,radius
-    #cdef np.ndarray[DTYPE_int_t,ndim=1] v1,v2,v3
     cdef np.ndarray[DTYPE_int_t,ndim=1] v4,v5,v6,tmp1a
     cdef np.ndarray[DTYPE_int_t,ndim=3] tmp3b
     
@@ -1627,8 +1849,8 @@ cdef double ball_radius(np.ndarray[DTYPE_int_t, ndim=3] tetrahedron,
     tmp3b=tmp1a.reshape(4,6,3)
     radius=0.0
     for i1 in range(4):
-        #v1,v2,v3,v4,v5,v6=projection(tmp3b[i1][0],tmp3b[i1][1],tmp3b[i1][2],tmp3b[i1][3],tmp3b[i1][4],tmp3b[i1][5])
-        _,_,_,v4,v5,v6=projection(tmp3b[i1][0],tmp3b[i1][1],tmp3b[i1][2],tmp3b[i1][3],tmp3b[i1][4],tmp3b[i1][5])
+        #_,_,_,v4,v5,v6=projection(tmp3b[i1][0],tmp3b[i1][1],tmp3b[i1][2],tmp3b[i1][3],tmp3b[i1][4],tmp3b[i1][5])
+        v4,v5,v6=projection3(tmp3b[i1][0],tmp3b[i1][1],tmp3b[i1][2],tmp3b[i1][3],tmp3b[i1][4],tmp3b[i1][5])
         dd=np.sqrt(((v4[0]+v4[1]*TAU)/v4[2])**2+((v5[0]+v5[1]*TAU)/v5[2])**2+((v6[0]+v6[1]*TAU)/v6[2])**2)
         if dd>radius:
             radius=dd
@@ -1645,7 +1867,6 @@ cdef double ball_radius_obj(np.ndarray[DTYPE_int_t, ndim=4] obj,
     cdef int i1,i2,i3,num1,counter
     cdef long w1,w2,w3
     cdef double dd,radius
-    #cdef np.ndarray[DTYPE_int_t,ndim=1] v1,v2,v3
     cdef np.ndarray[DTYPE_int_t,ndim=1] v4,v5,v6,tmp1a
     cdef np.ndarray[DTYPE_int_t,ndim=4] tmp4a
     
@@ -1665,8 +1886,8 @@ cdef double ball_radius_obj(np.ndarray[DTYPE_int_t, ndim=4] obj,
     radius=0.0
     for i1 in range(num1):
         for i2 in range(4):
-            #v1,v2,v3,v4,v5,v6=projection(tmp4a[i1][i2][0],tmp4a[i1][i2][1],tmp4a[i1][i2][2],tmp4a[i1][i2][3],tmp4a[i1][i2][4],tmp4a[i1][i2][5])
-            _,_,_,v4,v5,v6=projection(tmp4a[i1][i2][0],tmp4a[i1][i2][1],tmp4a[i1][i2][2],tmp4a[i1][i2][3],tmp4a[i1][i2][4],tmp4a[i1][i2][5])
+            #_,_,_,v4,v5,v6=projection(tmp4a[i1][i2][0],tmp4a[i1][i2][1],tmp4a[i1][i2][2],tmp4a[i1][i2][3],tmp4a[i1][i2][4],tmp4a[i1][i2][5])
+            v4,v5,v6=projection3(tmp4a[i1][i2][0],tmp4a[i1][i2][1],tmp4a[i1][i2][2],tmp4a[i1][i2][3],tmp4a[i1][i2][4],tmp4a[i1][i2][5])
             dd=np.sqrt(((v4[0]+v4[1]*TAU)/v4[2])**2+((v5[0]+v5[1]*TAU)/v5[2])**2+((v6[0]+v6[1]*TAU)/v6[2])**2)
             if dd>radius:
                 radius=dd
@@ -1694,6 +1915,7 @@ cdef double distance_in_perp_space(np.ndarray[DTYPE_int_t, ndim=2] pos1,
             tmp1a=np.array([w1,w2,w3])
     tmp2a=tmp1a.reshape(6,3)
     #v1,v2,v3,v4,v5,v6=projection(tmp2a[0],tmp2a[1],tmp2a[2],tmp2a[3],tmp2a[4],tmp2a[5])
-    _,_,_,v4,v5,v6=projection(tmp2a[0],tmp2a[1],tmp2a[2],tmp2a[3],tmp2a[4],tmp2a[5])
+    #_,_,_,v4,v5,v6=projection(tmp2a[0],tmp2a[1],tmp2a[2],tmp2a[3],tmp2a[4],tmp2a[5])
+    v4,v5,v6=projection3(tmp2a[0],tmp2a[1],tmp2a[2],tmp2a[3],tmp2a[4],tmp2a[5])
     dd=np.sqrt(((v4[0]+v4[1]*TAU)/v4[2])**2+((v5[0]+v5[1]*TAU)/v5[2])**2+((v6[0]+v6[1]*TAU)/v6[2])**2)
     return dd

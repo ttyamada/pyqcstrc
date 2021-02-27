@@ -80,7 +80,8 @@ setup(
     packages = [
         'pyqcstrc/icosah',
         'pyqcstrc/examples',
-        'pyqcstrc/xyz'
+        'pyqcstrc/xyz',
+        'pyqcstrc/scripts'
     ],
     include_package_data=True,
     #scripts=[],

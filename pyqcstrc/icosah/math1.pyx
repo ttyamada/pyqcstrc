@@ -83,9 +83,12 @@ cpdef int coplanar_check(np.ndarray[DTYPE_int_t, ndim=3] point):
         #x0e,y0e,z0e,x0i,y0i,z0i=projection(point[0][0],point[0][1],point[0][2],point[0][3],point[0][4],point[0][5])
         #x1e,y1e,z1e,x1i,y1i,z1i=projection(point[1][0],point[1][1],point[1][2],point[1][3],point[1][4],point[1][5])
         #x2e,y2e,z2e,x2i,y2i,z2i=projection(point[2][0],point[2][1],point[2][2],point[2][3],point[2][4],point[2][5])
-        _,_,_,x0i,y0i,z0i=projection(point[0][0],point[0][1],point[0][2],point[0][3],point[0][4],point[0][5])
-        _,_,_,x1i,y1i,z1i=projection(point[1][0],point[1][1],point[1][2],point[1][3],point[1][4],point[1][5])
-        _,_,_,x2i,y2i,z2i=projection(point[2][0],point[2][1],point[2][2],point[2][3],point[2][4],point[2][5])
+        #_,_,_,x0i,y0i,z0i=projection(point[0][0],point[0][1],point[0][2],point[0][3],point[0][4],point[0][5])
+        #_,_,_,x1i,y1i,z1i=projection(point[1][0],point[1][1],point[1][2],point[1][3],point[1][4],point[1][5])
+        #_,_,_,x2i,y2i,z2i=projection(point[2][0],point[2][1],point[2][2],point[2][3],point[2][4],point[2][5])
+        x0i,y0i,z0i=projection3(point[0][0],point[0][1],point[0][2],point[0][3],point[0][4],point[0][5])
+        x1i,y1i,z1i=projection3(point[1][0],point[1][1],point[1][2],point[1][3],point[1][4],point[1][5])
+        x2i,y2i,z2i=projection3(point[2][0],point[2][1],point[2][2],point[2][3],point[2][4],point[2][5])        
         [a1,a2,a3]=sub(x1i[0],x1i[1],x1i[2],x0i[0],x0i[1],x0i[2]) # e1
         [b1,b2,b3]=sub(y1i[0],y1i[1],y1i[2],y0i[0],y0i[1],y0i[2])
         [c1,c2,c3]=sub(z1i[0],z1i[1],z1i[2],z0i[0],z0i[1],z0i[2])
@@ -97,7 +100,8 @@ cpdef int coplanar_check(np.ndarray[DTYPE_int_t, ndim=3] point):
         v3=outer_product(v1,v2)
         flag=0
         for i1 in range(3,len(point)):
-            _,_,_,x3i,y3i,z3i=projection(point[i1][0],point[i1][1],point[i1][2],point[i1][3],point[i1][4],point[i1][5])
+            #_,_,_,x3i,y3i,z3i=projection(point[i1][0],point[i1][1],point[i1][2],point[i1][3],point[i1][4],point[i1][5])
+            x3i,y3i,z3i=projection3(point[i1][0],point[i1][1],point[i1][2],point[i1][3],point[i1][4],point[i1][5])
             [a1,a2,a3]=sub(x3i[0],x3i[1],x3i[2],x0i[0],x0i[1],x0i[2])
             [b1,b2,b3]=sub(y3i[0],y3i[1],y3i[2],y0i[0],y0i[1],y0i[2])
             [c1,c2,c3]=sub(z3i[0],z3i[1],z3i[2],z0i[0],z0i[1],z0i[2])
@@ -142,6 +146,34 @@ cpdef list projection(np.ndarray[DTYPE_int_t, ndim=1] h1,
     v2i=mtrixcal(m2,m0,m0,m3,m2,m3,h1,h2,h3,h4,h5,h6) # -1,0,0,tau,-1,tau
     v3i=mtrixcal(m0,m3,m4,m1,m0,m2,h1,h2,h3,h4,h5,h6) # 0,tau,-tau,1,0,-1
     return [v1e,v2e,v3e,v1i,v2i,v3i]
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+cpdef list projection3(np.ndarray[DTYPE_int_t, ndim=1] h1,
+                        np.ndarray[DTYPE_int_t, ndim=1] h2,
+                        np.ndarray[DTYPE_int_t, ndim=1] h3,
+                        np.ndarray[DTYPE_int_t, ndim=1] h4,
+                        np.ndarray[DTYPE_int_t, ndim=1] h5,
+                        np.ndarray[DTYPE_int_t, ndim=1] h6):
+    # projection of a 6d vector onto Eperp, using "TAU-style"
+    #
+    # NOTE: coefficient (alpha) of the projection matrix is set to be 1.
+    # alpha = a/np.sqrt(2.0+TAU)
+    # see Yamamoto ActaCrystal (1997)
+    cdef np.ndarray[DTYPE_int_t, ndim=1] m1,m2,m3,m4
+    cdef np.ndarray[DTYPE_int_t, ndim=1] v1i,v2i,v3i
+    m0=np.array([ 0, 0, 1]) #  0 in 'TAU-style'
+    m1=np.array([ 1, 0, 1]) #  1
+    m2=np.array([-1, 0, 1]) # -1
+    m3=np.array([ 0, 1, 1]) #  tau
+    m4=np.array([ 0,-1, 1]) # -tau
+    #v1e=mtrixcal(m1,m3,m3,m0,m2,m0,h1,h2,h3,h4,h5,h6) # 1,tau,tau,0,-1,0
+    #v2e=mtrixcal(m3,m0,m0,m1,m3,m1,h1,h2,h3,h4,h5,h6) # tau,0,0,1,TAU,1
+    #v3e=mtrixcal(m0,m1,m2,m4,m0,m3,h1,h2,h3,h4,h5,h6) # 0,1,-1,-tau,0,tau
+    v1i=mtrixcal(m3,m2,m2,m0,m4,m0,h1,h2,h3,h4,h5,h6) # tau,-1,-1,0,-tau,0
+    v2i=mtrixcal(m2,m0,m0,m3,m2,m3,h1,h2,h3,h4,h5,h6) # -1,0,0,tau,-1,tau
+    v3i=mtrixcal(m0,m3,m4,m1,m0,m2,h1,h2,h3,h4,h5,h6) # 0,tau,-tau,1,0,-1
+    return [v1i,v2i,v3i]
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
