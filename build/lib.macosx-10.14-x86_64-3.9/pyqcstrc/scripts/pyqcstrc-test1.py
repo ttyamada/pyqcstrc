@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# PyQCstrc - Python tools for Quasi-Crystal structure
+# PyQCstrc - Python library for Quasi-Crystal structure
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 #
 import timeit
@@ -113,15 +113,15 @@ rtod2 = od.shift(rtod1,pos1)  # move to position_1
 #rtod1=rtod1[10].reshape(1,4,6,3)
 
 print('\nTEST: ods.intersection()')
-result1 = timeit.timeit('ods.intersection(rtod1, rtod2, verbose=1)', globals=globals(), number=loop)
+result1 = timeit.timeit('ods.intersection(rtod1, rtod2, verbose=0)', globals=globals(), number=loop)
 print(result1 / loop)
 
 print('\nTEST: ods.intersection_convex()')
-result1 = timeit.timeit('ods.intersection_convex(rtod1, rtod2, verbose=1)', globals=globals(), number=loop)
+result1 = timeit.timeit('ods.intersection_convex(rtod1, rtod2, verbose=0)', globals=globals(), number=loop)
 print(result1 / loop)
 
 print('\nTEST: ods.intersection()')
-result1 = timeit.timeit('ods.intersection_old(rtod1, rtod2, verbose=1)', globals=globals(), number=loop)
+result1 = timeit.timeit('ods.intersection_old(rtod1, rtod2, verbose=0)', globals=globals(), number=loop)
 print(result1 / loop)
 
 ################################################

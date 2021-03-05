@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# PyQC - Python tools for Quasi-Crystallography
+# PyQCstrc - Python library for Quasi-Crystal structure
 # Copyright (c) 2020 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 #
 import os

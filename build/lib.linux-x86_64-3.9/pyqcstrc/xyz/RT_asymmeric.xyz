@@ -1,0 +1,8 @@
+4
+RT_asymmeric
+Xx 0.000000 0.000000 0.000000 #   0-the tetrahedron 0-th vertex # 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 7.854102 -4.854102 0.000000 #   0-the tetrahedron 1-th vertex # 3 0 2 -3 0 2 -3 0 2 -3 0 2 -3 0 2 -3 0 2
+Xx 7.854102 0.000000 3.000000 #   0-the tetrahedron 2-th vertex # 3 0 2 -3 0 2 -3 0 2 3 0 2 -3 0 2 -3 0 2
+Xx 7.854102 0.000000 0.000000 #   0-the tetrahedron 3-th vertex # 3 0 2 -3 0 2 -3 0 2 0 0 2 -3 0 2 0 0 2
+volume = 9 18 2 (19.062306)
+  0-the tetrahedron, 9 18 2 (19.062306)

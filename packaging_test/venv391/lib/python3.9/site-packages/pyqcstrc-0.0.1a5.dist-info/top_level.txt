@@ -1,0 +1,5 @@
+pyqcstrc
+pyqcstrc/examples
+pyqcstrc/icosah
+pyqcstrc/scripts
+pyqcstrc/xyz

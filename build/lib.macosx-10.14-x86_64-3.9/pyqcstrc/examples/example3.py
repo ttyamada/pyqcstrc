@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# PyQCstrc - Python tools for Quasi-Crystal structure
+# PyQCstrc - Python library for Quasi-Crystal structure
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 #
 import timeit
@@ -47,11 +47,11 @@ rtod2 = od.shift(rtod1,pos1)  # move to position_1
 od.write(rtod2, path='./test3', basename='rtod2', format='vesta', color='p')
 od.write(rtod2, path='./test3', basename='rtod2', format='xyz')
 
-rtod1_asym = ods.intersection(rtod1, aum5, verbose=1)
+rtod1_asym = ods.intersection(rtod1, aum5, verbose=0)
 od.write(rtod1_asym, path='./test3', basename='rtod1_asym', format='vesta', color='b')
 od.write(rtod1_asym, path='./test3', basename='rtod1_asym', format='xyz')
 
-common_od = ods.intersection(rtod1_asym, rtod2, verbose=1)
+common_od = ods.intersection(rtod1_asym, rtod2, verbose=0)
 od.write(common_od, path='./test3', basename='common_od_asym', format='vesta', color='r')
 od.write(common_od, path='./test3', basename='common_od_asym', format='xyz')
 

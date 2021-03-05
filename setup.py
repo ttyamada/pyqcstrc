@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# PyQCstrc - Python tools for Quasi-Crystal structure
+# PyQCstrc - Python library for Quasi-Crystal structure
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 #
 import os
@@ -46,13 +46,13 @@ extensions = [
 
 extensions = cythonize(extensions,compiler_directives={'language_level':"3"})
 
-long_description = open('README.md').read()
+
 
 setup(
     name=__package_name__,
     version=__version__,
-    description="PyQCstrc provides Python tools for Quasi-Crystal structure.",
-    long_description = long_description,
+    description="PyQCstrc provides Python library for Quasi-Crystal structure.",
+    long_description = open('README.md').read(),
     long_description_content_type="text/markdown",
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -62,9 +62,8 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: POSIX :: Linux',
+        'Operating System :: Microsoft :: Windows :: Windows 10',
         'Programming Language :: Cython',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3',
         'Topic :: Scientific/Engineering :: Physics',
@@ -85,7 +84,7 @@ setup(
     ],
     include_package_data=True,
     #scripts=[],
-    python_requires='>=3.7',
+    python_requires='>=3.9',
     install_requires=[
         'numpy>=1.20.1',
         'scipy>=1.6.0',
