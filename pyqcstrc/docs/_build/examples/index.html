@@ -1,0 +1,367 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Examples &mdash; PyQCstrc 0.0.1a10 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API Reference" href="../modules/index.html" />
+    <link rel="prev" title="Installation" href="../install.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> PyQCstrc
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example1-py"><cite>example1.py</cite>:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example2-py"><cite>example2.py</cite>:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example3-py"><cite>example3.py</cite>:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyQCstrc</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Examples</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/examples/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="toctree-wrapper compound">
+</div>
+<div class="section" id="examples">
+<span id="id1"></span><h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<p>Basic usage of the PyQCstrc is described by providing Python scripts to obtain a rhombic icosahedron occupation domain.</p>
+<div class="section" id="example1-py">
+<h2><cite>example1.py</cite>:<a class="headerlink" href="#example1-py" title="Permalink to this headline">¶</a></h2>
+<p>The simple script to obtain a rhombic icosahedron occupation domain, as a set of tetrahedra.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+# PyQCstrc - Python library for Quasi-Crystal structure
+# Copyright (c) 2021 Tsunetomo Yamada &lt;tsunetomo.yamada@rs.tus.ac.jp&gt;
+
+import timeit
+import os
+import sys
+import numpy as np
+import pyqcstrc.ico.occupation_domain as od
+import pyqcstrc.ico.two_occupation_domains as ods
+
+# Vertices of tetrahedron, v0,v1,v2,v3, which
+# defines the asymmetric part.
+v0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+v1 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2]])
+v2 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2]])
+v3 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[ 0, 0, 2],[-1, 0, 2],[ 0, 0, 2]])
+od0 = np.vstack([v0,v1,v2,v3]).reshape(1,4,6,3)
+od.write_vesta(od0, path=&#39;./example1&#39;, basename=&#39;rtod0&#39;, color=&#39;r&#39;)
+od.write_xyz(od0, path=&#39;./example1&#39;, basename=&#39;rtod0&#39;)
+
+# generate symmetric OD, symmetric centre is v0.
+od1 = od.symmetric(od0, v0)
+od.write_vesta(od1, path=&#39;./example1&#39;, basename=&#39;rtod1&#39;, color=&#39;r&#39;)
+od.write_xyz(od1, path=&#39;./example1&#39;, basename=&#39;rtod1&#39;)
+
+# coordinate of position_1
+pos1 = np.array([[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],
+                 [ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+od2 = od.shift(od1,pos1)  # move to position_1
+od.write_vesta(od2, path=&#39;./example1&#39;, basename=&#39;rtod2&#39;, color=&#39;p&#39;)
+od.write_xyz(od2, path=&#39;./example1&#39;, basename=&#39;rtod2&#39;)
+
+common_od = ods.intersection(od1, od2, verbose=0)
+od.writewrite_vesta(common_od, path=&#39;./example1&#39;, basename=&#39;common_od&#39;, color=&#39;b&#39;)
+od.write_xyz(common_od, path=&#39;./example1&#39;, basename=&#39;common_od&#39;)
+</pre></div>
+</div>
+</div>
+<div class="section" id="example2-py">
+<h2><cite>example2.py</cite>:<a class="headerlink" href="#example2-py" title="Permalink to this headline">¶</a></h2>
+<p>Since the rhombic icosahedron forms a convex polyhedron, it is tetrahedralizable by 3D Delaunay triangulation.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+# PyQCstrc - Python library for Quasi-Crystal structure
+# Copyright (c) 2021 Tsunetomo Yamada &lt;tsunetomo.yamada@rs.tus.ac.jp&gt;
+
+import timeit
+import os
+import sys
+import numpy as np
+import pyqcstrc.ico.utils as utils
+import pyqcstrc.ico.occupation_domain as od
+import pyqcstrc.ico.two_occupation_domains as ods
+
+# Vertices of tetrahedron, v0,v1,v2,v3, which
+# defines the asymmetric part.
+v0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+v1 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2]])
+v2 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2]])
+v3 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[ 0, 0, 2],[-1, 0, 2],[ 0, 0, 2]])
+od0 = np.vstack([v0,v1,v2,v3]).reshape(1,4,6,3)
+od.write_vesta(od0, path=&#39;./example2&#39;, basename=&#39;rtod0&#39;, color=&#39;r&#39;)
+od.write_xyz(od0, path=&#39;./example2&#39;, basename=&#39;rtod0&#39;)
+
+# generate symmetric OD, symmetric centre is v0.
+od1 = od.symmetric(od0, v0)
+od.write_vesta(od1, path=&#39;./example2&#39;, basename=&#39;rtod1&#39;, color=&#39;r&#39;)
+od.write_xyz(od1, path=&#39;./example2&#39;, basename=&#39;rtod1&#39;)
+
+# coordinate of position_1
+pos1 = np.array([[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],
+                 [ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+od2 = od.shift(od1,pos1)  # move to position_1
+od.write_vesta(od2, path=&#39;./example2&#39;, basename=&#39;rtod2&#39;, color=&#39;p&#39;)
+od.write_xyz(od2, path=&#39;./example2&#39;, basename=&#39;rtod2&#39;)
+
+common_od = ods.intersection_convex(od1, od2, verbose=0)
+
+# intermediate position between v0 and pos1
+pos2 = utils.middle_position(v0,pos1)
+common_od = od.simpl_add_point(common_od, pos2, verbose=0)
+od.write_vesta(common_od, path=&#39;./example2&#39;, basename=&#39;common_od&#39;, color=&#39;b&#39;)
+od.write_xyz(common_od, path=&#39;./example2&#39;, basename=&#39;common_od&#39;)
+</pre></div>
+</div>
+</div>
+<div class="section" id="example3-py">
+<h2><cite>example3.py</cite>:<a class="headerlink" href="#example3-py" title="Permalink to this headline">¶</a></h2>
+<p>The simple script to obtain a portion of rhombic triacontahedron inside the asymmetric unit of 5m at (1, 0, 0, 0, 0, 0)/2.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+# PyQCstrc - Python library for Quasi-Crystal structure
+# Copyright (c) 2021 Tsunetomo Yamada &lt;tsunetomo.yamada@rs.tus.ac.jp&gt;
+
+import timeit
+import os
+import sys
+import numpy as np
+import pyqcstrc.ico.occupation_domain as od
+import pyqcstrc.ico.two_occupation_domains as ods
+
+# Vertices of tetrahedron, v0,v1,v2,v3, which
+# defines the asymmetric part of OD
+v0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+v1 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2]])
+v2 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2]])
+v3 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[ 0, 0, 2],[-1, 0, 2],[ 0, 0, 2]])
+od0 = np.vstack([v0,v1,v2,v3]).reshape(1,4,6,3)
+od.write_vesta(od0, path=&#39;./example3&#39;, basename=&#39;rtod0&#39;, color=&#39;r&#39;)
+od.write_xyz(od0, path=&#39;./example3&#39;, basename=&#39;rtod0&#39;)
+
+# generate symmetric OD, symmetric centre is v0.
+od1 = od.symmetric(od0, v0)
+od.write_vesta(od1, path=&#39;./example3&#39;, basename=&#39;rtod1&#39;, color=&#39;r&#39;)
+od.write_xyz(od1, path=&#39;./example3&#39;, basename=&#39;rtod1&#39;)
+
+# coordinate of position_1
+pos1 = np.array([[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],
+                 [ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+od2 = od.shift(od1,pos1)  # move to position_1
+od.write_vesta(od2, path=&#39;./example3&#39;, basename=&#39;rtod2&#39;, color=&#39;p&#39;)
+od.write_xyz(od2, path=&#39;./example3&#39;, basename=&#39;rtod2&#39;)
+
+# Three vectors w1,w2,w3, which defines the asymmetric unit.
+w1 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2]])
+w2 = np.array([[ 0, 0, 1],[-1, 0, 4],[-1, 0, 4],[ 1, 0, 2],[-1, 0, 2],[ 1, 0, 2]])
+w3 = np.array([[ 0, 0, 1],[ 1, 0, 4],[-1, 0, 2],[ 1, 0, 2],[-1, 0, 2],[ 1, 0, 4]])
+vec_aum5 = np.vstack([w1,w2,w3]).reshape(3,6,3)
+posEC = np.array([[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+
+od1_asym = od.asymmetric(od1, posEC, vec_aum5)
+od.write_vesta(od1_asym, path=&#39;./example3&#39;, basename=&#39;rtod1_asym&#39;, color=&#39;b&#39;)
+od.write_xyz(od1_asym, path=&#39;./example3&#39;, basename=&#39;rtod1_asym&#39;)
+
+common_od = ods.intersection(od1_asym, od2, verbose=0)
+od.write_vesta(common_od, path=&#39;./example3&#39;, basename=&#39;common_od_asym&#39;, color=&#39;r&#39;)
+od.write_xyz(common_od, path=&#39;./example3&#39;, basename=&#39;common_od_asym&#39;)
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="../modules/index.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../install.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright Tsunetomo Yamada.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

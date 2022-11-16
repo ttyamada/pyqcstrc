@@ -18,41 +18,73 @@ from Cython.Build import cythonize
 __package_name__ = 'pyqcstrc'
 
 extensions = [
-    Extension('pyqcstrc.icosah.math1', 
-    sources=['pyqcstrc/icosah/math1.pyx'],
+    Extension('pyqcstrc.ico.math1', 
+    sources=['pyqcstrc/ico/math1.pyx'],
     include_dirs=['.', get_include()]
     ),
-    Extension('pyqcstrc.icosah.numericalc', 
-    sources=['pyqcstrc/icosah/numericalc.pyx'],
+    Extension('pyqcstrc.ico.numericalc', 
+    sources=['pyqcstrc/ico/numericalc.pyx'],
     include_dirs=['.', get_include()]
     ),
-    Extension('pyqcstrc.icosah.symmetry', 
-    sources=['pyqcstrc/icosah/symmetry.pyx'],
+    Extension('pyqcstrc.ico.symmetry', 
+    sources=['pyqcstrc/ico/symmetry.pyx'],
     include_dirs=['.', get_include()]
     ),
-    Extension('pyqcstrc.icosah.utils', 
-    sources=['pyqcstrc/icosah/utils.pyx'],
+    Extension('pyqcstrc.ico.utils', 
+    sources=['pyqcstrc/ico/utils.pyx'],
     include_dirs=['.', get_include()]
     ),
-    Extension('pyqcstrc.icosah.intsct', 
-    sources=['pyqcstrc/icosah/intsct.pyx'],
+    Extension('pyqcstrc.ico.intsct', 
+    sources=['pyqcstrc/ico/intsct.pyx'],
     include_dirs=['.', get_include()]
     ),
-    Extension('pyqcstrc.icosah.mics', 
-    sources=['pyqcstrc/icosah/mics.pyx'],
+    Extension('pyqcstrc.ico.mics', 
+    sources=['pyqcstrc/ico/mics.pyx'],
     include_dirs=['.', get_include()]
-    )
+    ),
+    #Extension('pyqcstrc.ico.reciprocal', 
+    #sources=['pyqcstrc/ico/reciprocal.pyx'],
+    #include_dirs=['.', get_include()]
+    #),
+    Extension('pyqcstrc.dode.math12',
+    sources=['pyqcstrc/dode/math12.pyx'],
+    include_dirs=['.', get_include()]
+    ),
+    Extension('pyqcstrc.dode.symmetry12',
+    sources=['pyqcstrc/dode/symmetry12.pyx'],
+    include_dirs=['.', get_include()]
+    ),
+    Extension('pyqcstrc.dode.utils12',
+    sources=['pyqcstrc/dode/utils12.pyx'],
+    include_dirs=['.', get_include()]
+    ),
+    Extension('pyqcstrc.dode.numericalc12',
+    sources=['pyqcstrc/dode/numericalc12.pyx'],
+    include_dirs=['.', get_include()]
+    ),
+    Extension('pyqcstrc.dode.strc12',
+    sources=['pyqcstrc/dode/strc12.pyx'],
+    include_dirs=['.', get_include()]
+    ),
+    Extension('pyqcstrc.dode.intsct12',
+    sources=['pyqcstrc/dode/intsct12.pyx'],
+    include_dirs=['.', get_include()]
+    ),
 ]
 
-extensions = cythonize(extensions,compiler_directives={'language_level':"3"})
+comp_direct = {  # compiler_directives
+        'language_level': 3,  # use python 3
+        #'embedsignature': True,  # write function signature in doc-strings
+}
 
-
+extensions = cythonize(extensions,
+                        compiler_directives=comp_direct)
 
 setup(
     name=__package_name__,
     version=__version__,
     description="PyQCstrc provides Python library for Quasi-Crystal structure.",
-    long_description = open('README.md').read(),
+    long_description=open('README.md').read(),
     long_description_content_type="text/markdown",
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -64,29 +96,33 @@ setup(
         'Operating System :: POSIX :: Linux',
         'Operating System :: Microsoft :: Windows :: Windows 10',
         'Programming Language :: Cython',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3',
         'Topic :: Scientific/Engineering :: Physics',
     ],
     license = __license__,
-    #scripts = ['pyqcstrc/icosah/occupation_domain.py',
-    #            'pyqcstrc/icosah/two_occupation_domains.py'],
+    #scripts = ['pyqcstrc/ico/occupation_domain.py',
+    #            'pyqcstrc/ico/two_occupation_domains.py'],
     author='Tsunetomo Yamada',
-    #author_email='tsunetomo.yamada@rs.tus.ac.jp',
-    url = "https://github.com/ttyamada/PyQCstrc",
+    author_email='tsunetomo.yamada@rs.tus.ac.jp',
+    url = "https://www.rs.tus.ac.jp/tsunetomo.yamada/pyqcstrc",
+    #url = "https://github.com/ttyamada/PyQCstrc",
     ext_modules = extensions,
     #packages=find_packages(),
     packages = [
-        'pyqcstrc/icosah',
-        'pyqcstrc/examples',
-        'pyqcstrc/xyz',
-        'pyqcstrc/scripts'
+        'pyqcstrc/ico',
+        #'pyqcstrc/ico/examples',
+        #'pyqcstrc/ico/xyz',
+        #'pyqcstrc/ico/tests',
+        'pyqcstrc/dode',
+        #'pyqcstrc/deca',
     ],
     include_package_data=True,
-    #scripts=[],
-    python_requires='>=3.9',
+    python_requires='>=3.7',
     install_requires=[
-        'numpy>=1.20.1',
+        'numpy>=1.20.0',
         'scipy>=1.6.0',
         'cython>=0.29.21',
     ]

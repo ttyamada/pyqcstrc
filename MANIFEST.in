@@ -1,4 +1,3 @@
-include pyqcstrc/xyz/*.xyz
-include pyqcstrc/tests/*.py
-include pyqcstrc/scripts/*.py
-include pyqcstrc/examples/*.py
+#include pyqcstrc/ico/xyz/*.xyz
+#include pyqcstrc/ico/tests/*.py
+#include pyqcstrc/ico/examples/*.py

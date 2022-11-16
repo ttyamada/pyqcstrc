@@ -1,5 +1,3 @@
 pyqcstrc
-pyqcstrc/examples
-pyqcstrc/icosah
-pyqcstrc/scripts
-pyqcstrc/xyz
+pyqcstrc/dode
+pyqcstrc/ico
