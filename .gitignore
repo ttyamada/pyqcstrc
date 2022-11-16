@@ -1,5 +1,5 @@
-/memo/
-/pyqcstrc.egg-info/
+/memo
+/pyqcstrc.egg-info
 /build/
 /dist/
 /MANIFEST.in

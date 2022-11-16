@@ -1,3 +1,0 @@
-pyqcstrc
-pyqcstrc/dode
-pyqcstrc/ico
