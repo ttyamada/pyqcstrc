@@ -1,7 +1,7 @@
-./memo/
-./pyqcstrc.egg-info/
-./build/
-./dist/
-./MANIFEST.in
-./README.txt
-./README.rst
+/memo/
+/pyqcstrc.egg-info/
+/build/
+/dist/
+/MANIFEST.in
+/README.txt
+/README.rst
