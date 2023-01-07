@@ -22,6 +22,10 @@ except ImportError:
 
 TAU=(1+np.sqrt(5))/2.0
 
+def volume(obj):
+    w1,w2,w3=utils.obj_volume_6d(obj)
+    return [w1,w2,w3]
+    
 def as_it_is(obj):
     """
     Returns an object as it is,
@@ -197,7 +201,7 @@ def write(obj, path = '.', basename = 'tmp', format = 'xyz', color = 'k', verbos
         return 1
     else:
         if format == 'vesta' or format == 'v' or format == 'VESTA':
-            write_vesta(obj, path, basename, color, verbose)
+            write_vesta(obj, path, basename, color, select = 'normal', verbose = 0)
         elif format == 'xyz':
             write_xyz(obj, path, basename, select, verbose)
         else:
