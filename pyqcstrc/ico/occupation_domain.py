@@ -488,7 +488,7 @@ def write_vesta(obj, path = '.', basename = 'tmp', color = 'k', select = 'normal
         
         if obj.tolist()==[[[[0]]]] or obj.tolist()==[[[0]]]:
             print('no volume obj')
-            return 0
+            return 1
         else:
             print('#VESTA_FORMAT_VERSION 3.5.0\n', file=f)
             for i1 in range(len(obj)):
