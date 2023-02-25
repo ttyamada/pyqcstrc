@@ -8,7 +8,7 @@ cimport numpy as np
 cimport cython
 
 from pyqcstrc.ico.math1 cimport add
-from pyqcstrc.ico.utils cimport remove_doubling_dim4_in_perp_space
+from pyqcstrc.ico.utils cimport remove_doubling_dim4_in_perp_space, remove_doubling_dim3
 
 DTYPE_double = np.float64
 DTYPE_int = int
@@ -127,7 +127,7 @@ cpdef np.ndarray generator_obj_symmetric_vec(np.ndarray[DTYPE_int_t, ndim=3] vec
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-cpdef np.ndarray generator_equivalent_vec(np.ndarray[DTYPE_int_t, ndim=3] vectors,
+cpdef np.ndarray generator_equivalent_vectors(np.ndarray[DTYPE_int_t, ndim=3] vectors,
                                             np.ndarray[DTYPE_int_t, ndim=2] centre):
     cdef int i1,i2
     cdef list od,mop
@@ -143,6 +143,22 @@ cpdef np.ndarray generator_equivalent_vec(np.ndarray[DTYPE_int_t, ndim=3] vector
     
     #return remove_doubling_dim4(tmp4)
     return remove_doubling_dim4_in_perp_space(tmp4)
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+cpdef np.ndarray generator_equivalent_vec(np.ndarray[DTYPE_int_t, ndim=2] vector):
+    cdef int i1
+    cdef list od,mop
+    cdef np.ndarray[DTYPE_int_t,ndim=3] tmp3
+    #cdef np.ndarray[DTYPE_int_t,ndim=4] tmp4
+    
+    od=[]
+    mop=icosasymop()
+    for i1 in range(len(mop)):
+        od.extend(symop_vec(mop[i1],vector,np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])))
+    tmp3=np.array(od).reshape(120,6,3) # 18=6*3
+    
+    return remove_doubling_dim3(tmp3)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -203,6 +219,30 @@ cdef icosasymop():
                         symop.append(tmp)
     return symop
 
+cdef np.ndarray matrix_pow(np.ndarray[DTYPE_int_t, ndim=2] array_1, int n):
+    cdef int mx,my,i
+    cdef np.ndarray[DTYPE_int_t, ndim=2] array_2
+    
+    mx = array_1.shape[0]
+    my = array_1.shape[1]
+    array_2 = np.identity(mx, dtype=int)
+    if mx == my:
+        if n == 0:
+            return np.identity(mx, dtype=int)
+        elif n<0:
+            return np.zeros((mx,mx), dtype=int)
+        else:
+            for i in range(n):
+                array_2 = np.dot(array_2,array_1)
+            return array_2
+    else:
+        print('ERROR: matrix has not regular shape')
+        return np.array([0])
+
+cdef np.ndarray matrix_dot(np.ndarray[DTYPE_int_t, ndim=2] array_1, np.ndarray[DTYPE_int_t, ndim=2] array_2):
+    return np.dot(array_1, array_2)
+
+"""
 @cython.boundscheck(False)
 @cython.wraparound(False)
 cdef np.ndarray matrix_pow(np.ndarray[DTYPE_int_t, ndim=2] array_1, int n):
@@ -231,19 +271,19 @@ cdef np.ndarray matrix_pow(np.ndarray[DTYPE_int_t, ndim=2] array_1, int n):
         print('ERROR: matrix has not regular shape')
         return np.array([0])
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-cdef np.ndarray matrix_dot(np.ndarray[DTYPE_int_t, ndim=2] array_1, np.ndarray[DTYPE_int_t, ndim=2] array_2):
-    cdef Py_ssize_t mx1,my1,mx2,my2
-    cdef Py_ssize_t x,y,z    
-    mx1 = array_1.shape[0]
-    my1 = array_1.shape[1]
-    mx2 = array_2.shape[0]
-    my2 = array_2.shape[1]
-    array_3 = np.zeros((mx1,my2), dtype=int)
-    for x in range(array_1.shape[0]):
-        for y in range(array_2.shape[1]):
-            for z in range(array_1.shape[1]):
-                array_3[x][y] += array_1[x][z] * array_2[z][y]
-    return array_3
-
+#@cython.boundscheck(False)
+#@cython.wraparound(False)
+#cdef np.ndarray matrix_dot(np.ndarray[DTYPE_int_t, ndim=2] array_1, np.ndarray[DTYPE_int_t, ndim=2] array_2):
+#    cdef Py_ssize_t mx1,my1,mx2,my2
+#    cdef Py_ssize_t x,y,z
+#    mx1 = array_1.shape[0]
+#    my1 = array_1.shape[1]
+#    mx2 = array_2.shape[0]
+#    my2 = array_2.shape[1]
+#    array_3 = np.zeros((mx1,my2), dtype=int)
+#    for x in range(array_1.shape[0]):
+#        for y in range(array_2.shape[1]):
+#            for z in range(array_1.shape[1]):
+#                array_3[x][y] += array_1[x][z] * array_2[z][y]
+#    return array_3
+"""

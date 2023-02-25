@@ -40,5 +40,7 @@ cpdef list symop_obj(np.ndarray[DTYPE_int_t,ndim=2],
                     np.ndarray[DTYPE_int_t, ndim=3],
                     np.ndarray[DTYPE_int_t, ndim=2])
 
-cpdef np.ndarray generator_equivalent_vec(np.ndarray[DTYPE_int_t, ndim=3],
+cpdef np.ndarray generator_equivalent_vectors(np.ndarray[DTYPE_int_t, ndim=3],
                                             np.ndarray[DTYPE_int_t, ndim=2])
+                                            
+cpdef np.ndarray generator_equivalent_vec(np.ndarray[DTYPE_int_t, ndim=2])

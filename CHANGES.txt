@@ -1,4 +1,8 @@
 
+Versions  0.0.1a12 (2023.02.24)
+------------------------------
+a minor modification in ico.symmetry
+
 Versions  0.0.1a6 (2021.03.04)
 ------------------------------
 a minor modification in setup.py

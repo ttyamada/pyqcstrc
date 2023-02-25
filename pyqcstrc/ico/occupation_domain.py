@@ -1121,7 +1121,202 @@ def write_xyz(obj, path = '.', basename = 'tmp', select = 'tetrahedron', verbose
             if verbose>0:
                 print('    error')
             return 1
+
+def site_symmetry(wyckoff_position, centering, verbose=0):
+    """
+    Symmetry operators in the site symmetry group G and its left coset decomposition.
+    
+    Args:
+        Wyckoff position (numpy.ndarray):
+            6D coordinate.
+            The shape is (6,3).
+        centering:
+            primitive lattice ('p')
+            face-centered lattice ('f') and 
+            body-centered lattice ('i')
+        verbose (int)
+    
+    Returns:
+        List of index of symmetry operators of the site symmetry group G (list):
+            The symmetry operators leaves xyz identical.
         
+        List of index of symmetry operators in the left coset representatives of the poibt group G (list):
+            The symmetry operators generates equivalent positions of the site xyz.
+    """
+    def translation():
+        """
+        translational symmetry
+        primitive type lattice is assumed
+        """
+        
+        # under development
+        if centering=='i':
+            cop = symmetry.generator_equivalent_vec(np.array([[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]]))
+        elif centering=='f':
+            cop = symmetry.generator_equivalent_vec(np.array([[1,0,2],[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1]]))
+        else:
+            
+        symop=[]
+        tmp=np.array([0,0,0,0,0,0])
+        symop.append(tmp)
+        for i1 in [-1,0,1]:
+            for i2 in [-1,0,1]:
+                for i3 in [-1,0,1]:
+                    for i4 in [-1,0,1]:
+                        for i5 in [-1,0,1]:
+                            for i6 in [-1,0,1]:
+                                tmp=np.array([i1,i2,i3,i4,i5,i6])
+                                symop.append(tmp)
+        return symop
+    
+    def remove_overlaps_in_a_list(l1):
+        """
+        Remove overlap elements in list with set method.
+        
+        Args:
+            l1 (list):
+        
+        Returns:
+            l2 (list)
+        """
+        tmp=set(l1)
+        l2=list(tmp)
+        l2.sort()
+        return l2
+    
+    def find_overlaps(l1,l2):
+        """
+        find overlap or not btween list1 and list2.
+        
+        Args:
+            l1 (list):
+            l2 (list):
+        
+        Returns:
+            0 (int): no intersection
+            1 (int): intersection
+        """
+        l3=remove_overlaps_in_a_list(l1+l2)
+        if len(l1)+len(l2)==len(l3): # no overlap
+            return 0
+        else:
+            return 1
+    
+    symop=symmetry.icosasymop()
+    traop=translation()
+    
+     # List of index of symmetry operators of the site symmetry group G.
+     # The symmetry operators leaves xyz identical.
+    list1=[]
+    
+    # List of index of symmetry operators which are not in the G.
+    list2=[]
+    
+    pos=wyckoff_position
+    a1=(pos[0][0]+TAU*pos[0][1])/pos[0][2]
+    a2=(pos[1][0]+TAU*pos[1][1])/pos[1][2]
+    a3=(pos[2][0]+TAU*pos[2][1])/pos[2][2]
+    a4=(pos[3][0]+TAU*pos[3][1])/pos[3][2]
+    a5=(pos[4][0]+TAU*pos[4][1])/pos[4][2]
+    a6=(pos[5][0]+TAU*pos[5][1])/pos[5][2]
+    xyz=np.array([a1,a2,a3,a4,a5,a6])
+    
+    xyzi=numericalc.projection_numerical(xyz[0],xyz[1],xyz[2],xyz[3],xyz[4],xyz[5])
+    xi=xyzi[3]
+    yi=xyzi[4]
+    zi=xyzi[5]
+    if verbose>0:
+        print(' site coordinates: %3.2f %3.2f %3.2f %3.2f'%(xyz[0],xyz[1],xyz[2],xyz[3],xyz[4],xyz[5]))
+        print('         in Epar : %5.3f %5.3f %5.3f'%(xyi[0],xyi[1],xyi[2]))
+        print('         in Eperp: %5.3f %5.3f %5.3f'%(xyi[3],xyi[4],xyi[5]))
+    else:
+        pass
+    
+    for i2 in range(len(symop)):
+        flag=0
+        for i1 in range(len(traop)):
+            xyz1=np.dot(symop[i2],xyz)
+            xyz2=xyz1+traop[i1]
+            a=numericalc12.projection_numerical(xyz2[0],xyz2[1],xyz2[2],xyz2[3],xyz2[4],xyz2[5])
+            if abs(a[3]-xi)<EPS and abs(a[4]-yi)<EPS and abs(a[5]-zi)<EPS:
+                list1.append(i2)
+                flag+=1
+                break
+            else:
+                pass
+        if flag==0:
+            list2.append(i2)
+    
+    list1_new=remove_overlaps_in_a_list(list1)
+    list2_new=remove_overlaps_in_a_list(list2)
+    
+    if verbose>0:
+        print('     multiplicity:',len(list1_new))
+        print('    site symmetry:',list1_new)
+    else:
+        pass
+    
+    if int(len(symop)/len(list1_new))==1:
+        list5=[0]
+        if verbose>0:
+            print('       left coset:',list5)
+        else:
+            pass
+    
+    else:
+        # left coset decomposition:
+        list4=[]
+        for i2 in list2_new:
+            list3=[]
+            for i1 in list1_new:
+                op1=np.dot(symop[i2],symop[i1])
+                for i3 in range(len(symop)):
+                    if np.all(op1==symop[i3]):
+                        list3.append(i3)
+                        break
+                    else:
+                        pass
+            list4.append(list3)
+        
+        #print('----------------')
+        #for i2 in range(len(list4)):
+        #    print(list4[i2])
+        #print('----------------')
+        
+        for i2 in range(len(list4)-1):
+            a=list4[i2]
+            b=[]
+            d=[]
+            list5=[0] # symmetry element of identity, symop[0]
+            list5.append(list2_new[i2])
+            i3=i2+1
+            while i3<len(list4):
+                b=list4[i3]
+                if len(d)==0:
+                    if find_overlaps(a,b)==0:
+                        d=a+b
+                        list5.append(list2_new[i3])
+                    else:
+                        pass
+                else:
+                    if find_overlaps(d,b)==0:
+                        d=d+b
+                        list5.append(list2_new[i3])
+                    else:
+                        pass
+                i3+=1
+            b=remove_overlaps_in_a_list(d)
+            if int(len(symop)/len(list1_new))==len(list5):
+                if verbose>0:
+                    print('       left coset:',list5)
+                else:
+                    pass
+                break
+            else:
+                pass
+    
+    return list1_new, list5
+
 def write_podatm(obj, position, vlist = [0], path = '.', basename = 'tmp', shift=[0.0,0.0,0.0,0.0,0.0,0.0], verbose = 0):
     """
     Generate pod and atom files.
