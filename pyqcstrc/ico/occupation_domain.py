@@ -1155,7 +1155,7 @@ def site_symmetry(wyckoff_position, centering, verbose=0):
         elif centering=='f':
             cop = symmetry.generator_equivalent_vec(np.array([[1,0,2],[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1]]))
         else:
-            
+            pass
         symop=[]
         tmp=np.array([0,0,0,0,0,0])
         symop.append(tmp)
