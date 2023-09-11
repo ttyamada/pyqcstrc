@@ -344,7 +344,7 @@ def write_vesta(obj, path = '.', basename = 'tmp', color = 'k', select = 'normal
             clr=colors(color)
             for i2 in range(len(pairs)):
                 print('  %d   A%d   A%d   %8.6f   %8.6f  0  1  1  1  2  0.250  2.000 %3d %3d %3d'%(\
-                i2+1, pairs[i2][1]+1, pairs[i2][2]+1, pairs[i2][0]-0.1, pairs[i2][0]+0.1, clr[0], clr[1], clr[2]), file=f)
+                i2+1, pairs[i2][1]+1, pairs[i2][2]+1, pairs[i2][0]-0.01, pairs[i2][0]+0.01, clr[0], clr[1], clr[2]), file=f)
             print('  0 0 0 0\
             \nSITET', file = f)
             for i2 in range(len(vertices)):
@@ -762,8 +762,8 @@ def write_vesta(obj, path = '.', basename = 'tmp', color = 'k', select = 'normal
             \nSBOND', file = f)
             clr=colors(color)
             for i2 in range(len(pairs)):
-                print('  %d   A%d   A%d   %8.6f   %8.6f  0  1  1  1  2  0.250  2.000 %3d %3d %3d'%(\
-                i2+1, pairs[i2][1]+1, pairs[i2][2]+1, pairs[i2][0]-0.1, pairs[i2][0]+0.1, clr[0], clr[1], clr[2]), file=f)
+                print('  %d   A%d   A%d   %6.3f   %6.3f  0  1  1  1  2  0.250  2.000 %3d %3d %3d'%(\
+                i2+1, pairs[i2][1]+1, pairs[i2][2]+1, pairs[i2][0]-0.01, pairs[i2][0]+0.01, clr[0], clr[1], clr[2]), file=f)
             print('  0 0 0 0\
             \nSITET', file = f)
             for i2 in range(len(vertices)):

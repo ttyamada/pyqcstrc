@@ -1,3 +1,4 @@
 #include pyqcstrc/ico/xyz/*.xyz
 #include pyqcstrc/ico/tests/*.py
 #include pyqcstrc/ico/examples/*.py
+#include pyqcstrc/dode

@@ -12,7 +12,10 @@ from pyqcstrc.dode.numericalc12 cimport projection_1_numerical, get_internal_com
 from pyqcstrc.dode.numericalc12 cimport projection_2_numerical
 
 DTYPE_double = np.float64
-DTYPE_int = int
+#DTYPE_int = int
+DTYPE_int = np.int64
+#ctypedef np.int64_t DTYPE_int_t
+#ctypedef np.float64_t DTYPE_double_t
 
 @cython.boundscheck(False)
 @cython.wraparound(False)

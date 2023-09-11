@@ -46,16 +46,16 @@ extensions = [
     #sources=['pyqcstrc/ico/reciprocal.pyx'],
     #include_dirs=['.', get_include()]
     #),
-    Extension('pyqcstrc.dode.math12',
-    sources=['pyqcstrc/dode/math12.pyx'],
-    include_dirs=['.', get_include()]
-    ),
     Extension('pyqcstrc.dode.symmetry12',
     sources=['pyqcstrc/dode/symmetry12.pyx'],
     include_dirs=['.', get_include()]
     ),
     Extension('pyqcstrc.dode.utils12',
     sources=['pyqcstrc/dode/utils12.pyx'],
+    include_dirs=['.', get_include()]
+    ),
+    Extension('pyqcstrc.dode.math12',
+    sources=['pyqcstrc/dode/math12.pyx'],
     include_dirs=['.', get_include()]
     ),
     Extension('pyqcstrc.dode.numericalc12',
@@ -99,6 +99,7 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3',
         'Topic :: Scientific/Engineering :: Physics',
     ],

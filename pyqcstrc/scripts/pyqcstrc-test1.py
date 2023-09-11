@@ -8,11 +8,11 @@ import timeit
 import os
 import sys
 import numpy as np
-import pyqcstrc.icosah.utils as utils
-import pyqcstrc.icosah.math1 as math1
-import pyqcstrc.icosah.numericalc as numericalc
-import pyqcstrc.icosah.occupation_domain as od
-import pyqcstrc.icosah.two_occupation_domains as ods
+import pyqcstrc.ico.utils as utils
+import pyqcstrc.ico.math1 as math1
+import pyqcstrc.ico.numericalc as numericalc
+import pyqcstrc.ico.occupation_domain as od
+import pyqcstrc.ico.two_occupation_domains as ods
 
 TAU=(1+np.sqrt(5))/2
 

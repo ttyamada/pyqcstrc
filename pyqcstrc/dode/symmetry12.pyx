@@ -7,12 +7,14 @@ import numpy as np
 cimport numpy as np
 cimport cython
 
-#from pyqcstrc.dode.math2 cimport add
 from pyqcstrc.dode.math12 cimport add,sub
 from pyqcstrc.dode.utils12 cimport remove_doubling_dim3, remove_doubling_dim3_in_perp_space
 
 DTYPE_double = np.float64
-DTYPE_int = int
+#DTYPE_int = int
+DTYPE_int = np.int64
+#ctypedef np.int64_t DTYPE_int_t
+#ctypedef np.float64_t DTYPE_double_t
 
 @cython.boundscheck(False)
 @cython.wraparound(False)

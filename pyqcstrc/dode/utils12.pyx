@@ -11,7 +11,10 @@ from pyqcstrc.dode.math12 cimport dot_product, outer_product, projection, projec
 from pyqcstrc.dode.numericalc12 cimport point_on_segment, inout_occupation_domain_numerical
 
 DTYPE_double = np.float64
-DTYPE_int = int
+#DTYPE_int = int
+DTYPE_int = np.int64
+#ctypedef np.int64_t DTYPE_int_t
+#ctypedef np.float64_t DTYPE_double_t
 
 cdef np.float64_t SIN=np.sqrt(3)/2.0
 cdef np.float64_t TOL=1e-6 # tolerance
