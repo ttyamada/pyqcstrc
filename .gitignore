@@ -11,6 +11,9 @@ __pycache__/
 /README.txt
 /README.rst
 /pyqcstrc/__pycache__
+/pyqcstrc/deca/__pycache__
+/pyqcstrc/dode/__pycache__
+/pyqcstrc/ico/__pycache__
 
 *.zip
 # Log files etc
