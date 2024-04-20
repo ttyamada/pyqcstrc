@@ -134,7 +134,7 @@ def div(a,b):
                 print('ERROR_2:division error')
                 return 
 
-numericalc.numericalc.numeric_value(def add_vectors(v1,v2):
+def add_vectors(v1,v2):
     """Composition of two vectors, v1+v2
     
     Parameters
@@ -207,7 +207,7 @@ def mul_vectors(vecs,a):
         vecs[i]=mul_vector(vecs[i],a)
     return vecs
 
-def outer_product(v1,v2):
+def outer_product(vt1,vt2):
     """Outer product of two 3d vectors, v1 and v2 in TAU-style.
 
     Parameters
@@ -235,61 +235,87 @@ def outer_product(v1,v2):
     #
     return np.array([c1,c2,c3],dtype=np.int64)
 
-def inner_product(v1,v2):
-    """Inner product of two 3d vectors, v1 and v2 in TAU-style.
+def inner_product(vt1,vt2):
+    """Inner product of two vectors, v1 and v2 in TAU-style.
 
     Parameters
     ----------
-    v1: array
-        3-dimensional vector in TAU-style
-    v2: array,
-        3-dimensional vector in TAU-style
+    vt1: array
+        vector in TAU-style
+    vt2: array,
+         vector in TAU-style
 
     Returns
     -------
     Inner product: array in TAU-style
     """
-    a=mul(v1[0],v2[0])
-    b=mul(v1[1],v2[1])
-    c=mul(v1[2],v2[2])
-    a=add(a,b)
-    return add(a,c)
-
-def dot_product(v1,v2):
-    """product of two 3d vectors, v1 and v2. (same as inner_product???)
+    s1,_=vt1.shape
+    s2,_=vt2.shape
+    if s1!=s2:
+        print('matrices have not a proper shape.')
+        return 
+    else:
+        a=np.array([0,0,1])
+        for i in range(s1):
+            b=mul(vt1[i],vt2[i])
+            a=add(a,b)
+        return a
+    
+def dot_product(mat1,mat2):
+    """product of two matrices, mat1*mat2.
     
     Parameters
     ----------
-    v1: array
-        3-dimensional vector in TAU-style
-    v2: array,
-        3-dimensional vector in TAU-style
+    mat1: ndarray
+        (s,t) in TAU-style
+    mat2: ndarray
+        (t,u) in TAU-style
 
     Returns
     -------
     Inner product: array in TAU-style
     """
-    #
-    # vector A
-    # Ax=(a1[0]+a1[1]*tau)/a1[2]
-    # Ay=(a2[0]+a2[1]*tau)/a2[2]
-    # Az=(a3[0]+a3[1]*tau)/a3[2]
-    #
-    # vector B
-    # Bx=(b1[0]+b1[1]*tau)/b1[2]
-    # By=(b2[0]+b2[1]*tau)/b2[2]
-    # Bz=(b3[0]+b3[1]*tau)/b3[2]
-    #    
-    # return:
-    # A*B = Ax*Bx + Ay*By + Az*Bz
-    #     = (t1+t2*TAU)/t3
-    #a=mul(1[0],v2[0])
-    #b=mul(1[1],v2[1])
-    #c=mul(1[2],v2[2])
-    #a=add(t1,t2)
-    #return add(a,c)
-    return inner_product(v1,v2)
-
+    ndim1=mat1.ndim
+    ndim2=mat2.ndim
+    
+    if ndim1=2 and ndim2=2:
+        return inner_product(mat1,mat2)
+    
+    elif ndim1=3 and ndim2=2:
+        s,t1,_=mat1.shape
+        t2,_=mat2.shape
+        if t1!=t2:
+            print('incorrect shape found in dot_product')
+            return 
+        else:
+            mat_new=np.zeros((s,3),dtype=np.int64)
+            for k in range(s):
+                a=np.array([0,0,1])
+                for j in range(t1):
+                    b=mul(mat1[k][j],mat2[j])
+                    a=add(a,b)
+                mat_new[k]=a
+            return mat_new
+            
+    elif ndim1=3 and ndim2=3:
+        s,t1,_=mat1.shape
+        t2,u,_=mat2.shape
+        if t1!=t2:
+            print('incorrect shape found in dot_product')
+            return 
+        else:
+            mat_new=np.zeros((s,u,3),dtype=np.int64)
+            for k in range(s):
+                for j in range(u):
+                    a=np.array([0,0,1])
+                    for i in range(t1):
+                        b=mul(mat1[k][i],mat2[i][j])
+                        a=add(a,b)
+                    mat_new[k][j]=a
+            return mat_new
+    else:
+        print('incorrect shape found in dot_product')
+        return 
 
 
 
@@ -473,6 +499,28 @@ def coplanar_check(p):
         return 1 # coplanar
         #return True # coplanar
 
+def matrixpow(ma,n):
+    """
+    """
+    (mx,my)=ma.shape
+    if mx==my:
+        if n==0:
+            return np.identity(mx)
+        elif n<0:
+            tmp=np.identity(mx)
+            inva = np.linalg.inv(ma)
+            for i in range(-n):
+                tmp=np.dot(tmp,inva)
+            return tmp
+        else:
+            tmp=np.identity(mx)
+            for i in range(n):
+                tmp=np.dot(tmp,ma)
+            return tmp
+    else:
+        print('matrix has not regular shape')
+        return 
+
 # これは必要か？　行列式？
 def det_matrix(mtx):
     """Determinant of 3x3 matrix, mtx, in TAU style
@@ -523,34 +571,9 @@ def det_matrix(mtx):
 
 
 
-def triangle_area(a):
-    """Numerial calcuration of area of given triangle, a.
-    The coordinates of the tree vertecies of the triangle are given in TAU-style.
-    
-    Parameters
-    ----------
-    a: array containing 3-dimensional coordinates of tree vertecies of a triangle (a) in TAU-style
-    
-    Returns
-    -------
-    area of given triangle: float
-    """
-    
-    vx1=numericalc.numeric_value(a[1][0])-numericalc.numeric_value(a[0][0])
-    vy1=numericalc.numeric_value(a[1][1])-numericalc.numeric_value(a[0][1])
-    vz1=numericalc.numeric_value(a[1][2])-numericalc.numeric_value(a[0][2])
-    
-    vx2=numericalc.numeric_value(a[2][0])-numericalc.numeric_value(a[0][0])
-    vy2=numericalc.numeric_value(a[2][1])-numericalc.numeric_value(a[0][1])
-    vz2=numericalc.numeric_value(a[2][2])-numericalc.numeric_value(a[0][2])
-    
-    v1=np.array([vx1,vy1,vz1])
-    v2=np.array([vx2,vy2,vz2])
-    
-    v3=np.cross(v2,v1) # cross product
-    return np.sqrt(np.sum(np.abs(v3**2)))/2.0
-
 if __name__ == '__main__':
+    
+    # test
     
     import random
     
