@@ -4,7 +4,7 @@
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 #
 import sys
-sys.path.append('..')
+sys.path.append('.')
 import numericalc
 import numpy as np
 
@@ -134,14 +134,14 @@ def div(a,b):
                 print('ERROR_2:division error')
                 return 
 
-def add_vectors(v1,v2):
+def add_vectors(vt1,vt2):
     """Composition of two vectors, v1+v2
     
     Parameters
     ----------
-    v1: array
+    vt1: array
         a vector in TAU-style
-    v2: array,
+    vt2: array,
         a scalar in TAU-style
     
     Returns
@@ -149,63 +149,75 @@ def add_vectors(v1,v2):
     Composition of two vectors: array in TAU-style
     
     """
-    for i in range(len(v1)):
-        v1[i]=add(v1[i],v2[i])
-    return v1
+    a=np.zeros(vt1.shape,dtype=np.int64)
+    for i in range(len(vt1)):
+        a[i]=add(vt1[i],vt2[i])
+    return a
 
-def sub_vectors(v1,v2):
+def sub_vectors(vt1,vt2):
     """Subtraction of two vectors, v1-v2
     
     Parameters
     ----------
-    v1: array
+    vt1: array
         a vector in TAU-style
-    v2: array,
+    vt2: array,
         a scalar in TAU-style
     
     Returns
     -------
     Subtraction of two vectors: array in TAU-style
     """
-    const=np.array([-1,0,1],dtype=np.int64)
-    v2=mul_vector(v2,const)
-    return add_vectors(v1,v2)
-
-def mul_vector(v,a):
+    if vt1.ndim==2 and vt2.ndim==2:
+        const=np.array([-1,0,1],dtype=np.int64)
+        vt2=mul_vector(vt2,const)
+        return add_vectors(vt1,vt2)
+    else:
+        print('incorrect shape')
+        return
+        
+def mul_vector(vt,coeff):
     """Multiplying a vector by a scalar in TAU-style.
 
     Parameters
     ----------
-    vecs: array
+    vt: array
         a vector in TAU-style
-    a: array,
+    coeff: array,
         a scalar in TAU-style
     
     Returns
     -------
     Multiplied vector: array in TAU-style
     """
-    for i in range(len(v)):
-        v[i]=mul(v[i],a)
-    return v
-
-def mul_vectors(vecs,a):
+    if vt.ndim==2:
+        a=np.zeros(vt.shape,dtype=np.int64)
+        for i in range(len(vt)):
+            a[i]=mul(vt[i],coeff)
+        return a
+    else:
+        print('incorrect shape')
+        return
+        
+def mul_vectors(vts,coeff):
     """multiplying a set of vectors by a scalar in TAU-style.
 
     Parameters
     ----------
-    vecs: array
+    vts: array
         a set of vectors in TAU-style
-    a: array,
+    coeff: array,
         a scalar in TAU-style
     
     Returns
     -------
     Multiplied vectors: array in TAU-style
     """
-    for i in range(len(vecs)):
-        vecs[i]=mul_vector(vecs[i],a)
-    return vecs
+    if vts.ndim==3:
+        a=np.zeros(vts.shape,dtype=np.int64)
+        for i in range(len(vts)):
+            a[i]=mul_vector(vts[i],coeff)
+        return a
 
 def outer_product(vt1,vt2):
     """Outer product of two 3d vectors, v1 and v2 in TAU-style.
@@ -221,16 +233,16 @@ def outer_product(vt1,vt2):
     -------
     Outer product: array in TAU-style
     """
-    a=mul(v1[1],v2[2])
-    b=mul(v1[2],v2[1])
+    a=mul(vt1[1],vt2[2])
+    b=mul(vt1[2],vt2[1])
     c1=sub(a,b)
     #
-    a=mul(v1[2],v2[0])
-    b=mul(v1[0],v2[2])
+    a=mul(vt1[2],vt2[0])
+    b=mul(vt1[0],vt2[2])
     c2=sub(a,b)
     #
-    a=mul(v1[0],v2[1])
-    b=mul(v1[1],v2[0])
+    a=mul(vt1[0],vt2[1])
+    b=mul(vt1[1],vt2[0])
     c3=sub(a,b)
     #
     return np.array([c1,c2,c3],dtype=np.int64)
@@ -278,10 +290,10 @@ def dot_product(mat1,mat2):
     ndim1=mat1.ndim
     ndim2=mat2.ndim
     
-    if ndim1=2 and ndim2=2:
+    if ndim1==2 and ndim2==2:
         return inner_product(mat1,mat2)
     
-    elif ndim1=3 and ndim2=2:
+    elif ndim1==3 and ndim2==2:
         s,t1,_=mat1.shape
         t2,_=mat2.shape
         if t1!=t2:
@@ -297,7 +309,7 @@ def dot_product(mat1,mat2):
                 mat_new[k]=a
             return mat_new
             
-    elif ndim1=3 and ndim2=3:
+    elif ndim1==3 and ndim2==3:
         s,t1,_=mat1.shape
         t2,u,_=mat2.shape
         if t1!=t2:
@@ -317,6 +329,60 @@ def dot_product(mat1,mat2):
         print('incorrect shape found in dot_product')
         return 
 
+def dot_product_1(mat1,mat2):
+    """product of two matrices, mat1*mat2.
+    
+    Parameters
+    ----------
+    mat1: ndarray
+        (s,t) in "NOT" TAU-style
+    mat2: ndarray
+        (t,u) in TAU-style
+
+    Returns
+    -------
+    Inner product: array in TAU-style
+    """
+    ndim1=mat1.ndim
+    ndim2=mat2.ndim
+    
+    if ndim1==2 and ndim2==2:
+        s,t1,=mat1.shape
+        t2,_=mat2.shape
+        if t1!=t2:
+            print('incorrect shape found in dot_product')
+            return 
+        else:
+            mat_new=np.zeros((s,3),dtype=np.int64)
+            for k in range(s):
+                a=np.array([0,0,1])
+                for j in range(t1):
+                    val=np.array([mat1[k][j],0,1])
+                    b=mul(val,mat2[j])
+                    a=add(a,b)
+                mat_new[k]=a
+            return mat_new
+            
+    elif ndim1==2 and ndim2==3:
+        s,t1,=mat1.shape
+        t2,u,_=mat2.shape
+        if t1!=t2:
+            print('incorrect shape found in dot_product')
+            return 
+        else:
+            mat_new=np.zeros((s,u,3),dtype=np.int64)
+            for k in range(s):
+                for j in range(u):
+                    a=np.array([0,0,1])
+                    for i in range(t1):
+                        val=np.array([mat1[k][j],0,1])
+                        b=mul(val,mat2[i][j])
+                        a=add(a,b)
+                    mat_new[k][j]=a
+            return mat_new
+    else:
+        print('incorrect shape found in dot_product')
+        return 
 
 
 
@@ -450,13 +516,38 @@ def centroid(tetrahedron):
     centroid: array in TAU-style
     """
     
-    v0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
+    v0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+    i2=0
     for i2 in range(6):
         v2=v0[i2]
+        i1=0
         for i1 in range(4):
-            v1=add(v1,tetrahedron[i1][i2])
-        v2[i2]=mul(v1,np.array([1,0,4]))
-    return v2
+            v2=add(v2,tetrahedron[i1][i2])
+            i1+=1
+        v0[i2]=mul(v2,np.array([1,0,4]))
+        i2+=1
+    return v0
+
+def centroid_obj(obj):
+    """geometric center, centroid of tetrahedron, in TAU-style.
+
+    Parameters
+    ----------
+    tetrahedron: array
+        6-dimensional vector in TAU-style
+    
+    Returns
+    -------
+    centroid: array in TAU-style
+    """
+    print('centroid_obj')
+    
+    #  geometric center, centroid of OBJ
+    tmp=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+    for tetrahedron in obj:
+        p=centroid(tetrahedron)
+        tmp=add_vectors(tmp,p)
+    return mul_vector(tmp,np.array([1,0,len(obj)]))
 
 def coplanar_check(p):
     """Check whether a given set of points (in TAU-style) is coplanar or not.
@@ -490,14 +581,14 @@ def coplanar_check(p):
                 flag+=1
                 break
         if flag==0:
-            return 1 # coplanar
-            #return True # coplanar
+            #return 1 # coplanar
+            return True # coplanar
         else:
-            return 0
-            #return False
+            #return 0
+            return False
     else:
-        return 1 # coplanar
-        #return True # coplanar
+        #return 1 # coplanar
+        return True # coplanar
 
 def matrixpow(ma,n):
     """
@@ -521,7 +612,6 @@ def matrixpow(ma,n):
         print('matrix has not regular shape')
         return 
 
-# これは必要か？　行列式？
 def det_matrix(mtx):
     """Determinant of 3x3 matrix, mtx, in TAU style
     

@@ -118,7 +118,7 @@ def check_intersection_segment_surface_numerical_6d_tau(line_segment,triangle):
     Parameters
     ----------
     line_segment: array
-        two 6-dimensional coordinates of line segment,xyzuvw1, xyzuvw2, in TAU-style
+        6-dimensional coordinates of line segment,xyzuvw1, xyzuvw2, in TAU-style
     triangle: array
         containing 6-dimensional coordinates of tree vertecies of a triangle (a) in TAU-style
     
@@ -130,8 +130,21 @@ def check_intersection_segment_surface_numerical_6d_tau(line_segment,triangle):
     tr=get_internal_component_sets_numerical(triangle)
     return check_intersection_segment_surface_numerical_6d_xyz(ln,tr)
     
-def check_intersection_segment_surface_numerical(line_segment,triangle):
+def check_intersection_segment_surface_numerical_6d_tau(ln,tr):
+    
+    # TAU-style to Float
+    ln=numerical_vectors(ln)
+    tr=numerical_vectors(tr)
+    
+    ln=get_internal_component_sets_numerical(ln)
+    tr=get_internal_component_sets_numerical(tr)
+    return check_intersection_segment_surface_numerical(ln,tr)
+    
+def check_intersection_segment_surface_numerical(ln,tr):
     """check intersection between a line segment and a triangle.
+    
+    Möller–Trumbore intersection algorithm
+    https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
     
     Parameters
     ----------
@@ -144,33 +157,24 @@ def check_intersection_segment_surface_numerical(line_segment,triangle):
     -------
     
     """
+    vecAB=ln[1]-ln[0] # AB # R
+    vecCD=tr[1]-tr[0] # CD # E1
+    vecCE=tr[2]-tr[0] # CE # E2
+    vecCA=tr[0]-ln[0] # CA # T
     
-    def fuc(a,b,c):
-        m=np.zeros((3,3),dtype=np.float64)
-        m[0]=a
-        m[1]=b
-        m[2]=c
-        return m
+    vecP=np.cross(vecAB,vecCE) # P
+    vecQ=np.cross(vecCA,vecCD) # Q
     
-    vecBA=ln[0]-ln[1] # line segment BA
-    vecCD=tr[1]-tr[0] # edge segment of triangle CDE, CD
-    vecCE=tr[2]-tr[0] # edge segment of triangle CDE, CE
-    vecCA=ln[0]-ln[0] # CA
-    
-    tmp=fuc(vecCD,vecCE,vecBA)
-    bunbo=np.linalg.det(tmp)
-    if abs(bunbo)<EPS:
+    bunbo=np.dot(vecP,vecCD)
+    if abs(bunbo)<EPS: # the line_segment is parrallel to the triangle.
         return False
     else:
-        tmp=fuc(vecCA,vecCE,vecBA)
-        u=np.linalg.det(tmp)
-        if u>=0.0 and u<=bunbo:
-            tmp=fuc(vecCD,vecCA,vecBA)
-            v=np.linalg.det(tmp)
-            if v>=0.0 and u+v<=bunbo:
-                tmp=fuc(vecCD,vecCE,vecCA)
-                t=np.linalg.det(tmp)
-                if t>=0.0 and t<=bunbo:
+        u=np.dot(vecP,vecCA)/bunbo
+        if u>=0.0 and u<=1.0:
+            v=np.dot(vecQ,vecAB)/bunbo
+            if u+v>=0.0 and u+v<=1.0:
+                t=np.dot(vecP,vecCE)/bunbo
+                if t>=0.0 and t<=1.0:
                     return True # intersect
                 else:
                     return False
@@ -179,6 +183,75 @@ def check_intersection_segment_surface_numerical(line_segment,triangle):
         else:
             return False
 
+def check_intersection_two_segment_numerical_6d_tau(segment_1,segment_2):
+    """check intersection between two line segments
+    
+    Parameters
+    ----------
+    line_segment_1,line_segment_2 : array
+        two 6-dimensional coordinates of line segment,xyzuvw1, xyzuvw2, in TAU-style
+    triangle: array
+        containing 3-dimensional coordinates of tree vertecies of a triangle (a), xyz1, xyz2, xyz3.
+    
+    Returns
+    -------
+    
+    """
+    # TAU-style to Float
+    segment_1=numerical_vectors(segment_1)
+    segment_2=numerical_vectors(segment_2)
+    
+    ln1=get_internal_component_sets_numerical(segment_1)
+    ln2=get_internal_component_sets_numerical(segment_2)
+    return check_intersection_two_segment_numerical(ln1,ln2)
+
+def check_intersection_two_segment_numerical(ln1,ln2):
+    """check intersection between two line segments.
+    
+    Parameters
+    ----------
+    line_segment_1,line_segment_2: array
+        two 3-dimensional coordinates of line segment, xyz1, xyz2.
+        line_segment_1: A--B
+        line_segment_2: C--D
+    
+    Returns
+        int, out = 0 (Intersection was found when a view allong to Z-axis)
+                   1 (Intersection was found when a view allong to X-axis)
+                   2 (Intersection was found when a view allong to Y-axis)
+                   3 (No intersection was found)
+    -------
+    
+    """
+    vecAB=ln1[1]-ln1[0] # AB
+    vecCD=ln2[2]-ln2[0] # CD
+    vecCA=ln1[0]-ln2[1] # CA
+    
+    # check whether two line-segments are intersecting or not.
+    comb=[\
+    [0,1,2],\
+    [1,2,0],\
+    [2,0,1]]
+    out=0
+    for c in comb:
+        bunbo=vecAB[c[0]]*vecCD[c[1]]-vecCD[c[0]]*vecAB[c[1]]
+        if abs(bunbo)<EPS:
+            t=(vecAB[c[0]]*vecCA[c[1]]-vecCA[c[0]]*vecAB[c[1]])/bunbo
+            if t>=0.0 and t<=1.0:
+                s=(vecCD[c[0]]*vecCA[c[1]]-vecCA[c[0]]*vecCD[c[1]])/bunbo
+                if s>=0.0 and s<=1.0:
+                    if abs(-s*vecAB[c[2]]+t*vecCD[c[2]]-vecCA[c[2]])<=EPS:
+                        break
+                    else:
+                        out+=1
+                else:
+                    out+=1
+            else:
+                out+=1
+        else:
+            out+=1
+    return out
+    
 def triangle_area(a):
     """Numerial calcuration of area of given triangle, a.
     The coordinates of the tree vertecies of the triangle are given in TAU-style.
@@ -206,6 +279,16 @@ def triangle_area(a):
     v3=np.cross(v2,v1) # cross product
     return np.sqrt(np.sum(np.abs(v3**2)))/2.0
 
+def inside_outside_obj_tau(point,obj):
+    
+    # TAU-style to Float
+    point=numerical_vector(point)
+    obj=numerical_vectors(obj)
+    # 
+    point=get_internal_component_numerical(ln)
+    obj=get_internal_component_sets_numerical(obj)
+    return inside_outside_obj(point,obj)
+    
 def inside_outside_obj(point,obj):
     """this function judges whether the point is inside an object (set of tetrahedra) or not
         
@@ -225,7 +308,16 @@ def inside_outside_obj(point,obj):
         return True # inside
     else:
         return False # outside
-        
+
+def inside_outside_tetrahedron_tau(point,tetrahedron):
+    
+    point=numerical_vector(point)
+    tetrahedron=numerical_vectors(tetrahedron)
+    # 
+    point=get_internal_component_numerical(point)
+    tetrahedron=get_internal_component_sets_numerical(tetrahedron)
+    return inside_outside_tetrahedron(point,tetrahedron)
+
 def inside_outside_tetrahedron(point,tetrahedron):
     """this function judges whether the point is inside a tetrahedron or not
         
@@ -236,23 +328,24 @@ def inside_outside_tetrahedron(point,tetrahedron):
     tetrahedron: array
         vertex coordinates of tetrahedron, (xyz1, xyz2, xyz3, xyz4)
     """
-    vol0=tetrahedron_volume_6d_numerical(tetrahedron)
+    vol0=tetrahedron_volume_numerical(tetrahedron)
     #
     tet1=tetrahedron
     tet1[0]=point
-    vol1=tetrahedron_volume_6d_numerical(tet1)
+    #print(tet1)
+    vol1=tetrahedron_volume_numerical(tet1)
     #
     tet2=tetrahedron
     tet2[1]=point
-    vol2=tetrahedron_volume_6d_numerical(tet2)
+    vol2=tetrahedron_volume_numerical(tet2)
     #
     tet3=tetrahedron
     tet3[2]=point
-    vol3=tetrahedron_volume_6d_numerical(tet3)
+    vol3=tetrahedron_volume_numerical(tet3)
     #
     tet4=tetrahedron
     tet4[3]=point
-    vol4=tetrahedron_volume_6d_numerical(tet4)
+    vol4=tetrahedron_volume_numerical(tet4)
     
     if abs(vol0-vol1-vol2-vol3-vol4)<EPS*vol0:
         return True # inside
@@ -476,11 +569,16 @@ if __name__ == '__main__':
     for v in vset:
         print(v)
     """
-        
+    
+    """
     print('check tetrahedron')
     tetrahedron=generate_random_tetrahedron() # in TAU-style
     tetrahedron_num=numerical_vectors(tetrahedron) # in float
     #print(tetrahedron_num)
     vol=tetrahedron_volume_6d_numerical(tetrahedron_num)
     print(vol)
+    """
+    
+    print('check intersection')
+    
     

@@ -4,14 +4,86 @@
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 #
 import sys
-sys.path.append('..')
-#import numericalc import obj_volume_6d_numerical, inside_outside_obj
-#import math1 import det_matrix, projection, projection3, add, sub, mul, div
-from math1 import projection3
+sys.path.append('.')
+from math1 import (projection3,
+                    sub_vectors,
+                    add_vectors,
+                    outer_product,
+                    inner_product,
+                    add,
+                    sub,
+                    mul,
+                    div)
+from numericalc import numeric_value
 import numpy as np
 
 
-# こちら2つに統一した方が良い。
+
+
+def shift_object(obj,shift):
+    """shift an object
+    """
+    vol0=obj_volume_6d(obj)
+    obj_new=np.zeros(obj.shape,dtype=np.int64)
+    i1=0
+    for tetrahedron in obj:
+        i2=0
+        for vertex in tetrahedron:
+            obj_new[i1][i2]=add_vectors(vertex,shift)
+            i2+=1
+        i1+=1
+    vol1=obj_volume_6d(obj_new)
+    if np.all(vol0==vol1):
+        return obj_new
+    else:
+        return 
+
+
+def obj_volume_6d(obj):
+    w=np.array([0,0,1])
+    if obj.ndim==4:
+        for tetrahedron in obj:
+            v=tetrahedron_volume_6d(tetrahedron)
+            w=add(w,v)
+        return w
+    elif obj.ndim==5:
+        for tset in obj:
+            for tetrahedron in tset:
+                v=tetrahedron_volume_6d(tetrahedron)
+                w=add(w,v)
+        return w
+    else:
+        print('object has an incorrect shape!')
+        return 
+    
+def tetrahedron_volume_6d(tetrahedron):
+    vts=np.zeros((4,3,3),dtype=np.int64)
+    for i in range(4):
+        vts[i]=projection3(tetrahedron[i])
+    return tetrahedron_volume(vts)
+
+def tetrahedron_volume(vts):
+    # This function returns volume of a tetrahedron
+    # input: vertex coordinates of the tetrahedron (x0,y0,z0),(x1,y1,z1),(x2,y2,z2),(x3,y3,z3)
+    v1=sub_vectors(vts[1],vts[0])
+    v2=sub_vectors(vts[2],vts[0])
+    v3=sub_vectors(vts[3],vts[0])
+    
+    v=outer_product(v1,v2)
+    v=inner_product(v,v3)
+    #[a1,a2,a3]=det_matrix(a,b,c) # determinant of 3x3 matrix
+    
+    # avoid a negative value
+    val=numeric_value(v)
+    if val<0.0: # to avoid negative volume
+        return mul(v,np.array([-1,0,6]))
+    else:
+        return mul(v,np.array([1,0,6]))
+
+
+
+
+# こちら2つに統一した方が良い。この2つは実行に時間がかかる
 def remove_doubling(vst):
     """remove doubling 6d coordinates
     
@@ -72,6 +144,7 @@ def remove_doubling_in_perp_space(vst):
     obj: array
         set of 6-dimensional vectors in TAU-style
     """
+    #print('remove_doubling_in_perp_space')
     
     ndim=vst.ndim
     if ndim==4:
@@ -279,3 +352,5 @@ if __name__ == '__main__':
         print('remove_doubling_in_perp_space: pass')
     else:
         print('remove_doubling_in_perp_space: error')
+    
+    
