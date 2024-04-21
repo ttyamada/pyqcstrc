@@ -160,7 +160,7 @@ def check_intersection_segment_surface_numerical(ln,tr):
     vecAB=ln[1]-ln[0] # AB # R
     vecCD=tr[1]-tr[0] # CD # E1
     vecCE=tr[2]-tr[0] # CE # E2
-    vecCA=tr[0]-ln[0] # CA # T
+    vecCA=ln[0]-tr[0] # CA # T
     
     vecP=np.cross(vecAB,vecCE) # P
     vecQ=np.cross(vecCA,vecCD) # Q
@@ -172,8 +172,8 @@ def check_intersection_segment_surface_numerical(ln,tr):
         u=np.dot(vecP,vecCA)/bunbo
         if u>=0.0 and u<=1.0:
             v=np.dot(vecQ,vecAB)/bunbo
-            if u+v>=0.0 and u+v<=1.0:
-                t=np.dot(vecP,vecCE)/bunbo
+            if v>=0.0 and u+v<=1.0:
+                t=np.dot(vecQ,vecCE)/bunbo
                 if t>=0.0 and t<=1.0:
                     return True # intersect
                 else:

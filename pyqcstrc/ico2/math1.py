@@ -540,7 +540,7 @@ def centroid_obj(obj):
     -------
     centroid: array in TAU-style
     """
-    print('centroid_obj')
+    #print('centroid_obj')
     
     #  geometric center, centroid of OBJ
     tmp=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)

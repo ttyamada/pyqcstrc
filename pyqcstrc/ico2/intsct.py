@@ -325,7 +325,7 @@ def intersection_segment_surface(segment,surface):
         
         bunbo=inner_product(vecP,vecCD)
         
-        bunshi=inner_product(vecP,vecCE)
+        bunshi=inner_product(vecQ,vecCE)
         t=div(bunshi,bunbo)
         
         # intersecting point: OA + t*AB

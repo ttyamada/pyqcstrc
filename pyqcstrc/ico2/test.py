@@ -34,6 +34,6 @@ if __name__ == "__main__":
     # intersection of "asymmetric part of strt" and "strt at position pos_b1"
     print('intersection starts')
     common=tod.intersection(strt_asym,strt_pos1)
-    print('common.shape',common.shape)
+    #print('common.shape',common.shape)
     od.write(obj=common, path='.', basename='obj_common', format='xyz')
     

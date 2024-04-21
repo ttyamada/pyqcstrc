@@ -83,7 +83,7 @@ def tetrahedron_volume(vts):
 
 
 
-# こちら2つに統一した方が良い。この2つは実行に時間がかかる
+# こちら2つに統一した方が良い。
 def remove_doubling(vst):
     """remove doubling 6d coordinates
     
@@ -104,7 +104,7 @@ def remove_doubling(vst):
         num=n1*n2
         vst=vst.reshape(num,6,3)
     elif ndim==3:
-        num,n2,_,_=vst.shape
+        num,_,_=vst.shape
     else:
         print('ndim should be larger than 3.')
     
@@ -144,25 +144,24 @@ def remove_doubling_in_perp_space(vst):
     obj: array
         set of 6-dimensional vectors in TAU-style
     """
-    #print('remove_doubling_in_perp_space')
+    #print('remove_doubling')
+    # 先にremove_doubling()を走らすと速くなる。
+    vst=remove_doubling(vst)
     
+    #print('remove_doubling_in_perp_space')
     ndim=vst.ndim
     if ndim==4:
         n1,n2,_,_=vst.shape
         vst=vst.reshape(n1*n2,6,3)
     elif ndim==3:
-        pass
-    else:
-        print('ndim should be larger than 3.')
+        num,_,_=vst.shape
     
-    num=len(vst)
     if num>1:
         lst=[0]
         for i1 in range(1,num):
             xyzi1=projection3(vst[i1])
             counter=0
             for i2 in lst:
-                #xyzi2=projection3(vst[i2])
                 if np.all(xyzi1==projection3(vst[i2])):
                     counter+=1
                     break
