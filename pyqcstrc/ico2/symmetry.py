@@ -11,8 +11,8 @@ from math1 import (add,
                     dot_product_1, 
                     sub_vectors, 
                     add_vectors)
-from utils import (remove_doubling_dim4_in_perp_space, 
-                    remove_doubling_dim3)
+from utils import (remove_doubling_in_perp_space, 
+                    remove_doubling)
 import numpy as np
 
 
