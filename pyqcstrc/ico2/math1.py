@@ -515,12 +515,12 @@ def mtrixcal(m1,m2,m3,m4,m5,m6,v):
     a1=add(a1,a6)
     return a1
 
-def centroid(tetrahedron):
-    """geometric center, centroid of tetrahedron, in TAU-style.
+def centroid(obj):
+    """geometric center, centroid of tetrahedron, triangle or edge, in TAU-style.
 
     Parameters
     ----------
-    tetrahedron: array
+    obj: array
         6-dimensional vector in TAU-style
     
     Returns
@@ -528,15 +528,16 @@ def centroid(tetrahedron):
     centroid: array in TAU-style
     """
     
+    num=len(obj)
     v0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
     i2=0
     for i2 in range(6):
         v2=v0[i2]
         i1=0
-        for i1 in range(4):
-            v2=add(v2,tetrahedron[i1][i2])
+        for i1 in range(num):
+            v2=add(v2,obj[i1][i2])
             i1+=1
-        v0[i2]=mul(v2,np.array([1,0,4]))
+        v0[i2]=mul(v2,np.array([1,0,num]))
         i2+=1
     return v0
 

@@ -10,6 +10,7 @@ from math1 import (projection3,
                     add_vectors,
                     outer_product,
                     inner_product,
+                    centroid,
                     add,
                     sub,
                     mul,
@@ -164,7 +165,6 @@ def generator_surface_1(obj):
         [0,2,3],\
         [1,2,3]] 
         #
-        # Four triangles the tetrahedron.
         a=np.zeros((4,3,6,3),dtype=np.int64)
         i1=0
         for k in comb:
@@ -199,8 +199,19 @@ def generator_surface_1(obj):
     if n1==1:
         return triangles
     else:
-        # (2) 重複している三角形を探し、重複なしの三角形（すなはちobject表面の三角形）を得る。
+        # (2) 重複している三角形を探し、重複のない三角形（すなはちobject表面の三角形）のみを得る。
+        # 三角形が重複していれば重心も同じことを利用する。
         #print(' search dounbling.....')
+        
+        a=np.zeros((len(triangles),6,3),dtype=np.int64)
+        for i1 in range(len(a)):
+            a[i1]=centroid(triangle[i1])
+        b=np.unique(a,return_index=True,axis=0)[1]
+        num=len(b)
+        a=np.zeros((num,3,6,3),dtype=np.int64)
+        for i1 in range(num):
+            a[i1]=triangles[b[i1]]
+        """
         lst=[triangles[0]]
         for i1 in range(1,len(triangles)):
             tr1=triangles[i1]
@@ -214,6 +225,8 @@ def generator_surface_1(obj):
             if counter==0:
                 lst.append(tr1)
         return np.array(lst,dtype=np.int64)
+        """
+        return a
         
 def generator_edge(obj):
     """
@@ -267,6 +280,15 @@ def generator_edge(obj):
     else:
         # (2) 重複している辺を探し、重複なしの辺（すなはちobject表面の辺）を得る。
         #print(' search dounbling.....')
+        a=np.zeros((len(edges),6,3),dtype=np.int64)
+        for i1 in range(len(a)):
+            a[i1]=centroid(edges[i1])
+        b=np.unique(a,return_index=True,axis=0)[1]
+        num=len(b)
+        a=np.zeros((num,2,6,3),dtype=np.int64)
+        for i1 in range(num):
+            a[i1]=edges[b[i1]]
+        """
         lst=[edges[0]]
         for i1 in range(1,len(edges)):
             ed1=edges[i1]
@@ -280,7 +302,8 @@ def generator_edge(obj):
             if counter==0:
                 lst.append(ed1)
         return np.array(lst,dtype=np.int64)
-        
+        """
+        return a
 if __name__ == '__main__':
     
     # test
