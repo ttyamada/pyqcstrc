@@ -55,14 +55,7 @@ def intersection(obj1, obj2):
         print('no common part')
         return 
 
-
-
-
-
-
-
-
-def intersection_convex(obj1, obj2, verbose = 0):
+def intersection_convex(obj1,obj2):
     """
     Intersection of two occupation domains projected onto perp space.
     The common part forms convex hull.
@@ -81,12 +74,12 @@ def intersection_convex(obj1, obj2, verbose = 0):
             The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
 
     """
-    point_common,point_a,point_b = intsct.intersection_two_obj_convex(obj1, obj2, verbose)
-    common=intsct.tetrahedralization_points(point_common,verbose-1)
+    #point_common,point_a,point_b=intsct.intersection_two_obj_convex(obj1, obj2)
+    #common=intsct.tetrahedralization_points(point_common)
+    common=intsct.intersection_two_obj_convex(obj1, obj2)
     if common.tolist()!=[[[[0]]]]:
-        [v1,v2,v3]=utils.obj_volume_6d(common)
-        print('    common part found: volume = %d %d %d ( = %8.6f).'%(v1,v2,v3,(v1+TAU*v2)/v3))
         return common
     else:
-        print('    no intersection found.')
-        return np.array([[[[0]]]])
+        print('no common part')
+        return 
+        

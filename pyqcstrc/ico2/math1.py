@@ -175,10 +175,10 @@ def sub_vectors(vt1,vt2):
     else:
         print('incorrect shape')
         return
-        
+
 def mul_vector(vt,coeff):
     """Multiplying a vector by a scalar in TAU-style.
-
+    
     Parameters
     ----------
     vt: array
@@ -198,10 +198,10 @@ def mul_vector(vt,coeff):
     else:
         print('incorrect shape')
         return
-        
+
 def mul_vectors(vts,coeff):
     """multiplying a set of vectors by a scalar in TAU-style.
-
+    
     Parameters
     ----------
     vts: array
@@ -218,6 +218,14 @@ def mul_vectors(vts,coeff):
         for i in range(len(vts)):
             a[i]=mul_vector(vts[i],coeff)
         return a
+    elif vts.ndim==4:
+        a=np.zeros(vts.shape,dtype=np.int64)
+        for i1 in range(len(vts[i1])):
+            for i2 in range(len(vts[i1][i2])):
+                a[i1][i2]=mul_vector(vts[i1][i2],coeff)
+    else:
+        print('incorrect shape')
+        return
 
 def outer_product(vt1,vt2):
     """Outer product of two 3d vectors, v1 and v2 in TAU-style.
@@ -272,7 +280,7 @@ def inner_product(vt1,vt2):
             b=mul(vt1[i],vt2[i])
             a=add(a,b)
         return a
-    
+
 def dot_product(mat1,mat2):
     """product of two matrices, mat1*mat2.
     
@@ -383,6 +391,10 @@ def dot_product_1(mat1,mat2):
     else:
         print('incorrect shape found in dot_product')
         return 
+
+
+
+
 
 
 
@@ -654,12 +666,6 @@ def det_matrix(mtx):
     t1=sub(t1,t2)
     #
     return t1
-
-
-
-
-
-
 
 if __name__ == '__main__':
     

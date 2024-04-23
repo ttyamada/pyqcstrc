@@ -33,12 +33,10 @@ from numericalc import (length_numerical,
                         inside_outside_tetrahedron_tau)
 from utils import (remove_doubling_in_perp_space,
                     obj_volume_6d,
-                    tetrahedron_volume_6d)
-
-#from math1 import centroid, coplanar_check, projection,projection3, det_matrix, dot_product, add, sub, mul, div
-#from numericalc import obj_volume_6d_numerical, tetrahedron_volume_6d_numerical, inside_outside_tetrahedron, check_intersection_segment_surface_numerical
-#from utils import obj_volume_6d, tetrahedron_volume_6d, remove_doubling_dim3_in_perp_space, remove_doubling_dim4_in_perp_space, generator_edge, generator_surface_1
-
+                    tetrahedron_volume_6d,
+                    generator_surface_1,
+                    generator_edge)
+                    
 TAU=(1+np.sqrt(5))/2.0
 EPS=1e-6
 
@@ -97,10 +95,6 @@ def distance_in_perp_space(vt1,vt2):
 
 def rough_check_intersection_tetrahedron_obj(tetrahedron,cententer,distance):
     
-    #print("rough_check_intersection_tetrahedron_obj")
-    #print('tetrahedron:',tetrahedron)
-    #print('cententer:',cententer)
-    #print('distance:',distance)
     cen1=centroid(tetrahedron)
     dd1=ball_radius(tetrahedron,cen1)
     dd0=distance_in_perp_space(cen1,cententer)
@@ -573,8 +567,11 @@ def intersection_two_obj_1(obj1,obj2):
                 elif flag==3:
                     tmp4=intersection_two_tetrahedron_4(tetrahedron1,tetrahedron2)
                     ###
-                    ### コメント：intersection_two_tetrahedron_4()で見つからないのにcheck_intersection_two_tetrahedron_4()
-                    ###         では交差していると判定されるようだ。両者の結果に違いがあるので要修正
+                    ### Comment:
+                    ### intersection_two_tetrahedron_4()で見つからないのに
+                    ### check_intersection_two_tetrahedron_4()では交差して
+                    ### いると判定される場合がある。2つの四面体の交差点が3つ以下の場合
+                    ###（つまり接している場合）がこれに相当するので、以下のようにする。
                     ###
                     if np.all(tmp4==np.array([[[[0]]]])):
                         pass
@@ -585,13 +582,11 @@ def intersection_two_obj_1(obj1,obj2):
                             counter1+=1
                         else:
                             tmp_common4=np.vstack((tmp_common4,tmp4))
-                    """
-                    if counter1==0:
-                        tmp_common4=tmp4
-                        counter1+=1
-                    else:
-                        tmp_common4=np.vstack((tmp_common4,tmp4))
-                    """
+                    #if counter1==0:
+                    #    tmp_common4=tmp4
+                    #    counter1+=1
+                    #else:
+                    #    tmp_common4=np.vstack((tmp_common4,tmp4))
                 else:
                     pass
             if counter1>0:
@@ -613,9 +608,156 @@ def intersection_two_obj_1(obj1,obj2):
                 pass
         else:
             pass
-    #print(common4.shape)
-    #print(common4)
     return common4
+
+
+
+########## WORKING ##########
+
+
+def intersection_two_obj_convex(obj1,obj2):
+    """
+    # This is very simple but work correctly only when each subdivided 
+    # three ODs (i.e part part, ODA and ODB) are able to define as a
+    # set of tetrahedra.
+    """
+    print("       start1")
+    obj1_surf=generator_surface_1(obj1)
+    print("       end1")
+    print("       start2")
+    obj2_surf=generator_surface_1(obj2)
+    print("       end2")
+    print("       start3")
+    obj1_edge=generator_edge(obj1_surf)
+    print("       end3")
+    print("       start4")
+    obj2_edge=generator_edge(obj2_surf)
+    print("       end4")
+    
+    counter=0
+    for tr1 in obj1_surf:
+        for ed2 in obj2_edge:
+            if check_intersection_segment_surface_numerical_6d_tau(ed2,tr1): # intersection
+                tmp=intersection_line_segment_triangle(ed2,tr1)
+                if counter==0:
+                    p=tmp
+                else:
+                    p=np.append(p,tmp)
+                counter+=1
+            else:
+                pass
+    for tr2 in obj2_surf:
+        for ed1 in obj1_edge:
+            if check_intersection_segment_surface_numerical_6d_tau(ed1,tr2): # intersection
+                if counter==0:
+                    p=tmp
+                else:
+                    p=np.append(p,tmp)
+                counter+=1
+            else:
+                pass
+    if counter==0:
+        return np.array([[[[0]]]])
+    else:
+        point1=remove_doubling_in_perp_space(p.reshape(int(len(p)/18),6,3))
+        #print(' dividing into three PODs:')
+        #print('    Common   :     OD1 and     ODB')
+        #print('  UnCommon 1 :     OD1 and Not OD2')
+        #print('  UnCommon 2 : Not OD1 and     OD2')
+        #
+        # --------------------------
+        # (1) Extract vertces of 2nd OD which are insede 1st OD --> point_a1
+        #     Extract vertces of 2nd OD which are outsede 1st OD --> point_b2
+        #
+        counter1=0
+        counter2=0
+        tmp3=remove_doubling_in_perp_space(obj1_surf) # generating vertces of 1st OD
+        for i1 in range(len(tmp3)):
+            point_tmp=tmp3[i1]
+            counter=0
+            for tet in obj2:
+                num1=inside_outside_tetrahedron(point_tmp,tet)
+                if num1==0:
+                    counter+=1
+                    break
+                else:
+                    pass
+            if counter>0:
+                if counter1==0:
+                    tmp1a=point_tmp.reshape(18) # 18=6*3
+                else:
+                    tmp1a=np.append(tmp1a,point_tmp)
+                counter1+=1
+            else:
+                if counter2==0:
+                    tmp1b=point_tmp.reshape(18)
+                else:
+                    tmp1b=np.append(tmp1b,point_tmp)
+                counter2+=1
+        point_a1=tmp1a.reshape(int(len(tmp1a)/18),6,3)
+        point_b2=tmp1b.reshape(int(len(tmp1b)/18),6,3)
+        #
+        # (2) Extract vertces of 1st OD which are insede 2nd OD --> point_b1
+        #     Extract vertces of 1st OD which are outsede 2nd OD --> point_a2
+        #
+        counter1=0
+        counter2=0
+        tmp3=remove_doubling_in_perp_space(obj2_surf) # generating vertces of 2nd OD
+        for i1 in range(len(tmp3)):
+            point_tmp=tmp3[i1]
+            counter=0
+            for tet in obj1:
+                num1=inside_outside_tetrahedron(point_tmp,tet)
+                if num1==0:
+                    counter+=1
+                    break
+                else:
+                    pass
+            if counter>0:
+                if counter1==0:
+                    tmp1a=point_tmp.reshape(18) # 18=6*3
+                else:
+                    tmp1a=np.append(tmp1a,point_tmp)
+                counter1+=1
+            else:
+                if counter2==0:
+                    tmp1b=point_tmp.reshape(18)
+                else:
+                    tmp1b=np.append(tmp1b,point_tmp)
+                counter2+=1
+        point_b1=tmp1a.reshape(int(len(tmp1a)/18),6,3)
+        point_a2=tmp1b.reshape(int(len(tmp1b)/18),6,3)
+        #
+        # (3) Sum point A, point B and Intersections --->>> common part
+        #
+        # common part = point1 + point_a1 + point_b1
+        tmp=np.append(point1,point_a1)
+        tmp=np.append(tmp,point_b1)
+        tmp=tmp.reshape(int(len(tmp)/18),6,3) # 18=6*3
+        point_common=remove_doubling_in_perp_space(tmp)
+        
+        common=tetrahedralization_points(point_common)
+        if common.tolist()!=[[[[0]]]]:
+            return common
+        else:
+            print('no common part')
+            return 
+        """
+        #
+        # point_a = point_a1 + point_a2 + point1
+        tmp=np.append(point1,point_a1)
+        tmp=np.append(tmp,point_a2)
+        tmp=tmp.reshape(int(len(tmp)/18),6,3)
+        point_a=remove_doubling_in_perp_space(tmp)
+        #
+        # point_b = point_b1 + point_b2 + point1
+        tmp=np.append(point1,point_b1)
+        tmp=np.append(tmp,point_b2)
+        tmp=tmp.reshape(int(len(tmp)/18),6,3)
+        point_b=remove_doubling_in_perp_space(tmp)
+        #
+        return [point_common,point_a,point_b]
+        """
 
 if __name__ == '__main__':
     

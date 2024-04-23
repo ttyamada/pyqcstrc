@@ -17,9 +17,6 @@ from math1 import (projection3,
 from numericalc import numeric_value
 import numpy as np
 
-
-
-
 def shift_object(obj,shift):
     """shift an object
     """
@@ -142,6 +139,148 @@ def remove_doubling_in_perp_space(vst):
         a[i]=vst[b[i]]
     return a
 
+
+
+
+
+
+
+########## WIP ##########
+
+def generator_surface_1(obj):
+    """
+    # remove doubling surface in a set of tetrahedra in the OD (dim4)
+    #
+    """
+    
+    def get_tetrahedron_surface(tetrahedron):
+        """
+        get four triangles of tetrahedron.
+        """
+        # four triangles of tetrahedron: 1-2-3, 1-2-4, 1-3-4, 2-3-4
+        comb=[\
+        [0,1,2],\
+        [0,1,3],\
+        [0,2,3],\
+        [1,2,3]] 
+        #
+        # Four triangles the tetrahedron.
+        a=np.zeros((4,3,6,3),dtype=np.int64)
+        i1=0
+        for k in comb:
+            i2=0
+            for l in k:
+                a[i1][i2]=tetrahedron[l]
+                i2+=1
+            i1+=1
+        return a
+    
+    def equivalent_triangle_1(triangle1,triangle2):
+        """Check whether triangle1 and triangle2 are equivalent or not.
+        """
+        a=np.vstack([triangle1,triangle2])
+        a=remove_doubling_in_perp_space(a)
+        if len(a)==3:
+            return True # equivalent traiangle
+        else:
+            return False # not equivalent traiangles
+    
+    # (1) preparing a list of triangle surfaces without doubling (tmp2)
+    #print('get_tetrahedron_surface() starts')
+    n1,_,_,_=obj.shape
+    triangles=np.zeros((n1,4,3,6,3),dtype=np.int64)
+    i1=0
+    for tetrahedron in obj:
+        triangles[i1]=get_tetrahedron_surface(tetrahedron)
+        i1+=1
+    triangles=triangles.reshape(n1*4,3,6,3)
+    #print('get_tetrahedron_surface() ends')
+    #print('      number of triangle',len(triangles))
+    if n1==1:
+        return triangles
+    else:
+        # (2) 重複している三角形を探し、重複なしの三角形（すなはちobject表面の三角形）を得る。
+        #print(' search dounbling.....')
+        lst=[triangles[0]]
+        for i1 in range(1,len(triangles)):
+            tr1=triangles[i1]
+            counter=0
+            for tr2 in lst:
+                if equivalent_triangle_1(tr1,tr2): # equivalent
+                    counter+=1
+                    break
+                else:
+                    pass
+            if counter==0:
+                lst.append(tr1)
+        return np.array(lst,dtype=np.int64)
+        
+def generator_edge(obj):
+    """
+    generates edges
+    
+    Input
+    triangles, np.array with a shape=(number_of_triangles,3,6,3)
+    """
+    
+    def get_triangle_edge(triangle):
+        """
+        get four triangles of tetrahedron.
+        """
+        # three edges of triange: 0-1, 0-2, 1-2
+        comb=[\
+        [0,1],\
+        [0,2],\
+        [1,2]] 
+        #
+        # Four triangles the tetrahedron.
+        a=np.zeros((3,2,6,3),dtype=np.int64)
+        i1=0
+        for k in comb:
+            i2=0
+            for l in k:
+                a[i1][i2]=triangle[l]
+                i2+=1
+            i1+=1
+        return a
+    
+    def equivalent_edge_1(edge1,edge2):
+        """Check whether edge1 and edge2 are equivalent or not.
+        """
+        a=np.vstack([edge1,edge2])
+        a=remove_doubling_in_perp_space(a)
+        if len(a)==2:
+            return True # equivalent
+        else:
+            return False # not equivalent
+    
+    # (1) preparing a list of edges without doubling
+    n1,n2,_,_=obj.shape
+    edges=np.zeros((n1,n2,2,6,3),dtype=np.int64)
+    i1=0
+    for triangle in obj:
+        edges[i1]=get_triangle_edge(triangle)
+        i1+=1
+    edges=edges.reshape(n1*n2,2,6,3)
+    if n1==1:
+        return edges
+    else:
+        # (2) 重複している辺を探し、重複なしの辺（すなはちobject表面の辺）を得る。
+        #print(' search dounbling.....')
+        lst=[edges[0]]
+        for i1 in range(1,len(edges)):
+            ed1=edges[i1]
+            counter=0
+            for ed2 in lst:
+                if equivalent_edge_1(ed1,ed2): # equivalent
+                    counter+=1
+                    break
+                else:
+                    pass
+            if counter==0:
+                lst.append(ed1)
+        return np.array(lst,dtype=np.int64)
+        
 if __name__ == '__main__':
     
     # test
@@ -178,10 +317,13 @@ if __name__ == '__main__':
             v[i1]=generate_random_vector(ndim)
         return v
     
+    def generate_random_tetrahedron():
+        return generate_random_vectors(4)
+    
     #================
     # 重複のテスト
     #================
-    nset=5
+    nset=10
     vst=generate_random_vectors(nset)
     vst_d3=np.concatenate([vst,vst]) # doubling dim3 vectors
     vst_d4=np.stack([vst_d3,vst_d3]) # doubling dim4 vectors
@@ -198,4 +340,17 @@ if __name__ == '__main__':
     else:
         print('remove_doubling_in_perp_space: error')
     
+    #================
+    # 面と辺のテスト
+    #================
+    tetrahedron=generate_random_tetrahedron()
+    
+    # doubled tetrahedon
+    obj=np.stack([tetrahedron,tetrahedron]) # doubled tetrahedon
+    generator_surface_1(obj)
+    
+    # a tetrahedon
+    obj=tetrahedron
+    surface=generator_surface_1(obj.reshape(1,4,6,3))
+    generator_edge(surface)
     

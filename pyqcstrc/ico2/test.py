@@ -6,10 +6,14 @@
 import sys
 sys.path.append('.')
 import numpy as np
+import time
 
 try:
     import occupation_domain as od
     import two_occupation_domains as tod
+    
+    import utils
+    
 except ImportError:
     print('import error\n')
 
@@ -32,8 +36,31 @@ if __name__ == "__main__":
     
     
     # intersection of "asymmetric part of strt" and "strt at position pos_b1"
-    print('intersection starts')
+    print('    intersection starts')
+    #
+    start = time.time()
+    #
     common=tod.intersection(strt_asym,strt_pos1)
-    #print('common.shape',common.shape)
+    #
+    end=time.time()
+    time_diff=end-start
+    print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データを使用
+    #
     od.write(obj=common, path='.', basename='obj_common', format='xyz')
+    
+    print('    generator_surface_1 starts')
+    start = time.time()
+    surface_triangles=utils.generator_surface_1(common)
+    surface_edges=utils.generator_edge(surface_triangles)
+    od.write(obj=surface_triangles, path='.', basename='obj_common_surface_triangles', format='vesta',select='triangle')
+    od.write(obj=surface_edges, path='.', basename='obj_common_surface_edges', format='vesta',select='edge')
+    end=time.time()
+    time_diff=end-start
+    print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データを使用
+    
+    # TEST intersection_convex()
+    print('    intersection_convex starts')
+    common1=tod.intersection_convex(strt_sym,strt_pos1)
+    print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データを使用
+    od.write(obj=common1, path='.', basename='obj_common1', format='xyz')
     
