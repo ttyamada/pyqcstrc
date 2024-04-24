@@ -323,9 +323,10 @@ def generator_edge(obj):
         # (2) 重複している辺を探し、重複なしの辺（すなはちobject表面の辺）を得る。
         #"""
         #print(' search dounbling.....')
-        a=np.zeros((len(edges),6,3),dtype=np.int64)
+        a=np.zeros((n1*n2,3),dtype=np.float64)
         for i1 in range(len(a)):
-            a[i1]=centroid(edges[i1])
+            vt=centroid(edges[i1])
+            a[i1]=get_internal_component_numerical(vt)
         b=np.unique(a,return_index=True,axis=0)[1]
         num=len(b)
         a=np.zeros((num,2,6,3),dtype=np.int64)
