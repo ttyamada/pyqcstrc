@@ -622,9 +622,11 @@ def intersection_two_obj_convex(obj1,obj2):
     # set of tetrahedra.
     """
     print("       start1")
+    print("         num. of triangle:",len(obj1)*3)
     obj1_surf=generator_surface_1(obj1)
     print("       end1")
     print("       start2")
+    print("         num. of triangle:",len(obj2)*3)
     obj2_surf=generator_surface_1(obj2)
     print("       end2")
     print("       start3")
