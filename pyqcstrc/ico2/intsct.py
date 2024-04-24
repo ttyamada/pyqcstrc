@@ -683,9 +683,7 @@ def intersection_two_obj_convex(obj1,obj2):
         for point_tmp in tmp3:
             counter=0
             for tet in obj2:
-                #num1=inside_outside_tetrahedron(point_tmp,tet)
-                num1=inside_outside_tetrahedron_tau(point_tmp,tet)
-                if num1==0:
+                if inside_outside_tetrahedron_tau(point_tmp,tet):
                     counter+=1
                     break
                 else:
@@ -716,9 +714,7 @@ def intersection_two_obj_convex(obj1,obj2):
             point_tmp=tmp3[i1]
             counter=0
             for tet in obj1:
-                #num1=inside_outside_tetrahedron(point_tmp,tet)
-                num1=inside_outside_tetrahedron_tau(point_tmp,tet)
-                if num1==0:
+                if inside_outside_tetrahedron_tau(point_tmp,tet):
                     counter+=1
                     break
                 else:

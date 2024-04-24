@@ -162,7 +162,8 @@ def sort_vctors(vts):
     out=np.zeros(vts.shape,dtype=np.int64)
     vns=get_internal_component_sets_numerical(vts)
     
-    tmp=np.argsort(vns,axis=0)
+    #tmp=np.argsort(vns,axis=0)
+    tmp=np.argsort(vns[:,0])
     for i1 in range(n1):
         out[i1]=vts[tmp[i1][0]]
     return out
@@ -183,7 +184,9 @@ def sort_obj(obj):
         centroids[i1]=centroid(obj[i1])
     
     # 四面体の重心xyzのx順にソート
-    indx=np.argsort(centroids,axis=0)
+    #indx=np.argsort(centroids,axis=0)
+    indx=np.argsort(centroids[:,0])
+    
     for i1 in range(n1):
         out[i1]=tmp[indx[i1][0]]
     return out
@@ -293,21 +296,6 @@ def generator_unique_triangles(obj):
         a=np.zeros((num,3,6,3),dtype=np.int64)
         for i1 in range(num):
             a[i1]=triangles[b[i1]]
-        """
-        lst=[triangles[0]]
-        for i1 in range(1,len(triangles)):
-            tr1=triangles[i1]
-            counter=0
-            for tr2 in lst:
-                if equivalent_triangle(tr1,tr2): # equivalent
-                    counter+=1
-                    break
-                else:
-                    pass
-            if counter==0:
-                lst.append(tr1)
-        return np.array(lst,dtype=np.int64)
-        """
         return a
 
 def generator_unique_edges(obj):
@@ -349,7 +337,7 @@ def generator_surface_1(obj):
     #
     """
     # (1) preparing a list of triangle surfaces without doubling (tmp2)
-    #print('get_tetrahedron_surface() starts')
+    print('get_tetrahedron_surface() starts')
     n1,_,_,_=obj.shape
     triangles=np.zeros((n1,4,3,6,3),dtype=np.int64)
     i1=0
@@ -357,28 +345,42 @@ def generator_surface_1(obj):
         triangles[i1]=get_tetrahedron_surface(tetrahedron)
         i1+=1
     triangles=triangles.reshape(n1*4,3,6,3)
-    #print('get_tetrahedron_surface() ends')
-    #print('      number of triangle',len(triangles))
+    print('get_tetrahedron_surface() ends')
+    print('      number of triangle',len(triangles))
     if n1==1:
         return triangles
     else:
         # (2) 重複のない三角形（すなはちobject表面の三角形）のみを得る。
+        # 三角形が重複していれば重心も同じことを利用する。重心が一致すれば重複しているとは限らないが、
+        # objが正しく与えられているとすれば問題ない。
+        #
+        # まず重心xyzを求める
+        a=np.zeros((n1*4,3),dtype=np.float64)
+        for i1 in range(n1*4):
+            vt=centroid(triangles[i1])
+            a[i1]=get_internal_component_numerical(vt)
+        #
+        #
         # 以下のやり方は効率悪い。改善する必要がある。
-        #print('number of trianges:',len(triangles))
+        # xyzをxでソートし、indexを得る。
+        lst_indx=np.argsort(a[:,0])
+        #
+        # 重複しているtriangleはスキップ。表面のtriangleのみを選ぶ。
+        print('number of trianges:',len(lst_indx))
         lst=[]
-        for i1 in range(len(triangles)):
+        for i1 in range(len(lst_indx)):
             counter=0
-            for i2 in range(len(triangles)):
+            for i2 in range(len(lst_indx)):
                 if i1==i2:
                     pass
                 else:
-                    if equivalent_triangle(triangles[i1],triangles[i2]): # equivalent
+                    if np.allclose(a[i1],a[i2]): # equivalent
                         counter+=1
                         break
             if counter==0:
                 lst.append(i1)
         out=np.zeros((len(lst),3,6,3),dtype=np.int64)
-        #print('number of unique triangls:',len(lst))
+        print('number of unique triangls:',len(lst))
         for i1 in range(len(lst)):
             out[i1]=triangles[i1]
         return out
