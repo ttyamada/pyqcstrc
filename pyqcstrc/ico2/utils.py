@@ -361,7 +361,7 @@ def generator_surface_1(obj):
             a[i1]=get_internal_component_numerical(vt)
         #
         #
-        # 以下のやり方は効率悪い。改善する必要がある。
+        # 以下のやり方では効率悪く、triangleの数が多ければ時間がかかる。改善が必要。
         # xyzをxでソートし、indexを得る。
         lst_indx=np.argsort(a[:,0])
         #

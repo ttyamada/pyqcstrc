@@ -34,12 +34,22 @@ if __name__ == "__main__":
     # generat STRT OD located at 0,0,0,0,0,0 by symmetric operations (m-3-5).
     pos0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
     strt_sym=od.symmetric(strt_asym,pos0)
+    #
+    surface_triangles=utils.generator_surface_1(strt_sym)
+    od.write(obj=surface_triangles, path='.', basename='strt_symmetric_surface_triangles', format='vesta',select='triangle')
+    surface_edges=utils.generator_unique_edges(surface_triangles)
+    od.write(obj=surface_edges, path='.', basename='strt_symmetric_surface_edges', format='vesta',select='edge')
     
     
     # move STRT OD to a position 1 1 1 0 -1 0.
     pos_b1=np.array([[1,0,1],[1,0,1],[1,0,1],[0,0,1],[-1,0,1],[0,0,1]])#b_1
     strt_pos1=od.shift(strt_sym,pos_b1)
     od.write(obj=strt_pos1, path='.', basename='obj_strt1', format='xyz')
+    #
+    surface_triangles=utils.generator_surface_1(strt_pos1)
+    od.write(obj=surface_triangles, path='.', basename='strt1_symmetric_surface_triangles', format='vesta',select='triangle')
+    surface_edges=utils.generator_unique_edges(surface_triangles)
+    od.write(obj=surface_edges, path='.', basename='strt1_symmetric_surface_edges', format='vesta',select='edge')
     
     
     # intersection of "asymmetric part of strt" and "strt at position pos_b1"
@@ -73,6 +83,7 @@ if __name__ == "__main__":
     ###
     common1=tod.intersection_convex(strt_sym,strt_pos1)
     od.write(obj=common1, path='.', basename='obj_common1', format='xyz')
+    od.write(obj=common1, path='.', basename='obj_common1', format='vesta')
     ###
     end=time.time()
     time_diff=end-start
