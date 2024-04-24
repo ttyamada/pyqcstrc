@@ -279,7 +279,7 @@ def generator_unique_triangles(obj):
     if n1==1:
         return triangles
     else:
-        # (2) 重複のない三角形（すなはちobject表面の三角形）を得る。
+        # (2) ユニークな三角形を得る。
         # 三角形が重複していれば重心も同じことを利用する。重心が一致すれば重複しているとは限らないが、
         # objが正しく与えられているとすれば問題ない。
         #print('number of trianges:',len(triangles))
@@ -329,7 +329,7 @@ def generator_unique_edges(obj):
     if n1==1:
         return edges
     else:
-        # (2) 重複なしの辺（すなはちobject表面の辺）を得る。
+        # (2) 重複のないユニークな辺を得る。
         #print('number of edges:',len(edges))
         a=np.zeros((n1*n2,3),dtype=np.float64)
         for i1 in range(len(a)):
@@ -341,21 +341,6 @@ def generator_unique_edges(obj):
         a=np.zeros((num,2,6,3),dtype=np.int64)
         for i1 in range(num):
             a[i1]=edges[b[i1]]
-        """
-        lst=[edges[0]]
-        for i1 in range(1,len(edges)):
-            ed1=edges[i1]
-            counter=0
-            for ed2 in lst:
-                if equivalent_edge(ed1,ed2): # equivalent
-                    counter+=1
-                    break
-                else:
-                    pass
-            if counter==0:
-                lst.append(ed1)
-        return np.array(lst,dtype=np.int64)
-        """
         return a
 
 def generator_surface_1(obj):
@@ -378,8 +363,6 @@ def generator_surface_1(obj):
         return triangles
     else:
         # (2) 重複のない三角形（すなはちobject表面の三角形）のみを得る。
-        # 三角形が重複していれば重心も同じことを利用する。重心が一致すれば重複しているとは限らないが、
-        # objが正しく与えられているとすれば問題ない。
         # 以下のやり方は効率悪い。改善する必要がある。
         #print('number of trianges:',len(triangles))
         lst=[]
