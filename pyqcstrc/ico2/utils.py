@@ -242,14 +242,14 @@ def generator_surface_1(obj):
         # (2) 重複している三角形を探し、重複のない三角形（すなはちobject表面の三角形）のみを得る。
         # 三角形が重複していれば重心も同じことを利用する。重心が一致すれば重複しているとは限らないが、
         # objが正しく与えられているとすれば問題ない。
-        #print(' search dounbling.....')
-        #"""
+        #print('number of trianges:',len(triangles))
         a=np.zeros((n1*4,3),dtype=np.float64)
         for i1 in range(n1*4):
             vt=centroid(triangles[i1])
             a[i1]=get_internal_component_numerical(vt)
         b=np.unique(a,return_index=True,axis=0)[1]
         num=len(b)
+        #print('number of unique trianges:',num)
         a=np.zeros((num,3,6,3),dtype=np.int64)
         for i1 in range(num):
             a[i1]=triangles[b[i1]]
@@ -321,14 +321,14 @@ def generator_edge(obj):
         return edges
     else:
         # (2) 重複している辺を探し、重複なしの辺（すなはちobject表面の辺）を得る。
-        #"""
-        #print(' search dounbling.....')
+        #print('number of edges:',len(edges))
         a=np.zeros((n1*n2,3),dtype=np.float64)
         for i1 in range(len(a)):
             vt=centroid(edges[i1])
             a[i1]=get_internal_component_numerical(vt)
         b=np.unique(a,return_index=True,axis=0)[1]
         num=len(b)
+        #print('number of unique edges:',num)
         a=np.zeros((num,2,6,3),dtype=np.int64)
         for i1 in range(num):
             a[i1]=edges[b[i1]]
