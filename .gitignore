@@ -4,6 +4,8 @@ __pycache__/
 .DS_Store
 
 /memo
+/tmp
+/old
 /pyqcstrc.egg-info
 /build/
 /dist/
