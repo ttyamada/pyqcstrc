@@ -621,26 +621,27 @@ def intersection_two_obj_convex(obj1,obj2):
     # three ODs (i.e part part, ODA and ODB) are able to define as a
     # set of tetrahedra.
     """
-    print("       start1")
-    print("         num. of triangle:",len(obj1)*3)
+    print("       start: intersection_two_obj_convex()")
+    print("         num. of triangles:",len(obj1)*4)
+    print("         num. of triangles:",len(obj2)*4)
     obj1_surf=generator_surface_1(obj1)
     print("       end1")
-    print("       start2")
-    print("         num. of triangle:",len(obj2)*3)
     obj2_surf=generator_surface_1(obj2)
     print("       end2")
-    print("       start3")
     obj1_edge=generator_edge(obj1_surf)
     print("       end3")
-    print("       start4")
     obj2_edge=generator_edge(obj2_surf)
     print("       end4")
+    print("         num. of unique triangles in obj1:",len(obj1_surf))
+    print("         num. of unique triangles in obj2:",len(obj2_surf))
+    print("         num. of unique deges in obj1:",len(obj1_edge))
+    print("         num. of unique deges in obj2:",len(obj2_edge))
     
     counter=0
     for tr1 in obj1_surf:
         for ed2 in obj2_edge:
             if check_intersection_segment_surface_numerical_6d_tau(ed2,tr1): # intersection
-                tmp=intersection_line_segment_triangle(ed2,tr1)
+                tmp=intersection_segment_surface(ed2,tr1)
                 if counter==0:
                     p=tmp
                 else:
@@ -648,9 +649,11 @@ def intersection_two_obj_convex(obj1,obj2):
                 counter+=1
             else:
                 pass
+    print("       end5")
     for tr2 in obj2_surf:
         for ed1 in obj1_edge:
             if check_intersection_segment_surface_numerical_6d_tau(ed1,tr2): # intersection
+                tmp=intersection_segment_surface(ed1,tr2)
                 if counter==0:
                     p=tmp
                 else:
@@ -658,6 +661,7 @@ def intersection_two_obj_convex(obj1,obj2):
                 counter+=1
             else:
                 pass
+    print("       end6")
     if counter==0:
         return np.array([[[[0]]]])
     else:
@@ -674,11 +678,11 @@ def intersection_two_obj_convex(obj1,obj2):
         counter1=0
         counter2=0
         tmp3=remove_doubling_in_perp_space(obj1_surf) # generating vertces of 1st OD
-        for i1 in range(len(tmp3)):
-            point_tmp=tmp3[i1]
+        for point_tmp in tmp3:
             counter=0
             for tet in obj2:
-                num1=inside_outside_tetrahedron(point_tmp,tet)
+                #num1=inside_outside_tetrahedron(point_tmp,tet)
+                num1=inside_outside_tetrahedron_tau(point_tmp,tet)
                 if num1==0:
                     counter+=1
                     break
@@ -698,6 +702,7 @@ def intersection_two_obj_convex(obj1,obj2):
                 counter2+=1
         point_a1=tmp1a.reshape(int(len(tmp1a)/18),6,3)
         point_b2=tmp1b.reshape(int(len(tmp1b)/18),6,3)
+        print("       end7")
         #
         # (2) Extract vertces of 1st OD which are insede 2nd OD --> point_b1
         #     Extract vertces of 1st OD which are outsede 2nd OD --> point_a2
@@ -709,7 +714,8 @@ def intersection_two_obj_convex(obj1,obj2):
             point_tmp=tmp3[i1]
             counter=0
             for tet in obj1:
-                num1=inside_outside_tetrahedron(point_tmp,tet)
+                #num1=inside_outside_tetrahedron(point_tmp,tet)
+                num1=inside_outside_tetrahedron_tau(point_tmp,tet)
                 if num1==0:
                     counter+=1
                     break
@@ -729,6 +735,7 @@ def intersection_two_obj_convex(obj1,obj2):
                 counter2+=1
         point_b1=tmp1a.reshape(int(len(tmp1a)/18),6,3)
         point_a2=tmp1b.reshape(int(len(tmp1b)/18),6,3)
+        print("       end8")
         #
         # (3) Sum point A, point B and Intersections --->>> common part
         #

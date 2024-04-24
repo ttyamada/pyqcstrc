@@ -133,8 +133,8 @@ def check_intersection_segment_surface_numerical_6d_tau(line_segment,triangle):
 def check_intersection_segment_surface_numerical_6d_tau(ln,tr):
     
     # TAU-style to Float
-    ln=numerical_vectors(ln)
-    tr=numerical_vectors(tr)
+    #ln=numerical_vectors(ln)
+    #tr=numerical_vectors(tr)
     
     ln=get_internal_component_sets_numerical(ln)
     tr=get_internal_component_sets_numerical(tr)
@@ -198,8 +198,8 @@ def check_intersection_two_segment_numerical_6d_tau(segment_1,segment_2):
     
     """
     # TAU-style to Float
-    segment_1=numerical_vectors(segment_1)
-    segment_2=numerical_vectors(segment_2)
+    #segment_1=numerical_vectors(segment_1)
+    #segment_2=numerical_vectors(segment_2)
     
     ln1=get_internal_component_sets_numerical(segment_1)
     ln2=get_internal_component_sets_numerical(segment_2)
@@ -311,8 +311,8 @@ def inside_outside_obj(point,obj):
 
 def inside_outside_tetrahedron_tau(point,tetrahedron):
     
-    point=numerical_vector(point)
-    tetrahedron=numerical_vectors(tetrahedron)
+    #point=numerical_vector(point)
+    #tetrahedron=numerical_vectors(tetrahedron)
     # 
     point=get_internal_component_numerical(point)
     tetrahedron=get_internal_component_sets_numerical(tetrahedron)
@@ -418,17 +418,17 @@ def tetrahedron_volume_numerical(tetrahedron):
 
 
 
-def get_internal_component_numerical(vn):
+def get_internal_component_numerical(vt):
     """
     Parameters
     ----------
     vn: array
         6-dimensional vector, xyzuvw.
     """
-    #vn=numerical_vector(vn)
+    vn=numerical_vector(vt)
     return projection3_numerical(vn)
 
-def get_internal_component_sets_numerical(vsn):
+def get_internal_component_sets_numerical(vts):
     """parallel and perpendicular components of a 6D lattice vector in direct space.
     
     Parameters
@@ -436,11 +436,11 @@ def get_internal_component_sets_numerical(vsn):
     vsn: array
         set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
     """
-    num=len(vsn)
-    m=np.zeros((num,3),dtype=np.float64)
-    for i in range(num):
-        m[i]=get_internal_component_numerical(vsn[i])
-    return m
+    vns=numerical_vectors(vts)
+    return projection3_sets_numerical(vns)
+
+
+
 
 def projection_numerical(vn):
     """parallel and perpendicular components of a 6D lattice vector in direct space.
@@ -458,7 +458,7 @@ def projection_numerical(vn):
     v6 =  (vn[3]-vn[5]) + TAU*(vn[1]-vn[2]) # z in Eperp
     return np.array([v1,v2,v3,v4,v5,v6],dtype=np.float64)
 
-def projection_sets_numerical(vsn):
+def projection_sets_numerical(vns):
     """parallel and perpendicular components of a 6D lattice vector in direct space.
     
     Parameters
@@ -466,10 +466,10 @@ def projection_sets_numerical(vsn):
     vsn: array
         set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
     """
-    num=len(vsn)
+    num=len(vns)
     m=np.zeros((num,6),dtype=np.float64)
     for i in range(num):
-        m[i]=projection_numerical(vsn[i])
+        m[i]=projection_numerical(vns[i])
     return m
     
 def projection3_numerical(vn):
@@ -485,7 +485,7 @@ def projection3_numerical(vn):
     v6 =  (vn[3]-vn[5]) + TAU*(vn[1]-vn[2]) # z in Eperp
     return np.array([v4,v5,v6],dtype=np.float64)
 
-def projection3_sets_numerical(vsn):
+def projection3_sets_numerical(vns):
     """perpendicular component of a 6D lattice vector in direct space.
     
     Parameters
@@ -493,10 +493,10 @@ def projection3_sets_numerical(vsn):
     vsn: array
         set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
     """
-    num=len(vsn)
+    num=len(vns)
     m=np.zeros((num,3),dtype=np.float64)
     for i in range(num):
-        m[i]=projection3_numerical(vsn[i])
+        m[i]=projection3_numerical(vns[i])
     return m
 
 

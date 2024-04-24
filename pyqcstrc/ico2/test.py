@@ -24,6 +24,13 @@ if __name__ == "__main__":
     strt_asym=od.read_xyz(path='../xyz',basename='strt_aysmmetric')
     od.write(obj=strt_asym, path='.', basename='strt_aysmmetric', format='xyz')
     
+    surface_triangles=utils.generator_surface_1(strt_asym)
+    surface_edges=utils.generator_edge(surface_triangles)
+    od.write(obj=surface_triangles, path='.', basename='strt_aysmmetric_surface_triangles', format='vesta',select='triangle')
+    od.write(obj=surface_edges, path='.', basename='strt_aysmmetric_surface_edges', format='vesta',select='edge')
+    
+    
+    """
     # generat STRT OD located at 0,0,0,0,0,0 by symmetric operations (m-3-5).
     pos0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
     strt_sym=od.symmetric(strt_asym,pos0)
@@ -58,9 +65,11 @@ if __name__ == "__main__":
     time_diff=end-start
     print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データを使用
     
+    
+    
     # TEST intersection_convex()
     print('    intersection_convex starts')
     common1=tod.intersection_convex(strt_sym,strt_pos1)
     print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データを使用
     od.write(obj=common1, path='.', basename='obj_common1', format='xyz')
-    
+    """

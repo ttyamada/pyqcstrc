@@ -15,7 +15,12 @@ from math1 import (projection3,
                     sub,
                     mul,
                     div)
-from numericalc import numeric_value
+from numericalc import (numeric_value,
+                        numerical_vector,
+                        numerical_vectors,
+                        get_internal_component_numerical,
+                        get_internal_component_sets_numerical)
+
 import numpy as np
 
 def shift_object(obj,shift):
@@ -144,9 +149,44 @@ def remove_doubling_in_perp_space(vst):
 
 
 
-
-
 ########## WIP ##########
+
+def sort_vctors(vts):
+    """
+    sort vectors in TAU-style
+    
+    xi,yi,ziをxiでソート
+    
+    """
+    n1,n2,_=vts.shape
+    out=np.zeros(vts.shape,dtype=np.int64)
+    vns=get_internal_component_sets_numerical(vts)
+    
+    tmp=np.argsort(vns,axis=0)
+    for i1 in range(n1):
+        out[i1]=vts[tmp[i1][0]]
+    return out
+
+def sort_obj(obj):
+    """
+    sort tehtahedra in an object
+    
+    """
+    out=np.zeros(vts.shape,dtype=np.int64)
+    centroids=np.zeros(len(obj),dtype=np.float64)
+    tmp=np.zeros((obj.shape,3),dtype=np.int64)
+    
+    # 各tetrahedronの頂点xyzをx順にソート
+    # 同時に重心を求めておく。
+    for i1 in range(len(obj)):
+        tmp[i1]=sort_vctors(obj[i1])
+        centroids[i1]=centroid(obj[i1])
+    
+    # 四面体の重心xyzのx順にソート
+    indx=np.argsort(centroids,axis=0)
+    for i1 in range(n1):
+        out[i1]=tmp[indx[i1][0]]
+    return out
 
 def generator_surface_1(obj):
     """
@@ -200,12 +240,14 @@ def generator_surface_1(obj):
         return triangles
     else:
         # (2) 重複している三角形を探し、重複のない三角形（すなはちobject表面の三角形）のみを得る。
-        # 三角形が重複していれば重心も同じことを利用する。
+        # 三角形が重複していれば重心も同じことを利用する。重心が一致すれば重複しているとは限らないが、
+        # objが正しく与えられているとすれば問題ない。
         #print(' search dounbling.....')
-        
-        a=np.zeros((len(triangles),6,3),dtype=np.int64)
-        for i1 in range(len(a)):
-            a[i1]=centroid(triangle[i1])
+        #"""
+        a=np.zeros((n1*4,3),dtype=np.float64)
+        for i1 in range(n1*4):
+            vt=centroid(triangles[i1])
+            a[i1]=get_internal_component_numerical(vt)
         b=np.unique(a,return_index=True,axis=0)[1]
         num=len(b)
         a=np.zeros((num,3,6,3),dtype=np.int64)
@@ -227,7 +269,7 @@ def generator_surface_1(obj):
         return np.array(lst,dtype=np.int64)
         """
         return a
-        
+
 def generator_edge(obj):
     """
     generates edges
@@ -279,6 +321,7 @@ def generator_edge(obj):
         return edges
     else:
         # (2) 重複している辺を探し、重複なしの辺（すなはちobject表面の辺）を得る。
+        #"""
         #print(' search dounbling.....')
         a=np.zeros((len(edges),6,3),dtype=np.int64)
         for i1 in range(len(a)):
@@ -304,6 +347,7 @@ def generator_edge(obj):
         return np.array(lst,dtype=np.int64)
         """
         return a
+
 if __name__ == '__main__':
     
     # test
@@ -343,6 +387,22 @@ if __name__ == '__main__':
     def generate_random_tetrahedron():
         return generate_random_vectors(4)
     
+    
+    
+    #================
+    # ソートのテスト
+    #================
+    nset=10
+    vts=generate_random_vectors(nset)
+    vns=get_internal_component_sets_numerical(vts)
+    for vn in vns:
+        print(vn)
+    print('\n')
+    vts1=sort_vctors(vts)
+    vns1=get_internal_component_sets_numerical(vts1)
+    for vn in vns1:
+        print(vn)
+    
     #================
     # 重複のテスト
     #================
@@ -376,4 +436,6 @@ if __name__ == '__main__':
     obj=tetrahedron
     surface=generator_surface_1(obj.reshape(1,4,6,3))
     generator_edge(surface)
+    
+    
     
