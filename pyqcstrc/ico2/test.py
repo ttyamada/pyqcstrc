@@ -26,11 +26,11 @@ if __name__ == "__main__":
     
     surface_triangles=utils.generator_surface_1(strt_asym)
     od.write(obj=surface_triangles, path='.', basename='strt_aysmmetric_surface_triangles', format='vesta',select='triangle')
-    surface_edges=utils.generator_edge(surface_triangles)
+    surface_edges=utils.generator_unique_edges(surface_triangles)
     od.write(obj=surface_edges, path='.', basename='strt_aysmmetric_surface_edges', format='vesta',select='edge')
     
     
-    """
+    #"""
     # generat STRT OD located at 0,0,0,0,0,0 by symmetric operations (m-3-5).
     pos0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
     strt_sym=od.symmetric(strt_asym,pos0)
@@ -44,23 +44,23 @@ if __name__ == "__main__":
     
     # intersection of "asymmetric part of strt" and "strt at position pos_b1"
     print('    intersection starts')
-    #
     start = time.time()
-    #
+    ###
     common=tod.intersection(strt_asym,strt_pos1)
-    #
+    od.write(obj=common, path='.', basename='obj_common', format='xyz')
+    ###
     end=time.time()
     time_diff=end-start
     print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データを使用
-    #
-    od.write(obj=common, path='.', basename='obj_common', format='xyz')
     
     print('    generator_surface_1 starts')
     start = time.time()
+    ###
     surface_triangles=utils.generator_surface_1(common)
-    surface_edges=utils.generator_edge(surface_triangles)
+    surface_edges=utils.generator_unique_edges(surface_triangles)
     od.write(obj=surface_triangles, path='.', basename='obj_common_surface_triangles', format='vesta',select='triangle')
     od.write(obj=surface_edges, path='.', basename='obj_common_surface_edges', format='vesta',select='edge')
+    ###
     end=time.time()
     time_diff=end-start
     print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データを使用
@@ -69,7 +69,12 @@ if __name__ == "__main__":
     
     # TEST intersection_convex()
     print('    intersection_convex starts')
+    start = time.time()
+    ###
     common1=tod.intersection_convex(strt_sym,strt_pos1)
-    print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データを使用
     od.write(obj=common1, path='.', basename='obj_common1', format='xyz')
-    """
+    ###
+    end=time.time()
+    time_diff=end-start
+    print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データを使用
+    #"""

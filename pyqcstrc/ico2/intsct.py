@@ -35,7 +35,9 @@ from utils import (remove_doubling_in_perp_space,
                     obj_volume_6d,
                     tetrahedron_volume_6d,
                     generator_surface_1,
-                    generator_edge)
+                    generator_unique_triangles,
+                    generator_unique_edges,
+                    )
                     
 TAU=(1+np.sqrt(5))/2.0
 EPS=1e-6
@@ -628,9 +630,9 @@ def intersection_two_obj_convex(obj1,obj2):
     print("       end1")
     obj2_surf=generator_surface_1(obj2)
     print("       end2")
-    obj1_edge=generator_edge(obj1_surf)
+    obj1_edge=generator_unique_edges(obj1_surf)
     print("       end3")
-    obj2_edge=generator_edge(obj2_surf)
+    obj2_edge=generator_unique_edges(obj2_surf)
     print("       end4")
     print("         num. of unique triangles in obj1:",len(obj1_surf))
     print("         num. of unique triangles in obj2:",len(obj2_surf))
