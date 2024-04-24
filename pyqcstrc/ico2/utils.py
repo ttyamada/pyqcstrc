@@ -151,6 +151,8 @@ def remove_doubling_in_perp_space(vst):
 
 ########## WIP ##########
 
+# see https://note.nkmk.me/python-numpy-sort-argsort/
+
 def sort_vctors(vts):
     """
     sort vectors in TAU-style
@@ -163,7 +165,7 @@ def sort_vctors(vts):
     vns=get_internal_component_sets_numerical(vts)
     
     #tmp=np.argsort(vns,axis=0)
-    tmp=np.argsort(vns[:,0])
+    tmp=vns[np.argsort(vns[:,0])]
     for i1 in range(n1):
         out[i1]=vts[tmp[i1][0]]
     return out
@@ -177,15 +179,14 @@ def sort_obj(obj):
     centroids=np.zeros(len(obj),dtype=np.float64)
     tmp=np.zeros((obj.shape,3),dtype=np.int64)
     
-    # 各tetrahedronの頂点xyzをx順にソート
-    # 同時に重心を求めておく。
+    # 各tetrahedronの頂点xyzをx順にソートすると同時に重心を求めておく。
     for i1 in range(len(obj)):
         tmp[i1]=sort_vctors(obj[i1])
         centroids[i1]=centroid(obj[i1])
     
     # 四面体の重心xyzのx順にソート
     #indx=np.argsort(centroids,axis=0)
-    indx=np.argsort(centroids[:,0])
+    indx=centroids[np.argsort(centroids[:,0])]
     
     for i1 in range(n1):
         out[i1]=tmp[indx[i1][0]]
@@ -355,26 +356,26 @@ def generator_surface_1(obj):
         # objが正しく与えられているとすれば問題ない。
         #
         # まず重心xyzを求める
-        a=np.zeros((n1*4,3),dtype=np.float64)
+        xyz=np.zeros((n1*4,3),dtype=np.float64)
         for i1 in range(n1*4):
             vt=centroid(triangles[i1])
-            a[i1]=get_internal_component_numerical(vt)
+            xyz[i1]=get_internal_component_numerical(vt)
         #
         #
         # 以下のやり方では効率悪く、triangleの数が多ければ時間がかかる。改善が必要。
         # xyzをxでソートし、indexを得る。
-        lst_indx=np.argsort(a[:,0])
+        indx_xyz=np.argsort(xyz[:,0])
         #
         # 重複しているtriangleはスキップ。表面のtriangleのみを選ぶ。
-        print('number of trianges:',len(lst_indx))
+        print('number of trianges:',len(indx_xyz))
         lst=[]
-        for i1 in range(len(lst_indx)):
+        for i1 in range(len(indx_xyz)):
             counter=0
-            for i2 in range(len(lst_indx)):
+            for i2 in range(len(indx_xyz)):
                 if i1==i2:
                     pass
                 else:
-                    if np.allclose(a[i1],a[i2]): # equivalent
+                    if np.allclose(xyz[i1],xyz[i2]): # equivalent
                         counter+=1
                         break
             if counter==0:
