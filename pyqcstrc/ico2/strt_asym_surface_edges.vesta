@@ -77,7 +77,7 @@ PLN2D
   0    0    0    0
 MOLECULE                
 TITLE
-./strt_asym_surface_edges_0
+./strt_asym_surface_edges_1
 
 GROUP                
 1 1 Custom                
@@ -152,7 +152,7 @@ PLN2D
   0    0    0    0
 MOLECULE                
 TITLE
-./strt_asym_surface_edges_0
+./strt_asym_surface_edges_2
 
 GROUP                
 1 1 Custom                

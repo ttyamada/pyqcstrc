@@ -24,13 +24,14 @@ if __name__ == "__main__":
     strt_asym=od.read_xyz(path='../xyz',basename='strt_aysmmetric')
     od.write(obj=strt_asym, path='.', basename='strt_aysmmetric', format='xyz')
     od.write(obj=strt_asym, path='.', basename='strt_aysmmetric', format='vesta')
-    """
+    
     surface_triangles=utils.generator_surface_1(strt_asym)
     od.write(obj=surface_triangles, path='.', basename='strt_asym_surface_triangles', format='vesta',select='normal')
+    od.write(obj=surface_triangles, path='.', basename='strt_asym_surface_triangles', format='xyz', select='triangle')
     surface_edges=utils.generator_unique_edges(surface_triangles)
     od.write(obj=strt_asym, path='.', basename='strt_asym_surface_edges', format='vesta',select='normal')
     
-    
+    """
     # generat STRT OD located at 0,0,0,0,0,0 by symmetric operations (m-3-5).
     pos0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
     strt_sym=od.symmetric(strt_asym,pos0)

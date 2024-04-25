@@ -73,7 +73,7 @@ PLN2D
   0    0    0    0
 MOLECULE                
 TITLE
-./strt_asym_surface_triangles_0
+./strt_asym_surface_triangles_1
 
 GROUP                
 1 1 Custom                
@@ -144,7 +144,7 @@ PLN2D
   0    0    0    0
 MOLECULE                
 TITLE
-./strt_asym_surface_triangles_0
+./strt_asym_surface_triangles_2
 
 GROUP                
 1 1 Custom                
@@ -215,7 +215,7 @@ PLN2D
   0    0    0    0
 MOLECULE                
 TITLE
-./strt_asym_surface_triangles_0
+./strt_asym_surface_triangles_3
 
 GROUP                
 1 1 Custom                
@@ -286,7 +286,7 @@ PLN2D
   0    0    0    0
 MOLECULE                
 TITLE
-./strt_asym_surface_triangles_0
+./strt_asym_surface_triangles_4
 
 GROUP                
 1 1 Custom                
@@ -357,7 +357,7 @@ PLN2D
   0    0    0    0
 MOLECULE                
 TITLE
-./strt_asym_surface_triangles_0
+./strt_asym_surface_triangles_5
 
 GROUP                
 1 1 Custom                
@@ -428,7 +428,7 @@ PLN2D
   0    0    0    0
 MOLECULE                
 TITLE
-./strt_asym_surface_triangles_0
+./strt_asym_surface_triangles_6
 
 GROUP                
 1 1 Custom                
@@ -499,7 +499,7 @@ PLN2D
   0    0    0    0
 MOLECULE                
 TITLE
-./strt_asym_surface_triangles_0
+./strt_asym_surface_triangles_7
 
 GROUP                
 1 1 Custom                
