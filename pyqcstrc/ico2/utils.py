@@ -369,9 +369,9 @@ def generator_surface_1(obj):
         # 重複しているtriangleはスキップ。表面のtriangleのみを選ぶ。
         print('number of trianges:',len(indx_xyz))
         lst=[]
-        for i1 in range(len(indx_xyz)):
+        for i1 in indx_xyz:
             counter=0
-            for i2 in range(len(indx_xyz)):
+            for i2 in indx_xyz:
                 if i1==i2:
                     pass
                 else:
