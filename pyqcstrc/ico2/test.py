@@ -25,7 +25,7 @@ if __name__ == "__main__":
     od.write(obj=strt_asym, path='.', basename='strt_aysmmetric', format='xyz')
     
     surface_triangles=utils.generator_surface_1(strt_asym)
-    od.write(obj=strt_asym, path='.', basename='strt_asym_surface_triangles', format='vesta',select='normal')
+    od.write(obj=surface_triangles, path='.', basename='strt_asym_surface_triangles', format='vesta',select='normal')
     surface_edges=utils.generator_unique_edges(surface_triangles)
     od.write(obj=strt_asym, path='.', basename='strt_asym_surface_edges', format='vesta',select='normal')
     
