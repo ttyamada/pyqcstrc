@@ -8,10 +8,20 @@ import numpy as np
 TAU=(1+np.sqrt(5))/2.0
 EPS=1e-6
 
-# WIP
 def point_on_segment(point, line_segment):
-    # judge whether a point is on a line segment, A-B, or not.
-    #
+    """judge whether a point is on a line segment, A-B, or not.
+    
+    Parameters
+    ----------
+    point: array
+        coordinate of the point, xyz
+    line_segment: array
+        two coordinates of line segment, xyz0, xyz1
+    
+    Returns
+    -------
+    int
+    """
     
     point=numerical_vector(point)
     ln=numerical_vectors(line_segment)
@@ -35,42 +45,6 @@ def point_on_segment(point, line_segment):
             return False #    P A==B
     else:
         return False
-
-"""
-def point_on_segment(point, line_segment):
-    #judge whether a point is on a line segment, A-B, or not.
-    #
-    #Parameters
-    #----------
-    #point: array
-    #    coordinate of the point, xyz
-    #line_segment: array
-    #    two coordinates of line segment, xyz0, xyz1
-    #
-    #Returns
-    #-------
-    #int
-    
-    xyzP=projection3_numerical(point)
-    xyzL=projection3_sets_numerical(line_segment)
-    
-    vecPA=xyzP-xyzL[0]
-    vecBA=xyzL[1]-xyzL[0]
-    
-    lPA=np.linalg.norm(vecPA)
-    lBA=np.linalg.norm(vecBA)
-    if lBA>0.0 and abs(np.dot(vecPA,vecBA)-lPA*lBA)<EPS:
-        s=lPA/lBA
-        if s>=0.0 and s<=1.0:
-            return 0
-        elif s>1.0:
-            return 1 #       A==B P
-        else:
-            return -1 #    P A==B
-    else:
-        return 2
-"""
-
 
 def numeric_value(t):
     """Numeric value of a TAU-style value, a.
