@@ -25,6 +25,10 @@ if __name__ == "__main__":
     od.write(obj=strt_asym, path='.', basename='strt_aysmmetric', format='xyz')
     od.write(obj=strt_asym, path='.', basename='strt_aysmmetric', format='vesta')
     
+    a=utils.merge_two_tetrahedra(strt_asym[0],strt_asym[1])
+    print(a)
+    
+    """
     surface_triangles=utils.generator_surface_1(strt_asym)
     od.write(obj=surface_triangles, path='.', basename='strt_asym_surface_triangles', format='vesta',select='normal')
     od.write(obj=surface_triangles, path='.', basename='strt_asym_surface_triangles', format='xyz', select='triangle')
@@ -38,8 +42,8 @@ if __name__ == "__main__":
     od.write(obj=strt_sym, path='.', basename='obj_strt0', format='xyz')
     od.write(obj=strt_sym, path='.', basename='obj_strt0', format='vesta')
     
-    # move STRT OD to a position 1 1 1 0 -1 0.
-    pos_b1=np.array([[1,0,1],[1,0,1],[1,0,1],[0,0,1],[-1,0,1],[0,0,1]])#b_1
+    # move STRT OD to a position 1 0 0 0 0 0.
+    pos_b1=np.array([[1,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
     strt_pos1=od.shift(strt_sym,pos_b1)
     od.write(obj=strt_pos1, path='.', basename='obj_strt1', format='xyz')
     od.write(obj=strt_pos1, path='.', basename='obj_strt1', format='vesta')
@@ -69,9 +73,9 @@ if __name__ == "__main__":
     end=time.time()
     time_diff=end-start
     print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データを使用
+    """
     
-    
-    #"""
+    """
     # TEST intersection_convex()
     print('    intersection_convex starts')
     start = time.time()
@@ -83,4 +87,4 @@ if __name__ == "__main__":
     end=time.time()
     time_diff=end-start
     print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データを使用
-    #"""
+    """

@@ -19,7 +19,8 @@ from numericalc import (numeric_value,
                         numerical_vector,
                         numerical_vectors,
                         get_internal_component_numerical,
-                        get_internal_component_sets_numerical)
+                        get_internal_component_sets_numerical,
+                        point_on_segment)
 
 import numpy as np
 
@@ -150,7 +151,6 @@ def remove_doubling_in_perp_space(vst):
 
 
 ########## WIP ##########
-
 # see https://note.nkmk.me/python-numpy-sort-argsort/
 
 def sort_vctors(vts):
@@ -386,6 +386,148 @@ def generator_surface_1(obj):
         #print('shape:',out.shape)
         return out
 
+
+
+def remove_vectors(vts1,vts2):
+    """
+    # 6次元ベクトルリストvlst1から6次元ベクトルリストvlst2にあるベクトルを抜きとる
+    """
+    lst=[]
+    for i1 in range(len(vts1)):
+        counter=0
+        for i2 in range(len(vts2)):
+            if np.all(vts1[i1]==vts2[i2]):
+                counter+=1
+                break
+        if counter==0:
+            lst.append(i1)
+    num=len(lst)
+    if num!=0:
+        out=np.zeros((len(lst),6,3),dtype=np.int64)
+        for i1 in range(len(lst)):
+            out[i1]=vts1[lst[i1]]
+        return out
+    else:
+        return vts1
+
+def remove_vector(vts,vt):
+    """
+    # 6次元ベクトルリストvlst1から6次元ベクトルvt2を抜きとる
+    """
+    lst=[]
+    for i1 in range(len(vts)):
+        counter=0
+        if np.all(vts[i1]==vt):
+            pass
+        else:
+            lst.append(i1)
+    num=len(lst)
+    if num!=0:
+        out=np.zeros((len(lst),6,3),dtype=np.int64)
+        for i1 in range(len(lst)):
+            out[i1]=vts1[lst[i1]]
+        return out
+    else:
+        return vlst1
+
+
+
+########## WIP ##########
+def check_two_tetrahedra(tetrahedron_1,tetrahedron_2):
+    # check whether tetrahedron_1 and _2 are sharing a triangle surface or not.
+    
+    # generate traiangles
+    surface1=get_tetrahedron_surface(tetrahedron_1)
+    surface2=get_tetrahedron_surface(tetrahedron_2)
+    
+    count=0
+    for triangle1 in surface1:
+        for triangle2 in surface2: # i2-th triangle of tetrahedron2
+            if equivalent_triangle(triangle1,triangle2): # equivalent
+                count+=1
+                break
+            else:
+                pass
+        if count!=0:
+            break
+        else:
+            pass
+    if count==0:
+        return False
+    else:
+        return True
+    
+def get_common_triangle_in_two_tetrahedra(tetrahedron_1,tetrahedron_2):
+    # generate traiangles
+    surface1=get_tetrahedron_surface(tetrahedron_1)
+    surface2=get_tetrahedron_surface(tetrahedron_2)
+    
+    count=0
+    for triangle1 in surface1:
+        for triangle2 in surface2: # i2-th triangle of tetrahedron2
+            if equivalent_triangle(triangle1,triangle2): # equivalent
+                count+=1
+                break
+            else:
+                pass
+        if count!=0:
+            break
+        else:
+            pass
+    if count==1:
+        return triangle1
+    else:
+        return 
+    
+    
+def merge_two_tetrahedra(tetrahedron_1,tetrahedron_2):
+    # merge two tetrahedra
+    
+    # volume
+    vol1=tetrahedron_volume_6d(tetrahedron_1)
+    vol2=tetrahedron_volume_6d(tetrahedron_2)
+    vol3=add(vol1,vol2)
+    
+    if check_two_tetrahedra(tetrahedron_1,tetrahedron_2): # tet1とtet2が共通する三角形を持つ場合
+        vtx1=remove_vectors(tetrahedron_1,tetrahedron_2) # tet1からtet1とtet2の共通頂点を消す --> 頂点1
+        vtx2=remove_vectors(tetrahedron_2,tetrahedron_1) # tet2からtet1とtet2の共通頂点を消す --> 頂点2
+        print('vtx1')
+        print(vtx1)
+        print('\n')
+        print('vtx2')
+        print(vtx2)
+        print('\n')
+        vtx_common=get_common_triangle_in_two_tetrahedra(tetrahedron_1,tetrahedron_2) # tet1とtet2の共通する三角形
+        print('vtx_common')
+        print(vtx_common)
+        line_segment=np.vstack([vtx1,vtx2])# 頂点1と頂点２を繋いだ辺
+        print('line_segment')
+        print(line_segment)
+        flg=0
+        for vtx in vtx_common:
+            # 2つの四面体を一つの四面体に結合できる時、その頂点は上の三角形の3つの頂点のうち2つの頂点と頂点1と頂点２。
+            if point_on_segment(vtx,line_segment):
+                tmp=remove_vector(vtx_common,vtx)
+                tetrahedron_new=np.stack(tmp,line_segment)
+                flg+=1
+                break
+        else:
+            pass
+        if flg!=0:
+            return tetrahedron_new
+        else:
+            return 
+    else:
+        return 
+
+def merge_two_tetrahedra_in_obj(obj):
+    
+    num=len(obj)
+    
+    
+    return obj
+    
+    
 if __name__ == '__main__':
     
     # test

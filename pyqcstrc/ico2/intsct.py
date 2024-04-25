@@ -614,7 +614,7 @@ def intersection_two_obj_1(obj1,obj2):
 
 
 
-########## WORKING ##########
+########## WIP ##########
 
 
 def intersection_two_obj_convex(obj1,obj2):
@@ -749,22 +749,6 @@ def intersection_two_obj_convex(obj1,obj2):
         else:
             print('no common part')
             return 
-        """
-        #
-        # point_a = point_a1 + point_a2 + point1
-        tmp=np.append(point1,point_a1)
-        tmp=np.append(tmp,point_a2)
-        tmp=tmp.reshape(int(len(tmp)/18),6,3)
-        point_a=remove_doubling_in_perp_space(tmp)
-        #
-        # point_b = point_b1 + point_b2 + point1
-        tmp=np.append(point1,point_b1)
-        tmp=np.append(tmp,point_b2)
-        tmp=tmp.reshape(int(len(tmp)/18),6,3)
-        point_b=remove_doubling_in_perp_space(tmp)
-        #
-        return [point_common,point_a,point_b]
-        """
 
 if __name__ == '__main__':
     

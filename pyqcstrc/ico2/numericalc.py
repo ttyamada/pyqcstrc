@@ -8,6 +8,70 @@ import numpy as np
 TAU=(1+np.sqrt(5))/2.0
 EPS=1e-6
 
+# WIP
+def point_on_segment(point, line_segment):
+    # judge whether a point is on a line segment, A-B, or not.
+    #
+    
+    point=numerical_vector(point)
+    ln=numerical_vectors(line_segment)
+    
+    xyx0=projection3_numerical(point)
+    tmp=projection3_sets_numerical(ln)
+    xyx1=tmp[0]
+    xyx2=tmp[1]
+    
+    vecPA=xyx0-xyx1 # np.array([x0-x1,y0-y1,z0-z1])
+    vecBA=xyx2-xyx1 # np.array([x2-x1,y2-y1,z2-z1])
+    lPA=np.linalg.norm(vecPA)
+    lBA=np.linalg.norm(vecBA)
+    if lBA>0.0 and abs(np.dot(vecPA,vecBA)-lPA*lBA)<EPS:
+        s=lPA/lBA
+        if s>=0.0 and s<=1.0:
+            return True
+        elif s>1.0:
+            return False #       A==B P
+        else:
+            return False #    P A==B
+    else:
+        return False
+
+"""
+def point_on_segment(point, line_segment):
+    #judge whether a point is on a line segment, A-B, or not.
+    #
+    #Parameters
+    #----------
+    #point: array
+    #    coordinate of the point, xyz
+    #line_segment: array
+    #    two coordinates of line segment, xyz0, xyz1
+    #
+    #Returns
+    #-------
+    #int
+    
+    xyzP=projection3_numerical(point)
+    xyzL=projection3_sets_numerical(line_segment)
+    
+    vecPA=xyzP-xyzL[0]
+    vecBA=xyzL[1]-xyzL[0]
+    
+    lPA=np.linalg.norm(vecPA)
+    lBA=np.linalg.norm(vecBA)
+    if lBA>0.0 and abs(np.dot(vecPA,vecBA)-lPA*lBA)<EPS:
+        s=lPA/lBA
+        if s>=0.0 and s<=1.0:
+            return 0
+        elif s>1.0:
+            return 1 #       A==B P
+        else:
+            return -1 #    P A==B
+    else:
+        return 2
+"""
+
+
 def numeric_value(t):
     """Numeric value of a TAU-style value, a.
 
@@ -77,40 +141,6 @@ def length_numerical(vt):
 
 
 
-
-
-def point_on_segment(point, line_segment):
-    """judge whether a point is on a line segment, A-B, or not.
-    
-    Parameters
-    ----------
-    point: array
-        coordinate of the point, xyz
-    line_segment: array
-        two coordinates of line segment, xyz0, xyz1
-    
-    Returns
-    -------
-    int
-    """
-    xyzP=projection3_numerical(point)
-    xyzL=projection3_sets_numerical(line_segment)
-    
-    vecPA=xyzP-xyzL[0]
-    vecBA=xyzL[1]-xyzL[0]
-    
-    lPA=np.linalg.norm(vecPA)
-    lBA=np.linalg.norm(vecBA)
-    if lBA>0.0 and abs(np.dot(vecPA,vecBA)-lPA*lBA)<EPS:
-        s=lPA/lBA
-        if s>=0.0 and s<=1.0:
-            return 0
-        elif s>1.0:
-            return 1 #       A==B P
-        else:
-            return -1 #    P A==B
-    else:
-        return 2
 
 def check_intersection_segment_surface_numerical_6d_tau(line_segment,triangle):
     """check intersection between a line segment and a triangle.
