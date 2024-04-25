@@ -338,7 +338,6 @@ def generator_surface_1(obj):
     #
     """
     # (1) preparing a list of triangle surfaces without doubling (tmp2)
-    print('get_tetrahedron_surface() starts')
     n1,_,_,_=obj.shape
     triangles=np.zeros((n1,4,3,6,3),dtype=np.int64)
     i1=0
@@ -346,8 +345,6 @@ def generator_surface_1(obj):
         triangles[i1]=get_tetrahedron_surface(tetrahedron)
         i1+=1
     triangles=triangles.reshape(n1*4,3,6,3)
-    print('get_tetrahedron_surface() ends')
-    print('      number of triangle',len(triangles))
     if n1==1:
         return triangles
     else:
