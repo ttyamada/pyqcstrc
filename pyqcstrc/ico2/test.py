@@ -23,7 +23,8 @@ if __name__ == "__main__":
     # import asymmetric part of STRT OD(occupation domain) located at origin,0,0,0,0,0,0.
     strt_asym=od.read_xyz(path='../xyz',basename='strt_aysmmetric')
     od.write(obj=strt_asym, path='.', basename='strt_aysmmetric', format='xyz')
-    
+    od.write(obj=strt_asym, path='.', basename='strt_aysmmetric', format='vesta')
+    """
     surface_triangles=utils.generator_surface_1(strt_asym)
     od.write(obj=surface_triangles, path='.', basename='strt_asym_surface_triangles', format='vesta',select='normal')
     surface_edges=utils.generator_unique_edges(surface_triangles)
@@ -67,6 +68,7 @@ if __name__ == "__main__":
     end=time.time()
     time_diff=end-start
     print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データを使用
+    """
     
     """
     # TEST intersection_convex()

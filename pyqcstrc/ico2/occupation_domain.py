@@ -130,7 +130,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
         ndarray: vertices, when select = 'podatm'.
     """
     
-    if os.path.exists(path) == False:
+    if os.path.exists(path)==False:
         os.makedirs(path)
     else:
         pass
@@ -158,12 +158,12 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             a = [127,127,127]
         return a
     
-    file_name = '%s/%s.vesta'%(path,basename)
-    f = open('%s'%(file_name),'w')
+    file_name='%s/%s.vesta'%(path,basename)
+    f=open('%s'%(file_name),'w')
     
-    dmax = 5.0
+    dmax=5.0
     
-    if select == 'simple':
+    if select=='simple':
         
         if obj.tolist()==[[[[0]]]] or obj.tolist()==[[[0]]]:
             print('no volume obj')
@@ -222,8 +222,9 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             i2=0
             for vrtx in vertices:
                 xyz = math1.projection3(vrtx)
+                xyz=numericalc.numerical_vector(xyz)
                 print('%4d A        A%d  1.0000    %8.6f %8.6f %8.6f        1'%\
-                (i2+1,i2+1,numericalc.numeric_value(xyz[0]),numericalc.numeric_value(xyz[1]),numericalc.numeric_value(xyz[2])), file=f)
+                (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
                 i2+=1
                 print('                             0.000000    0.000000    0.000000  0.00', file=f)
             print('  0 0 0 0 0 0 0\
@@ -389,7 +390,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
                 print('    written in %s'%(file_name))
             return 0
         
-    elif select == 'normal':
+    elif select=='normal':
         
         if obj.tolist()==[[[[0]]]] or obj.tolist()==[[[0]]]:
             print('no volume obj')
@@ -397,7 +398,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
         else:
             print('#VESTA_FORMAT_VERSION 3.5.0\n', file=f)
             i1=0
-            for tetrahedron in obj:
+            for obj1 in obj:
                 print('MOLECULE\
                 \nTITLE',file=f)
                 print('%s/%s_%d\n'%(path,basename,i1), file=f)
@@ -426,16 +427,17 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
                 \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
                 \nSTRUC', file=f)
                 i2=0
-                for vertx in tetrahedron:
-                    xyz = math1.projection3(vertx)
+                for vertx in obj1:
+                    xyz=math1.projection3(vertx)
+                    xyz=numericalc.numerical_vector(xyz)
                     print('%4d Xx        Xx%d  1.0000    %8.6f %8.6f %8.6f        1'%\
-                    (i2+1,i2+1,numericalc.numeric_value(xyz[0]),numericalc.numeric_value(xyz[1]),numericalc.numeric_value(xyz[2])), file=f)
+                    (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
                     i2+=1
                     print('                             0.000000    0.000000    0.000000  0.00', file=f)
                 print('  0 0 0 0 0 0 0\
                 \nTHERI 0', file = f)
                 i2=0
-                for _ in tetrahedron:
+                for _ in obj1:
                     print('  %d        Xx%d  1.000000'%(i2+1,i2+1), file=f)
                     i2+=1
                 print('  0 0 0\
@@ -450,7 +452,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
                 print('  0 0 0 0\
                 \nSITET', file = f)
                 i2=0
-                for _ in tetrahedron:
+                for _ in obj1:
                     print('    %d        Xx%d  0.0100  76  76  76  76  76  76 204  0'%(i2+1,i2+1), file=f)
                     i2+=1
                 print('  0 0 0 0 0 0\
@@ -472,6 +474,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
                 \n -1\
                 \nPLN2D\
                 \n  0    0    0    0', file = f)
+                i1+=1
             print('ATOMT\
             \n  1        Xx  0.0100  76  76  76  76  76  76 204\
             \n  0 0 0 0 0 0\
@@ -584,7 +587,6 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \nHKLPM\
             \n 255 255 255 255\
             \n 128.000',file = f)
-        
             f.close()
             if verbose>0:
                 print('    written in %s'%(file_name))
