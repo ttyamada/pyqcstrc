@@ -31,7 +31,7 @@ if __name__ == "__main__":
     surface_edges=utils.generator_unique_edges(surface_triangles)
     od.write(obj=strt_asym, path='.', basename='strt_asym_surface_edges', format='vesta',select='normal')
     
-    """
+    
     # generat STRT OD located at 0,0,0,0,0,0 by symmetric operations (m-3-5).
     pos0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
     strt_sym=od.symmetric(strt_asym,pos0)
@@ -69,7 +69,7 @@ if __name__ == "__main__":
     end=time.time()
     time_diff=end-start
     print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データを使用
-    """
+    
     
     """
     # TEST intersection_convex()
