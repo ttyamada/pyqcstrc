@@ -71,7 +71,7 @@ if __name__ == "__main__":
     print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データを使用
     
     
-    """
+    #"""
     # TEST intersection_convex()
     print('    intersection_convex starts')
     start = time.time()
@@ -83,4 +83,4 @@ if __name__ == "__main__":
     end=time.time()
     time_diff=end-start
     print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データを使用
-    """
+    #"""
