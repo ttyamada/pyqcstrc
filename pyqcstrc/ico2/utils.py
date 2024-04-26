@@ -514,9 +514,16 @@ def merge_two_tetrahedra_in_obj(obj):
     
     
     return obj
-    
+
+
+
+
 ## もしobjectが凸包であれば、頂点集合が得られれば簡素化できる。そのために凸包かどうかチェックする必要がある。
-## 表面の三角形のセット->三角形の簡素化->頂点集合
+## 　　表面の三角形のセット by generator_surface_1(obj)
+## 　　->三角形の簡素化 by surface_cleaner(surface,num_cycle)
+## 　　->頂点集合
+## 　　-> ドロネー分割
+## 　　->処理前後で体積変化なしであれば凸包だと判断。
 def surface_cleaner(surface,num_cycle):
     #
     # 同一平面上にある三角形ごとにグループ分けする
@@ -594,6 +601,12 @@ def surface_cleaner(surface,num_cycle):
     
     #同一平面上にある三角形の辺のうち、どの三角形とも共有していない独立な辺を求める．
     def gen_unique_edges_of_coplanar_triangles(coplanar_triangles):
+        #同一平面上にある三角形の辺のうち、どの三角形とも共有していない独立な辺を求める．
+        combination=[\
+        [0,1],\
+        [0,2],\
+        [1,2]]
+        
         tmp4a=tmp1a.reshape(int(len(tmp1a)/54),3,6,3) # set of triangles
         
         if len(list_0[i1])!=1:
