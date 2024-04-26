@@ -42,7 +42,8 @@ def symmetric(obj,centre):
     
     """
     if obj.ndim==3 or obj.ndim==4:
-        return symmetry.generator_obj_symmetric_tetrahedron(obj,centre)
+        #return symmetry.generator_obj_symmetric_tetrahedron(obj,centre)
+        return symmetry.generator_obj_symmetric_tetrahedron_0(obj,centre,7)
     else:
         print('object has an incorrect shape!')
         return 

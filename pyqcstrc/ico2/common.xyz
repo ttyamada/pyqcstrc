@@ -1,8 +1,8 @@
 4
 ./common.xyz
-Xx 1.618034 -1.000000 0.000000 #   0-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
-Xx 2.618034 -1.000000 0.000000 #   0-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 -1 0 2 1 -1 2 -1 0 2 1 -1 2
-Xx 2.618034 -1.000000 0.381966 #   0-the tetrahedron 2-th vertex # 4 -1 2 -2 1 2 -2 1 2 2 -1 2 -2 1 2 -2 1 2
-Xx 2.618034 -1.618034 0.000000 #   0-the tetrahedron 3-th vertex # 1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2
-volume = -3 2 6 (0.039345)
-  0-the tetrahedron, -3 2 6 (0.039345)
+Xx 0.000000 0.618034 -1.618034 #   0-the tetrahedron 0-th vertex # 1 0 2 -1 0 2 1 0 2 1 0 2 1 0 2 1 0 2
+Xx 0.000000 0.000000 0.000000 #   0-the tetrahedron 1-th vertex # 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 -1.000000 0.000000 #   0-the tetrahedron 2-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 2.618034 0.000000 1.000000 #   0-the tetrahedron 3-th vertex # 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+volume = 1 1 3 (0.872678)
+  0-the tetrahedron, 1 1 3 (0.872678)

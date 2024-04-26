@@ -549,6 +549,7 @@ def intersection_two_obj_1(obj1,obj2):
             #tmp_common4=np.array([[[[0]]]])
             vol1=tetrahedron_volume_6d(tetrahedron1)
             print('vol1',vol1,numeric_value(vol1))
+            i=0
             for tetrahedron2 in obj2:
                 flag=check_intersection_two_tetrahedron_4(tetrahedron1,tetrahedron2)
                 #print(flag)
@@ -583,6 +584,7 @@ def intersection_two_obj_1(obj1,obj2):
                     if np.all(tmp4==None):
                         pass
                     else:
+                        print(i)
                         #v=obj_volume_6d(tmp4)
                         #print('.    common vol:',v,numeric_value(v))
                         if counter1==0:
@@ -597,6 +599,8 @@ def intersection_two_obj_1(obj1,obj2):
                     #    tmp_common4=np.vstack((tmp_common4,tmp4))
                 else:
                     pass
+                i+=1
+                
             if counter1!=0:
                 #print('tmp_common4',tmp_common4)
                 vol2=obj_volume_6d(tmp_common4)
