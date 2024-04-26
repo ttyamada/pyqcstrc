@@ -45,7 +45,8 @@ if __name__ == "__main__":
     
     # move STRT OD to a position 1 0 0 0 0 0.
     pos_1=np.array([[1,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
-    rt_sym_pos1=od.shift(rt_sym,pos_1)
+    #rt_sym_pos1=od.shift(rt_sym,pos_1)
+    rt_sym_pos1=od.shift(rt_asym,pos_1)
     od.write(obj=rt_sym_pos1, path='.', basename='obj_rt1', format='xyz')
     od.write(obj=rt_sym_pos1, path='.', basename='obj_rt1', format='vesta')
     #

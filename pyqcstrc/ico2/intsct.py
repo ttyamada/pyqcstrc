@@ -107,130 +107,127 @@ def rough_check_intersection_tetrahedron_obj(tetrahedron,cententer,distance):
 
 def check_intersection_two_tetrahedron_4(tetrahedron_1,tetrahedron_2):
     
-    #
-    # -----------------
-    # tetrahedron_1
-    # -----------------
-    # vertex 1: tetrahedron_1[0],  consist of (a1+b1*TAU)/c1, ... (a6+b6*TAU)/c6    a_i,b_i,c_i = tetrahedron_1[0][i:0~5][0],tetrahedron_1[0][i:0~5][1],tetrahedron_1[0][i:0~5][2]
-    # vertex 2: tetrahedron_1[1]
-    # vertex 3: tetrahedron_1[2]
-    # vertex 4: tetrahedron_1[3]
-    #
-    # 4 surfaces of tetrahedron_1
-    # surface 1: v1,v2,v3
-    # surface 2: v1,v2,v4
-    # surface 3: v1,v3,v4
-    # surface 4: v2,v3,v4
-    #
-    # 6 edges of tetrahedron_1
-    # edge 1: v1,v2
-    # edge 2: v1,v3
-    # edge 3: v1,v4
-    # edge 4: v2,v3
-    # edge 5: v2,v4
-    # edge 6: v3,v4
-    #
-    # -----------------
-    # tetrahedron_2
-    # -----------------
-    # vertex 1: tetrahedron_2[0]
-    # vertex 2: tetrahedron_2[1]
-    # vertex 3: tetrahedron_2[2]
-    # vertex 4: tetrahedron_2[3]
-    #
-    # 4 surfaces of tetrahedron_2
-    # surface 1: w1,w2,w3
-    # surface 2: w1,w2,w4
-    # surface 3: w1,w3,w4
-    # surface 4: w2,w3,w4
-    #
-    # 6 edges of tetrahedron_2
-    # edge 1: w1,w2
-    # edge 2: w1,w3
-    # edge 3: w1,w4
-    # edge 4: w2,w3
-    # edge 5: w2,w4
-    # edge 6: w3,w4
-    #
-    # case 1: intersection between (edge of tetrahedron_1) and (surface of tetrahedron_2)
-    # case 2: intersection between (edge of tetrahedron_2) and (surface of tetrahedron_1)
-    #
-    # combination_index
-    # e.g. v1,v2,w1,w2,w3 (edge 1 and surface 1) ...
-    comb=[\
-    [0,1,0,1,2],\
-    [0,1,0,1,3],\
-    [0,1,0,2,3],\
-    [0,1,1,2,3],\
-    [0,2,0,1,2],\
-    [0,2,0,1,3],\
-    [0,2,0,2,3],\
-    [0,2,1,2,3],\
-    [0,3,0,1,2],\
-    [0,3,0,1,3],\
-    [0,3,0,2,3],\
-    [0,3,1,2,3],\
-    [1,2,0,1,2],\
-    [1,2,0,1,3],\
-    [1,2,0,2,3],\
-    [1,2,1,2,3],\
-    [1,3,0,1,2],\
-    [1,3,0,1,3],\
-    [1,3,0,2,3],\
-    [1,3,1,2,3],\
-    [2,3,0,1,2],\
-    [2,3,0,1,3],\
-    [2,3,0,2,3],\
-    [2,3,1,2,3]]
-    
-    counter1=0
-    for c in comb: # len(combination_index) = 24
-        # case 1: intersection between
-        # 6 edges of tetrahedron_1
-        # 4 surfaces of tetrahedron_2
-        segment=np.stack([tetrahedron_1[c[0]],tetrahedron_1[c[1]]])
-        surface=np.stack([tetrahedron_2[c[2]],tetrahedron_2[c[3]],tetrahedron_2[c[4]]])
-        #print(segment.shape)
-        #print(surface.shape)
-        if check_intersection_segment_surface_numerical_6d_tau(segment,surface)==0: # intersectiing
-            counter1+=1
-            break
-        else:
-            pass
-        # case 2: intersection between
-        # 6 edges of tetrahedron_2
-        # 4 surfaces of tetrahedron_1
-        segment=np.stack([tetrahedron_2[c[0]],tetrahedron_2[c[1]]])
-        surface=np.stack([tetrahedron_1[c[2]],tetrahedron_1[c[3]],tetrahedron_1[c[4]]])
-        if check_intersection_segment_surface_numerical_6d_tau(segment,surface): # intersectiing
-            counter1+=1
-            break
-        else:
-            pass
-    
     # checking whether tetrahedron_1 is fully inside tetrahedron_2 or not
     counter2=0
-    for i1 in range(4):
-        if inside_outside_tetrahedron_tau(tetrahedron_1[i1],tetrahedron_2): # inside
+    for vtx in tetrahedron_1:
+        if inside_outside_tetrahedron_tau(vtx,tetrahedron_2): # inside
             pass
         else:
             counter2+=1
             break
-        
     # checking whether tetrahedron_2 is fully inside tetrahedron_3 or not
     counter3=0
-    for i1 in range(4):
-        if inside_outside_tetrahedron_tau(tetrahedron_2[i1],tetrahedron_1): # inside
+    for vtx in tetrahedron_2:
+        if inside_outside_tetrahedron_tau(vtx,tetrahedron_1): # inside
             pass
         else:
             counter3+=1
             break
-    
-    if counter2==0 :
+    if counter2==0:
         return 1 # tetrahedron_1 is fully inside tetrahedron_2
     elif counter3==0:
         return 2 # tetrahedron_2 is fully inside tetrahedron_1
     else:
+        #
+        # -----------------
+        # tetrahedron_1
+        # -----------------
+        # vertex 1: tetrahedron_1[0],  consist of (a1+b1*TAU)/c1, ... (a6+b6*TAU)/c6    a_i,b_i,c_i = tetrahedron_1[0][i:0~5][0],tetrahedron_1[0][i:0~5][1],tetrahedron_1[0][i:0~5][2]
+        # vertex 2: tetrahedron_1[1]
+        # vertex 3: tetrahedron_1[2]
+        # vertex 4: tetrahedron_1[3]
+        #
+        # 4 surfaces of tetrahedron_1
+        # surface 1: v1,v2,v3
+        # surface 2: v1,v2,v4
+        # surface 3: v1,v3,v4
+        # surface 4: v2,v3,v4
+        #
+        # 6 edges of tetrahedron_1
+        # edge 1: v1,v2
+        # edge 2: v1,v3
+        # edge 3: v1,v4
+        # edge 4: v2,v3
+        # edge 5: v2,v4
+        # edge 6: v3,v4
+        #
+        # -----------------
+        # tetrahedron_2
+        # -----------------
+        # vertex 1: tetrahedron_2[0]
+        # vertex 2: tetrahedron_2[1]
+        # vertex 3: tetrahedron_2[2]
+        # vertex 4: tetrahedron_2[3]
+        #
+        # 4 surfaces of tetrahedron_2
+        # surface 1: w1,w2,w3
+        # surface 2: w1,w2,w4
+        # surface 3: w1,w3,w4
+        # surface 4: w2,w3,w4
+        #
+        # 6 edges of tetrahedron_2
+        # edge 1: w1,w2
+        # edge 2: w1,w3
+        # edge 3: w1,w4
+        # edge 4: w2,w3
+        # edge 5: w2,w4
+        # edge 6: w3,w4
+        #
+        # case 1: intersection between (edge of tetrahedron_1) and (surface of tetrahedron_2)
+        # case 2: intersection between (edge of tetrahedron_2) and (surface of tetrahedron_1)
+        #
+        # combination_index
+        # e.g. v1,v2,w1,w2,w3 (edge 1 and surface 1) ...
+        comb=[\
+        [0,1,0,1,2],\
+        [0,1,0,1,3],\
+        [0,1,0,2,3],\
+        [0,1,1,2,3],\
+        [0,2,0,1,2],\
+        [0,2,0,1,3],\
+        [0,2,0,2,3],\
+        [0,2,1,2,3],\
+        [0,3,0,1,2],\
+        [0,3,0,1,3],\
+        [0,3,0,2,3],\
+        [0,3,1,2,3],\
+        [1,2,0,1,2],\
+        [1,2,0,1,3],\
+        [1,2,0,2,3],\
+        [1,2,1,2,3],\
+        [1,3,0,1,2],\
+        [1,3,0,1,3],\
+        [1,3,0,2,3],\
+        [1,3,1,2,3],\
+        [2,3,0,1,2],\
+        [2,3,0,1,3],\
+        [2,3,0,2,3],\
+        [2,3,1,2,3]]
+    
+        counter1=0
+        for c in comb: # len(combination_index) = 24
+            # case 1: intersection between
+            # 6 edges of tetrahedron_1
+            # 4 surfaces of tetrahedron_2
+            segment=np.stack([tetrahedron_1[c[0]],tetrahedron_1[c[1]]])
+            surface=np.stack([tetrahedron_2[c[2]],tetrahedron_2[c[3]],tetrahedron_2[c[4]]])
+            #print(segment.shape)
+            #print(surface.shape)
+            if check_intersection_segment_surface_numerical_6d_tau(segment,surface)==0: # intersectiing
+                counter1+=1
+                break
+            else:
+                pass
+            # case 2: intersection between
+            # 6 edges of tetrahedron_2
+            # 4 surfaces of tetrahedron_1
+            segment=np.stack([tetrahedron_2[c[0]],tetrahedron_2[c[1]]])
+            surface=np.stack([tetrahedron_1[c[2]],tetrahedron_1[c[3]],tetrahedron_1[c[4]]])
+            if check_intersection_segment_surface_numerical_6d_tau(segment,surface): # intersectiing
+                counter1+=1
+                break
+            else:
+                pass
         if counter1>0:
             return 3 # intersecting
         else:
@@ -326,7 +323,8 @@ def intersection_segment_surface(segment,surface):
         
         # intersecting point: OA + t*AB
         tmp=mul_vector(vec6AB,t) # t*AB
-        return add_vectors(segment[0],tmp)
+        #print('   t=',numeric_value(t))
+        return add_vectors(segment[0],tmp).reshape(1,6,3)
     else: # no intersection
         return 
 
@@ -416,31 +414,31 @@ def intersection_two_tetrahedron_4(tetrahedron_1,tetrahedron_2):
         # case 1: intersection between
         segment=np.stack([tetrahedron_1[c[0]],tetrahedron_1[c[1]]])
         surface=np.stack([tetrahedron_2[c[2]],tetrahedron_2[c[3]],tetrahedron_2[c[4]]])
-        tmp1=intersection_segment_surface(segment,surface)
-        if np.all(tmp1==None):
+        vtx=intersection_segment_surface(segment,surface)
+        if np.all(vtx==None):
             pass
         else:
             #print('tmp1',tmp1)
             if counter==0 :
-                tmp=tmp1.reshape(1,6,3) # intersection points
+                tmp=vtx # intersection points
             else:
-                tmp=np.vstack([tmp,[tmp1]]) # intersecting points
+                tmp=np.vstack([tmp,vtx]) # intersecting points
             counter+=1
             #print('tmp',tmp)
         # case 2: intersection between
         segment=np.stack([tetrahedron_2[c[0]],tetrahedron_2[c[1]]])
         surface=np.stack([tetrahedron_1[c[2]],tetrahedron_1[c[3]],tetrahedron_1[c[4]]])
-        tmp1=intersection_segment_surface(segment,surface)
-        if np.all(tmp1==None):
+        vtx=intersection_segment_surface(segment,surface)
+        if np.all(vtx==None):
             pass
         else:
             #print('tmp1',tmp1)
             if counter==0:
-                tmp=tmp1.reshape(1,6,3) # intersection points
+                tmp=vtx # intersection points
             else:
                 #print('   tmp.shape',tmp.shape)
                 #print('   tmp1.shape',tmp1.shape)
-                tmp=np.vstack([tmp,[tmp1]]) # intersecting points
+                tmp=np.vstack([tmp,vtx]) # intersecting points
             counter+=1
             #print('tmp',tmp)
     
@@ -466,25 +464,25 @@ def intersection_two_tetrahedron_4(tetrahedron_1,tetrahedron_2):
             #print('tmp',tmp)
         else:
             pass
-    print('tmp.shape',tmp.shape)
+    #print('tmp.shape',tmp.shape)
     #tmp=tmp.reshape(int(len(tmp)/6),6,3)
     #print('tmp:',tmp)
     
     #tmp4=np.array([[[[0]]]])
     if counter>=4:
-        tmp3=remove_doubling_in_perp_space(tmp)
-        if len(tmp3)>=4:
+        tmp=remove_doubling_in_perp_space(tmp)
+        if len(tmp)>=4:
             # Tetrahedralization
-            if coplanar_check(tmp3): # coplanar
+            if coplanar_check(tmp): # coplanar
                 pass
             else:
-                if len(tmp3)==4:
-                    tmp4=tmp3.reshape(1,4,6,3)
+                if len(tmp)==4:
+                    tmp4=tmp.reshape(1,4,6,3)
                 else:
-                    tmp4=tetrahedralization_points(tmp3)
+                    tmp4=tetrahedralization_points(tmp)
                 v=obj_volume_6d(tmp4)
                 nv=numeric_value(v)
-                print('.    common vol:',v,nv)
+                print('     common vol:',v,nv)
                 return tmp4
         else:
             return 
