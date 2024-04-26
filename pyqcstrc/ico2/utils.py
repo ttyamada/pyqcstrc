@@ -705,7 +705,7 @@ def surface_cleaner(surface,num_cycle):
     
     #各同一平面上にある三角形について、どの三角形とも共有していない独立な辺を求める
     out=[]
-    for triangles in lst_sets
+    for triangles in lst_sets:
         egdes=gen_unique_edges_of_coplanar_triangles(triangles)
         out.append(egdes) # Merge
     return out

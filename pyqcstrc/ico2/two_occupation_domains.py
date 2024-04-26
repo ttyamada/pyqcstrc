@@ -12,12 +12,10 @@ import numpy as np
 try:
     import math1 as math1
     import intsct as intsct
-    #import mics as mics
     import numericalc as numericalc
     import symmetry as symmetry
     import utils as utils
     import occupation_domain as od
-
 except ImportError:
     print('import error\n')
 

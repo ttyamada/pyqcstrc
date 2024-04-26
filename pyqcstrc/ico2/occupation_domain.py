@@ -161,7 +161,8 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
     file_name='%s/%s.vesta'%(path,basename)
     f=open('%s'%(file_name),'w')
     
-    dmax=5.0
+    #dmax=5.0
+    dmax=10.0
     
     if select=='simple':
         
