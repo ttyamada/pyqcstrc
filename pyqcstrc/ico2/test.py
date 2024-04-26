@@ -19,7 +19,11 @@ except ImportError:
 if __name__ == "__main__":
     
     # import asymmetric part of RT OD(occupation domain) located at origin,0,0,0,0,0,0.
-    rt_asym=od.read_xyz(path='../xyz',basename='RT_asymmeric')
+    v0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+    v1 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2]])
+    v2 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2]])
+    v3 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[ 0, 0, 2],[-1, 0, 2],[ 0, 0, 2]])
+    rt_asym = np.vstack([v0,v1,v2,v3]).reshape(1,4,6,3)
     od.write(obj=rt_asym, path='.', basename='rt_asymmeric', format='xyz')
     od.write(obj=rt_asym, path='.', basename='rt_asymmeric', format='vesta')
     
@@ -35,23 +39,23 @@ if __name__ == "__main__":
      
     # generat STRT OD located at 0,0,0,0,0,0 by symmetric operations (m-3-5).
     pos0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
-    strt_sym=od.symmetric(rt_asym,pos0)
-    od.write(obj=strt_sym, path='.', basename='obj_strt0', format='xyz')
-    od.write(obj=strt_sym, path='.', basename='obj_strt0', format='vesta')
+    rt_sym=od.symmetric(rt_asym,pos0)
+    od.write(obj=rt_sym, path='.', basename='obj_rt0', format='xyz')
+    od.write(obj=rt_sym, path='.', basename='obj_rt0', format='vesta')
     
     # move STRT OD to a position 1 0 0 0 0 0.
-    pos_b1=np.array([[1,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
-    strt_pos1=od.shift(strt_sym,pos_b1)
-    od.write(obj=strt_pos1, path='.', basename='obj_strt1', format='xyz')
-    od.write(obj=strt_pos1, path='.', basename='obj_strt1', format='vesta')
+    pos_1=np.array([[1,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
+    rt_sym_pos1=od.shift(rt_sym,pos_1)
+    od.write(obj=rt_sym_pos1, path='.', basename='obj_rt1', format='xyz')
+    od.write(obj=rt_sym_pos1, path='.', basename='obj_rt1', format='vesta')
     
     
     
-    # intersection of "asymmetric part of strt" and "strt at position pos_b1"
+    # intersection of "asymmetric part of rt" and "rt at position pos_b1"
     print('    intersection starts')
     start = time.time()
     ###
-    common=tod.intersection(rt_asym,strt_pos1)
+    common=tod.intersection(rt_asym,rt_sym_pos1)
     ###
     end=time.time()
     time_diff=end-start
@@ -80,7 +84,7 @@ if __name__ == "__main__":
     print('    intersection_convex starts')
     start = time.time()
     ###
-    common1=tod.intersection_convex(strt_sym,strt_pos1)
+    common1=tod.intersection_convex(rt_sym,rt_pos1)
     od.write(obj=common1, path='.', basename='common_convex', format='xyz')
     od.write(obj=common1, path='.', basename='common_convex', format='vesta')
     ###
