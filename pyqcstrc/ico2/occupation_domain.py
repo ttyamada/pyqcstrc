@@ -42,12 +42,34 @@ def symmetric(obj,centre):
     
     """
     if obj.ndim==3 or obj.ndim==4:
-        #return symmetry.generator_obj_symmetric_tetrahedron(obj,centre)
-        return symmetry.generator_obj_symmetric_tetrahedron_0(obj,centre,7)
+        return symmetry.generator_obj_symmetric_tetrahedron(obj,centre)
     else:
         print('object has an incorrect shape!')
         return 
     
+def symmetric_0(obj,centre,indx_symop):
+    """
+    Generate symmterical occupation domain by symmetric elements of m-3-5 on the asymmetric unit.
+    
+    Args:
+        obj (numpy.ndarray):
+            Asymmetric unit of the occupation domain
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+        centre (numpy.ndarray):
+            6d coordinate of the symmetric centre.
+            The shape is (6,3)
+    
+    Returns:
+        Symmetric occupation domains (numpy.ndarray):
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+    
+    """
+    if obj.ndim==3 or obj.ndim==4:
+        return symmetry.generator_obj_symmetric_tetrahedron_0(obj,centre,indx_symop)
+    else:
+        print('object has an incorrect shape!')
+        return 
+
 def shift(obj,shift):
     """
     Shift the occupation domain.
@@ -91,17 +113,17 @@ def write(obj, path='.',basename='tmp',format='xyz',color='k',verbose=0,select='
     
     """
     
-    if os.path.exists(path) == False:
+    if os.path.exists(path)==False:
         os.makedirs(path)
     else:
         pass
         
-    if obj.tolist()==[[[[0]]]]:
+    if np.all(obj==None):
         print('    Empty OD')
         return 1
     else:
-        if format == 'vesta' or format == 'v' or format == 'VESTA':
-            write_vesta(obj, path, basename, color, select = 'normal', verbose = 0)
+        if format=='vesta' or format=='v' or format=='VESTA':
+            write_vesta(obj, path, basename, color, select='normal', verbose=0)
         elif format == 'xyz':
             write_xyz(obj, path, basename, select, verbose)
         else:
@@ -167,7 +189,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
     
     if select=='simple':
         
-        if obj.tolist()==[[[[0]]]] or obj.tolist()==[[[0]]]:
+        if np.all(obj==None):
             print('no volume obj')
             return 0
         
@@ -394,7 +416,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
         
     elif select=='normal':
         
-        if obj.tolist()==[[[[0]]]] or obj.tolist()==[[[0]]]:
+        if np.all(obj==None):
             print('no volume obj')
             return 1
         else:
@@ -596,7 +618,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
     
     if select == 'podatm':
         
-        if obj.tolist()==[[[[0]]]] or obj.tolist()==[[[0]]]:
+        if np.all(obj==None):
             print('no volume obj')
             return 0
         else:
@@ -984,7 +1006,7 @@ def write_xyz(obj,path='.',basename='tmp',select='tetrahedron',verbose=0):
         f.closed
         return 0
     
-    if obj.tolist()==[[[[0]]]] or obj.tolist()==[[[0]]]:
+    if np.all(obj==None):
         print('empty obj')
         return 
     elif obj.ndim!=4:
@@ -1113,7 +1135,10 @@ def simplification(obj,num_cycle=10,verbose=0):
             The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
     
     """
-    if obj.tolist()!=[[[[0]]]]:
+    if np.all(obj==None):
+        print(' zero volume')
+        return 
+    else:
         n1,n2,n3=utils.obj_volume_6d(obj)
         obj1=mics.generate_convex_hull(obj, np.array([[0]]), num_cycle, verbose-1)
         obj2=intsct.intersection_two_obj_2(obj1, obj, verbose-1)
@@ -1131,10 +1156,7 @@ def simplification(obj,num_cycle=10,verbose=0):
             print(' return initial obj')
             #return np.array([[[[0]]]])
             return obj
-    else:
-        print(' zero volume')
-        return np.array([[[[0]]]])
-
+        
 def simple_hand_step1(obj, path, basename_tmp):
     """
     Simplification of occupation domains by hand (step1).

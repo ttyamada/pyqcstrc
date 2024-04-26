@@ -333,25 +333,36 @@ def inside_outside_tetrahedron(point,tetrahedron):
         vertex coordinates of tetrahedron, (xyz1, xyz2, xyz3, xyz4)
     """
     vol0=tetrahedron_volume_numerical(tetrahedron)
-    #
-    tet1=tetrahedron
-    tet1[0]=point
-    #print(tet1)
+    
+    def small_tetrahedron(indx,p,tetrahedron0):
+        tet=np.zeros((4,3),dtype=np.float64)
+        for i in range(4):
+            if i==indx:
+                tet[i]=p
+            else:
+                tet[i]=tetrahedron0[i]
+        return tet
+    
+    tet1=small_tetrahedron(1,point,tetrahedron)
     vol1=tetrahedron_volume_numerical(tet1)
     #
-    tet2=tetrahedron
-    tet2[1]=point
+    tet2=small_tetrahedron(2,point,tetrahedron)
     vol2=tetrahedron_volume_numerical(tet2)
     #
-    tet3=tetrahedron
-    tet3[2]=point
+    tet3=small_tetrahedron(3,point,tetrahedron)
     vol3=tetrahedron_volume_numerical(tet3)
     #
-    tet4=tetrahedron
-    tet4[3]=point
+    tet4=small_tetrahedron(4,point,tetrahedron)
     vol4=tetrahedron_volume_numerical(tet4)
     
     if abs(vol0-vol1-vol2-vol3-vol4)<EPS*vol0:
+        print('point',point)
+        print(tet1)
+        print('vol0',vol0)
+        print('vol1',vol1)
+        print('vol2',vol2)
+        print('vol3',vol3)
+        print('vol4',vol4)
         return True # inside
     else:
         return False # outside

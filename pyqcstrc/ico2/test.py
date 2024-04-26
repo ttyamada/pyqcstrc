@@ -40,13 +40,13 @@ if __name__ == "__main__":
     # generat STRT OD located at 0,0,0,0,0,0 by symmetric operations (m-3-5).
     pos0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
     rt_sym=od.symmetric(rt_asym,pos0)
+    #rt_sym=od.symmetric_0(rt_asym,pos0,7)
     od.write(obj=rt_sym, path='.', basename='obj_rt0', format='xyz')
     od.write(obj=rt_sym, path='.', basename='obj_rt0', format='vesta')
     
     # move STRT OD to a position 1 0 0 0 0 0.
     pos_1=np.array([[1,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
     rt_sym_pos1=od.shift(rt_sym,pos_1)
-    #rt_sym_pos1=od.shift(rt_asym,pos_1)
     od.write(obj=rt_sym_pos1, path='.', basename='obj_rt1', format='xyz')
     od.write(obj=rt_sym_pos1, path='.', basename='obj_rt1', format='vesta')
     #
