@@ -33,7 +33,7 @@ if __name__ == "__main__":
     
     surface_triangles=utils.generator_surface_1(rt_asym)
     od.write(obj=surface_triangles, path='.', basename='rt_asym_surface_triangles', format='vesta',select='normal')
-    od.write(obj=surface_triangles, path='.', basename='rt_asym_surface_triangles', format='xyz', select='triangle')
+    #od.write(obj=surface_triangles, path='.', basename='rt_asym_surface_triangles', format='xyz', select='triangle')
     surface_edges=utils.generator_unique_edges(surface_triangles)
     od.write(obj=rt_asym, path='.', basename='rt_asym_surface_edges', format='vesta',select='normal')
      
@@ -48,6 +48,11 @@ if __name__ == "__main__":
     rt_sym_pos1=od.shift(rt_sym,pos_1)
     od.write(obj=rt_sym_pos1, path='.', basename='obj_rt1', format='xyz')
     od.write(obj=rt_sym_pos1, path='.', basename='obj_rt1', format='vesta')
+    #
+    surface_triangles=utils.generator_surface_1(rt_sym_pos1)
+    od.write(obj=surface_triangles, path='.', basename='obj_rt1_surface_triangles', format='vesta',select='normal')
+    surface_edges=utils.generator_unique_edges(surface_triangles)
+    od.write(obj=surface_edges, path='.', basename='obj_rt1_surface_edges', format='vesta',select='normal')
     
     
     

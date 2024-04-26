@@ -407,10 +407,9 @@ def intersection_two_tetrahedron_4(tetrahedron_1,tetrahedron_2):
     [2,3,0,2,3],\
     [2,3,1,2,3]]
     
-    tmp=np.array([])
-    tmp1=np.array([])
-    
-    array0=np.zeros((6,3),dtype=np.int64)
+    #tmp=np.array([])
+    #tmp1=np.array([])
+    #array0=np.zeros((6,3),dtype=np.int64)
     
     counter=0
     for c in comb:
@@ -423,9 +422,9 @@ def intersection_two_tetrahedron_4(tetrahedron_1,tetrahedron_2):
         else:
             #print('tmp1',tmp1)
             if counter==0 :
-                tmp=tmp1 # intersection points
+                tmp=tmp1.reshape(1,6,3) # intersection points
             else:
-                tmp=np.vstack([tmp,tmp1]) # intersecting points
+                tmp=np.vstack([tmp,[tmp1]]) # intersecting points
             counter+=1
             #print('tmp',tmp)
         # case 2: intersection between
@@ -437,35 +436,38 @@ def intersection_two_tetrahedron_4(tetrahedron_1,tetrahedron_2):
         else:
             #print('tmp1',tmp1)
             if counter==0:
-                tmp=tmp1 # intersection points
+                tmp=tmp1.reshape(1,6,3) # intersection points
             else:
-                tmp=np.vstack([tmp,tmp1]) # intersecting points
+                #print('   tmp.shape',tmp.shape)
+                #print('   tmp1.shape',tmp1.shape)
+                tmp=np.vstack([tmp,[tmp1]]) # intersecting points
             counter+=1
             #print('tmp',tmp)
     
     # get vertces of tetrahedron_1 that are inside tetrahedron_2
-    for i1 in range(4):
-        if inside_outside_tetrahedron_tau(tetrahedron_1[i1],tetrahedron_2): # inside
+    for vtx in tetrahedron_1:
+        if inside_outside_tetrahedron_tau(vtx,tetrahedron_2): # inside
             #print('tetrahedron_1[i1]',tetrahedron_1[i1])
             if counter==0:
-                tmp=tetrahedron_1[i1]
+                tmp=vtx.reshape(1,6,3)
             else:
-                tmp=np.vstack([tmp,tetrahedron_1[i1]])
+                tmp=np.vstack([tmp,[vtx]])
             counter+=1
             #print('tmp',tmp)
     # get vertces of tetrahedron_2 that are inside tetrahedron_1
-    for i1 in range(4):
-        if inside_outside_tetrahedron_tau(tetrahedron_2[i1],tetrahedron_1): # inside
+    for vtx in tetrahedron_2:
+        if inside_outside_tetrahedron_tau(vtx,tetrahedron_1): # inside
             #print('tetrahedron_2[i1]',tetrahedron_2[i1])
             if counter==0:
-                tmp=tetrahedron_2[i1]
+                tmp=vtx.reshape(1,6,3)
             else:
-                tmp=np.vstack([tmp,tetrahedron_2[i1]])
+                tmp=np.vstack([tmp,[vtx]])
             counter+=1
             #print('tmp',tmp)
         else:
             pass
-    tmp=tmp.reshape(int(len(tmp)/6),6,3)
+    print('tmp.shape',tmp.shape)
+    #tmp=tmp.reshape(int(len(tmp)/6),6,3)
     #print('tmp:',tmp)
     
     #tmp4=np.array([[[[0]]]])
@@ -480,6 +482,9 @@ def intersection_two_tetrahedron_4(tetrahedron_1,tetrahedron_2):
                     tmp4=tmp3.reshape(1,4,6,3)
                 else:
                     tmp4=tetrahedralization_points(tmp3)
+                v=obj_volume_6d(tmp4)
+                nv=numeric_value(v)
+                print('.    common vol:',v,nv)
                 return tmp4
         else:
             return 
@@ -545,8 +550,10 @@ def intersection_two_obj_1(obj1,obj2):
             counter1=0
             #tmp_common4=np.array([[[[0]]]])
             vol1=tetrahedron_volume_6d(tetrahedron1)
+            print('vol1',vol1,numeric_value(vol1))
             for tetrahedron2 in obj2:
                 flag=check_intersection_two_tetrahedron_4(tetrahedron1,tetrahedron2)
+                #print(flag)
                 #
                 # tetrahedron_1 is fully inside tetrahedron_2
                 if flag==1:
@@ -578,6 +585,8 @@ def intersection_two_obj_1(obj1,obj2):
                     if np.all(tmp4==None):
                         pass
                     else:
+                        #v=obj_volume_6d(tmp4)
+                        #print('.    common vol:',v,numeric_value(v))
                         if counter1==0:
                             tmp_common4=tmp4
                             counter1+=1
@@ -593,18 +602,21 @@ def intersection_two_obj_1(obj1,obj2):
             if counter1!=0:
                 #print('tmp_common4',tmp_common4)
                 vol2=obj_volume_6d(tmp_common4)
+                print('vol2',vol2,numeric_value(vol2))
                 if np.all(vol1==vol2):
                     if counter0==0:
                         common4=tetrahedron1 #.reshape(1,4,6,3)
                         counter0+=1
                     else:
-                        common4=np.concatenate([common4,tetrahedron1])
+                        #common4=np.concatenate([common4,tetrahedron1])
+                        common4=np.vstack([common4,tetrahedron1])
                 else:
                     if counter0==0:
                         common4=tmp_common4
                         counter0+=1
                     else:
-                        common4=np.concatenate([common4,tmp_common4])
+                        #common4=np.concatenate([common4,tmp_common4])
+                        common4=np.vstack([common4,tmp_common4])
                 return common4
             else:
                 return
