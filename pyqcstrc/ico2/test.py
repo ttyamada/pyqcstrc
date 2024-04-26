@@ -20,13 +20,13 @@ except ImportError:
 
 if __name__ == "__main__":
     
-    # import asymmetric part of STRT OD(occupation domain) located at origin,0,0,0,0,0,0.
-    strt_asym=od.read_xyz(path='../xyz',basename='strt_aysmmetric')
-    od.write(obj=strt_asym, path='.', basename='strt_aysmmetric', format='xyz')
-    od.write(obj=strt_asym, path='.', basename='strt_aysmmetric', format='vesta')
+    # import asymmetric part of RT OD(occupation domain) located at origin,0,0,0,0,0,0.
+    rt_asym=od.read_xyz(path='../xyz',basename='RT_asymmeric')
+    od.write(obj=rt_asym, path='.', basename='RT_asymmeric', format='xyz')
+    od.write(obj=rt_asym, path='.', basename='RT_asymmeric', format='vesta')
     
-    a=utils.merge_two_tetrahedra(strt_asym[0],strt_asym[1])
-    print(a)
+    #a=utils.merge_two_tetrahedra(strt_asym[0],strt_asym[1])
+    #print(a)
     
     """
     surface_triangles=utils.generator_surface_1(strt_asym)

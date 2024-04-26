@@ -615,8 +615,6 @@ def intersection_two_obj_1(obj1,obj2):
 
 
 ########## WIP ##########
-
-
 def intersection_two_obj_convex(obj1,obj2):
     """
     # This is very simple but work correctly only when each subdivided 
@@ -750,6 +748,53 @@ def intersection_two_obj_convex(obj1,obj2):
             print('no common part')
             return 
 
+########## WIP ##########
+def tetrahedron_not_obj(tetrahedron,obj):
+    """
+    tetrahedron not object
+    """
+    
+    # common: tetrahedron and obj
+    common=intersection_two_obj_1(tetrahedron,obj)
+    vol1=obj_volume_6d(common)
+    
+    vtx=np.vstack(tetrahedron,common)
+    vtx=remove_doubling_in_perp_space(vtx)
+    set_of_tetrahedra=tetrahedralization_points(points)
+    # もしset_of_tetrahedraにある四面体（もしくは複数の四面体のunion）が
+    # commonと一致しない場合は、tetrahedronからobjを引いたものを正しく計算できない。
+    
+    tmp_out=[]
+    tmp_common=[]
+    for tetrahedron in set_of_tetrahedra:
+        a=intersection_two_obj_1(tetrahedron.reshape(1,4,6,3),common)
+        # もしtetrahedron全体がcommonに入っていれば、intersection_two_obj_1はtetrahedron自身を返す
+        if np.all(tetrahedron==a):
+            tmp_common(tetrahedron)
+        else:
+            tmp.append(tetrahedron)
+    if len(tmp_common)!=0:
+        common_1=np.zeros((len(tmp_common),4,6,3))
+        i1=0
+        for tet in tmp_common:
+            common_1[i1]=tet
+            i1+=1
+        vol2=obj_volume_6d(common_1)
+        if np.all(vol1==vol2):
+            if len(tmp)!=0:
+                out=np.zeros((len(tmp),4,6,3))
+                i1=0
+                for tet in tmp:
+                    out[i1]=tet
+                    i1+=1
+                return out
+            else:
+                return
+        else:
+            return 
+    else:
+        return 
+        
 if __name__ == '__main__':
     
     # test
