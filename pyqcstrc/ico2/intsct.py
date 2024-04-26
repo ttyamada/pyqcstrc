@@ -619,23 +619,28 @@ def intersection_two_obj_1(obj1,obj2):
                 if np.all(vol1==vol2):
                     if counter0==0:
                         common4=tetrahedron1.reshape(1,4,6,3)
+                        print('common4.shape',common4.shape)
                         counter0+=1
                     else:
                         #common4=np.concatenate([common4,tetrahedron1])
-                        common4=np.vstack([common4,tetrahedron1])
+                        common4=np.vstack([common4,[tetrahedron1]])
+                        print('common4.shape',common4.shape)
                 else:
                     if counter0==0:
                         common4=tmp_common4
                         counter0+=1
+                        print('tmp_common4.shape',tmp_common4.shape)
                     else:
                         #common4=np.concatenate([common4,tmp_common4])
                         common4=np.vstack([common4,tmp_common4])
-                return common4
-            else:
-                return
-        else:
-            return 
-
+                        print('tmp_common4.shape',tmp_common4.shape)
+                #print(common4.shape)
+                #return common4
+    
+    if counter0>0:
+        return common4
+    else:
+        return 
 
 
 ########## WIP ##########

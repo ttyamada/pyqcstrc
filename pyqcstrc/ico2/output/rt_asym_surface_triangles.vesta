@@ -2,7 +2,7 @@
 
 MOLECULE                
 TITLE
-./rt_asym_surface_triangles_0
+./output/rt_asym_surface_triangles_0
 
 GROUP                
 1 1 Custom                
@@ -73,7 +73,7 @@ PLN2D
   0    0    0    0
 MOLECULE                
 TITLE
-./rt_asym_surface_triangles_1
+./output/rt_asym_surface_triangles_1
 
 GROUP                
 1 1 Custom                
@@ -144,7 +144,7 @@ PLN2D
   0    0    0    0
 MOLECULE                
 TITLE
-./rt_asym_surface_triangles_2
+./output/rt_asym_surface_triangles_2
 
 GROUP                
 1 1 Custom                
@@ -215,7 +215,7 @@ PLN2D
   0    0    0    0
 MOLECULE                
 TITLE
-./rt_asym_surface_triangles_3
+./output/rt_asym_surface_triangles_3
 
 GROUP                
 1 1 Custom                

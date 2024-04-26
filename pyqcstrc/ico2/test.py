@@ -52,10 +52,10 @@ if __name__ == "__main__":
     od.write(obj=rt_sym_pos1, path=opath, basename='obj_rt1', format='xyz')
     od.write(obj=rt_sym_pos1, path=opath, basename='obj_rt1', format='vesta')
     #
-    surface_triangles=utils.generator_surface_1(rt_sym_pos1)
-    od.write(obj=surface_triangles, path=opath, basename='obj_rt1_surface_triangles', format='vesta',select='normal')
-    surface_edges=utils.generator_unique_edges(surface_triangles)
-    od.write(obj=surface_edges, path=opath, basename='obj_rt1_surface_edges', format='vesta',select='normal')
+    #surface_triangles=utils.generator_surface_1(rt_sym_pos1)
+    #od.write(obj=surface_triangles, path=opath, basename='obj_rt1_surface_triangles', format='vesta',select='normal')
+    #surface_edges=utils.generator_unique_edges(surface_triangles)
+    #od.write(obj=surface_edges, path=opath, basename='obj_rt1_surface_edges', format='vesta',select='normal')
     
     
     
