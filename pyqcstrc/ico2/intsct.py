@@ -331,6 +331,7 @@ def intersection_segment_surface(segment,surface):
         return 
 
 def intersection_two_tetrahedron_4(tetrahedron_1,tetrahedron_2):
+    #print('intersection_two_tetrahedron_4()')
     #
     # -----------------
     # tetrahedron_1
@@ -444,7 +445,7 @@ def intersection_two_tetrahedron_4(tetrahedron_1,tetrahedron_2):
             counter+=1
             #print('tmp',tmp)
     #tmp=remove_doubling_in_perp_space(tmp)
-    #print('   (1)',len(tmp))
+    #print('   (1) num of points=',len(tmp))
     #a=get_internal_component_sets_numerical(tmp)
     #print(a)
     
@@ -477,7 +478,7 @@ def intersection_two_tetrahedron_4(tetrahedron_1,tetrahedron_2):
     #tmp=tmp.reshape(int(len(tmp)/6),6,3)
     #print('tmp:',tmp)
     #tmp=remove_doubling_in_perp_space(tmp)
-    #print('   (2)',len(tmp))
+    #print('   (2) num of points=',len(tmp))
     #a=get_internal_component_sets_numerical(tmp)
     #print(a)
     
@@ -621,7 +622,7 @@ def intersection_two_obj_1(obj1,obj2):
                 print('vol2',vol2,numeric_value(vol2))
                 if np.all(vol1==vol2):
                     if counter0==0:
-                        common4=tetrahedron1 #.reshape(1,4,6,3)
+                        common4=tetrahedron1.reshape(1,4,6,3)
                         counter0+=1
                     else:
                         #common4=np.concatenate([common4,tetrahedron1])

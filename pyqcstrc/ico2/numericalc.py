@@ -132,16 +132,6 @@ def check_intersection_segment_surface_numerical_6d_tau(line_segment,triangle):
     """
     ln=get_internal_component_sets_numerical(line_segment)
     tr=get_internal_component_sets_numerical(triangle)
-    return check_intersection_segment_surface_numerical_6d_xyz(ln,tr)
-    
-def check_intersection_segment_surface_numerical_6d_tau(ln,tr):
-    
-    # TAU-style to Float
-    #ln=numerical_vectors(ln)
-    #tr=numerical_vectors(tr)
-    
-    ln=get_internal_component_sets_numerical(ln)
-    tr=get_internal_component_sets_numerical(tr)
     return check_intersection_segment_surface_numerical(ln,tr)
     
 def check_intersection_segment_surface_numerical(ln,tr):
@@ -170,21 +160,29 @@ def check_intersection_segment_surface_numerical(ln,tr):
     vecQ=np.cross(vecCA,vecCD) # Q
     
     bunbo=np.dot(vecP,vecCD)
+    #print('bunbo=',bunbo)
     if abs(bunbo)<EPS: # the line_segment is parrallel to the triangle.
         return False
     else:
         u=np.dot(vecP,vecCA)/bunbo
-        if u>=0.0 and u<=1.0:
+        #print('u=',u)
+        if u>=0.0-EPS and u<=1.0+EPS:
             v=np.dot(vecQ,vecAB)/bunbo
-            if v>=0.0 and u+v<=1.0:
+            #print('v=',v)
+            if v>=0.0-EPS and u+v<=1.0+EPS:
                 t=np.dot(vecQ,vecCE)/bunbo
-                if t>=0.0 and t<=1.0:
+                #print('t=',t)
+                if t>=0.0-EPS and t<=1.0+EPS:
+                    #print('  intersect\n')
                     return True # intersect
                 else:
+                    #print('\n')
                     return False
             else:
+                #print('\n')
                 return False
         else:
+            #print('\n')
             return False
 
 def check_intersection_two_segment_numerical_6d_tau(segment_1,segment_2):
@@ -343,26 +341,19 @@ def inside_outside_tetrahedron(point,tetrahedron):
                 tet[i]=tetrahedron0[i]
         return tet
     
-    tet1=small_tetrahedron(1,point,tetrahedron)
+    tet1=small_tetrahedron(0,point,tetrahedron)
     vol1=tetrahedron_volume_numerical(tet1)
     #
-    tet2=small_tetrahedron(2,point,tetrahedron)
+    tet2=small_tetrahedron(1,point,tetrahedron)
     vol2=tetrahedron_volume_numerical(tet2)
     #
-    tet3=small_tetrahedron(3,point,tetrahedron)
+    tet3=small_tetrahedron(2,point,tetrahedron)
     vol3=tetrahedron_volume_numerical(tet3)
     #
-    tet4=small_tetrahedron(4,point,tetrahedron)
+    tet4=small_tetrahedron(3,point,tetrahedron)
     vol4=tetrahedron_volume_numerical(tet4)
     
     if abs(vol0-vol1-vol2-vol3-vol4)<EPS*vol0:
-        print('point',point)
-        print(tet1)
-        print('vol0',vol0)
-        print('vol1',vol1)
-        print('vol2',vol2)
-        print('vol3',vol3)
-        print('vol4',vol4)
         return True # inside
     else:
         return False # outside
@@ -594,6 +585,15 @@ if __name__ == '__main__':
     print(vol)
     """
     
-    print('check intersection')
+    ln=np.array([\
+    [1.61803399, -1.,          0. ],\
+    [3.73607, -0.19098,1.30902 ]])
     
+    tr=np.array([\
+    [3.61803399, -1.,          0.38197],\
+    [2.61803399, -0.38196601,  0.],\
+    [2.61803399, 0,1. ]])
+    
+    a=check_intersection_segment_surface_numerical(ln,tr)
+    print(a)
     

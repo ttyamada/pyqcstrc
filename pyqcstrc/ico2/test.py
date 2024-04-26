@@ -41,6 +41,7 @@ if __name__ == "__main__":
     pos0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
     rt_sym=od.symmetric(rt_asym,pos0)
     #rt_sym=od.symmetric_0(rt_asym,pos0,7)
+    #rt_sym=od.symmetric_0(rt_asym,pos0,113)
     od.write(obj=rt_sym, path='.', basename='obj_rt0', format='xyz')
     od.write(obj=rt_sym, path='.', basename='obj_rt0', format='vesta')
     
