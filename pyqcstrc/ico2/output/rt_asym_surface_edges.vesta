@@ -2,7 +2,7 @@
 
 MOLECULE                
 TITLE
-./common_0
+./output/rt_asym_surface_edges_0
 
 GROUP                
 1 1 Custom                

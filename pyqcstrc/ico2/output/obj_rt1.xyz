@@ -1,5 +1,5 @@
 480
-./obj_rt1.xyz
+./output/obj_rt1.xyz
 Xx 1.618034 -1.000000 0.000000 #   0-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
 Xx 4.236068 -2.618034 0.000000 #   0-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2
 Xx 4.236068 -1.000000 1.000000 #   0-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2

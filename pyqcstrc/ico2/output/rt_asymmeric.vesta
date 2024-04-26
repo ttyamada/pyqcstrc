@@ -2,7 +2,7 @@
 
 MOLECULE                
 TITLE
-./rt_asymmeric_0
+./output/rt_asymmeric_0
 
 GROUP                
 1 1 Custom                
