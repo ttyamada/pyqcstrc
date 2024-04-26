@@ -556,18 +556,14 @@ def intersection_two_obj_1(obj1,obj2):
     cent2=centroid_obj(obj2)
     dd2=ball_radius_obj(obj2,cent2)
     
-    #common4=np.array([[[[0]]]])
     counter0=0
     for tetrahedron1 in obj1:
         if rough_check_intersection_tetrahedron_obj(tetrahedron1,cent2,dd2):
             counter1=0
-            #tmp_common4=np.array([[[[0]]]])
             vol1=tetrahedron_volume_6d(tetrahedron1)
-            print('vol1',vol1,numeric_value(vol1))
-            #i=0
+            #print('vol1',vol1,numeric_value(vol1))
             for tetrahedron2 in obj2:
                 flag=check_intersection_two_tetrahedron_4(tetrahedron1,tetrahedron2)
-                #print(flag)
                 #
                 # tetrahedron_1 is fully inside tetrahedron_2
                 if flag==1:
@@ -619,7 +615,7 @@ def intersection_two_obj_1(obj1,obj2):
             if counter1!=0:
                 #print('tmp_common4',tmp_common4)
                 vol2=obj_volume_6d(tmp_common4)
-                print('vol2',vol2,numeric_value(vol2))
+                #print('vol2',vol2,numeric_value(vol2))
                 if np.all(vol1==vol2):
                     if counter0==0:
                         common4=tetrahedron1.reshape(1,4,6,3)

@@ -62,7 +62,8 @@ if __name__ == "__main__":
     print('    intersection starts')
     start = time.time()
     ###
-    common=tod.intersection(rt_asym,rt_sym_pos1)
+    #common=tod.intersection(rt_asym,rt_sym_pos1)
+    common=tod.intersection(rt_sym,rt_sym_pos1)
     ###
     end=time.time()
     time_diff=end-start
