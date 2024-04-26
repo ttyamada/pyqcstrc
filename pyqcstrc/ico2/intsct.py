@@ -282,7 +282,7 @@ def intersection_two_segment(segment_1,segment_2):
         tmp=mul_vector(vecAB,s)
         return add_vectors(segment_1[0],tmp)
     else: # no intersection
-        return np.zeros((6,3),dtype=np.int64)
+        return 
 
 def intersection_segment_surface(segment,surface):
     """check intersection between a line segment and a triangle.
@@ -328,7 +328,7 @@ def intersection_segment_surface(segment,surface):
         tmp=mul_vector(vec6AB,t) # t*AB
         return add_vectors(segment[0],tmp)
     else: # no intersection
-        return np.zeros((6,3),dtype=np.int64)
+        return 
 
 def intersection_two_tetrahedron_4(tetrahedron_1,tetrahedron_2):
     #
@@ -418,7 +418,7 @@ def intersection_two_tetrahedron_4(tetrahedron_1,tetrahedron_2):
         segment=np.stack([tetrahedron_1[c[0]],tetrahedron_1[c[1]]])
         surface=np.stack([tetrahedron_2[c[2]],tetrahedron_2[c[3]],tetrahedron_2[c[4]]])
         tmp1=intersection_segment_surface(segment,surface)
-        if np.all(tmp1==array0):
+        if np.all(tmp1==None):
             pass
         else:
             #print('tmp1',tmp1)
@@ -432,7 +432,7 @@ def intersection_two_tetrahedron_4(tetrahedron_1,tetrahedron_2):
         segment=np.stack([tetrahedron_2[c[0]],tetrahedron_2[c[1]]])
         surface=np.stack([tetrahedron_1[c[2]],tetrahedron_1[c[3]],tetrahedron_1[c[4]]])
         tmp1=intersection_segment_surface(segment,surface)
-        if np.all(tmp1==array0):
+        if np.all(tmp1==None):
             pass
         else:
             #print('tmp1',tmp1)
@@ -468,7 +468,7 @@ def intersection_two_tetrahedron_4(tetrahedron_1,tetrahedron_2):
     tmp=tmp.reshape(int(len(tmp)/6),6,3)
     #print('tmp:',tmp)
     
-    tmp4=np.array([[[[0]]]])
+    #tmp4=np.array([[[[0]]]])
     if counter>=4:
         tmp3=remove_doubling_in_perp_space(tmp)
         if len(tmp3)>=4:
@@ -480,11 +480,11 @@ def intersection_two_tetrahedron_4(tetrahedron_1,tetrahedron_2):
                     tmp4=tmp3.reshape(1,4,6,3)
                 else:
                     tmp4=tetrahedralization_points(tmp3)
+                return tmp4
         else:
-            pass
+            return 
     else:
-        pass
-    return tmp4
+        return 
 
 def decomposition(tmp2v):
     try:
@@ -529,9 +529,9 @@ def tetrahedralization_points(points):
         if counter!=0:
             return tmp1.reshape(int(len(tmp1)/72),4,6,3) # 4*6*3=72
         else:
-            return np.array([[[[0]]]])
+            return 
     else:
-        return np.array([[[[0]]]])
+        return 
 
 def intersection_two_obj_1(obj1,obj2):
     
@@ -543,7 +543,7 @@ def intersection_two_obj_1(obj1,obj2):
     for tetrahedron1 in obj1:
         if rough_check_intersection_tetrahedron_obj(tetrahedron1,cent2,dd2):
             counter1=0
-            tmp_common4=np.array([[[[0]]]])
+            #tmp_common4=np.array([[[[0]]]])
             vol1=tetrahedron_volume_6d(tetrahedron1)
             for tetrahedron2 in obj2:
                 flag=check_intersection_two_tetrahedron_4(tetrahedron1,tetrahedron2)
@@ -575,10 +575,9 @@ def intersection_two_obj_1(obj1,obj2):
                     ### いると判定される場合がある。2つの四面体の交差点が3つ以下の場合
                     ###（つまり接している場合）がこれに相当するので、以下のようにする。
                     ###
-                    if np.all(tmp4==np.array([[[[0]]]])):
+                    if np.all(tmp4==None):
                         pass
                     else:
-                        #print('tmp4:',tmp4)
                         if counter1==0:
                             tmp_common4=tmp4
                             counter1+=1
@@ -591,12 +590,12 @@ def intersection_two_obj_1(obj1,obj2):
                     #    tmp_common4=np.vstack((tmp_common4,tmp4))
                 else:
                     pass
-            if counter1>0:
+            if counter1!=0:
                 #print('tmp_common4',tmp_common4)
                 vol2=obj_volume_6d(tmp_common4)
                 if np.all(vol1==vol2):
                     if counter0==0:
-                        common4=tetrahedron1.reshape(1,4,6,3)
+                        common4=tetrahedron1 #.reshape(1,4,6,3)
                         counter0+=1
                     else:
                         common4=np.concatenate([common4,tetrahedron1])
@@ -606,11 +605,11 @@ def intersection_two_obj_1(obj1,obj2):
                         counter0+=1
                     else:
                         common4=np.concatenate([common4,tmp_common4])
+                return common4
             else:
-                pass
+                return
         else:
-            pass
-    return common4
+            return 
 
 
 

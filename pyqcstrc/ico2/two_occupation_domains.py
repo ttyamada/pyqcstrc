@@ -47,11 +47,11 @@ def intersection(obj1, obj2):
         pass
         
     common=intsct.intersection_two_obj_1(obj1, obj2)
-    if common.tolist()!=[[[[0]]]]:
-        return common
-    else:
+    if np.all(common==None):
         print('no common part')
         return 
+    else:
+        return common
 
 def intersection_convex(obj1,obj2):
     """

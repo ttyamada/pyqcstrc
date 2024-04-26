@@ -18,7 +18,7 @@ except ImportError:
 
 if __name__ == "__main__":
     
-    # import asymmetric part of RT OD(occupation domain) located at origin,0,0,0,0,0,0.
+    # generate asymmetric part of RT OD(occupation domain) located at origin,0,0,0,0,0,0.
     v0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
     v1 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2]])
     v2 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2]])
