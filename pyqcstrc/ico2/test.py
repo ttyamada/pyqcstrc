@@ -58,7 +58,7 @@ if __name__ == "__main__":
     #od.write(obj=surface_edges, path=opath, basename='obj_rt1_surface_edges', format='vesta',select='normal')
     
     
-    
+    """
     # intersection of "asymmetric part of rt" and "rt at position pos_b1"
     print('    intersection starts')
     start = time.time()
@@ -68,24 +68,22 @@ if __name__ == "__main__":
     ###
     end=time.time()
     time_diff=end-start
-    print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データを使用
+    print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
     
     # Export common in vesta
     od.write(obj=common, path=opath, basename='common', format='xyz')
     od.write(obj=common, path=opath, basename='common', format='vesta')
     #common=od.read_xyz(path=opath,basename='common')
+    """
     
     
     
-    
-    
-    ######## WIP ##########
-    ###
+    """
     ### Comment: generator_surface_1(common)の結果がおかしい。内部の三角形が残っている。
     ### intersection_two_obj_1(obj1,obj2)を行うときに、obj1中のtetrahedronがそのままobj2内部にあるときは、
     ### そのtetrahedronをそのままキープするので、そのtetrahedronと接するtetrahedronの表面三角形は共通しない場合
     ### があり、このため内部に三角形が残ってしまう。
-    ### 表面を作る必要がある場合だけ、intersection_two_obj_1(obj1,obj2)とは仕様の異なる関数を準備する必要がある。
+    ### 表面を作る必要がある場合は、intersection_two_obj_1(obj1,obj2)とは仕様の異なる関数を準備する必要がある。
     print('    generator_surface_1 starts')
     start = time.time()
     ###
@@ -96,19 +94,19 @@ if __name__ == "__main__":
     ###
     end=time.time()
     time_diff=end-start
-    print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データを使用
-    
-    
+    print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
     """
+    
+    #"""
     # TEST intersection_convex()
     print('    intersection_convex starts')
     start = time.time()
     ###
-    common1=tod.intersection_convex(rt_sym,rt_pos1)
+    common1=tod.intersection_convex(rt_sym,rt_sym_pos1)
     od.write(obj=common1, path='.', basename='common_convex', format='xyz')
     od.write(obj=common1, path='.', basename='common_convex', format='vesta')
     ###
     end=time.time()
     time_diff=end-start
-    print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データを使用
-    """
+    print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
+    #"""

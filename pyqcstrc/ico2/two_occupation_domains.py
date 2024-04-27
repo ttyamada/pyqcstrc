@@ -21,20 +21,33 @@ except ImportError:
 
 TAU=(1+np.sqrt(5))/2.0
 
-def intersection(obj1, obj2):
+def intersection(obj1,obj2,kind=None):
     """
-    Intersection of two occupation domains projected onto perp space.
+    Return an intersection between two objects.
     
-    Args:
-        obj1 (numpy.ndarray):
-            The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.
-        obj2 (numpy.ndarray):
-            The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.
+    Parameters
+    ----------
+    obj1 : ndarray
+        a set of tetrahedra to be intersected with obj2.
+    obj2 : ndarray
+        a set of tetrahedra to be intersected with obj1.
+    kind : {'standard', 'simple'}, optional
+        The default is 'standard'. 
     
-    Returns:
-        Common part of two occupation domains projected onto perp space (numpy.ndarray):
-            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
-
+    Returns
+    -------
+    intersection between obj1 and obj2 : ndarray
+        Array of the same type and shape as `obj1` and `obj2`.
+    
+    Notes
+    -----
+    
+    'standard' intersection ...
+    
+    
+    
+    'simple' intersection ...
+    
     """
     
     if obj1.ndim == 3:
@@ -46,7 +59,7 @@ def intersection(obj1, obj2):
     else:
         pass
         
-    common=intsct.intersection_two_obj_1(obj1, obj2)
+    common=intsct.intersection_two_obj_1(obj1,obj2,kind)
     if np.all(common==None):
         print('no common part')
         return 
@@ -58,22 +71,19 @@ def intersection_convex(obj1,obj2):
     Intersection of two occupation domains projected onto perp space.
     The common part forms convex hull.
     
-    Args:
-        obj1 (numpy.ndarray):
-            The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.
-        obj2 (numpy.ndarray):
-            The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.
-        verbose (int):
-            verbose = 0 (silent, default)
-            verbose = 1 (normal)
+    Parameters
+    ----------
+    obj1 (numpy.ndarray):
+        The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.
+    obj2 (numpy.ndarray):
+        The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.
     
-    Returns:
-        Common part of two occupation domains projected onto perp space (numpy.ndarray)
-            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+    Returns
+    -------
+    Common part of two occupation domains projected onto perp space (numpy.ndarray)
+        The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
 
     """
-    #point_common,point_a,point_b=intsct.intersection_two_obj_convex(obj1, obj2)
-    #common=intsct.tetrahedralization_points(point_common)
     common=intsct.intersection_two_obj_convex(obj1, obj2)
     if common.tolist()!=[[[[0]]]]:
         return common
