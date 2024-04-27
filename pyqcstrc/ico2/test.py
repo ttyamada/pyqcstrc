@@ -103,8 +103,8 @@ if __name__ == "__main__":
     start = time.time()
     ###
     common1=tod.intersection_convex(rt_sym,rt_sym_pos1)
-    od.write(obj=common1, path='.', basename='common_convex', format='xyz')
-    od.write(obj=common1, path='.', basename='common_convex', format='vesta')
+    od.write(obj=common1, path=opath, basename='common_convex', format='xyz')
+    od.write(obj=common1, path=opath, basename='common_convex', format='vesta')
     ###
     end=time.time()
     time_diff=end-start
