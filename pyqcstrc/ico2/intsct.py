@@ -681,8 +681,6 @@ def intersection_two_obj_1(obj1,obj2,kind=None):
     else:
         return 
 
-
-########## WIP ##########
 def intersection_two_obj_convex(obj1,obj2,vervose=0):
     """
     # This is very simple but work correctly only when each subdivided 
@@ -814,7 +812,7 @@ def tetrahedron_not_obj(tetrahedron,obj):
     """
     
     # common: tetrahedron and obj
-    common=intersection_two_obj_1(tetrahedron,obj)
+    common=intersection_two_obj_1(tetrahedron,obj,kind='standard')
     vol1=obj_volume_6d(common)
     
     vtx=np.vstack(tetrahedron,common)
