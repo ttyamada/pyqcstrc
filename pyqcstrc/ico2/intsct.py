@@ -551,7 +551,34 @@ def tetrahedralization_points(points):
     else:
         return 
 
-def intersection_two_obj_1(obj1,obj2):
+def intersection_two_obj_1(obj1,obj2,kind=None):
+    """
+    Return an intersection between two objects.
+    
+    Parameters
+    ----------
+    obj1 : ndarray
+        a set of tetrahedra to be intersected with obj2.
+    obj2 : ndarray
+        a set of tetrahedra to be intersected with obj1.
+    kind : {'standard', 'simple'}, optional
+        The default is 'standard'. 
+    
+    Returns
+    -------
+    intersection between obj1 and obj2 : ndarray
+        Array of the same type and shape as `obj1` and `obj2`.
+    
+    Notes
+    -----
+    
+    'standard' intersection ...
+    
+    
+    
+    'simple' intersection ...
+    
+    """
     
     cent2=centroid_obj(obj2)
     dd2=ball_radius_obj(obj2,cent2)
@@ -560,7 +587,7 @@ def intersection_two_obj_1(obj1,obj2):
     for tetrahedron1 in obj1:
         if rough_check_intersection_tetrahedron_obj(tetrahedron1,cent2,dd2):
             counter1=0
-            vol1=tetrahedron_volume_6d(tetrahedron1)
+            #vol1=tetrahedron_volume_6d(tetrahedron1)
             #print('vol1',vol1,numeric_value(vol1))
             for tetrahedron2 in obj2:
                 flag=check_intersection_two_tetrahedron_4(tetrahedron1,tetrahedron2)
@@ -614,26 +641,38 @@ def intersection_two_obj_1(obj1,obj2):
                 
             if counter1!=0:
                 #print('tmp_common4',tmp_common4)
-                vol2=obj_volume_6d(tmp_common4)
+                #vol2=obj_volume_6d(tmp_common4)
                 #print('vol2',vol2,numeric_value(vol2))
-                if np.all(vol1==vol2):
-                    if counter0==0:
-                        common4=tetrahedron1.reshape(1,4,6,3)
-                        print('common4.shape',common4.shape)
-                        counter0+=1
+                if kind=='simple':
+                    vol1=tetrahedron_volume_6d(tetrahedron1)
+                    vol2=obj_volume_6d(tmp_common4)
+                    if np.all(vol1==vol2):
+                        if counter0==0:
+                            common4=tetrahedron1.reshape(1,4,6,3)
+                            #print('common4.shape',common4.shape)
+                            counter0+=1
+                        else:
+                            #common4=np.concatenate([common4,tetrahedron1])
+                            common4=np.vstack([common4,[tetrahedron1]])
+                            #print('common4.shape',common4.shape)
                     else:
-                        #common4=np.concatenate([common4,tetrahedron1])
-                        common4=np.vstack([common4,[tetrahedron1]])
-                        print('common4.shape',common4.shape)
+                        if counter0==0:
+                            common4=tmp_common4
+                            counter0+=1
+                            #print('tmp_common4.shape',tmp_common4.shape)
+                        else:
+                            #common4=np.concatenate([common4,tmp_common4])
+                            common4=np.vstack([common4,tmp_common4])
+                            #print('tmp_common4.shape',tmp_common4.shape)
                 else:
                     if counter0==0:
                         common4=tmp_common4
                         counter0+=1
-                        print('tmp_common4.shape',tmp_common4.shape)
+                        #print('tmp_common4.shape',tmp_common4.shape)
                     else:
                         #common4=np.concatenate([common4,tmp_common4])
                         common4=np.vstack([common4,tmp_common4])
-                        print('tmp_common4.shape',tmp_common4.shape)
+                        #print('tmp_common4.shape',tmp_common4.shape)
                 #print(common4.shape)
                 #return common4
     

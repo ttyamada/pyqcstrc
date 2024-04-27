@@ -75,6 +75,17 @@ if __name__ == "__main__":
     od.write(obj=common, path=opath, basename='common', format='vesta')
     #common=od.read_xyz(path=opath,basename='common')
     
+    
+    
+    
+    
+    ######## WIP ##########
+    ###
+    ### Comment: generator_surface_1(common)の結果がおかしい。内部の三角形が残っている。
+    ### intersection_two_obj_1(obj1,obj2)を行うときに、obj1中のtetrahedronがそのままobj2内部にあるときは、
+    ### そのtetrahedronをそのままキープするので、そのtetrahedronと接するtetrahedronの表面三角形は共通しない場合
+    ### があり、このため内部に三角形が残ってしまう。
+    ### 表面を作る必要がある場合だけ、intersection_two_obj_1(obj1,obj2)とは仕様の異なる関数を準備する必要がある。
     print('    generator_surface_1 starts')
     start = time.time()
     ###
