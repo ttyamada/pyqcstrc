@@ -246,6 +246,12 @@ def generator_unique_triangles(obj):
             a[i1]=triangles[b[i1]]
         return a
 
+def get_common_edges(trianges):
+    """
+    common edges in trianges
+    """
+    return 
+
 def generator_unique_edges(obj):
     """
     generates edges
@@ -525,14 +531,14 @@ def merge_two_tetrahedra_in_obj(obj):
 ## 　　-> ドロネー分割
 ## 　　->処理前後で体積変化なしであれば凸包だと判断。
 def surface_cleaner(surface,num_cycle):
-    #
-    # 同一平面上にある三角形ごとにグループ分けする
-    #
-    # 各グループにおいて、以下を行う．
-    #   三角形の３辺が、他のどの三角形とも共有していない辺を求める
-    #   ２つの辺が１つの辺にまとめられるのであれば、まとめる
-    #   辺の集合をアウトプット
+    """
+    同一平面上にある三角形ごとにグループ分けする
     
+    各グループにおいて、以下を行う．
+        角形の３辺が、他のどの三角形とも共有していない辺を求める
+        ２つの辺が１つの辺にまとめられるのであれば、まとめる
+        辺の集合をアウトプット
+    """
     # 同一平面上にある三角形を求め、集合lst_setsとする
     def get_sets_of_coplanar_triangles(surface):
         # 同一平面上にある三角形を求め、集合lst_setsとする
@@ -710,6 +716,45 @@ def surface_cleaner(surface,num_cycle):
         out.append(egdes) # Merge
     return out
 
+def generate_convex_hull(obj,num_cycle=10):
+    """
+    objの凸包を得る。
+    
+    アルゴリズム
+    1. objの表面三角形を得る。
+    2. 無駄な表面三角形をなくす by surface_cleaner()。
+    3. objの頂点座標を得る
+    4. 四面体分割
+    
+    objが凸包であれば、この関数を実行することで、よりシンプルに四面体分割されたobjを得ることができる。
+    """
+    obj_surface=generator_surface_1(obj)
+
+    surface_list=surface_cleaner(obj_surface,num_cycle) # こちらのほうが計算効率がよい？
+    #surface_list=surface_cleaner_1(obj_surface,num_cycle)
+    
+    if len(surface_list)>0:
+        obj_surface_new=surface_list[0]
+        for i1 in range(1,len(surface_list)):
+            tmp=np.vstack(a,surface_list[i1])
+        obj_surface_new=tmp
+    else:
+        obj_surface_new=surface_list[0]
+    
+    tmp=remove_doubling_in_perp_space(obj_surface_new)
+    return tetrahedralization_points(tmp)
+
+### WIP ###
+def breps(tetrahedron):
+    """
+    四面体の頂点を指す6d vectors (TAU-style)から
+    境界表現 (Boundary Representation, B-reps)
+    に変換する。
+    
+    四面体の重心を求める。稜線
+    """
+    return
+    
 def check_two_vertices(vertex1,vertex2):
     xyz1=projection3(vertex1[0],vertex1[1],vertex1[2],vertex1[3],vertex1[4],vertex1[5])
     xyz2=projection3(vertex2[0],vertex2[1],vertex2[2],vertex2[3],vertex2[4],vertex2[5])

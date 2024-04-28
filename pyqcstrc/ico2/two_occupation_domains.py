@@ -91,3 +91,5 @@ def intersection_convex(obj1,obj2):
         print('no common part')
         return 
         
+def object_subtraction(obj1,obj2):
+    return intsct.object_subtraction_dev1(obj1,obj2)

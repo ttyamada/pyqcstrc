@@ -19,6 +19,8 @@ except ImportError:
 if __name__ == "__main__":
     
     opath='./output'
+    
+    """
     # generate asymmetric part of RT OD(occupation domain) located at origin,0,0,0,0,0,0.
     v0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
     v1 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2]])
@@ -56,7 +58,7 @@ if __name__ == "__main__":
     #od.write(obj=surface_triangles, path=opath, basename='obj_rt1_surface_triangles', format='vesta',select='normal')
     #surface_edges=utils.generator_unique_edges(surface_triangles)
     #od.write(obj=surface_edges, path=opath, basename='obj_rt1_surface_edges', format='vesta',select='normal')
-    
+    """
     
     """
     # intersection of "asymmetric part of rt" and "rt at position pos_b1"
@@ -97,7 +99,7 @@ if __name__ == "__main__":
     print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
     """
     
-    #"""
+    """
     # TEST intersection_convex()
     print('    intersection_convex starts')
     start = time.time()
@@ -109,4 +111,34 @@ if __name__ == "__main__":
     end=time.time()
     time_diff=end-start
     print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
-    #"""
+    """
+    
+    # TEST tetrahedron_not_obj()
+    strt_aysmmetric=od.read_xyz(path='../xyz',basename='strt_aysmmetric',select='tetrahedron',verbose=0)
+    od.write(obj=strt_aysmmetric[0].reshape(1,4,6,3), path=opath, basename='strt_aysmmetric', format='vesta')
+    
+    # generat STRT OD located at 0,0,0,0,0,0 by symmetric operations (m-3-5).
+    pos0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
+    strt_sym=od.symmetric(strt_aysmmetric,pos0)
+    
+    # move STRT OD to a position 1 0 0 0 0 0.
+    POS_B1=np.array([[ 1, 0, 1],[ 1, 0, 1],[ 1, 0, 1],[ 0, 0, 1],[-1, 0, 1],[ 0, 0, 1]]) # b_1
+    strt_sym_pos1=od.shift(strt_sym,POS_B1)
+    od.write(obj=strt_sym_pos1, path=opath, basename='obj_strt1', format='xyz')
+    od.write(obj=strt_sym_pos1, path=opath, basename='obj_strt1', format='vesta')
+    
+    
+    print('    tetrahedron_not_obj starts')
+    start = time.time()
+    ###
+    #tetrahedron=strt_aysmmetric[0].reshape(1,4,6,3)
+    #a=tod.tetrahedron_not_obj(tetrahedron,strt_sym_pos1)
+    obj=strt_aysmmetric
+    a=tod.object_subtraction(obj,strt_sym_pos1)
+    od.write(obj=a, path=opath, basename='test', format='xyz')
+    od.write(obj=a, path=opath, basename='test', format='vesta')
+    ###
+    end=time.time()
+    time_diff=end-start
+    print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
+    

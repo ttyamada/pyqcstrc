@@ -6,6 +6,7 @@
 import sys
 import numpy as np
 from scipy.spatial import Delaunay
+import time # in object_subtraction_dev1, tetrahedron_not_obj
 
 from math1 import (centroid, 
                     centroid_obj,
@@ -32,7 +33,8 @@ from numericalc import (length_numerical,
                         check_intersection_two_segment_numerical_6d_tau,
                         check_intersection_segment_surface_numerical_6d_tau,
                         inside_outside_tetrahedron,
-                        inside_outside_tetrahedron_tau)
+                        inside_outside_tetrahedron_tau,
+                        on_out_surface)
 from utils import (remove_doubling_in_perp_space,
                     obj_volume_6d,
                     tetrahedron_volume_6d,
@@ -803,55 +805,283 @@ def intersection_two_obj_convex(obj1,obj2,vervose=0):
                 return 
             else:
                 return common
-            
-            
-########## WIP ##########
-def tetrahedron_not_obj(tetrahedron,obj):
+
+#########
+###
+###   WIP
+###
+#########
+def object_subtraction_dev1(obj1,obj2):
     """
-    tetrahedron not object
+    get A not B = A not (A and B)
+    obj1: A
+    obj2: B
+    """
+    print('     object_subtraction_dev1()')
+    # surface triangles of obj2
+    
+    print('      generating surface_obj2')
+    start = time.time()
+    surface_obj2=generator_surface_1(obj2)
+    end=time.time()
+    time_diff=end-start
+    print('         ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
+    
+    
+    counter1=0
+    for tetrahedron in obj1:
+        print('      %d-th tetrahedron in obj1'%(counter1))
+        a=tetrahedron_not_obj(tetrahedron.reshape(1,4,6,3),obj2,surface_obj2)
+        if np.all(a==None):
+            pass
+        else:
+            if counter1==0:
+                out=a
+            else:
+                out=np.vstack([out,a])
+        counter1+=1
+    return out
+
+def tetrahedron_not_obj(tetrahedron,obj,surface_obj):
+    """
+    get A not B = A not (A and B)
+    tetrahedron: A
+    obj: B
+    
+    surface_obj = surface of B
     """
     
-    # common: tetrahedron and obj
+    print('        tetrahedron_not_obj()')
+        
+    # surface triangles of obj
+    #surface_obj=generator_surface_1(obj)
+    
+    # surface triangles and vertices of common
+    print('         intersection_two_obj_1()')
+    start=time.time()
+    common=intersection_two_obj_1(tetrahedron,obj)
+    end=time.time()
+    time_diff=end-start
+    print('          ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
+    surface_common=generator_surface_1(common)
+    #vertx_common=remove_doubling_in_perp_space(surface_common)
+    
+    vol0=obj_volume_6d(tetrahedron)
+    vol1=obj_volume_6d(common)
+    #print('tetrahedron volume:',vol0,numeric_value(vol0))
+    #print('common volume:',vol1,numeric_value(vol1))
+    vol2=sub(vol0,vol1)
+    #print('tetrahedron NOT obj:',vol2,numeric_value(vol2))
+    
+    out=None
+    
+    # get surface triangles of common part which are on the surface of obj
+    counter2=0
+    for triangle2 in surface_common:
+        counter1=0
+        for vrtx2 in triangle2:
+            for triangle3 in surface_obj:
+                if on_out_surface(vrtx2,triangle3): # on
+                    counter1+=1
+                    break
+                else:
+                    pass
+        if counter1==3:
+            if counter2==0:
+                tmp=triangle2.reshape(1,3,6,3)
+            else:
+                tmp=np.vappend([tmp,[triangle2]])
+            counter2+=1
+        else:
+            pass
+    triangle_common=tmp
+    #print('triangle_common.shape',triangle_common.shape)
+    
+    # vertices of common part which are on the surface of obj
+    vertx_common=remove_doubling_in_perp_space(triangle_common)
+    vertx_common=remove_doubling_in_perp_space(vertx_common)
+    
+    # get vertices of tetrahedron which are NOT inside obj
+    counter2=0
+    tetrahedron=tetrahedron.reshape(4,6,3)
+    for vrtx1 in tetrahedron:
+        counter1=0
+        for tet3 in obj:
+            #print('vrtx1.shape',vrtx1.shape)
+            #print('tet3.shape',tet3.shape)
+            if inside_outside_tetrahedron_tau(vrtx1,tet3): # inside
+                counter1+=1
+                break
+            else:
+                pass
+        if counter1==0:
+            if counter2==0:
+                tmp=vrtx1.reshape(1,6,3)
+            else:
+                tmp=np.vstack([tmp1a,[vrtx1]])
+            counter2+=1
+        else:
+            pass
+    vrtx1_out=tmp
+    #print('vrtx1_out.shape',vrtx1_out.shape)
+    #
+    #
+    #
+    # 四面体の4つの頂点のうちobjの外側にある頂点vrtx1_outの個数Nは、1, 2, 3, 4個。
+    # 以下、それぞれの場合について考える。
+    ############################################################ 
+    ### N=1の場合は、triangle_commonにある各三角形と頂点を結んだものが求めたいものになる。
+    ############################################################
+    if counter2==1:
+        print('         case 1')
+        counter3=0
+        for triangle in triangle_common:
+            #print('triangle.shape',triangle.shape)
+            tet=np.vstack([vrtx1_out,triangle]).reshape(1,4,6,3)
+            #print('tet.shape',tet.shape)
+            if counter3==0:
+                tmp=tet
+            else:
+                tmp=np.vappend([tmp,tet])
+            counter3+=1
+        #print('out.shape',out.shape)
+        vol=obj_volume_6d(tmp)
+        #print('obtained volume:',vol,numeric_value(vol))
+        if np.all(vol==vol2):
+            out=tmp
+        return out
+    ############################################################
+    #### N=2の場合。triangle_commonに含まれる三角形の個数で場合分けする。
+    ############################################################
+    elif counter2==2:
+        if len(triangle_common)==1:
+            print('         case 2-1')
+            out=tetrahedralization_points(np.vstack([vrtx1_out,triangle_common]))
+        elif len(triangle_common)==2:
+            print('         case 2-2')
+            combination=[\
+            [1,2],\
+            [0,2],\
+            [0,1]]
+            tr1=triangle_common[0]
+            tr2=triangle_common[1]
+            for c1 in combination:
+                counter=0
+                for c2 in combination:
+                    edge1=np.vstack([tr1[c1[0]],tr1[c1[1]]])
+                    edge2=np.vstack([tr2[c1[0]],tr2[c1[1]]])
+                    tmp=np.vstack([edge1,edge2])
+                    edge_common=remove_doubling_in_perp_space(tmp)
+                    if len(tmp)==2:
+                        counter+=1
+                        break
+                if counter!=0:
+                    beak
+            tet1=np.vstack([vrtx1_out,edge_common])
+            vola=obj_volume_6d(tet1)
+            combination=[\
+            [1,0],\
+            [0,1]]
+            for c1 in combination: 
+                tet2=np.vstack([vrtx1_out[c1[0]],tr1])
+                tet3=np.vstack([vrtx1_out[c1[1]],tr2])
+                tet_tot=np.vstack([tet1,tet2,tet3])
+                vol_tot=obj_volume_6d(tet_tot)
+                if np.all(vol_tot==vol2):
+                    out=tet_tot
+                    break
+        elif len(triangle_common)==3:
+            print('         case 2-3')
+        elif len(triangle_common)==4:
+            print('         case 2-4')
+        else:
+            print('         case 2-X')
+        return out
+    ############################################################
+    #### N=3の場合。triangle_commonに含まれる三角形の個数で場合分けする。
+    ############################################################
+    elif counter2==3:
+        if len(triangle_common)==1:
+            print('         case 3-1')
+            out=tetrahedralization_points(np.vstack([vrtx1_out,triangle_common]))
+        elif len(triangle_common)==2:
+            print('         case 3-2')
+        elif len(triangle_common)==3:
+            print('         case 3-3')
+        elif len(triangle_common)==4:
+            print('         case 3-4')
+        else:
+            print('         case 3-X')
+        return out
+    ############################################################
+    #### N=4の場合。triangle_commonに含まれる三角形の個数で場合分けする。
+    ############################################################
+    else:
+        if len(triangle_common)==3:
+            print('         case 4-3')
+        elif len(triangle_common)==4:
+            print('         case 4-4')
+        else:
+            print('         case 4-X')
+        return out
+
+def difference_tetrahedron_not_obj(tetrahedron,obj):
+    """
+    tetrahedron AND (NOT object)
+    
+    # tetrahedronからobjを引いた物体の表面にある三角形を求める（本当は四面体を求めたいが難しい）
+    
+    アルゴリズム
+    1. tetrahedronとobjの共通部分Aを求める。
+    2. A表面の三角形T1を求める
+    3. objの表面の三角形T2を求める。
+    4. T1のうち、T2上にあるものT1'を得る。T1'は求めたい差分tetrahedron NOT objの表面の一部になる。
+    5. T1のうち、T2の外側にあるものとT1'を合わせる。
+    """
+    
+    vol0=obj_volume_6d(tetrahedron)
+    print('tetrahedron volume:',vol0,numeric_value(vol0))
+    
+    # 1. tetrahedronとobjの共通部分Aを求める。
+    # intersection between tetrahedron and obj
     common=intersection_two_obj_1(tetrahedron,obj,kind='standard')
     vol1=obj_volume_6d(common)
+    print('common volume:',vol1,numeric_value(vol1))
     
-    vtx=np.vstack(tetrahedron,common)
-    vtx=remove_doubling_in_perp_space(vtx)
-    set_of_tetrahedra=tetrahedralization_points(points)
-    # もしset_of_tetrahedraにある四面体（もしくは複数の四面体のunion）が
-    # commonと一致しない場合は、tetrahedronからobjを引いたものを正しく計算できない。
+    # 2. A表面の三角形T1を求める
+    surface_obj2=generator_surface_1(common)
     
-    tmp_out=[]
-    tmp_common=[]
-    for tetrahedron in set_of_tetrahedra:
-        a=intersection_two_obj_1(tetrahedron.reshape(1,4,6,3),common)
-        # もしtetrahedron全体がcommonに入っていれば、intersection_two_obj_1はtetrahedron自身を返す
-        if np.all(tetrahedron==a):
-            tmp_common(tetrahedron)
-        else:
-            tmp.append(tetrahedron)
-    if len(tmp_common)!=0:
-        common_1=np.zeros((len(tmp_common),4,6,3))
-        i1=0
-        for tet in tmp_common:
-            common_1[i1]=tet
-            i1+=1
-        vol2=obj_volume_6d(common_1)
-        if np.all(vol1==vol2):
-            if len(tmp)!=0:
-                out=np.zeros((len(tmp),4,6,3))
-                i1=0
-                for tet in tmp:
-                    out[i1]=tet
-                    i1+=1
-                return out
+    # 3. objの表面の三角形T2を求める。
+    # surface of obj
+    surface_obj3=generator_surface_1(obj)
+    
+    # 4. T1のうち、T2上にあるものT1'を得る。T1'は求めたい差分tetrahedron NOT objの表面の一部になる。
+    # get triangles of common part which are on the surface of obj3
+    counter2=0
+    for triangle2 in surface_obj2:
+        counter1=0
+        for vrtx2 in triangle2:
+            for triangle3 in surface_obj3:
+                if on_out_surface(vrtx2,triangle3): # on
+                    counter1+=1
+                    break
+                else:
+                    pass
+        if counter1==4:
+            if counter2==0:
+                tmp=triangle2
             else:
-                return
+                tmp=np.vappend([tmp,triangle2])
+            counter2+=1
         else:
-            return 
-    else:
-        return 
-        
+            pass
+    
+    # 5. T1のうち、T2の外側にあるものとT1'を合わせる。
+    ###
+    ### WIP
+    ###
+    return 
+
 if __name__ == '__main__':
     
     # test

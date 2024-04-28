@@ -46,6 +46,43 @@ def point_on_segment(point, line_segment):
     else:
         return False
 
+def on_out_surface(point,triangle):
+    """
+    check whether the point is inside the triangle.
+    """
+    
+    def func(p_xyz,tr_xyz,indx):
+        out=np.zeros((3,3),dtype=np.float64)
+        for i in range(3):
+            if i==indx:
+                out[i]=p_xyz
+            else:
+                out[i]=tr_xyz[i]
+        return out
+        
+    p=get_internal_component_numerical(point)
+    triangle0=get_internal_component_sets_numerical(triangle)
+    
+    area0=triangle_area_numerical(triangle0)
+    
+    triangle1=func(p,triangle0,0)
+    triangle2=func(p,triangle0,1)
+    triangle3=func(p,triangle0,2)
+    #print(triangle_area_numerical(triangle0))
+    #print(triangle_area_numerical(triangle1))
+    #print(triangle_area_numerical(triangle2))
+    #print(triangle_area_numerical(triangle3))
+    
+    area1=triangle_area_numerical(triangle1)+triangle_area_numerical(triangle2)+triangle_area_numerical(triangle3)
+    
+    if abs(area0-area1)< EPS:
+        #print('on')
+        return True
+    else:
+        #print('out')
+        return False
+
+
 def numeric_value(t):
     """Numeric value of a TAU-style value, a.
 
@@ -111,8 +148,6 @@ def length_numerical(vt):
     vn=numerical_vector(vt)
     return np.linalg.norm(vn)
     #return np.sqrt(np.sum(np.abs(v**2)))
-
-
 
 
 
@@ -281,6 +316,33 @@ def triangle_area(a):
     v3=np.cross(v2,v1) # cross product
     return np.sqrt(np.sum(np.abs(v3**2)))/2.0
 
+def triangle_area_numerical(a):
+    """Numerial calcuration of area of given triangle, a.
+    The coordinates of the tree vertecies of the triangle are given.
+    
+    Parameters
+    ----------
+    a: array containing 3-dimensional coordinates of tree vertecies of a triangle (a)
+    
+    Returns
+    -------
+    area of given triangle: float
+    """
+    
+    x1=a[1][0]-a[0][0]
+    y1=a[1][1]-a[0][1]
+    z1=a[1][2]-a[0][2]
+    
+    x2=a[2][0]-a[0][0]
+    y2=a[2][1]-a[0][1]
+    z2=a[2][2]-a[0][2]
+    
+    v1=np.array([x1,y1,z1])
+    v2=np.array([x2,y2,z2])
+    
+    v3=np.cross(v2,v1) # cross product
+    return np.sqrt(np.sum(np.abs(v3**2)))/2.0
+
 def inside_outside_obj_tau(point,obj):
     
     # TAU-style to Float
@@ -357,7 +419,6 @@ def inside_outside_tetrahedron(point,tetrahedron):
         return True # inside
     else:
         return False # outside
-
 
 
 
