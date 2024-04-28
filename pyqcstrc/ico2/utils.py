@@ -389,9 +389,16 @@ def sort_obj(obj):
 
 
 
+##############################
+####
+####
+#### WIP
+####
+####
+##############################
 
-########## WIP ##########
-# 
+
+#
 # Simplification of polyhedral object (set of tetrahedra)
 #
 ########## WIP ##########
