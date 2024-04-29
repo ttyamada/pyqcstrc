@@ -876,6 +876,8 @@ cpdef np.ndarray remove_doubling_dim4(np.ndarray[DTYPE_int_t, ndim=4] obj):
                 pass
     return tmp3a
 """
+
+
 @cython.boundscheck(False)
 @cython.wraparound(False)
 cpdef np.ndarray remove_doubling_dim4(np.ndarray[DTYPE_int_t, ndim=4] obj):
@@ -886,9 +888,11 @@ cpdef np.ndarray remove_doubling_dim4(np.ndarray[DTYPE_int_t, ndim=4] obj):
     #tmp3b=remove_doubling_dim3(tmp3a)
     return remove_doubling_dim3(tmp3a)
 
+# New version, 20240429
 @cython.boundscheck(False)
 @cython.wraparound(False)
 cpdef np.ndarray remove_doubling_dim3(np.ndarray[DTYPE_int_t, ndim=3] obj):
+    """
     cdef int i,j,counter,num
     cdef np.ndarray[DTYPE_int_t,ndim=3] tmp3a
     tmp3a=np.array([obj[0]])
@@ -906,6 +910,8 @@ cpdef np.ndarray remove_doubling_dim3(np.ndarray[DTYPE_int_t, ndim=3] obj):
         else:
             pass
     return tmp3a
+    """
+    return np.unique(obj,axis=0)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -917,50 +923,13 @@ cpdef np.ndarray remove_doubling_dim4_in_perp_space(np.ndarray[DTYPE_int_t, ndim
     tmp3a=obj.reshape(len(obj)*num,6,3)
     tmp3b=remove_doubling_dim3_in_perp_space(tmp3a)
     return tmp3b
-"""
+
+
 @cython.boundscheck(False)
 @cython.wraparound(False)
 cpdef np.ndarray remove_doubling_dim3_in_perp_space(np.ndarray[DTYPE_int_t, ndim=3] obj):
     # remove 6d coordinates which is doubled in perpendicular space
-    cdef int i1,i2,counter1,counter2
-    cdef np.ndarray[DTYPE_int_t,ndim=1] v1,v2,v3,v4,v5,v6
-    cdef np.ndarray[DTYPE_int_t,ndim=1] tmp1a,tmp1b
-    cdef np.ndarray[DTYPE_int_t,ndim=2] tmp2b
-    cdef np.ndarray[DTYPE_int_t,ndim=3] tmp3a,tmp3b
-    counter2=0
-    if len(obj)>1:
-        tmp2b=obj[0]
-        v1,v2,v3,v4,v5,v6=projection(tmp2b[0],tmp2b[1],tmp2b[2],tmp2b[3],tmp2b[4],tmp2b[5])
-        tmp1a=np.array([v4,v5,v6]).reshape(9)
-        tmp3a=tmp1a.reshape(1,3,3) # perpendicular components
-        #tmp3a=np.array([v4,v5,v6]).reshape(1,3,3) # perpendicular components
-        tmp1b=tmp2b.reshape(18)
-        tmp3b=tmp1b.reshape(1,6,3) # 6d
-        #tmp3b=tmp2b.reshape(1,6,3) # 6d
-        for i1 in range(1,len(obj)):
-            tmp2b=obj[i1]
-            v1,v2,v3,v4,v5,v6=projection(tmp2b[0],tmp2b[1],tmp2b[2],tmp2b[3],tmp2b[4],tmp2b[5])
-            counter1=0
-            for i2 in range(len(tmp3a)):
-                if np.all(v4==tmp3a[i2][0]) and np.all(v5==tmp3a[i2][1]) and np.all(v6==tmp3a[i2][2]):
-                    counter1+=1
-                    break
-                else:
-                    counter1+=0
-            if counter1==0:
-                tmp1a=np.append(tmp1a,[v4,v5,v6])
-                tmp1b=np.append(tmp1b,[tmp2b[0],tmp2b[1],tmp2b[2],tmp2b[3],tmp2b[4],tmp2b[5]])
-            else:
-                pass
-            tmp3a=tmp1a.reshape(int(len(tmp1a)/9),3,3)
-        return tmp1b.reshape(int(len(tmp1b)/18),6,3)
-    else:
-        return obj
-"""
-@cython.boundscheck(False)
-@cython.wraparound(False)
-cpdef np.ndarray remove_doubling_dim3_in_perp_space(np.ndarray[DTYPE_int_t, ndim=3] obj):
-    # remove 6d coordinates which is doubled in perpendicular space
+    """
     cdef int i1,i2,counter1,num
     cdef np.ndarray[DTYPE_int_t,ndim=1] v4,v5,v6
     cdef np.ndarray[DTYPE_int_t,ndim=3] tmp3a,tmp3b
@@ -987,6 +956,29 @@ cpdef np.ndarray remove_doubling_dim3_in_perp_space(np.ndarray[DTYPE_int_t, ndim
             else:
                 pass
         return tmp3b
+    else:
+        return obj
+    """
+    # New version, 20240429
+    cdef int i1,num
+    cdef np.ndarray[DTYPE_int_t,ndim=1] v4,v5,v6
+    cdef np.ndarray[DTYPE_int_t,ndim=2] tmp2
+    cdef np.ndarray[DTYPE_int_t,ndim=3] tmp3
+    cdef list b
+    
+    num=len(obj)
+    if num>1:
+        tmp3=np.zeros((num,3,3))
+        for i1 in range(num):
+            v4,v5,v6=projection3(obj[0][0],obj[0][1],obj[0][2],obj[0][3],obj[0][4],obj[0][5])
+            tmp2=np.array([v4,v5,v6]) # perpendicular components
+            tmp3[i]=projection3(tmp2)
+        b=np.unique(a,return_index=True,axis=0)[1]
+        num=len(b)
+        tmp3=np.zeros((num,6,3))
+        for i in range(num):
+            tmp3[i]=obj[b[i]]
+        return tmp3
     else:
         return obj
 
