@@ -1040,7 +1040,6 @@ cpdef int generator_xyz_dim4_triangle(np.ndarray[DTYPE_int_t, ndim=4] obj, str f
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-
 cpdef int generator_xyz_dim4_tmp(np.ndarray[DTYPE_int_t, ndim=4] obj, int number):
     cdef int i1,i2
     cdef np.ndarray[DTYPE_int_t,ndim=1] a4,a5,a6
