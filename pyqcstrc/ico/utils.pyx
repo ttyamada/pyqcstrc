@@ -911,6 +911,7 @@ cpdef np.ndarray remove_doubling_dim3(np.ndarray[DTYPE_int_t, ndim=3] obj):
             pass
     return tmp3a
     """
+    # New version, 20240429
     return np.unique(obj,axis=0)
 
 @cython.boundscheck(False)
