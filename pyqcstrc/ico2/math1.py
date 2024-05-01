@@ -7,10 +7,11 @@ import sys
 sys.path.append('.')
 import numericalc
 import numpy as np
+from numpy.typing import NDArray
 
 TAU=(1+np.sqrt(5))/2.0
 
-def add(a,b):
+def add(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     """
     # summation (a+b) in TAU-style
     
@@ -38,7 +39,7 @@ def add(a,b):
     else:
         return np.array([int(c1),int(c2),int(c3)])
 
-def mul(a,b): 
+def mul(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     """
     # multiplication (a*b) in TAU-style
     
@@ -66,7 +67,7 @@ def mul(a,b):
     else:
         return np.array([int(c1),int(c2),int(c3)])
 
-def sub(a,b):
+def sub(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     """
     # subtraction (a/b) in TAU-style
     
@@ -85,7 +86,7 @@ def sub(a,b):
     b=mul(c,b)
     return add(a,b)
 
-def div(a,b):
+def div(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     """
     # division (a/b) in TAU-style
     
@@ -134,7 +135,7 @@ def div(a,b):
                 print('ERROR_2:division error')
                 return 
 
-def add_vectors(vt1,vt2):
+def add_vectors(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int64]:
     """Composition of two vectors, v1+v2
     
     Parameters
@@ -154,7 +155,7 @@ def add_vectors(vt1,vt2):
         a[i]=add(vt1[i],vt2[i])
     return a
 
-def sub_vectors(vt1,vt2):
+def sub_vectors(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int64]:
     """Subtraction of two vectors, v1-v2
     
     Parameters
@@ -176,7 +177,7 @@ def sub_vectors(vt1,vt2):
         print('incorrect shape')
         return
 
-def mul_vector(vt,coeff):
+def mul_vector(vt: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.int64]:
     """Multiplying a vector by a scalar in TAU-style.
     
     Parameters
@@ -199,7 +200,7 @@ def mul_vector(vt,coeff):
         print('incorrect shape')
         return
 
-def mul_vectors(vts,coeff):
+def mul_vectors(vts: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.int64]:
     """multiplying a set of vectors by a scalar in TAU-style.
     
     Parameters
@@ -227,7 +228,7 @@ def mul_vectors(vts,coeff):
         print('incorrect shape')
         return
 
-def outer_product(vt1,vt2):
+def outer_product(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int64]:
     """Outer product of two 3d vectors, v1 and v2 in TAU-style.
 
     Parameters
@@ -255,7 +256,7 @@ def outer_product(vt1,vt2):
     #
     return np.array([c1,c2,c3],dtype=np.int64)
 
-def inner_product(vt1,vt2):
+def inner_product(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int64]:
     """Inner product of two vectors, v1 and v2 in TAU-style.
 
     Parameters
@@ -281,7 +282,7 @@ def inner_product(vt1,vt2):
             a=add(a,b)
         return a
 
-def dot_product(mat1,mat2):
+def dot_product(mat1: NDArray[np.int64], mat2:NDArray[np.int64]) -> NDArray[np.int64]:
     """product of two matrices, mat1*mat2.
     
     Parameters
@@ -337,7 +338,7 @@ def dot_product(mat1,mat2):
         print('incorrect shape found in dot_product')
         return 
 
-def dot_product_1(mat1,mat2):
+def dot_product_1(mat1: NDArray[np.int64], mat2:NDArray[np.int64]) -> NDArray[np.int64]:
     """product of two matrices, mat1*mat2.
     
     Parameters
@@ -399,7 +400,7 @@ def dot_product_1(mat1,mat2):
 
 
 
-def projection(v):
+def projection(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     """projection of a 6d vector onto Epar and Eperp in "TAU-style"
     NOTE: coefficient (alpha) of the projection matrix is set to be 1.
     alpha = a/np.sqrt(2.0+TAU)
@@ -407,7 +408,7 @@ def projection(v):
 
     Parameters
     ----------
-    v: array
+    vt: array
         6-dimensional vector in TAU-style
 
     Returns
@@ -419,15 +420,15 @@ def projection(v):
     m2=np.array([-1, 0, 1]) # -1
     m3=np.array([ 0, 1, 1]) #  tau
     m4=np.array([ 0,-1, 1]) # -tau
-    v1e=mtrixcal(m1,m3,m3,m0,m2,m0,v) # 1,tau,tau,0,-1,0
-    v2e=mtrixcal(m3,m0,m0,m1,m3,m1,v) # tau,0,0,1,TAU,1
-    v3e=mtrixcal(m0,m1,m2,m4,m0,m3,v) # 0,1,-1,-tau,0,tau
-    v1i=mtrixcal(m3,m2,m2,m0,m4,m0,v) # tau,-1,-1,0,-tau,0
-    v2i=mtrixcal(m2,m0,m0,m3,m2,m3,v) # -1,0,0,tau,-1,tau
-    v3i=mtrixcal(m0,m3,m4,m1,m0,m2,v) # 0,tau,-tau,1,0,-1
+    v1e=mtrixcal(m1,m3,m3,m0,m2,m0,vt) # 1,tau,tau,0,-1,0
+    v2e=mtrixcal(m3,m0,m0,m1,m3,m1,vt) # tau,0,0,1,TAU,1
+    v3e=mtrixcal(m0,m1,m2,m4,m0,m3,vt) # 0,1,-1,-tau,0,tau
+    v1i=mtrixcal(m3,m2,m2,m0,m4,m0,vt) # tau,-1,-1,0,-tau,0
+    v2i=mtrixcal(m2,m0,m0,m3,m2,m3,vt) # -1,0,0,tau,-1,tau
+    v3i=mtrixcal(m0,m3,m4,m1,m0,m2,vt) # 0,tau,-tau,1,0,-1
     return np.array([[v1e,v2e,v3e],[v1i,v2i,v3i]],dtype=np.int64)
 
-def projection3(v):
+def projection3(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     """projection of a 6d vector onto Eperp in "TAU-style"
     NOTE: coefficient (alpha) of the projection matrix is set to be 1.
     alpha = a/np.sqrt(2.0+TAU)
@@ -435,7 +436,7 @@ def projection3(v):
     
     Parameters
     ----------
-    v: array
+    vt: array
         6-dimensional vector in TAU-style
 
     Returns
@@ -451,12 +452,12 @@ def projection3(v):
     #v1e=mtrixcal(m1,m3,m3,m0,m2,m0,h1,h2,h3,h4,h5,h6) # 1,tau,tau,0,-1,0
     #v2e=mtrixcal(m3,m0,m0,m1,m3,m1,h1,h2,h3,h4,h5,h6) # tau,0,0,1,TAU,1
     #v3e=mtrixcal(m0,m1,m2,m4,m0,m3,h1,h2,h3,h4,h5,h6) # 0,1,-1,-tau,0,tau
-    v1i=mtrixcal(m3,m2,m2,m0,m4,m0,v) # tau,-1,-1,0,-tau,0
-    v2i=mtrixcal(m2,m0,m0,m3,m2,m3,v) # -1,0,0,tau,-1,tau
-    v3i=mtrixcal(m0,m3,m4,m1,m0,m2,v) # 0,tau,-tau,1,0,-1
+    v1i=mtrixcal(m3,m2,m2,m0,m4,m0,vt) # tau,-1,-1,0,-tau,0
+    v2i=mtrixcal(m2,m0,m0,m3,m2,m3,vt) # -1,0,0,tau,-1,tau
+    v3i=mtrixcal(m0,m3,m4,m1,m0,m2,vt) # 0,tau,-tau,1,0,-1
     return np.array([v1i,v2i,v3i],dtype=np.int64)
 
-def projection_perp(v):
+def projection_perp(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     """This returns 6D indeces of a projection of 6D vector (v) onto Eperp
     
     Parameters
@@ -471,12 +472,12 @@ def projection_perp(v):
     m1=np.array([ 1, 0, 2]) #  (TAU+2)/2/(2+TAU)=1/2 in 'TAU-style'
     m2=np.array([-1, 2,10]) #  TAU/2/(2+TAU)
     m3=np.array([ 1,-2,10]) # -TAU/2/(2+TAU)
-    h1=mtrixcal(m1,m3,m3,m3,m3,m3,v) # (tau+2,-tau,-tau,-tau,-tau,-tau)/2
-    h2=mtrixcal(m3,m1,m3,m2,m2,m3,v) # (-tau,tau+2,-tau,tau,tau,-tau)/2
-    h3=mtrixcal(m3,m3,m1,m3,m2,m2,v) # (-tau,-tau,tau+2,-tau,tau,tau)/2
-    h4=mtrixcal(m3,m2,m3,m1,m3,m2,v) # (-tau,tau,-tau,tau+2,-tau,tau)/2
-    h5=mtrixcal(m3,m2,m2,m3,m1,m3,v) # (-tau,tau,tau,-tau,tau+2,-tau)/2
-    h6=mtrixcal(m3,m3,m2,m2,m3,m1,v) # (-tau,-tau,tau,tau,-tau,tau+2)/2
+    h1=mtrixcal(m1,m3,m3,m3,m3,m3,vt) # (tau+2,-tau,-tau,-tau,-tau,-tau)/2
+    h2=mtrixcal(m3,m1,m3,m2,m2,m3,vt) # (-tau,tau+2,-tau,tau,tau,-tau)/2
+    h3=mtrixcal(m3,m3,m1,m3,m2,m2,vt) # (-tau,-tau,tau+2,-tau,tau,tau)/2
+    h4=mtrixcal(m3,m2,m3,m1,m3,m2,vt) # (-tau,tau,-tau,tau+2,-tau,tau)/2
+    h5=mtrixcal(m3,m2,m2,m3,m1,m3,vt) # (-tau,tau,tau,-tau,tau+2,-tau)/2
+    h6=mtrixcal(m3,m3,m2,m2,m3,m1,vt) # (-tau,-tau,tau,tau,-tau,tau+2)/2
     return np.array([h1,h2,h3,h4,h5,h6],dtype=np.int64)
     #const=1/(2.0+TAU)
     #m1 =((TAU+2)*n1 -     TAU*n2 -     TAU*n3 -     TAU*n4 -     TAU*n5 -     TAU*n6)/2.0*const
@@ -487,7 +488,15 @@ def projection_perp(v):
     #m6 = ( - TAU*n1 -     TAU*n2 +     TAU*n3 +     TAU*n4 -     TAU*n5 + (TAU+2)*n6)/2.0*const
     #return m1,m2,m3,m4,m5,m6
 
-def mtrixcal(m1,m2,m3,m4,m5,m6,v):
+def mtrixcal(
+    m1: NDArray[np.int64],
+    m2: NDArray[np.int64],
+    m3: NDArray[np.int64],
+    m4: NDArray[np.int64],
+    m5: NDArray[np.int64],
+    m6: NDArray[np.int64],
+    v: NDArray[np.int64],
+    ) -> NDArray[np.int64]:
     """function used in projection()
                         projection3()
                         projection_perp()
@@ -515,7 +524,7 @@ def mtrixcal(m1,m2,m3,m4,m5,m6,v):
     a1=add(a1,a6)
     return a1
 
-def centroid(obj):
+def centroid(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     """geometric center, centroid of tetrahedron, triangle or edge, in TAU-style.
 
     Parameters
@@ -541,7 +550,7 @@ def centroid(obj):
         i2+=1
     return v0
 
-def centroid_obj(obj):
+def centroid_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     """geometric center, centroid of tetrahedron, in TAU-style.
 
     Parameters
@@ -562,7 +571,7 @@ def centroid_obj(obj):
         tmp=add_vectors(tmp,p)
     return mul_vector(tmp,np.array([1,0,len(obj)]))
 
-def coplanar_check(p):
+def coplanar_check(p: NDArray[np.int64]) -> NDArray[np.int64]:
     """Check whether a given set of points (in TAU-style) is coplanar or not.
     
     Parameters
@@ -603,7 +612,7 @@ def coplanar_check(p):
         #return 1 # coplanar
         return True # coplanar
 
-def matrixpow(ma,n):
+def matrixpow(ma: NDArray[np.int64], n: int) -> NDArray[np.int64]:
     """
     """
     (mx,my)=ma.shape
@@ -625,7 +634,7 @@ def matrixpow(ma,n):
         print('matrix has not regular shape')
         return 
 
-def det_matrix(mtx):
+def det_matrix(mtx: NDArray[np.int64]) -> NDArray[np.int64]:
     """Determinant of 3x3 matrix, mtx, in TAU style
     
     Parameters

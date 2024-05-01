@@ -24,27 +24,28 @@ from numericalc import (numeric_value,
                         point_on_segment)
 
 import numpy as np
+from numpy.typing import NDArray
 
-def shift_object(obj,shift):
+def shift_object(obj: NDArray[np.int64], shift: NDArray[np.int64]) -> NDArray[np.int64]:
     """shift an object
     """
-    #vol0=obj_volume_6d(obj)
-    obj_new=np.zeros(obj.shape,dtype=np.int64)
-    i1=0
-    for tetrahedron in obj:
-        i2=0
-        for vertex in tetrahedron:
-            obj_new[i1][i2]=add_vectors(vertex,shift)
-            i2+=1
-        i1+=1
-    #vol1=obj_volume_6d(obj_new)
-    #if np.all(vol0==vol1):
-    #    return obj_new
-    #else:
-    #    return 
-    return obj_new
-
-def obj_volume_6d(obj):
+    if obj.ndim==4:
+        obj_new=np.zeros(obj.shape,dtype=np.int64)
+        i1=0
+        for tetrahedron in obj:
+            i2=0
+            for vertex in tetrahedron:
+                obj_new[i1][i2]=add_vectors(vertex,shift)
+                i2+=1
+            i1+=1
+        return obj_new
+    else:
+        print('object has an incorrect shape!')
+        return 
+        
+def obj_volume_6d(obj: NDArray[np.int64]) -> NDArray[np.int64]:
+    """
+    """
     w=np.array([0,0,1])
     if obj.ndim==4:
         for tetrahedron in obj:
@@ -61,15 +62,23 @@ def obj_volume_6d(obj):
         print('object has an incorrect shape!')
         return 
     
-def tetrahedron_volume_6d(tetrahedron):
-    vts=np.zeros((4,3,3),dtype=np.int64)
-    for i in range(4):
-        vts[i]=projection3(tetrahedron[i])
-    return tetrahedron_volume(vts)
+def tetrahedron_volume_6d(tetrahedron: NDArray[np.int64]) -> NDArray[np.int64]:
+    """
+    """
+    if tetrahedron.ndim==3:
+        vts=np.zeros((4,3,3),dtype=np.int64)
+        for i in range(4):
+            vts[i]=projection3(tetrahedron[i])
+        return tetrahedron_volume(vts)
+    else:
+        print('object has an incorrect shape!')
+        return 
 
-def tetrahedron_volume(vts):
+def tetrahedron_volume(vts: NDArray[np.int64]) -> NDArray[np.int64]:
+    """
     # This function returns volume of a tetrahedron
     # input: vertex coordinates of the tetrahedron (x0,y0,z0),(x1,y1,z1),(x2,y2,z2),(x3,y3,z3) in TAU-style.
+    """
     v1=sub_vectors(vts[1],vts[0])
     v2=sub_vectors(vts[2],vts[0])
     v3=sub_vectors(vts[3],vts[0])
@@ -84,7 +93,7 @@ def tetrahedron_volume(vts):
     else:
         return mul(v,np.array([1,0,6]))
 
-def remove_doubling(vst):
+def remove_doubling(vts: NDArray[np.int64]) -> NDArray[np.int64]:
     """remove doubling 6d coordinates
     
     Parameters
@@ -97,51 +106,53 @@ def remove_doubling(vst):
     obj: array
         set of 6-dimensional vectors in TAU-style
     """
-    ndim=vst.ndim
+    ndim=vts.ndim
     if ndim==4:
-        n1,n2,_,_=vst.shape
+        n1,n2,_,_=vts.shape
         num=n1*n2
-        vst=vst.reshape(num,6,3)
+        vts=vts.reshape(num,6,3)
+        return np.unique(vts,axis=0)
     elif ndim==3:
-        num,_,_=vst.shape
+        return np.unique(vts,axis=0)
     else:
-        print('ndim should be larger than 3.')
-    return np.unique(vst,axis=0)
+        print('ndim should be 3 or 4.')
+        return 
 
-def remove_doubling_in_perp_space(vst):
+def remove_doubling_in_perp_space(vts: NDArray[np.int64]) -> NDArray[np.int64]:
     """ remove 6d coordinates which is doubled in Eperp.
     
     Parameters
     ----------
-    obj: array
+    vts: array
         set of 6-dimensional vectors in TAU-style
     
     Returns
     -------
-    obj: array
+    vts: array
         set of 6-dimensional vectors in TAU-style
     """
-    ndim=vst.ndim
+    ndim=vts.ndim
     if ndim==4:
-        n1,n2,_,_=vst.shape
+        n1,n2,_,_=vts.shape
         num=n1*n2
-        vst=vst.reshape(num,6,3)
+        vst=vts.reshape(num,6,3)
     elif ndim==3:
-        num,_,_=vst.shape
+        #num,_,_=vts.shape
+        pass
     
     # first run remove_doubling()
-    vst=remove_doubling(vst)
-    num=len(vst)
+    vts=remove_doubling(vts)
+    num=len(vts)
     
     # then, remove doubling in perp space.
     a=np.zeros((num,3,3),dtype=np.int64)
     for i in range(num):
-        a[i]=projection3(vst[i])
+        a[i]=projection3(vts[i])
     b=np.unique(a,return_index=True,axis=0)[1]
     num=len(b)
     a=np.zeros((num,6,3),dtype=np.int64)
     for i in range(num):
-        a[i]=vst[b[i]]
+        a[i]=vts[b[i]]
     return a
 
 
@@ -154,7 +165,7 @@ def remove_doubling_in_perp_space(vst):
 #
 ########## WIP ##########
 
-def generator_surface_1(obj):
+def generator_surface_1(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     # remove doubling surface in a set of tetrahedra in the OD (dim4)
     #
@@ -208,14 +219,14 @@ def generator_surface_1(obj):
         #print('shape:',out.shape)
         return out
 
-def generator_unique_triangles(obj):
+def generator_unique_triangles(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     """get unique triangles in an object (dim4)
     
     Input:
     obj: set of tetrahedra
     
     """
-   
+    
     # (1) preparing a list of triangle surfaces without doubling (tmp2)
     #print('get_tetrahedron_surface() starts')
     n1,_,_,_=obj.shape
@@ -246,13 +257,13 @@ def generator_unique_triangles(obj):
             a[i1]=triangles[b[i1]]
         return a
 
-def get_common_edges(trianges):
+def get_common_edges(trianges: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     common edges in trianges
     """
     return 
 
-def generator_unique_edges(obj):
+def generator_unique_edges(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     generates edges
     
@@ -285,7 +296,7 @@ def generator_unique_edges(obj):
             a[i1]=edges[b[i1]]
         return a
 
-def get_tetrahedron_surface(tetrahedron):
+def get_tetrahedron_surface(tetrahedron: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     get four triangles of tetrahedron.
     """
@@ -306,7 +317,7 @@ def get_tetrahedron_surface(tetrahedron):
         i1+=1
     return a
 
-def get_triangle_edge(triangle):
+def get_triangle_edge(triangle: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     get four triangles of tetrahedron.
     """
@@ -327,7 +338,7 @@ def get_triangle_edge(triangle):
         i1+=1
     return a
 
-def equivalent_triangle(triangle1,triangle2):
+def equivalent_triangle(triangle1: NDArray[np.int64], triangle2: NDArray[np.int64]) -> bool:
     """Check whether triangle1 and triangle2 are equivalent or not.
     """
     a=np.vstack([triangle1,triangle2])
@@ -337,7 +348,7 @@ def equivalent_triangle(triangle1,triangle2):
     else:
         return False # not equivalent traiangles
 
-def equivalent_edge(edge1,edge2):
+def equivalent_edge(edge1: NDArray[np.int64], edge2: NDArray[np.int64]) -> bool:
     """Check whether edge1 and edge2 are equivalent or not.
     """
     a=np.vstack([edge1,edge2])
@@ -347,7 +358,7 @@ def equivalent_edge(edge1,edge2):
     else:
         return False # not equivalent
 
-def sort_vctors(vts):
+def sort_vctors(vts: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     sort vectors in TAU-style
     
@@ -364,7 +375,7 @@ def sort_vctors(vts):
         out[i1]=vts[tmp[i1][0]]
     return out
 
-def sort_obj(obj):
+def sort_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     sort tehtahedra in an object
     
@@ -403,7 +414,7 @@ def sort_obj(obj):
 #
 ########## WIP ##########
 
-def remove_vectors(vts1,vts2):
+def remove_vectors(vts1: NDArray[np.int64], vts2: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     # 6次元ベクトルリストvlst1から6次元ベクトルリストvlst2にあるベクトルを抜きとる
     """
@@ -425,7 +436,7 @@ def remove_vectors(vts1,vts2):
     else:
         return vts1
 
-def remove_vector(vts,vt):
+def remove_vector(vts: NDArray[np.int64], vt: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     # 6次元ベクトルリストvlst1から6次元ベクトルvt2を抜きとる
     """
@@ -445,7 +456,7 @@ def remove_vector(vts,vt):
     else:
         return vlst1
 
-def check_two_tetrahedra(tetrahedron_1,tetrahedron_2):
+def check_two_tetrahedra(tetrahedron_1: NDArray[np.int64], tetrahedron_2: NDArray[np.int64]) -> bool:
     # check whether tetrahedron_1 and _2 are sharing a triangle surface or not.
     
     # generate traiangles
@@ -469,7 +480,7 @@ def check_two_tetrahedra(tetrahedron_1,tetrahedron_2):
     else:
         return True
 
-def get_common_triangle_in_two_tetrahedra(tetrahedron_1,tetrahedron_2):
+def get_common_triangle_in_two_tetrahedra(tetrahedron_1: NDArray[np.int64], tetrahedron_2: NDArray[np.int64]) -> NDArray[np.int64]:
     # generate traiangles
     surface1=get_tetrahedron_surface(tetrahedron_1)
     surface2=get_tetrahedron_surface(tetrahedron_2)
@@ -491,7 +502,7 @@ def get_common_triangle_in_two_tetrahedra(tetrahedron_1,tetrahedron_2):
     else:
         return 
 
-def merge_two_tetrahedra(tetrahedron_1,tetrahedron_2):
+def merge_two_tetrahedra(tetrahedron_1: NDArray[np.int64], tetrahedron_2: NDArray[np.int64]) -> NDArray[np.int64]:
     # merge two tetrahedra
     
     # volume
@@ -521,7 +532,7 @@ def merge_two_tetrahedra(tetrahedron_1,tetrahedron_2):
     else:
         return 
 
-def merge_two_tetrahedra_in_obj(obj):
+def merge_two_tetrahedra_in_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     
     num=len(obj)
     
@@ -537,7 +548,7 @@ def merge_two_tetrahedra_in_obj(obj):
 ## 　　->頂点集合
 ## 　　-> ドロネー分割
 ## 　　->処理前後で体積変化なしであれば凸包だと判断。
-def surface_cleaner(surface,num_cycle):
+def surface_cleaner(surface: NDArray[np.int64], num_cycle: int) -> NDArray[np.int64]:
     """
     同一平面上にある三角形ごとにグループ分けする
     
@@ -723,7 +734,7 @@ def surface_cleaner(surface,num_cycle):
         out.append(egdes) # Merge
     return out
 
-def generate_convex_hull(obj,num_cycle=10):
+def generate_convex_hull(obj: NDArray[np.int64], num_cycle: int) -> NDArray[np.int64]:
     """
     objの凸包を得る。
     
@@ -762,7 +773,7 @@ def breps(tetrahedron):
     """
     return
     
-def check_two_vertices(vertex1,vertex2):
+def check_two_vertices(vertex1: NDArray[np.int64], vertex2: NDArray[np.int64]) -> bool:
     xyz1=projection3(vertex1[0],vertex1[1],vertex1[2],vertex1[3],vertex1[4],vertex1[5])
     xyz2=projection3(vertex2[0],vertex2[1],vertex2[2],vertex2[3],vertex2[4],vertex2[5])
     if np.all(xyz1==xyz2):
@@ -770,7 +781,7 @@ def check_two_vertices(vertex1,vertex2):
     else:
         return False
 
-def two_segment_into_one(line_segment_1,line_segment_2):
+def two_segment_into_one(line_segment_1: NDArray[np.int64], line_segment_2: NDArray[np.int64]) -> NDArray[np.int64]:
     
     combination=[\
     [0,1,0,1],\
@@ -799,7 +810,7 @@ def two_segment_into_one(line_segment_1,line_segment_2):
     else:
         return 
 
-def coplanar_check_two_triangles(triange1,triange2):
+def coplanar_check_two_triangles(triange1: NDArray[np.int64], triange2: NDArray[np.int64]) -> bool:
     
     vtx=np.vappend(triange1,triange2)
     vtx=remove_doubling_in_perp_space(vtx)

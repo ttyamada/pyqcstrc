@@ -5,6 +5,7 @@
 #
 import sys
 import numpy as np
+from numpy.typing import NDArray
 from scipy.spatial import Delaunay
 import time # in object_subtraction_dev1, tetrahedron_not_obj
 
@@ -60,7 +61,7 @@ def decomposition(p):
             tmp.append([tet[0],tet[1],tet[2],tet[3]])
     return tmp
 
-def ball_radius_obj(obj,centroid):
+def ball_radius_obj(obj: NDArray[np.int64], centroid: NDArray[np.int64]) -> float:
     """estimate maximum distance between verices of given OBJ and its centroid.
     
     Parameters
@@ -89,18 +90,17 @@ def ball_radius_obj(obj,centroid):
             pass
     return dd
 
-def ball_radius(tetrahedron,centroid):
+def ball_radius(tetrahedron: NDArray[np.int64], centroid: NDArray[np.int64]) -> float:
     #  this transforms a tetrahedron to a boll which covers the tetrahedron
     #  the centre of the boll is the centroid of the tetrahedron.
     return ball_radius_obj(tetrahedron,centroid)
 
-def distance_in_perp_space(vt1,vt2):
+def distance_in_perp_space(vt1: NDArray[np.int64], vt2: NDArray[np.int64]) -> NDArray[np.int64]:
     a=sub_vectors(vt1,vt2)
     a=projection3(a)
     return length_numerical(a)
 
-def rough_check_intersection_tetrahedron_obj(tetrahedron,cententer,distance):
-    
+def rough_check_intersection_tetrahedron_obj(tetrahedron: NDArray[np.int64], cententer: NDArray[np.int64], distance: float) -> bool:
     cen1=centroid(tetrahedron)
     dd1=ball_radius(tetrahedron,cen1)
     dd0=distance_in_perp_space(cen1,cententer)
@@ -109,8 +109,7 @@ def rough_check_intersection_tetrahedron_obj(tetrahedron,cententer,distance):
     else: #
         return False
 
-def check_intersection_two_tetrahedron_4(tetrahedron_1,tetrahedron_2):
-    
+def check_intersection_two_tetrahedron_4(tetrahedron_1: NDArray[np.int64], tetrahedron_2: NDArray[np.int64]) -> int:
     # checking whether tetrahedron_1 is fully inside tetrahedron_2 or not
     counter2=0
     for vtx in tetrahedron_1:
@@ -237,7 +236,7 @@ def check_intersection_two_tetrahedron_4(tetrahedron_1,tetrahedron_2):
         else:
             return 0 # no intersection
 
-def intersection_two_segment(segment_1,segment_2):
+def intersection_two_segment(segment_1: NDArray[np.int64], segment_2: NDArray[np.int64]) -> NDArray[np.int64]:
     """check intersection between two line segments.
     
     Parameters
@@ -285,7 +284,7 @@ def intersection_two_segment(segment_1,segment_2):
     else: # no intersection
         return 
 
-def intersection_segment_surface(segment,surface):
+def intersection_segment_surface(segment: NDArray[np.int64], surface: NDArray[np.int64]) -> NDArray[np.int64]:
     """check intersection between a line segment and a triangle.
     
     Möller–Trumbore intersection algorithm
@@ -332,7 +331,7 @@ def intersection_segment_surface(segment,surface):
     else: # no intersection
         return 
 
-def intersection_two_tetrahedron_4(tetrahedron_1,tetrahedron_2):
+def intersection_two_tetrahedron_4(tetrahedron_1: NDArray[np.int64], tetrahedron_2: NDArray[np.int64]) -> NDArray[np.int64]:
     #print('intersection_two_tetrahedron_4()')
     #
     # -----------------
@@ -506,7 +505,7 @@ def intersection_two_tetrahedron_4(tetrahedron_1,tetrahedron_2):
     else:
         return 
 
-def decomposition(tmp2v):
+def decomposition(tmp2v: NDArray[np.int64]) -> NDArray[np.int64]:
     try:
         tri=Delaunay(tmp2v)
     except:
@@ -519,7 +518,7 @@ def decomposition(tmp2v):
             tmp.append([tet[0],tet[1],tet[2],tet[3]])
     return tmp
     
-def tetrahedralization_points(points):
+def tetrahedralization_points(points: NDArray[np.int64]) -> NDArray[np.int64]:
     
     i1=0
     for p in points:
@@ -683,7 +682,7 @@ def intersection_two_obj_1(obj1,obj2,kind=None):
     else:
         return 
 
-def intersection_two_obj_convex(obj1,obj2,vervose=0):
+def intersection_two_obj_convex(obj1: NDArray[np.int64], obj2: NDArray[np.int64], vervose: int) -> NDArray[np.int64]:
     """
     # This is very simple but work correctly only when each subdivided 
     # three ODs (i.e part part, ODA and ODB) are able to define as a
@@ -811,7 +810,7 @@ def intersection_two_obj_convex(obj1,obj2,vervose=0):
 ###   WIP
 ###
 #########
-def object_subtraction_dev1(obj1,obj2):
+def object_subtraction_dev1(obj1: NDArray[np.int64], obj2: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     get A not B = A not (A and B)
     obj1: A
@@ -842,7 +841,7 @@ def object_subtraction_dev1(obj1,obj2):
         counter1+=1
     return out
 
-def tetrahedron_not_obj(tetrahedron,obj,surface_obj):
+def tetrahedron_not_obj(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64], surface_obj: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     get A not B = A not (A and B)
     tetrahedron: A
@@ -1025,7 +1024,7 @@ def tetrahedron_not_obj(tetrahedron,obj,surface_obj):
             print('         case 4-X')
         return out
 
-def difference_tetrahedron_not_obj(tetrahedron,obj):
+def difference_tetrahedron_not_obj(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     tetrahedron AND (NOT object)
     
