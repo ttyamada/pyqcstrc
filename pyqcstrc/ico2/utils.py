@@ -607,7 +607,7 @@ def two_segment_into_one(line_segment_1: NDArray[np.int64], line_segment_2: NDAr
 
 def coplanar_check_two_triangles(triange1: NDArray[np.int64], triange2: NDArray[np.int64]) -> bool:
     
-    vtx=np.vappend(triange1,triange2)
+    vtx=np.vstack(triange1,triange2)
     vtx=remove_doubling_in_perp_space(vtx)
     
     if coplanar_check(vtx):
@@ -645,17 +645,20 @@ def generate_convex_hull(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     
     objが凸包であれば、この関数を実行することで、よりシンプルに四面体分割されたobjを得ることができる。
     """
-    
+    print('1:')
     # 1
     obj_surface=generator_surface_1(obj)
     # 2
+    print('2:')
     surface_list=surface_cleaner(obj_surface)
     # 3
+    print('3:')
     obj_surface_new=surface_list[0]
     for i1 in range(1,len(surface_list)):
         tmp=np.vstack(a,surface_list[i1])
     tmp=remove_doubling_in_perp_space(tmp)
     # 4
+    print('4:')
     return tetrahedralization_points(tmp)
 
 def surface_cleaner(surface: NDArray[np.int64]) -> NDArray[np.int64]:
