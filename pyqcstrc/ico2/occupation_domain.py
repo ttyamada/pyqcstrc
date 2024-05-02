@@ -898,7 +898,7 @@ def write_xyz(obj,path='.',basename='tmp',select='tetrahedron',verbose=0):
         for i1 in range(len(obj)):
             v=utils.tetrahedron_volume_6d(tetrahedron)
             f.write('%3d-the tetrahedron, %d %d %d (%8.6f)\n'\
-                    %(v[0],v[1],v[2],numericalc.numeric_value(v)))
+                    %(i1,v[0],v[1],v[2],numericalc.numeric_value(v)))
         f.close()
         return 0
     
@@ -1110,8 +1110,12 @@ def read_xyz(path,basename,select='tetrahedron',verbose=0):
         return tmp.reshape(int(num/4),4,6,3)
     elif select == 'vertex':
         return tmp.reshape(int(num),6,3)
-    
-def simplification(obj,num_cycle=10,verbose=0):
+
+
+
+########## WIP ##########
+
+def simplification(obj):
     """
     Simplification of occupation domains.
     
@@ -1135,7 +1139,7 @@ def simplification(obj,num_cycle=10,verbose=0):
         return 
     else:
         v0=utils.obj_volume_6d(obj)
-        obj1=utils.generate_convex_hull(obj, num_cycle)
+        obj1=utils.generate_convex_hull(obj)
         obj2=intsct.intersection_two_obj_2(obj1, obj)
         v1=utils.obj_volume_6d(obj2)
         if n1==m1 and n2==m2 and n3==m3:
