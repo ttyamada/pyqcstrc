@@ -47,7 +47,7 @@ from utils import (remove_doubling_in_perp_space,
 TAU=(1+np.sqrt(5))/2.0
 EPS=1e-6
 
-def decomposition(p):
+def decomposition(p: NDArray[np.int64]) -> NDArray[np.int64]:
     try:
         tri=Delaunay(p)
     except:
@@ -95,7 +95,7 @@ def ball_radius(tetrahedron: NDArray[np.int64], centroid: NDArray[np.int64]) -> 
     #  the centre of the boll is the centroid of the tetrahedron.
     return ball_radius_obj(tetrahedron,centroid)
 
-def distance_in_perp_space(vt1: NDArray[np.int64], vt2: NDArray[np.int64]) -> NDArray[np.int64]:
+def distance_in_perp_space(vt1: NDArray[np.int64], vt2: NDArray[np.int64]) -> float:
     a=sub_vectors(vt1,vt2)
     a=projection3(a)
     return length_numerical(a)
