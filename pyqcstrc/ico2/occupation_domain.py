@@ -1135,20 +1135,19 @@ def simplification(obj):
     
     """
     if np.all(obj==None):
-        print(' zero volume')
+        print('    zero volume')
         return 
     else:
         v0=utils.obj_volume_6d(obj)
         obj1=utils.generate_convex_hull(obj)
-        obj2=intsct.intersection_two_obj_2(obj1, obj)
+        obj2=intsct.intersection_two_obj_1(obj1,obj)
         v1=utils.obj_volume_6d(obj2)
-        if n1==m1 and n2==m2 and n3==m3:
-            print(' simplification: succeed')
+        if np.all(v0==v1):
+            print('    simplification succeed: %d --> %d'%(len(obj),len(obj1)))
             return obj2
         else:
-            print(' simplification: fail')
-            print(' return initial obj')
-            return obj
+            print('    simplification: fail')
+            return 
         
 def simple_hand_step1(obj, path, basename_tmp):
     """

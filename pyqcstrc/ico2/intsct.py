@@ -6,7 +6,6 @@
 import sys
 import numpy as np
 from numpy.typing import NDArray
-from scipy.spatial import Delaunay
 import time # in object_subtraction_dev1, tetrahedron_not_obj
 
 from math1 import (centroid, 
@@ -42,6 +41,7 @@ from utils import (remove_doubling_in_perp_space,
                     generator_surface_1,
                     generator_unique_triangles,
                     generator_unique_edges,
+                    tetrahedralization_points,
                     )
                     
 TAU=(1+np.sqrt(5))/2.0
@@ -505,53 +505,6 @@ def intersection_two_tetrahedron_4(tetrahedron_1: NDArray[np.int64], tetrahedron
     else:
         return 
 
-def decomposition(tmp2v: NDArray[np.int64]) -> NDArray[np.int64]:
-    try:
-        tri=Delaunay(tmp2v)
-    except:
-        print('error in decomposition()')
-        tmp=[0]
-    else:
-        tmp=[]
-        for i in range(len(tri.simplices)):
-            tet=tri.simplices[i]
-            tmp.append([tet[0],tet[1],tet[2],tet[3]])
-    return tmp
-    
-def tetrahedralization_points(points: NDArray[np.int64]) -> NDArray[np.int64]:
-    
-    i1=0
-    for p in points:
-        v=projection3(p)
-        v=numerical_vector(v)
-        if i1==0:
-            tmp=v
-        else:
-            tmp=np.vstack([tmp,v])
-        i1+=1
-        
-    ltmp=decomposition(tmp)
-    p=points
-    if ltmp!=[0]:
-        counter=0
-        for i in ltmp:
-            tmp3=np.array([p[i[0]],p[i[1]],p[i[2]],p[i[3]]]).reshape(4,6,3)
-            vol=tetrahedron_volume_6d(tmp3)
-            if vol[0]==0 and vol[1]==0:
-                pass
-            else:
-                if counter==0:
-                    tmp1=tmp3.reshape(72) # 4*6*3=72
-                else:
-                    tmp1=np.append(tmp1,tmp3)
-                counter+=1
-        if counter!=0:
-            return tmp1.reshape(int(len(tmp1)/72),4,6,3) # 4*6*3=72
-        else:
-            return 
-    else:
-        return 
-
 def intersection_two_obj_1(obj1,obj2,kind=None):
     """
     Return an intersection between two objects.
@@ -596,19 +549,19 @@ def intersection_two_obj_1(obj1,obj2,kind=None):
                 # tetrahedron_1 is fully inside tetrahedron_2
                 if flag==1:
                     if counter0==0:
-                        common4=tetrahedron1
+                        common4=tetrahedron1.reshape(1,4,6,3)
                         counter0+=1
                     else:
-                        common4=np.vstack([common4,tetrahedron1])
+                        common4=np.vstack([common4,[tetrahedron1]])
                     break
                 #
                 # tetrahedron_2 is fully inside tetrahedron_1
                 elif flag==2:
                     if counter1==0:
-                        tmp_common4=tetrahedron2
+                        tmp_common4=tetrahedron2.reshape(1,4,6,3)
                         counter1+=1
                     else:
-                        tmp_common4=np.vstack([tmp_common4,tetrahedron2])
+                        tmp_common4=np.vstack([tmp_common4,[tetrahedron2]])
                 #
                 # tetrahedron_1 and tetrahedron_2 are intersecting
                 elif flag==3:
@@ -666,11 +619,13 @@ def intersection_two_obj_1(obj1,obj2,kind=None):
                             common4=np.vstack([common4,tmp_common4])
                             #print('tmp_common4.shape',tmp_common4.shape)
                 else:
+                    #print('tmp_common4.shape:',tmp_common4.shape)
                     if counter0==0:
                         common4=tmp_common4
                         counter0+=1
                         #print('tmp_common4.shape',tmp_common4.shape)
                     else:
+                        #print('common4.shape:',common4.shape)
                         #common4=np.concatenate([common4,tmp_common4])
                         common4=np.vstack([common4,tmp_common4])
                         #print('tmp_common4.shape',tmp_common4.shape)

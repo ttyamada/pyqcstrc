@@ -25,6 +25,7 @@ from numericalc import (numeric_value,
 
 import numpy as np
 from numpy.typing import NDArray
+from scipy.spatial import Delaunay
 
 def shift_object(obj: NDArray[np.int64], shift: NDArray[np.int64]) -> NDArray[np.int64]:
     """shift an object
@@ -291,6 +292,7 @@ def generator_unique_edges(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     
     # (2) 重複のないユニークな辺を得る。
     #print('number of edges:',len(edges))
+    n1,n2,_,_=obj.shape
     a=np.zeros((n1*n2,3),dtype=np.float64)
     for i1 in range(len(a)):
         vt=centroid(edges[i1])
@@ -607,7 +609,7 @@ def two_segment_into_one(line_segment_1: NDArray[np.int64], line_segment_2: NDAr
 
 def coplanar_check_two_triangles(triange1: NDArray[np.int64], triange2: NDArray[np.int64]) -> bool:
     
-    vtx=np.vstack(triange1,triange2)
+    vtx=np.vstack([triange1,triange2])
     vtx=remove_doubling_in_perp_space(vtx)
     
     if coplanar_check(vtx):
@@ -616,6 +618,56 @@ def coplanar_check_two_triangles(triange1: NDArray[np.int64], triange2: NDArray[
         return False
 
 
+#################################
+#### tetrahedralization関連
+#################################
+
+def decomposition(tmp2v: NDArray[np.int64]) -> NDArray[np.int64]:
+    try:
+        tri=Delaunay(tmp2v)
+    except:
+        print('error in decomposition')
+        return 
+    else:
+        tmp=[]
+        for i in range(len(tri.simplices)):
+            tet=tri.simplices[i]
+            tmp.append([tet[0],tet[1],tet[2],tet[3]])
+    return tmp
+    
+def tetrahedralization_points(points: NDArray[np.int64]) -> NDArray[np.int64]:
+    
+    i1=0
+    for p in points:
+        v=projection3(p)
+        v=numerical_vector(v)
+        if i1==0:
+            tmp=v
+        else:
+            tmp=np.vstack([tmp,v])
+        i1+=1
+        
+    ltmp=decomposition(tmp)
+    p=points
+    if ltmp!=[0]:
+        counter=0
+        for i in ltmp:
+            tmp3=np.array([p[i[0]],p[i[1]],p[i[2]],p[i[3]]]).reshape(4,6,3)
+            vol=tetrahedron_volume_6d(tmp3)
+            if vol[0]==0 and vol[1]==0:
+                pass
+            else:
+                if counter==0:
+                    tmp1=tmp3.reshape(72) # 4*6*3=72
+                else:
+                    tmp1=np.append(tmp1,tmp3)
+                counter+=1
+        if counter!=0:
+            return tmp1.reshape(int(len(tmp1)/72),4,6,3) # 4*6*3=72
+        else:
+            return 
+    else:
+        return 
 
 
 
@@ -645,20 +697,16 @@ def generate_convex_hull(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     
     objが凸包であれば、この関数を実行することで、よりシンプルに四面体分割されたobjを得ることができる。
     """
-    print('1:')
     # 1
     obj_surface=generator_surface_1(obj)
     # 2
-    print('2:')
     surface_list=surface_cleaner(obj_surface)
     # 3
-    print('3:')
-    obj_surface_new=surface_list[0]
+    tmp=surface_list[0]
     for i1 in range(1,len(surface_list)):
-        tmp=np.vstack(a,surface_list[i1])
+        tmp=np.vstack([tmp,surface_list[i1]])
     tmp=remove_doubling_in_perp_space(tmp)
     # 4
-    print('4:')
     return tetrahedralization_points(tmp)
 
 def surface_cleaner(surface: NDArray[np.int64]) -> NDArray[np.int64]:
@@ -679,7 +727,7 @@ def surface_cleaner(surface: NDArray[np.int64]) -> NDArray[np.int64]:
         if i==0:
             out=edges
         else:
-            out=np.vstack(out,edges)
+            out=np.vstack([out,edges])
     return out
 
 def get_sets_of_coplanar_triangles(surface):
@@ -713,19 +761,23 @@ def get_sets_of_coplanar_triangles(surface):
         for i2 in range(num):
             if i1==lst_indx_triangle[i2]:
                 tmp.append(surface[i2])
-        lst_sets.append(tmp)
+        num_triangle=len(tmp)
+        a=np.zeros((num_triangle,3,6,3),dtype=np.int64)
+        for i2 in range(num_triangle):
+            a[i2]=tmp[i2]
+        lst_sets.append(a)
     return lst_sets
 
 #同一平面上にある三角形の辺のうち、どの三角形とも共有していない独立な辺を求める．
 def gen_unique_edges_of_coplanar_triangles(coplanar_triangles):
     #同一平面上にある三角形の辺のうち、どの三角形とも共有していない独立な辺を求める．
     unique_edges=generator_unique_edges(coplanar_triangles)
-    edges=generator_all_edges(obj) 
+    edges=generator_all_edges(coplanar_triangles) 
     lst=[]
     for edge1 in unique_edges:
         counter=0
         for edge2 in edges:
-            tmp=vstack([edge1,edge2])
+            tmp=np.vstack([edge1,edge2])
             tmp=remove_doubling_in_perp_space(tmp)
             if len(tmp)==2:
                 counter+=1
