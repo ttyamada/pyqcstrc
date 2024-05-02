@@ -16,8 +16,8 @@ __pycache__/
 /pyqcstrc/deca/__pycache__
 /pyqcstrc/dode/__pycache__
 /pyqcstrc/ico/__pycache__
-/pyqcstrc/ico2/test1
-/pyqcstrc/ico2/test2
+#/pyqcstrc/ico2/test1
+#/pyqcstrc/ico2/test2
 
 *.zip
 # Log files etc
