@@ -541,7 +541,13 @@ def merge_two_tetrahedra_in_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
 
 
 
-
+##############################
+####
+####
+#### WIP
+####
+####
+##############################
 ## もしobjectが凸包であれば、頂点集合が得られれば簡素化できる。そのために凸包かどうかチェックする必要がある。
 ## 　　表面の三角形のセット by generator_surface_1(obj)
 ## 　　->三角形の簡素化 by surface_cleaner(surface,num_cycle)

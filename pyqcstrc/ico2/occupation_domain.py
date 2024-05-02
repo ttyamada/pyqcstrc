@@ -893,12 +893,12 @@ def write_xyz(obj,path='.',basename='tmp',select='tetrahedron',verbose=0):
                 tetrahedron[i2][4][0],tetrahedron[i2][4][1],tetrahedron[i2][4][2],\
                 tetrahedron[i2][5][0],tetrahedron[i2][5][1],tetrahedron[i2][5][2]))
             i1+=1
-        w1,w2,w3=utils.obj_volume_6d(obj)
-        f.write('volume = %d %d %d (%8.6f)\n'%(w1,w2,w3,(w1+TAU*w2)/(w3)))
+        vol=utils.obj_volume_6d(obj)
+        f.write('volume = %d %d %d (%8.6f)\n'%(vol[0],vol[1],vol[2],numericalc.numeric_value(vol)))
         for i1 in range(len(obj)):
-            [v1,v2,v3]=utils.tetrahedron_volume_6d(tetrahedron)
+            v=utils.tetrahedron_volume_6d(tetrahedron)
             f.write('%3d-the tetrahedron, %d %d %d (%8.6f)\n'\
-                    %(i1,v1,v2,v3,(v1+TAU*v2)/(v3)))
+                    %(v[0],v[1],v[2],numericalc.numeric_value(v)))
         f.close()
         return 0
     
@@ -1111,11 +1111,6 @@ def read_xyz(path,basename,select='tetrahedron',verbose=0):
     elif select == 'vertex':
         return tmp.reshape(int(num),6,3)
     
-
-
-
-
-
 def simplification(obj,num_cycle=10,verbose=0):
     """
     Simplification of occupation domains.
@@ -1139,22 +1134,16 @@ def simplification(obj,num_cycle=10,verbose=0):
         print(' zero volume')
         return 
     else:
-        n1,n2,n3=utils.obj_volume_6d(obj)
-        obj1=mics.generate_convex_hull(obj, np.array([[0]]), num_cycle, verbose-1)
-        obj2=intsct.intersection_two_obj_2(obj1, obj, verbose-1)
-        m1,m2,m3=utils.obj_volume_6d(obj2)
-        if verbose>0:
-            print(' volume of original obj  : %d %d %d (%10.8f)'%(n1,n2,n3,(n1+TAU*n2)/n3))
-            print(' volume of simplified obj: %d %d %d (%10.8f)'%(m1,m2,m3,(m1+TAU*m2)/m3))
-        else:
-            pass
+        v0=utils.obj_volume_6d(obj)
+        obj1=utils.generate_convex_hull(obj, num_cycle)
+        obj2=intsct.intersection_two_obj_2(obj1, obj)
+        v1=utils.obj_volume_6d(obj2)
         if n1==m1 and n2==m2 and n3==m3:
             print(' simplification: succeed')
             return obj2
         else:
             print(' simplification: fail')
             print(' return initial obj')
-            #return np.array([[[[0]]]])
             return obj
         
 def simple_hand_step1(obj, path, basename_tmp):
@@ -1173,23 +1162,16 @@ def simple_hand_step1(obj, path, basename_tmp):
             The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
     
     """
-    
     def write_xyz_smpl(a, path, basename):
-    
         f=open('%s'%(path)+'/%s.xyz'%(basename),'w', encoding="utf-8", errors="ignore")
         f.write('%d\n'%(len(a)))
         f.write('%s\n'%(basename))
         for i1 in range(len(a)):
-            a4,a5,a6=math1.projection3(a[i1][0],\
-                                        a[i1][1],\
-                                        a[i1][2],\
-                                        a[i1][3],\
-                                        a[i1][4],\
-                                        a[i1][5])
+            xyz=math1.projection3(a[i1])
             f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-            ((a4[0]+a4[1]*TAU)/(a4[2]),\
-            (a5[0]+a5[1]*TAU)/(a5[2]),\
-            (a6[0]+a6[1]*TAU)/(a6[2]),\
+            (numericalc.numeric_value(xyz),\
+            numericalc.numeric_value(xyz),\
+            numericalc.numeric_value(xyz),\
             i1,\
             a[i1][0][0],a[i1][0][1],a[i1][0][2],\
             a[i1][1][0],a[i1][1][1],a[i1][1][2],\
@@ -1199,7 +1181,8 @@ def simple_hand_step1(obj, path, basename_tmp):
             a[i1][5][0],a[i1][5][1],a[i1][5][2]))
         f.closed
         return 0
-    od1a = utils.remove_doubling_dim4_in_perp_space(obj)
+        
+    od1a=utils.remove_doubling_dim4_in_perp_space(obj)
     write_xyz_smpl(od1a, path, basename_tmp)
     print('written in %s'%(path)+'/%s.xyz'%(basename_tmp))
     print('open above XYZ file in vesta and make merge_list, and run simple_hand_step2()')
@@ -1243,6 +1226,13 @@ def simple_hand_step2(obj, merge_list):
 
 
 
+
+
+
+
+
+
+########## WIP ##########
 
 def as_it_is(obj):
     """
@@ -1672,334 +1662,6 @@ def write_podatm(obj, position, vlist = [0], path = '.', basename = 'tmp', shift
             print('    written in %s/%s.atm'%(path,basename))
             print('    written in %s/%s.pod'%(path,basename))
     
-    return 0
-
-#  legacy simple
-def simple(obj, select, num_cycle = 3, verbose = 0, num_cycle_234 = [3,0,0], num_shuffle_234 = [1,0,0]):
-    """
-    Legacy: simple
-    """
-    if select == 0:
-        obj_new = mics.simplification_obj_edges(obj, num_cycle, verbose)
-    elif select == 1:
-        obj_new = mics.simplification_obj_edges_1(obj, num_cycle, verbose)
-    elif select == 2:
-        obj_new=mics.simplification_obj_smart(obj, num_cycle, verbose)
-    elif select == 3:
-        obj_new = mics.simplification_convex_polyhedron(obj, num_cycle, verbose, 0)
-    elif select == 4:
-        [num2_of_cycle, num3_of_cycle, num4_of_cycle] = num_cycle_234
-        [num2_of_shuffle, num3_of_shuffle, num4_of_shuffle] = num_shuffle_234
-        obj_new = mics.simplification(obj,\
-                                    num2_of_cycle,\
-                                    num3_of_cycle,\
-                                    num4_of_cycle,\
-                                    num2_of_shuffle,\
-                                    num3_of_shuffle,\
-                                    num4_of_shuffle,\
-                                    verbose)
-    else:
-        obj_new=mics.simplification_obj_smart(obj, num_cycle, verbose)
-    return obj_new
-
-def simple_special(obj, num, num_cycle, verbose_level = 0):
-    """
-    Legacy: simple_special
-    """
-    # 複雑に四面体分割されたObjectを単純化する
-    # 一部分（ただし、凸多面体に限る）だけ単純化したい場合．
-    # Parameters:
-    #  obj: 単純化したいobject(dim4のnumpy.ndarray)
-    #  num: 凸多面体を構成する四面体の配列インデックスをnumで指定(dim2のlist)
-    #  num_cycle: qcmodel.simplification_convex_polyhedronのサイクル
-    #  verbose_level: qcmodel.simplification_convex_polyhedronのverbose_level
-    n1,n2,n3=utils.obj_volume_6d(obj)
-    obj_new=np.array([0])
-    a=[]
-    len(obj)
-    for i3 in range(len(obj)):
-        counter=0
-        for i1 in range(len(num)):
-            for i2 in num[i1]:
-                if i3==i2:
-                    counter+=1
-                    break
-                else:
-                    pass
-        if counter==0:
-            if len(obj_new)==1:
-                obj_new=obj[i3].reshape(72)
-            else:
-                obj_new=np.append(obj_new,obj[i3])
-        else:
-            pass
-    if obj_new.tolist!=[0]:
-        obj_new=obj_new.reshape(int(len(obj_new)/72),4,6,3)
-        #print len(obj_new)
-    else:
-        pass
-        
-    for i1 in range(len(num)):
-        tmp=np.array([0])
-        for i2 in num[i1]:
-            if len(tmp)==1:
-                tmp=obj[i2].reshape(72)
-            else:
-                tmp=np.append(tmp,obj[i2])
-        tmp=mics.simplification_convex_polyhedron(tmp.reshape(int(len(tmp)/72),4,6,3),num_cycle,verbose_level,0)
-        if len(obj_new)==1:
-            obj_new=tmp.reshape(len(tmp)*72)
-        else:
-            obj_new=np.append(obj_new,tmp)
-    obj_new=obj_new.reshape(int(len(obj_new)/72),4,6,3)
-    m1,m2,m3=utils.obj_volume_6d(obj_new)
-    if verbose_level>0:
-         print(' volume of original obj  : %d %d %d (%10.8f)'%(n1,n2,n3,(n1+TAU*n2)/n3))
-         print(' volume of simplified obj: %d %d %d (%10.8f)'%(m1,m2,m3,(m1+TAU*m2)/m3))
-    if n1==m1 and n2==m2 and n3==m3:
-        print(' succeed')
-        return obj_new
-    else:
-        print(' fail, original obj returned.')
-        return obj
-
-def simple_special_1(obj, num, num_cycle, verbose_level = 0):
-    """
-    Legacy: simple
-    """
-    # 複雑に四面体分割されたObjectを単純化する
-    # 一部分（だけ単純化したい場合．
-    # Parameters:
-    #  obj: 単純化したいobject(dim4のnumpy.ndarray)
-    #  num: 多面体を構成する四面体の配列インデックスをnumで指定(dim2のlist)
-    #  num_cycle: qcmodel.simplification_convex_polyhedronのサイクル
-    #  verbose_level: qcmodel.simplification_obj_edges()のverbose_level
-    n1,n2,n3=utils.obj_volume_6d(obj)
-    obj_new=np.array([0])
-    a=[]
-    len(obj)
-    for i3 in range(len(obj)):
-        counter=0
-        for i1 in range(len(num)):
-            for i2 in num[i1]:
-                if i3==i2:
-                    counter+=1
-                    break
-                else:
-                    pass
-        if counter==0:
-            if len(obj_new)==1:
-                obj_new=obj[i3].reshape(72)
-            else:
-                obj_new=np.append(obj_new,obj[i3])
-        else:
-            pass
-    if obj_new.tolist!=[0]:
-        obj_new=obj_new.reshape(int(len(obj_new)/72),4,6,3)
-        #print len(obj_new)
-    else:
-        pass
-        
-    for i1 in range(len(num)):
-        tmp=np.array([0])
-        for i2 in num[i1]:
-            if len(tmp)==1:
-                tmp=obj[i2].reshape(72)
-            else:
-                tmp=np.append(tmp,obj[i2])
-        #tmp=mics.simplification_obj_edges(tmp.reshape(len(tmp)/72,4,6,3),num_cycle,verbose_level-1)
-        tmp=mics.simplification_obj_edges_1(tmp.reshape(int(len(tmp)/72),4,6,3),num_cycle,verbose_level-1)
-        if len(obj_new)==1:
-            obj_new=tmp.reshape(len(tmp)*72)
-        else:
-            obj_new=np.append(obj_new,tmp)
-    obj_new=obj_new.reshape(int(len(obj_new)/72),4,6,3)
-    m1,m2,m3=utils.obj_volume_6d(obj_new)
-    if verbose_level>0:
-        print(' volume of original obj  : %d %d %d (%10.8f)'%(n1,n2,n3,(n1+TAU*n2)/float(n3)))
-        print(' volume of simplified obj: %d %d %d (%10.8f)'%(m1,m2,m3,(m1+TAU*m2)/float(m3)))
-    else:
-        pass
-    if n1==m1 and n2==m2 and n3==m3:
-        print(' succeed')
-        return obj_new
-    else:
-        print(' fail, original obj returned.')
-        return obj
-
-def simple_rondom(obj, num_cycle, combination_num, verbose_level = 0):
-    """
-    Legacy: simple
-    """
-    
-    if verbose_level>0:
-        print('  simplification_rondom()')
-    else:
-        pass
-        
-    n1,n2,n3=utils.obj_volume_6d(obj)
-    obj_new=np.array([0])
-    obj_tmp=obj
-    for i in range(num_cycle):
-        print('--------------')
-        print('     %d-cycle'%(i))
-        print('--------------')
-        num=random.sample(range(len(obj_tmp)),combination_num)
-        #print     num
-        num=[num]
-        obj_new=simple_special_1(obj_tmp,num,2,verbose_level-1)
-        if len(obj_new)<len(obj_tmp):
-            obj_tmp=obj_new
-            if verbose_level>0:
-                print('  reduced')
-            else:
-                pass
-        else:
-            pass
-   
-    m1,m2,m3=utils.obj_volume_6d(obj_new)
-    if verbose_level>0:
-        print(' volume of original obj  : %d %d %d (%10.8f)'%(n1,n2,n3,(n1+TAU*n2)/n3))
-        print(' volume of simplified obj: %d %d %d (%10.8f)'%(m1,m2,m3,(m1+TAU*m2)/m3))
-    if n1==m1 and n2==m2 and n3==m3:
-        print(' succeed')
-        return obj_new
-    else:
-        print(' fail, original obj returned.')
-        return obj
-
-def simpl_add_point(obj, point, verbose = 0):
-    """
-    Legacy: simple
-    """
-    # Parameters:
-    #  obj: 単純化したいobject(dim4のnumpy.ndarray) ただし、凸多面体のみ
-    #  point: obj内に追加したい点の6次元座標(dim2のnumpy.ndarray)
-    obj_new=intsct.tetrahedralization_1(obj, point, verbose)
-    return obj_new
-    
-def simpl_manual(obj, num, coordinates, verbose_level = 0):
-    """
-    Legacy: simple
-    """
-    # 複雑に四面体分割されたObjectを単純化する
-    # 一部分（ただし、凸多面体に限る）だけ単純化したい場合．
-    # この一部分はnumで指定
-    # その頂点座標をcoordinatesで与える
-    # Parameters:
-    #  obj: 単純化したいobject(dim4のnumpy.ndarray)
-    #  num: 凸多面体を構成する四面体の配列インデックスをnumで指定(dim2のlist)
-    #  coordinates: 単純化したい部分の頂点（四面体分割に使う. dim3のnumpy.ndarrayを含むリスト）
-    n1,n2,n3=utils.obj_volume_6d(obj)
-    obj_new=np.array([0])
-    a=[]
-    len(obj)
-    for i3 in range(len(obj)):
-        counter=0
-        for i1 in range(len(num)):
-            for i2 in num[i1]:
-                if i3==i2:
-                    counter+=1
-                    break
-                else:
-                    pass
-        if counter==0:
-            if len(obj_new)==1:
-                obj_new=obj[i3].reshape(72)
-            else:
-                obj_new=np.append(obj_new,obj[i3])
-        else:
-            pass
-    if obj_new.tolist!=[0]:
-        obj_new=obj_new.reshape(len(obj_new)/72,4,6,3)
-        #print len(obj_new)
-    else:
-        pass
-        
-    for i1 in range(len(coordinates)):
-        tmp4=intsct.tetrahedralization_points(coordinates[i1])
-        if len(obj_new)==1:
-            obj_new=tmp4.reshape(len(tmp4)*72)
-        else:
-            obj_new=np.append(obj_new,tmp4)
-    obj_new=obj_new.reshape(len(obj_new)/72,4,6,3)
-    m1,m2,m3=utils.obj_volume_6d(obj_new)
-    if verbose_level>0:
-         print(' volume of original obj  : %d %d %d (%10.8f)'%(n1,n2,n3,(n1+TAU*n2)/float(n3)))
-         print(' volume of simplified obj: %d %d %d (%10.8f)'%(m1,m2,m3,(m1+TAU*m2)/float(m3)))
-    if n1==m1 and n2==m2 and n3==m3:
-        print(' succeed')
-        return obj_new
-    else:
-        print(' fail, original obj returned.')
-        return obj
-
-def simpl_manual_2(obj, num, obj_partial, verbose_level = 0):
-    """
-    Legacy: simple
-    """
-    # 複雑に四面体分割されたObjectを単純化する
-    # 四面分割を単純化したい部分が凸多面体でない場合、手で新たに四面体分割したobjを与える．
-    # 一部分はnumで指定
-    # 新しく四面体分割したobjを与える．
-    # Parameters:
-    #  obj: 単純化したいobject(dim4のnumpy.ndarray)
-    #  num: 凸多面体を構成する四面体の配列インデックスをnumで指定(dim2のlist)
-    #  obj_partial: 手で四面体分割したobj（四面体分割に使う. dim4のnumpy.ndarray）
-    n1,n2,n3=utils.obj_volume_6d(obj)
-    obj_new=np.array([0])
-    a=[]
-    len(obj)
-    for i3 in range(len(obj)):
-        counter=0
-        for i1 in range(len(num)):
-            for i2 in num[i1]:
-                if i3==i2:
-                    counter+=1
-                    break
-                else:
-                    pass
-        if counter==0:
-            if len(obj_new)==1:
-                obj_new=obj[i3].reshape(72)
-            else:
-                obj_new=np.append(obj_new,obj[i3])
-        else:
-            pass
-    if obj_new.tolist!=[0]:
-        obj_new=obj_new.reshape(len(obj_new)/72,4,6,3)
-        #print len(obj_new)
-    else:
-        pass
-        
-    if len(obj_new)==1:
-        obj_new=obj_partial.reshape(len(obj_partial)*72)
-    else:
-        obj_new=np.append(obj_new,obj_partial)
-    obj_new=obj_new.reshape(len(obj_new)/72,4,6,3)
-    m1,m2,m3=utils.obj_volume_6d(obj_new)
-    if verbose_level>0:
-        print(' volume of original obj  : %d %d %d (%10.8f)'%(n1,n2,n3,(n1+TAU*n2)/float(n3)))
-        print(' volume of simplified obj: %d %d %d (%10.8f)'%(m1,m2,m3,(m1+TAU*m2)/float(m3)))
-    if n1==m1 and n2==m2 and n3==m3:
-        print(' succeed')
-        return obj_new
-    else:
-        print(' fail, original obj returned.')
-        return obj
-
-def simpl_manual(obj, num, verbose_level = 0):
-    """
-    Legacy: simple
-    """
-    # 複雑に四面体分割されたObjectを単純化する
-    # 四面分割を単純化したい部分（凸多面体である必要がある）の四面体インデックス(m)とその頂点インデックス(n)を指定し、
-    # その頂点集合を四面体分割する．
-    # 新しく四面体分割したobjを与える．
-    # Parameters:
-    #  obj: 単純化したいobject(dim4のnumpy.ndarray)
-    #  num: 凸多面体を構成する四面体インデックス(m)とその頂点インデックス(n) (dim2のlist)
-    #        例　num = [[m1,n1],[m2,n2],...]
     return 0
 
 if __name__ == "__main__":
