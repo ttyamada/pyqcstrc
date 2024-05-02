@@ -21,8 +21,8 @@ from numericalc import (numeric_value,
                         numerical_vectors,
                         get_internal_component_numerical,
                         get_internal_component_sets_numerical,
-                        point_on_segment)
-
+                        point_on_segment,
+                        coplanar_check_numeric_tau)
 import numpy as np
 from numpy.typing import NDArray
 from scipy.spatial import Delaunay
@@ -612,7 +612,12 @@ def coplanar_check_two_triangles(triange1: NDArray[np.int64], triange2: NDArray[
     vtx=np.vstack([triange1,triange2])
     vtx=remove_doubling_in_perp_space(vtx)
     
-    if coplanar_check(vtx):
+    # メモ
+    # vtxはソートされており、coplanar_checkやcoplanar_check_numeric_tau
+    # での外積計算の際に小さい値になるとcoplanar判定を間違うので注意。
+    
+    #if coplanar_check(vtx): # math1のバージョン
+    if coplanar_check_numeric_tau(vtx): # numericalcのバージョン
         return True # coplanar
     else:
         return False
@@ -698,14 +703,17 @@ def generate_convex_hull(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     objが凸包であれば、この関数を実行することで、よりシンプルに四面体分割されたobjを得ることができる。
     """
     # 1
-    obj_surface=generator_surface_1(obj)
+    triangle_surface=generator_surface_1(obj)
+    
     # 2
-    surface_list=surface_cleaner(obj_surface)
+    edge_surface=surface_cleaner(triangle_surface)
+    
     # 3
-    tmp=surface_list[0]
-    for i1 in range(1,len(surface_list)):
-        tmp=np.vstack([tmp,surface_list[i1]])
+    tmp=edge_surface[0]
+    for i1 in range(1,len(edge_surface)):
+        tmp=np.vstack([tmp,edge_surface[i1]])
     tmp=remove_doubling_in_perp_space(tmp)
+    
     # 4
     return tetrahedralization_points(tmp)
 
@@ -720,9 +728,11 @@ def surface_cleaner(surface: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     # 同一平面上にある三角形を求め、集合lst_setsとする
     lst_sets=get_sets_of_coplanar_triangles(surface)
+    #print('num. of lst_sets:',len(lst_sets))
     
     #同一平面上にある三角形の辺のうち、どの三角形とも共有していない独立な辺を求める．
     for i in range(len(lst_sets)):
+        #print('num. of coplanar triangles',len(lst_sets[i]))
         edges=gen_unique_edges_of_coplanar_triangles(lst_sets[i])
         if i==0:
             out=edges
@@ -742,37 +752,47 @@ def get_sets_of_coplanar_triangles(surface):
     lst_indx_group=[0]
     lst_indx_triangle=[0]
     for i1 in range(1,num):
-        counter2=0
+        counter=0
         triangle=surface[i1]
+        #print('%d-th triangle'%(i1))
         for i2 in lst_indx_group:
             if coplanar_check_two_triangles(triangle,surface[i2]):
-                counter2+=1
+                counter+=1
                 break
             else:
                 pass
-        if counter2==0:
-            lst_indx_triangle.append(i2)
-        else:
-            lst_indx_group.append(i1)
+        if counter==0:
+            #print('     non coplanar')
             lst_indx_triangle.append(i1)
+            lst_indx_group.append(i1)
+        else:
+            #print('     coplanar with %d'%(i2))
+            lst_indx_triangle.append(i2)
+    #print(' num. of groups:',len(lst_indx_group))
     lst_sets=[]
     for i1 in lst_indx_group:
+        #print(i1)
         tmp=[]
         for i2 in range(num):
             if i1==lst_indx_triangle[i2]:
+                #print('  ',i2)
                 tmp.append(surface[i2])
         num_triangle=len(tmp)
+        #print('  num. of triangles',num_triangle)
         a=np.zeros((num_triangle,3,6,3),dtype=np.int64)
         for i2 in range(num_triangle):
             a[i2]=tmp[i2]
         lst_sets.append(a)
     return lst_sets
 
-#同一平面上にある三角形の辺のうち、どの三角形とも共有していない独立な辺を求める．
 def gen_unique_edges_of_coplanar_triangles(coplanar_triangles):
-    #同一平面上にある三角形の辺のうち、どの三角形とも共有していない独立な辺を求める．
+    """
+    同一平面上にある三角形の辺のうち、どの三角形とも共有していない独立な辺を求める．
+    """
     unique_edges=generator_unique_edges(coplanar_triangles)
-    edges=generator_all_edges(coplanar_triangles) 
+    edges=generator_all_edges(coplanar_triangles)
+    #print(' num. of edges:',len(edges))
+    #print(' num. of unique_edges:',len(unique_edges))
     lst=[]
     for edge1 in unique_edges:
         counter=0
@@ -783,8 +803,6 @@ def gen_unique_edges_of_coplanar_triangles(coplanar_triangles):
                 counter+=1
                 if counter==2:
                     break
-            else:
-                pass
         if counter==1:
             lst.append(edge1)
         else:

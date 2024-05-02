@@ -12,6 +12,7 @@ try:
     import occupation_domain as od
     import two_occupation_domains as tod
     import utils
+    import numericalc
 except ImportError:
     print('import error\n')
 
@@ -22,8 +23,13 @@ if __name__ == "__main__":
     
     opath='.'
     
+    """
     strt_aysmmetric=od.read_xyz(path='../../xyz',basename='strt_aysmmetric',select='tetrahedron',verbose=0)
-    #od.write(obj=strt_aysmmetric[0].reshape(1,4,6,3), path=opath, basename='strt_aysmmetric', format='vesta')
+    od.write(obj=strt_aysmmetric, path=opath, basename='strt_aysmmetric', format='vesta')
+    #obj_surface=utils.generator_surface_1(strt_aysmmetric)
+    
+    strt_aysmmetric_convex_hull=utils.generate_convex_hull(strt_aysmmetric)
+    od.write(obj=strt_aysmmetric_convex_hull, path=opath, basename='strt_aysmmetric_convex_hull', format='vesta')
     
     # generat STRT OD located at 0,0,0,0,0,0 by symmetric operations (m-3-5).
     pos0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
@@ -45,8 +51,24 @@ if __name__ == "__main__":
     time_diff=end-start
     print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
     od.write(obj=common, path=opath, basename='common', format='vesta')
+    od.write(obj=common, path=opath, basename='common', format='xyz')
+    """
+    
+    #"""
+    common=od.read_xyz(path='.',basename='common',select='tetrahedron',verbose=0)
+    
+    triangle_surface=utils.generator_surface_1(common)
+    od.write(obj=triangle_surface, path=opath, basename='triangle_surface', format='vesta')
+    
+    edge_surface=utils.surface_cleaner(triangle_surface)
+    od.write(obj=edge_surface, path=opath, basename='edge_surface', format='vesta')
     
     
+    #common_convex_hull=utils.generate_convex_hull(common)
+    #od.write(obj=common_convex_hull, path=opath, basename='common_convex_hull', format='vesta')
+    #"""
+    
+    """
     print('    simplification starts')
     start = time.time()
     ###
@@ -57,4 +79,4 @@ if __name__ == "__main__":
     end=time.time()
     time_diff=end-start
     print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
-    
+    """

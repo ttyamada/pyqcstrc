@@ -5,7 +5,13 @@
 #
 import sys
 sys.path.append('.')
-import numericalc
+from numericalc import (numeric_value,
+                        numerical_vector,
+                        numerical_vectors,
+                        get_internal_component_numerical,
+                        get_internal_component_sets_numerical,
+                        point_on_segment,
+                        coplanar_check_numeric_tau)
 import numpy as np
 from numpy.typing import NDArray
 
@@ -571,8 +577,10 @@ def centroid_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
         tmp=add_vectors(tmp,p)
     return mul_vector(tmp,np.array([1,0,len(obj)]))
 
-def coplanar_check(p: NDArray[np.int64]) -> NDArray[np.int64]:
+def coplanar_check(p: NDArray[np.int64]) -> bool:
     """Check whether a given set of points (in TAU-style) is coplanar or not.
+    
+    メモ：点が密集していると、outer_product(v1,v2)が小さくなり、coplanar判別が間違うので注意
     
     Parameters
     ----------
@@ -584,32 +592,38 @@ def coplanar_check(p: NDArray[np.int64]) -> NDArray[np.int64]:
     int
     #bool
     """
+    #if coplanar_check_numeric_tau(p):
+    #    print(' coplanar')
+    #else:
+    #    print(' not coplanar')
     if len(p)>3:
-        xyz0i=projection3(p[0])
-        xyz1i=projection3(p[1])
-        xyz2i=projection3(p[2])
+        tmp=get_internal_component_sets_numerical(p)
+        #print(tmp)
+        xyz0i=projection3(p[-1])
+        xyz1i=projection3(p[0])
+        xyz2i=projection3(p[1])
         v1=sub_vectors(xyz1i,xyz0i)
         v2=sub_vectors(xyz2i,xyz0i)
         v3=outer_product(v1,v2)
         flag=0
-        for i1 in range(3,len(p)):
+        for i1 in range(2,len(p)-1):
             xyz3i=projection3(p[i1])
+            #print(xyz3i)
+            #print('\n')
             v4=sub_vectors(xyz3i,xyz0i)
             
             d=inner_product(v3,v4)
+            #print('d=',d)
             if np.all(d[:2])==0:
-                flag+=0
+                pass
             else:
                 flag+=1
                 break
         if flag==0:
-            #return 1 # coplanar
             return True # coplanar
         else:
-            #return 0
             return False
     else:
-        #return 1 # coplanar
         return True # coplanar
 
 def matrixpow(ma: NDArray[np.int64], n: int) -> NDArray[np.int64]:
