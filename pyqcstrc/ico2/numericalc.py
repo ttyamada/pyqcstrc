@@ -9,6 +9,42 @@ from numpy.typing import NDArray
 TAU=(1+np.sqrt(5))/2.0
 EPS=1e-6
 
+def coplanar_check_numeric_tau(pts):
+    p=get_internal_component_sets_numerical(pts)
+    return coplanar_check_numeric(p)
+
+def coplanar_check_numeric(p):
+    """
+    メモ：点が密集していると、outer_product(v1,v2)が小さくなり、coplanar判別が間違うので注意
+    
+    """
+    if len(p)>3:
+        #for xyz in p:
+        #    print(xyz)
+        xyz1=p[0]-p[-1]
+        xyz2=p[1]-p[-1]
+        a=np.cross(xyz1,xyz2)
+        counter=0
+        #print('cross',a)
+        #print(xyz1)
+        #print(xyz2)
+        for i in range(2,len(p)-1):
+            xyzi=p[i]-p[0]
+            #print(xyzi)
+            if abs(np.dot(a,xyzi))<EPS:
+                pass
+            else:
+                counter+=1
+                break
+        #print('\n')
+        if counter==0:
+            return True
+        else:
+            return False
+    else:
+        return True
+
+
 def point_on_segment(point: NDArray[np.int64], line_segment: NDArray[np.int64]) -> bool:
     """judge whether a point is on a line segment, A-B, or not.
     
