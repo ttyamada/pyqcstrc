@@ -577,10 +577,11 @@ def centroid_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
         tmp=add_vectors(tmp,p)
     return mul_vector(tmp,np.array([1,0,len(obj)]))
 
-def coplanar_check(p: NDArray[np.int64]) -> bool:
+def coplanar_check(p: NDArray[np.int64],num_iteration: int=5) -> bool:
     """Check whether a given set of points (in TAU-style) is coplanar or not.
     
-    メモ：点が密集していると、outer_product(v1,v2)が小さくなり、coplanar判別が間違うので注意
+    メモ：xyz1とxyz2の選び方次第で、outer_product(v1,v2)が小さくなりcoplanarと間違って判定する場合がある。
+    これを避けるために適切なxyz1とxyz2の選び方が必要。以下では、ランダムにxyz1とxyz2の選ぶ。
     
     Parameters
     ----------
@@ -592,39 +593,49 @@ def coplanar_check(p: NDArray[np.int64]) -> bool:
     int
     #bool
     """
-    #if coplanar_check_numeric_tau(p):
-    #    print(' coplanar')
-    #else:
-    #    print(' not coplanar')
-    if len(p)>3:
-        tmp=get_internal_component_sets_numerical(p)
-        #print(tmp)
-        xyz0i=projection3(p[-1])
-        xyz1i=projection3(p[0])
-        xyz2i=projection3(p[1])
-        v1=sub_vectors(xyz1i,xyz0i)
-        v2=sub_vectors(xyz2i,xyz0i)
-        v3=outer_product(v1,v2)
+    
+    """
+    num=len(p)
+    if num>3:
         flag=0
-        for i1 in range(2,len(p)-1):
-            xyz3i=projection3(p[i1])
-            #print(xyz3i)
-            #print('\n')
-            v4=sub_vectors(xyz3i,xyz0i)
-            
-            d=inner_product(v3,v4)
-            #print('d=',d)
-            if np.all(d[:2])==0:
+        lst0=[i for i in range(num)]
+        for _ in range(num_iteration):
+            lst3=random.sample(lst0, 3)
+            xyz0i=projection3(p[lst3[0]])
+            xyz1i=projection3(p[lst3[1]])
+            xyz2i=projection3(p[lst3[2]])
+            v1=sub_vectors(xyz1i,xyz0i)
+            v2=sub_vectors(xyz2i,xyz0i)
+            v3=outer_product(v1,v2)
+            flag=0
+            if np.all(d[:2])==0):
                 pass
             else:
-                flag+=1
+                flag=1
                 break
-        if flag==0:
-            return True # coplanar
+        if flag==1:
+            counter=0
+            lst=list(filter(lambda x: x not in lst3, lst0))
+            for i in lst:
+                xyz3i=projection3(p[i])
+                v4=sub_vectors(xyz3i,xyz0i)
+                d=inner_product(v3,v4)
+                if np.all(d[:2])==0:
+                    pass
+                else:
+                    counter=1
+                    break
+            if counter==0:
+                return True # coplanar
+            else:
+                return False
         else:
-            return False
+            'error in coplanar_check_numeric. increase num_iteration.'
+            return 
     else:
         return True # coplanar
+    """
+    return coplanar_check_numeric_tau(p,num_iteration)
 
 def matrixpow(ma: NDArray[np.int64], n: int) -> NDArray[np.int64]:
     """

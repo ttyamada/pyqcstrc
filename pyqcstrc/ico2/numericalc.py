@@ -5,6 +5,7 @@
 #
 import numpy as np
 from numpy.typing import NDArray
+import random
 
 TAU=(1+np.sqrt(5))/2.0
 EPS=1e-6
@@ -13,34 +14,46 @@ def coplanar_check_numeric_tau(pts):
     p=get_internal_component_sets_numerical(pts)
     return coplanar_check_numeric(p)
 
-def coplanar_check_numeric(p):
+def coplanar_check_numeric(p,num_iteration=5):
     """
-    メモ：点が密集していると、outer_product(v1,v2)が小さくなり、coplanar判別が間違うので注意
+    メモ：xyz1とxyz2の選び方次第で、outer_product(v1,v2)が小さくなりcoplanarと間違って判定する場合がある。
+    これを避けるために適切なxyz1とxyz2の選び方が必要。以下では、ランダムにxyz1とxyz2の選ぶ。
     
     """
-    if len(p)>3:
-        #for xyz in p:
-        #    print(xyz)
-        xyz1=p[0]-p[-1]
-        xyz2=p[1]-p[-1]
-        a=np.cross(xyz1,xyz2)
-        counter=0
-        #print('cross',a)
-        #print(xyz1)
-        #print(xyz2)
-        for i in range(2,len(p)-1):
-            xyzi=p[i]-p[0]
-            #print(xyzi)
-            if abs(np.dot(a,xyzi))<EPS:
+    num=len(p)
+    if num>3:
+        flag=0
+        lst0=[i for i in range(num)]
+        for _ in range(num_iteration):
+            lst3=random.sample(lst0, 3)
+            #
+            xyz1=p[lst3[1]]-p[lst3[0]]
+            xyz2=p[lst3[2]]-p[lst3[0]]
+            vec=np.cross(xyz1,xyz2)
+            flg=0
+            if np.all(abs(vec)<EPS):
                 pass
             else:
-                counter+=1
+                flag=1
                 break
-        #print('\n')
-        if counter==0:
-            return True
+        if flag==1:
+            counter=0
+            lst=list(filter(lambda x: x not in lst3, lst0))
+            for i in lst:
+            #for i in list(filter(lambda x: x not in lst3, lst0)):
+                xyzi=p[i]-p[lst3[0]]
+                if abs(np.dot(vec,xyzi))<1e-10:
+                    pass
+                else:
+                    counter=1
+                    break
+            if counter==0:
+                return True
+            else:
+                return False
         else:
-            return False
+            'error in coplanar_check_numeric. increase num_iteration.'
+            return 
     else:
         return True
 
