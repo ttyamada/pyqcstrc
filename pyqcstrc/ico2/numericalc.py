@@ -10,9 +10,9 @@ import random
 TAU=(1+np.sqrt(5))/2.0
 EPS=1e-6
 
-def coplanar_check_numeric_tau(pts):
+def coplanar_check_numeric_tau(pts,num_iteration=5):
     p=get_internal_component_sets_numerical(pts)
-    return coplanar_check_numeric(p)
+    return coplanar_check_numeric(p,num_iteration=5)
 
 def coplanar_check_numeric(p,num_iteration=5):
     """
