@@ -1111,10 +1111,6 @@ def read_xyz(path,basename,select='tetrahedron',verbose=0):
     elif select == 'vertex':
         return tmp.reshape(int(num),6,3)
 
-
-
-########## WIP ##########
-
 def simplification(obj):
     """
     Simplification of occupation domains.
@@ -1143,12 +1139,15 @@ def simplification(obj):
         obj2=intsct.intersection_two_obj_1(obj1,obj)
         v1=utils.obj_volume_6d(obj2)
         if np.all(v0==v1):
-            print('    simplification succeed: %d --> %d'%(len(obj),len(obj1)))
+            print('      simplification succeed:')
+            print('      num of tetrahedra: %d --> %d'%(len(obj),len(obj1)))
             return obj2
         else:
-            print('    simplification: fail')
+            print('      simplification: fail')
             return 
-        
+
+########## WIP ##########
+
 def simple_hand_step1(obj, path, basename_tmp):
     """
     Simplification of occupation domains by hand (step1).
