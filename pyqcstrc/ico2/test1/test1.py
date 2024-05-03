@@ -54,21 +54,18 @@ if __name__ == "__main__":
     od.write(obj=common, path=opath, basename='common', format='xyz')
     """
     
-    #"""
     common=od.read_xyz(path='.',basename='common',select='tetrahedron',verbose=0)
     
-    triangle_surface=utils.generator_surface_1(common)
-    od.write(obj=triangle_surface, path=opath, basename='triangle_surface', format='vesta')
+    #triangle_surface=utils.generator_surface_1(common)
+    #od.write(obj=triangle_surface, path=opath, basename='triangle_surface', format='vesta')
     
-    edge_surface=utils.surface_cleaner(triangle_surface)
-    od.write(obj=edge_surface, path=opath, basename='edge_surface', format='vesta')
-    
+    #edge_surface=utils.surface_cleaner(triangle_surface)
+    #od.write(obj=edge_surface, path=opath, basename='edge_surface', format='vesta')
     
     #common_convex_hull=utils.generate_convex_hull(common)
     #od.write(obj=common_convex_hull, path=opath, basename='common_convex_hull', format='vesta')
-    #"""
     
-    """
+    #"""
     print('    simplification starts')
     start = time.time()
     ###
@@ -79,4 +76,4 @@ if __name__ == "__main__":
     end=time.time()
     time_diff=end-start
     print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
-    """
+    #"""
