@@ -690,11 +690,7 @@ def tetrahedralization_points(points: NDArray[np.int64]) -> NDArray[np.int64]:
 
 
 #################################
-####
-####
-#### WIP: generate_convex_hull関連
-####
-####
+# generate_convex_hull関連
 #################################
 ## もしobjectが凸包であれば、頂点集合が得られれば簡素化できる。そのために凸包かどうかチェックする必要がある。
 ## 　　表面の三角形のセット by generator_surface_1(obj)
@@ -716,20 +712,19 @@ def generate_convex_hull(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     # 1
     triangle_surface=generator_surface_1(obj)
-    
+    #print('triangle_surface.shape:',triangle_surface.shape)
     # 2
     edge_surface=surface_cleaner(triangle_surface)
+    #print('edge_surface.shape:',edge_surface.shape)
     
     # 3
-    tmp=edge_surface[0]
-    for i1 in range(1,len(edge_surface)):
-        tmp=np.vstack([tmp,edge_surface[i1]])
-    tmp=remove_doubling_in_perp_space(tmp)
+    tmp=remove_doubling_in_perp_space(edge_surface)
+    #print('tmp.shape',tmp.shape)
     
     # 4
     return tetrahedralization_points(tmp)
 
-def surface_cleaner(surface: NDArray[np.int64], num_iteration: int=5) -> NDArray[np.int64]:
+def surface_cleaner(surface: NDArray[np.int64], num_iteration: int=30) -> NDArray[np.int64]:
     """
     同一平面上にある三角形ごとにグループ分けする
     
@@ -750,30 +745,49 @@ def surface_cleaner(surface: NDArray[np.int64], num_iteration: int=5) -> NDArray
             edges_new=edges
         else:
             edges_new=np.vstack([edges_new,edges])
-    """
+    
     # ２辺を１つの辺にまとめられるのであれば、まとめる
-    print('edges_new.shape',edges_new.shape)
+    #print('edges_new.shape',edges_new.shape)
     edges_new=generator_unique_edges(edges_new)
+    #print('edges_new.shape',edges_new.shape)
     num=len(edges_new)
     lst0=[i for i in range(num)]
     lst=lst0
-    for _ in range(num_iteration):
+    flag=1
+    while flag>0:
+    #for _ in range(num_iteration):
         counter=0
+        #print('lst',lst)
+        n0=len(edges_new)
+        #print('n0',n0)
         for comb in list(itertools.combinations(lst, 2)):
             a=two_segment_into_one(edges_new[comb[0]],edges_new[comb[1]])
-            if np.any(a=None):
+            if np.any(a==None):
+                pass
+            else:
                 counter=1
                 break
-            else:
-                pass
         if counter==1:
             lst=list(filter(lambda x: x not in list(comb), lst))
-            num+=1
-            edges_new=np.vstack([edges_new,a])
+            #print('  comb',comb)
+            #print('  lst',lst)
+            #print('  edges_new.shape',edges_new.shape)
+            #print('  a.shape',a.shape)
+            edges_new=np.vstack([edges_new,[a]])
             lst.append(num)
-    """
-    return edges_new
-
+            num+=1
+            #print('  lst',lst)
+        else:
+            flag=0
+    #print('edges_new.shape',edges_new.shape)
+    n1=len(lst)
+    out=np.zeros((n1,2,6,3),dtype=np.int64)
+    for i1 in range(n1):
+        out[i1]=edges_new[lst[i1]]
+    #print('out.shape',out.shape)
+    
+    return out
+    
 def get_sets_of_coplanar_triangles(surface):
     """
     同一平面上にある三角形の集合を作る。surfaceに含まれるtriangleについて
