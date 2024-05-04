@@ -765,7 +765,7 @@ def intersection_two_obj_convex(obj1: NDArray[np.int64], obj2: NDArray[np.int64]
 ###   WIP
 ###
 #########
-def object_subtraction_dev1(obj1: NDArray[np.int64], obj2: NDArray[np.int64]) -> NDArray[np.int64]:
+def object_subtraction(obj1: NDArray[np.int64], obj2: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     get A not B = A not (A and B)
     obj1: A
@@ -776,16 +776,20 @@ def object_subtraction_dev1(obj1: NDArray[np.int64], obj2: NDArray[np.int64]) ->
     
     print('      generating surface_obj2')
     start = time.time()
+    #
     surface_obj2=generator_surface_1(obj2)
+    #
     end=time.time()
     time_diff=end-start
     print('         ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
     
-    
+    print('      tetrahedron_not_obj_1 starts...')
+    start = time.time()
+    #
     counter1=0
     for tetrahedron in obj1:
         print('      %d-th tetrahedron in obj1'%(counter1))
-        a=tetrahedron_not_obj(tetrahedron.reshape(1,4,6,3),obj2,surface_obj2)
+        a=tetrahedron_not_obj_1(tetrahedron.reshape(1,4,6,3),obj2,surface_obj2)
         if np.all(a==None):
             pass
         else:
@@ -794,9 +798,14 @@ def object_subtraction_dev1(obj1: NDArray[np.int64], obj2: NDArray[np.int64]) ->
             else:
                 out=np.vstack([out,a])
         counter1+=1
+    #
+    end=time.time()
+    time_diff=end-start
+    print('         ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
+    
     return out
 
-def tetrahedron_not_obj(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64], surface_obj: NDArray[np.int64]) -> NDArray[np.int64]:
+def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64], surface_obj: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     get A not B = A not (A and B)
     tetrahedron: A
@@ -805,18 +814,18 @@ def tetrahedron_not_obj(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64], 
     surface_obj = surface of B
     """
     
-    print('        tetrahedron_not_obj()')
+    #print('        tetrahedron_not_obj()')
         
     # surface triangles of obj
     #surface_obj=generator_surface_1(obj)
     
     # surface triangles and vertices of common
-    print('         intersection_two_obj_1()')
-    start=time.time()
+    #print('         intersection_two_obj_1()')
+    #start=time.time()
     common=intersection_two_obj_1(tetrahedron,obj)
-    end=time.time()
-    time_diff=end-start
-    print('          ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
+    #end=time.time()
+    #time_diff=end-start
+    #print('          ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
     surface_common=generator_surface_1(common)
     #vertx_common=remove_doubling_in_perp_space(surface_common)
     
@@ -979,7 +988,7 @@ def tetrahedron_not_obj(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64], 
             print('         case 4-X')
         return out
 
-def difference_tetrahedron_not_obj(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]) -> NDArray[np.int64]:
+def tetrahedron_not_obj_2(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     tetrahedron AND (NOT object)
     

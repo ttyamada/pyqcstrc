@@ -1146,8 +1146,26 @@ def simplification(obj):
             print('      simplification: fail')
             return 
 
-########## WIP ##########
+def generate_border_edges(obj):
+    """
+    Generate border edges of the occupation domain.
+    
+    Args:
+        obj (numpy.ndarray):
+            The occupation domain
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+    
+    Returns:
+        Border edges of the occupation domains (numpy.ndarray):
+            The shape is (num,2,6,3), where num=numbre_of_edge.
+    
+    """
+    triangle_surface=utils.generator_surface_1(obj)
+    return utils.surface_cleaner(triangle_surface)
 
+#########################
+#          WIP          #
+#########################
 def simple_hand_step1(obj, path, basename_tmp):
     """
     Simplification of occupation domains by hand (step1).
@@ -1184,7 +1202,7 @@ def simple_hand_step1(obj, path, basename_tmp):
         f.closed
         return 0
         
-    od1a=utils.remove_doubling_dim4_in_perp_space(obj)
+    od1a=utils.remove_doubling_in_perp_space(obj)
     write_xyz_smpl(od1a, path, basename_tmp)
     print('written in %s'%(path)+'/%s.xyz'%(basename_tmp))
     print('open above XYZ file in vesta and make merge_list, and run simple_hand_step2()')
@@ -1217,118 +1235,13 @@ def simple_hand_step2(obj, merge_list):
     
     for i in range(len(merge_list)):
         tmp1=merge(obj,merge_list[i])
-        od2=intsct.tetrahedralization_points(tmp1,0)
+        od2=intsct.tetrahedralization_points(tmp1)
         if i==0:
             od1=np.array(od2)
         else:
             od1=np.vstack([od1,od2])
     return od1
 
-
-
-
-
-
-
-
-
-
-
-########## WIP ##########
-
-def as_it_is(obj):
-    """
-    Returns an object as it is,
-    
-    Args:
-        obj (numpy.ndarray): the shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.
-    
-    Returns:
-        Occupation domains (numpy.ndarray): the shape is (num,4,6,3), where num=numbre_of_tetrahedron.
-    """
-    
-    if obj.ndim == 3:
-        return obj.reshape(int(len(obj)/4),4,6,3)
-    elif obj.ndim == 4:
-        return obj
-    else:
-        return 1
-    
-def asymmetric(symmetric_obj, position, vecs):
-    """
-    Asymmetric part of occupation domain.
-    
-    Args:
-        symmetric_obj (numpy.ndarray):
-            Occupation domain of which the asymmetric part is calculated.
-            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
-        position (numpy.ndarray):
-            6d coordinate of the site of which the occupation domain centres.
-            The shape is (6,3)
-        vecs (numpy.ndarray):
-            Three vectors that defines the asymmetric part.
-            The shape is (3,6,3)
-    
-    Returns:
-        Asymmetric part of the occupation domains (numpy.ndarray):
-            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
-    """
-    v0 = np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
-    vecs = math1.mul_vectors(vecs,[5,0,1])
-    # vecs multiplied by [a,b,c], where [a,b,c]=(a+TAU*b)/c. 
-    # [a,b,c] has to be defined so that the tetrahedron whose vertices are defined 
-    # by v0, and vecs covers the asymmetric unit of the ocuppation domains.
-    # (default) [a,b,c]=[5,0,1].
-    tmp = np.append(v0,vecs).reshape(4,6,3)
-    aum = as_it_is(tmp)
-    aum = shift(aum,position)
-    #od_asym = ods.intersection(symmetric_obj, aum)
-    od_asym = intsct.intersection_two_obj_1(symmetric_obj, aum, 0, 0)
-    
-    return od_asym
-
-def generate_edges(obj, verbose = 0):
-    """
-    Generate edges of the occupation domain.
-    
-    Args:
-        obj (numpy.ndarray):
-            The occupation domain
-            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
-        shift (numpy.ndarray):
-            6d coordinate to which the occupation domain is shifted.
-            The shape is (6,3)
-        verbose (int):
-            verbose = 0 (silent, default)
-            verbose = 1 (normal)
-    
-    Returns:
-        Edges of the occupation domains (numpy.ndarray):
-            The shape is (num,2,6,3), where num=numbre_of_edge.
-    
-    """
-    obj_surface = utils.generator_surface_1(obj,verbose)
-    #obj_surface = mics.generator_surface(obj)
-    #return utils.generator_edge(obj_surface,verbose)
-    return utils.generator_edge_1(obj_surface,verbose)
-    
-def gen_surface(obj,verbose = 0):
-    """
-    Generate triangles on the surface of the occupation domain.
-    
-    Args:
-        obj (numpy.ndarray): the occupation domain
-            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
-        verbose (int):
-            verbose = 0 (silent, default)
-            verbose = 1 (normal)
-    Returns:
-        Triangles of the occupation domains (numpy.ndarray):
-            The shape is (num,3,6,3), where num=numbre_of_triangles.
-    
-    """
-    return utils.generator_surface_1(obj,verbose)
-    
 def site_symmetry(wyckoff_position, centering, verbose=0):
     """
     Symmetry operators in the site symmetry group G and its left coset decomposition.
@@ -1524,7 +1437,7 @@ def site_symmetry(wyckoff_position, centering, verbose=0):
     
     return list1_new, list5
 
-def write_podatm(obj, position, vlist = [0], path = '.', basename = 'tmp', shift=[0.0,0.0,0.0,0.0,0.0,0.0], verbose = 0):
+def write_podatm(obj, position, vlist, path='.', basename='tmp', shift=[0.0,0.0,0.0,0.0,0.0,0.0], verbose=0):
     """
     Generate pod and atom files.
     
@@ -1550,47 +1463,37 @@ def write_podatm(obj, position, vlist = [0], path = '.', basename = 'tmp', shift
     else:
         pass
     
-    if obj.tolist()==[[[[0]]]] or obj.tolist()==[[[0]]]:
+    if obj==None:
         print('no volume obj')
         return 0
     else:
         fatm=open('%s/%s.atm'%(path,basename),'w', encoding="utf-8", errors="ignore")
         fpod=open('%s/%s.pod'%(path,basename),'w', encoding="utf-8", errors="ignore")
-    
-        """
-        # get independent edges
-        edges = utils.generator_obj_edge(obj, verbose-1)
-        # get independent vertices of the edges
-        v = utils.remove_doubling_dim4_in_perp_space(edges)
-        """
-        #v=vertices
+        
         v=obj
-    
-        # shift
-        #shft=[0.00001,0.00002,0.00000,-0.00001,0.00001,-0.00002]
-        #shft=[0.0,0.0,0.0,0.0,0.0,0.0]
+        
         shft=shift
         # .atm file
         for i in range(len(vlist)):
             a=v[vlist[i][0]-1]
             fatm.write('%d \'Em\' 1 %d 1 2.0 0. 0. 1.0 0. 0. 0.\n'%(i+1,i+1))
             fatm.write('x=  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f\n'%(\
-            (position[0][0]+position[0][1]*TAU)/(position[0][2]),\
-            (position[1][0]+position[1][1]*TAU)/(position[1][2]),\
-            (position[2][0]+position[2][1]*TAU)/(position[2][2]),\
-            (position[3][0]+position[3][1]*TAU)/(position[3][2]),\
-            (position[4][0]+position[4][1]*TAU)/(position[4][2]),\
-            (position[5][0]+position[5][1]*TAU)/(position[5][2])))
+            (numericalc.numeric_value(position[0]),\
+            (numericalc.numeric_value(position[1]),\
+            (numericalc.numeric_value(position[2]),\
+            (numericalc.numeric_value(position[3]),\
+            (numericalc.numeric_value(position[4]),\
+            (numericalc.numeric_value(position[5])))
             fatm.write('xe1= 1. 0.  0. 0.  0. 0. u1=0.0            5f\n')
             fatm.write('xe2= 1. 0. -1. 0. -1. 0. u2=0.0            3f\n')
             fatm.write('xe3= 1. 0.  0. 0. -1. 0. u3=0.0            2f\n')
             fatm.write('xi=  %8.6f  %8.6f  %8.6f  %8.6f  %8.6f  %8.6f  v=1.0\n'%(\
-            (a[0][0]+a[0][1]*TAU)/(a[0][2])+shft[0],\
-            (a[1][0]+a[1][1]*TAU)/(a[1][2])+shft[1],\
-            (a[2][0]+a[2][1]*TAU)/(a[2][2])+shft[2],\
-            (a[3][0]+a[3][1]*TAU)/(a[3][2])+shft[3],\
-            (a[4][0]+a[4][1]*TAU)/(a[4][2])+shft[4],\
-            (a[5][0]+a[5][1]*TAU)/(a[5][2])+shft[5]))
+            (numericalc.numeric_value(a[0])+shft[0],\
+            (numericalc.numeric_value(a[1])+shft[1],\
+            (numericalc.numeric_value(a[2])+shft[2],\
+            (numericalc.numeric_value(a[3])+shft[3],\
+            (numericalc.numeric_value(a[4])+shft[4],\
+            (numericalc.numeric_value(a[5])+shft[5]))
             fatm.write('isyd=1\n')
         fatm.close()
     
@@ -1616,8 +1519,6 @@ def write_podatm(obj, position, vlist = [0], path = '.', basename = 'tmp', shift
                     tmp2.append(vlist[i1][i2]-1)
                 else:
                     pass
-            #print('tmp2=',tmp2)
-        
             tmp1=[]
             for i2 in range(1,len(vlist[i1])):
                 for i3 in range(len(tmp2)):
@@ -1626,45 +1527,100 @@ def write_podatm(obj, position, vlist = [0], path = '.', basename = 'tmp', shift
                         break
                     else:
                         pass
-            #print('tmp1=',tmp1)
-        
             fpod.write('%d %d %d \'comment\'\n'%(i1+1,len(tmp2),2))
             for i2 in range(len(tmp2)):
                 b=v[tmp2[i2]]
                 fpod.write('ej=  %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f\n'%(\
-                (b[0][0]+b[0][1]*TAU)/(b[0][2])-(a[0][0]+a[0][1]*TAU)/(a[0][2]),\
-                (b[1][0]+b[1][1]*TAU)/(b[1][2])-(a[1][0]+a[1][1]*TAU)/(a[1][2]),\
-                (b[2][0]+b[2][1]*TAU)/(b[2][2])-(a[2][0]+a[2][1]*TAU)/(a[2][2]),\
-                (b[3][0]+b[3][1]*TAU)/(b[3][2])-(a[3][0]+a[3][1]*TAU)/(a[3][2]),\
-                (b[4][0]+b[4][1]*TAU)/(b[4][2])-(a[4][0]+a[4][1]*TAU)/(a[4][2]),\
-                (b[5][0]+b[5][1]*TAU)/(b[5][2])-(a[5][0]+a[5][1]*TAU)/(a[5][2])))
-                """
-                for i3 in range(6):
-                    if i3==0:
-                        fpod.write('ej=  %8.6f'%(\
-                        (b[i3][0]+b[i3][1]*TAU)/(b[i3][2]) - (a[i3][0]+a[i3][1]*TAU)/(a[i3][2])\
-                        )
-                    elif i3==5:
-                        fpod.write(' %8.6f\n'%(\
-                        (b[i3][0]+b[i3][1]*TAU)/(b[i3][2]) - (a[i3][0]+a[i3][1]*TAU)/(a[i3][2])\
-                        )
-                    else:
-                        fpod.write(' %8.6f'%(\
-                        (b[i3][0]+b[i3][1]*TAU)/(b[i3][2]) - (a[i3][0]+a[i3][1]*TAU)/(a[i3][2])\
-                        )
-                """
+                (numericalc.numeric_value(b[0])-(numericalc.numeric_value(a[0]),\
+                (numericalc.numeric_value(b[1])-(numericalc.numeric_value(a[1]),\
+                (numericalc.numeric_value(b[2])-(numericalc.numeric_value(a[2]),\
+                (numericalc.numeric_value(b[3])-(numericalc.numeric_value(a[3]),\
+                (numericalc.numeric_value(b[4])-(numericalc.numeric_value(a[4]),\
+                (numericalc.numeric_value(b[5])-(numericalc.numeric_value(a[5])))
             fpod.write('nth= %d'%(int((len(vlist[i1])-1)/3)))
             for i2 in range(len(tmp1)):
                 fpod.write(' %d'%(tmp1[i2]+1))
             fpod.write('\n100000000000000000000000000000000000000000000000000000000000\n')
             fpod.write('000000000000000000000000000000000000000000000000000000000000\n')
         fpod.close()
-    
-        if verbose>0:
-            print('    written in %s/%s.atm'%(path,basename))
-            print('    written in %s/%s.pod'%(path,basename))
-    
+        print('    written in %s/%s.atm'%(path,basename))
+        print('    written in %s/%s.pod'%(path,basename))
     return 0
+
+
+
+
+
+
+
+
+#########################
+# Unnecessary functions??
+#########################
+def as_it_is(obj):
+    """
+    Returns an object as it is,
+    
+    Args:
+        obj (numpy.ndarray): the shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.
+    
+    Returns:
+        Occupation domains (numpy.ndarray): the shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+    """
+    
+    if obj.ndim == 3:
+        return obj.reshape(int(len(obj)/4),4,6,3)
+    elif obj.ndim == 4:
+        return obj
+    else:
+        return 1
+    
+def asymmetric(symmetric_obj, position, vecs):
+    """
+    Asymmetric part of occupation domain.
+    
+    Args:
+        symmetric_obj (numpy.ndarray):
+            Occupation domain of which the asymmetric part is calculated.
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+        position (numpy.ndarray):
+            6d coordinate of the site of which the occupation domain centres.
+            The shape is (6,3)
+        vecs (numpy.ndarray):
+            Three vectors that defines the asymmetric part.
+            The shape is (3,6,3)
+    
+    Returns:
+        Asymmetric part of the occupation domains (numpy.ndarray):
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+    """
+    v0 = np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
+    vecs = math1.mul_vectors(vecs,[5,0,1])
+    # vecs multiplied by [a,b,c], where [a,b,c]=(a+TAU*b)/c. 
+    # [a,b,c] has to be defined so that the tetrahedron whose vertices are defined 
+    # by v0, and vecs covers the asymmetric unit of the ocuppation domains.
+    # (default) [a,b,c]=[5,0,1].
+    tmp = np.append(v0,vecs).reshape(4,6,3)
+    aum = as_it_is(tmp)
+    aum = shift(aum,position)
+    #od_asym = ods.intersection(symmetric_obj, aum)
+    od_asym = intsct.intersection_two_obj_1(symmetric_obj, aum, 0, 0)
+    
+    return od_asym
+
+def gen_surface(obj):
+    """
+    Generate triangles on the surface of the occupation domain.
+    
+    Args:
+        obj (numpy.ndarray): the occupation domain
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+    Returns:
+        Triangles of the occupation domains (numpy.ndarray):
+            The shape is (num,3,6,3), where num=numbre_of_triangles.
+    
+    """
+    return utils.generator_surface_1(obj)
 
 if __name__ == "__main__":
     

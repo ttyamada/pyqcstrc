@@ -4,16 +4,10 @@
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 #
 import sys
-sys.path.append('.')
-from numericalc import (numeric_value,
-                        numerical_vector,
-                        numerical_vectors,
-                        get_internal_component_numerical,
-                        get_internal_component_sets_numerical,
-                        point_on_segment,
-                        coplanar_check_numeric_tau)
 import numpy as np
 from numpy.typing import NDArray
+sys.path.append('.')
+from numericalc import coplanar_check_numeric_tau
 
 TAU=(1+np.sqrt(5))/2.0
 
@@ -707,6 +701,13 @@ if __name__ == '__main__':
     # test
     
     import random
+    from numericalc import (numeric_value,
+                            numerical_vector,
+                            numerical_vectors,
+                            get_internal_component_numerical,
+                            get_internal_component_sets_numerical,
+                            point_on_segment,
+                            coplanar_check_numeric_tau)
     
     ncycle=20
     eps=1e-3

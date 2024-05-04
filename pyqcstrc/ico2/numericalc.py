@@ -10,25 +10,49 @@ import random
 TAU=(1+np.sqrt(5))/2.0
 EPS=1e-6
 
-def coplanar_check_numeric_tau(pts,num_iteration=5):
-    p=get_internal_component_sets_numerical(pts)
-    return coplanar_check_numeric(p,num_iteration=5)
-
-def coplanar_check_numeric(p,num_iteration=5):
+def coplanar_check_numeric_tau(pts: NDArray[np.int64], num_iteration: int=5) -> bool:
+    """check the points (pts) are in coplanar or not
+    
+    Parameters
+    ----------
+    pns: array
+        6d coordinates of the points, xyz, in TAU-style
+    num_iteration: int
+        number of iterations.
+    
+    Returns
+    -------
+    bool
+    
     """
+    p=get_internal_component_sets_numerical(pts)
+    return coplanar_check_numeric(p,num_iteration)
+
+def coplanar_check_numeric(pns: NDArray[np.float_],num_iteration: int=5) -> bool:
+    """check the points (pns) are in coplanar or not
     メモ：xyz1とxyz2の選び方次第で、outer_product(v1,v2)が小さくなりcoplanarと間違って判定する場合がある。
     これを避けるために適切なxyz1とxyz2の選び方が必要。以下では、ランダムにxyz1とxyz2の選ぶ。
     
+    Parameters
+    ----------
+    pns: array
+        coordinate of the points in Eperp, xyz.
+    num_iteration: int
+        number of iterations.
+    
+    Returns
+    -------
+    bool
     """
-    num=len(p)
+    num=len(pns)
     if num>3:
         flag=0
         lst0=[i for i in range(num)]
         for _ in range(num_iteration):
             lst3=random.sample(lst0, 3)
             #
-            xyz1=p[lst3[1]]-p[lst3[0]]
-            xyz2=p[lst3[2]]-p[lst3[0]]
+            xyz1=pns[lst3[1]]-pns[lst3[0]]
+            xyz2=pns[lst3[2]]-pns[lst3[0]]
             vec=np.cross(xyz1,xyz2)
             flg=0
             if np.all(abs(vec)<EPS):
@@ -41,7 +65,7 @@ def coplanar_check_numeric(p,num_iteration=5):
             lst=list(filter(lambda x: x not in lst3, lst0))
             for i in lst:
             #for i in list(filter(lambda x: x not in lst3, lst0)):
-                xyzi=p[i]-p[lst3[0]]
+                xyzi=pns[i]-pns[lst3[0]]
                 if abs(np.dot(vec,xyzi))<1e-10:
                     pass
                 else:
@@ -99,6 +123,17 @@ def point_on_segment(point: NDArray[np.int64], line_segment: NDArray[np.int64]) 
 def on_out_surface(point: NDArray[np.int64], triangle: NDArray[np.int64]) -> bool:
     """
     check whether the point is inside the triangle.
+    
+    Parameters
+    ----------
+    point: array
+        6d coordinates of the point in TAU-style.
+    triangle: array
+        6d coordinates of three vertices of triangle in TAU-style
+    
+    Returns
+    -------
+    float
     """
     
     def func(p_xyz,tr_xyz,indx):
@@ -118,18 +153,12 @@ def on_out_surface(point: NDArray[np.int64], triangle: NDArray[np.int64]) -> boo
     triangle1=func(p,triangle0,0)
     triangle2=func(p,triangle0,1)
     triangle3=func(p,triangle0,2)
-    #print(triangle_area_numerical(triangle0))
-    #print(triangle_area_numerical(triangle1))
-    #print(triangle_area_numerical(triangle2))
-    #print(triangle_area_numerical(triangle3))
     
     area1=triangle_area_numerical(triangle1)+triangle_area_numerical(triangle2)+triangle_area_numerical(triangle3)
     
     if abs(area0-area1)< EPS:
-        #print('on')
         return True
     else:
-        #print('out')
         return False
 
 
@@ -424,7 +453,15 @@ def inside_outside_obj(point: NDArray[np.float_], obj: NDArray[np.float_]) -> bo
         return False # outside
 
 def inside_outside_tetrahedron_tau(point: NDArray[np.int64], tetrahedron: NDArray[np.int64]) -> bool:
-    
+    """this function judges whether the point is inside a tetrahedron or not
+        
+    Parameters
+    ----------
+    point: array
+        6d coordinate of the point in TAU-style.
+    tetrahedron: array
+        6d vertex coordinates of tetrahedron in TAU-style.
+    """
     #point=numerical_vector(point)
     #tetrahedron=numerical_vectors(tetrahedron)
     # 
@@ -616,7 +653,7 @@ def projection3_sets_numerical(vns: NDArray[np.float_]) -> NDArray[np.float_]:
 
 
 ################
-# 不要な関数？？？
+# Unnecessary functions？？？
 ################
 
 def matrix_dot(m1,m2):

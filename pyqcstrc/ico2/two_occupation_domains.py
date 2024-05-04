@@ -23,7 +23,7 @@ TAU=(1+np.sqrt(5))/2.0
 
 def intersection(obj1,obj2,kind=None):
     """
-    Return an intersection between two objects.
+    Return an intersection between two objects: obj1 AND obj2.
     
     Parameters
     ----------
@@ -49,26 +49,20 @@ def intersection(obj1,obj2,kind=None):
     'simple' intersection ...
     
     """
-    
-    if obj1.ndim == 3:
-        obj1=obj1.reshape(int(len(obj1)/4),4,6,3)
+    if obj1.ndim==4 and obj2.ndim==4:
+        common=intsct.intersection_two_obj_1(obj1,obj2,kind)
+        if np.all(common==None):
+            print('no common part')
+            return 
+        else:
+            return common
     else:
-        pass
-    if obj2.ndim == 3:
-        obj2=obj2.reshape(int(len(obj2)/4),4,6,3)
-    else:
-        pass
-        
-    common=intsct.intersection_two_obj_1(obj1,obj2,kind)
-    if np.all(common==None):
-        print('no common part')
+        print('incorrect ndim')
         return 
-    else:
-        return common
 
 def intersection_convex(obj1,obj2):
     """
-    Intersection of two occupation domains projected onto perp space.
+    Intersection of two occupation domains projected onto perp space: obj1 AND obj2.
     The common part forms convex hull.
     
     Parameters
@@ -84,12 +78,37 @@ def intersection_convex(obj1,obj2):
         The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
 
     """
-    common=intsct.intersection_two_obj_convex(obj1, obj2)
-    if common.tolist()!=[[[[0]]]]:
-        return common
+    if obj1.ndim==4 and obj2.ndim==4:
+        common=intsct.intersection_two_obj_convex(obj1,obj2)
+        if np.all(common==None):
+            print('no common part')
+            return 
+        else:
+            return common
     else:
-        print('no common part')
-        return 
+        print('incorrect ndim')
+        return
         
 def object_subtraction(obj1,obj2):
-    return intsct.object_subtraction_dev1(obj1,obj2)
+    """
+    Subtraction( of two occupation domains projected onto perp space: obj1 NOT obj2 = obj1 NOT (obj1 AND obj2).
+    
+    Parameters
+    ----------
+    obj1 (numpy.ndarray):
+        The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.
+    obj2 (numpy.ndarray):
+        The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.
+    
+    Returns
+    -------
+    obj1 NOT obj2
+        The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+
+    """
+    
+    if obj1.ndim==4 and obj2.ndim==4:
+        return intsct.object_subtraction(obj1,obj2)
+    else:
+        print('incorrect ndim')
+        return
