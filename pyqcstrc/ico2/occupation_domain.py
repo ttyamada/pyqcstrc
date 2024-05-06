@@ -1478,22 +1478,22 @@ def write_podatm(obj, position, vlist, path='.', basename='tmp', shift=[0.0,0.0,
             a=v[vlist[i][0]-1]
             fatm.write('%d \'Em\' 1 %d 1 2.0 0. 0. 1.0 0. 0. 0.\n'%(i+1,i+1))
             fatm.write('x=  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f\n'%(\
-            (numericalc.numeric_value(position[0]),\
-            (numericalc.numeric_value(position[1]),\
-            (numericalc.numeric_value(position[2]),\
-            (numericalc.numeric_value(position[3]),\
-            (numericalc.numeric_value(position[4]),\
-            (numericalc.numeric_value(position[5])))
+            numericalc.numeric_value(position[0]),\
+            numericalc.numeric_value(position[1]),\
+            numericalc.numeric_value(position[2]),\
+            numericalc.numeric_value(position[3]),\
+            numericalc.numeric_value(position[4]),\
+            numericalc.numeric_value(position[5])))
             fatm.write('xe1= 1. 0.  0. 0.  0. 0. u1=0.0            5f\n')
             fatm.write('xe2= 1. 0. -1. 0. -1. 0. u2=0.0            3f\n')
             fatm.write('xe3= 1. 0.  0. 0. -1. 0. u3=0.0            2f\n')
             fatm.write('xi=  %8.6f  %8.6f  %8.6f  %8.6f  %8.6f  %8.6f  v=1.0\n'%(\
-            (numericalc.numeric_value(a[0])+shft[0],\
-            (numericalc.numeric_value(a[1])+shft[1],\
-            (numericalc.numeric_value(a[2])+shft[2],\
-            (numericalc.numeric_value(a[3])+shft[3],\
-            (numericalc.numeric_value(a[4])+shft[4],\
-            (numericalc.numeric_value(a[5])+shft[5]))
+            numericalc.numeric_value(a[0])+shft[0],\
+            numericalc.numeric_value(a[1])+shft[1],\
+            numericalc.numeric_value(a[2])+shft[2],\
+            numericalc.numeric_value(a[3])+shft[3],\
+            numericalc.numeric_value(a[4])+shft[4],\
+            numericalc.numeric_value(a[5])+shft[5]))
             fatm.write('isyd=1\n')
         fatm.close()
     
@@ -1531,12 +1531,12 @@ def write_podatm(obj, position, vlist, path='.', basename='tmp', shift=[0.0,0.0,
             for i2 in range(len(tmp2)):
                 b=v[tmp2[i2]]
                 fpod.write('ej=  %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f\n'%(\
-                (numericalc.numeric_value(b[0])-(numericalc.numeric_value(a[0]),\
-                (numericalc.numeric_value(b[1])-(numericalc.numeric_value(a[1]),\
-                (numericalc.numeric_value(b[2])-(numericalc.numeric_value(a[2]),\
-                (numericalc.numeric_value(b[3])-(numericalc.numeric_value(a[3]),\
-                (numericalc.numeric_value(b[4])-(numericalc.numeric_value(a[4]),\
-                (numericalc.numeric_value(b[5])-(numericalc.numeric_value(a[5])))
+                numericalc.numeric_value(b[0])-numericalc.numeric_value(a[0]),\
+                numericalc.numeric_value(b[1])-numericalc.numeric_value(a[1]),\
+                numericalc.numeric_value(b[2])-numericalc.numeric_value(a[2]),\
+                numericalc.numeric_value(b[3])-numericalc.numeric_value(a[3]),\
+                numericalc.numeric_value(b[4])-numericalc.numeric_value(a[4]),\
+                numericalc.numeric_value(b[5])-numericalc.numeric_value(a[5])))
             fpod.write('nth= %d'%(int((len(vlist[i1])-1)/3)))
             for i2 in range(len(tmp1)):
                 fpod.write(' %d'%(tmp1[i2]+1))

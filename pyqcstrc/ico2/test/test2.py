@@ -129,7 +129,7 @@ if __name__ == "__main__":
     
     
     print('    tetrahedron_not_obj starts')
-    start = time.time()
+    start=time.time()
     ###
     #tetrahedron=strt_aysmmetric[0].reshape(1,4,6,3)
     #a=tod.tetrahedron_not_obj(tetrahedron,strt_sym_pos1)

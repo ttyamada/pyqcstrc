@@ -19,17 +19,14 @@ except ImportError:
 
 if __name__ == "__main__":
     
-    # test: od.simplification()
-    
     opath='.'
     
-    """
     strt_aysmmetric=od.read_xyz(path='../../xyz',basename='strt_aysmmetric',select='tetrahedron',verbose=0)
-    od.write(obj=strt_aysmmetric, path=opath, basename='strt_aysmmetric', format='vesta')
+    #od.write(obj=strt_aysmmetric, path=opath, basename='strt_aysmmetric', format='vesta')
     #obj_surface=utils.generator_surface_1(strt_aysmmetric)
     
-    strt_aysmmetric_convex_hull=utils.generate_convex_hull(strt_aysmmetric)
-    od.write(obj=strt_aysmmetric_convex_hull, path=opath, basename='strt_aysmmetric_convex_hull', format='vesta')
+    #strt_aysmmetric_convex_hull=utils.generate_convex_hull(strt_aysmmetric)
+    #od.write(obj=strt_aysmmetric_convex_hull, path=opath, basename='strt_aysmmetric_convex_hull', format='vesta')
     
     # generat STRT OD located at 0,0,0,0,0,0 by symmetric operations (m-3-5).
     pos0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
@@ -39,22 +36,50 @@ if __name__ == "__main__":
     POS_B1=np.array([[ 1, 0, 1],[ 1, 0, 1],[ 1, 0, 1],[ 0, 0, 1],[-1, 0, 1],[ 0, 0, 1]]) # b_1
     strt_sym_pos1=od.shift(strt_sym,POS_B1)
     #od.write(obj=strt_sym_pos1, path=opath, basename='obj_strt1', format='xyz')
-    od.write(obj=strt_sym_pos1, path=opath, basename='obj_strt1', format='vesta')
+    #od.write(obj=strt_sym_pos1, path=opath, basename='obj_strt1', format='vesta')
     
     # intersection
     print('    intersection starts')
-    start = time.time()
+    start=time.time()
     ###
     common=tod.intersection(strt_aysmmetric,strt_sym_pos1)
     ###
     end=time.time()
     time_diff=end-start
-    print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
-    od.write(obj=common, path=opath, basename='common', format='vesta')
-    od.write(obj=common, path=opath, basename='common', format='xyz')
-    """
+    print('                 ends in %4.3f sec'%time_diff)
     
-    common=od.read_xyz(path='.',basename='common',select='tetrahedron',verbose=0)
+    # simplification
+    print('    simplification starts')
+    start=time.time()
+    ###
+    obj=common
+    a=od.simplification(obj)
+    od.write(obj=a, path=opath, basename='common_simplified', format='vesta')
+    ###
+    end=time.time()
+    time_diff=end-start
+    print('                 ends in %4.3f sec'%time_diff)
+    
+    # object_subtraction
+    print('    object_subtraction starts')
+    start=time.time()
+    ###
+    a=tod.object_subtraction(strt_aysmmetric,strt_sym_pos1)
+    #od.write(obj=a, path=opath, basename='strt_subtracted_aysmmetric', format='xyz')
+    od.write(obj=a, path=opath, basename='strt_subtracted_aysmmetric', format='vesta')
+    ###
+    end=time.time()
+    time_diff=end-start
+    print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
+    
+    
+    
+    
+    #od.write(obj=common, path=opath, basename='common', format='vesta')
+    #od.write(obj=common, path=opath, basename='common', format='xyz')
+    
+    
+    #common=od.read_xyz(path='.',basename='common',select='tetrahedron',verbose=0)
     
     #triangle_surface=utils.generator_surface_1(common)
     #od.write(obj=triangle_surface, path=opath, basename='triangle_surface', format='vesta')
@@ -65,15 +90,3 @@ if __name__ == "__main__":
     #common_convex_hull=utils.generate_convex_hull(common)
     #od.write(obj=common_convex_hull, path=opath, basename='common_convex_hull', format='vesta')
     
-    #"""
-    print('    simplification starts')
-    start = time.time()
-    ###
-    obj=common
-    a=od.simplification(obj)
-    od.write(obj=a, path=opath, basename='common_simplified', format='vesta')
-    ###
-    end=time.time()
-    time_diff=end-start
-    print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
-    #"""
