@@ -7,6 +7,7 @@ import sys
 import numpy as np
 from numpy.typing import NDArray
 import time # in object_subtraction_dev1, tetrahedron_not_obj
+import itertools
 
 from math1 import (centroid, 
                     centroid_obj,
@@ -38,10 +39,12 @@ from numericalc import (length_numerical,
 from utils import (remove_doubling_in_perp_space,
                     obj_volume_6d,
                     tetrahedron_volume_6d,
+                    tetrahedron_volume_6d,
                     generator_surface_1,
                     generator_unique_triangles,
                     generator_unique_edges,
                     tetrahedralization_points,
+                    generate_convex_hull
                     )
                     
 TAU=(1+np.sqrt(5))/2.0
@@ -765,31 +768,57 @@ def intersection_two_obj_convex(obj1: NDArray[np.int64], obj2: NDArray[np.int64]
 ###   WIP
 ###
 #########
-def object_subtraction(obj1: NDArray[np.int64], obj2: NDArray[np.int64]) -> NDArray[np.int64]:
+def object_subtraction(obj1: NDArray[np.int64], obj2: NDArray[np.int64], flag: int, verbose: int=0) -> NDArray[np.int64]:
     """
-    get A not B = A not (A and B)
+    get A NOT B = A NOT (A AND B) = A NOT C, where C = (A AND B)
     obj1: A
-    obj2: B
+    obj2: C
+    
+    flag=0: perform simplification on obj1 and obj2.
+    
     """
-    print('     object_subtraction_dev1()')
+    #print('     object_subtraction_dev1()')
     # surface triangles of obj2
     
-    print('      generating surface_obj2')
-    start = time.time()
+    
+    def simplification(obj):
+        obj1=generate_convex_hull(obj)
+        obj2=intersection_two_obj_1(obj1,obj)
+        v0=obj_volume_6d(obj)
+        v1=obj_volume_6d(obj2)
+        if np.all(v0==v1):
+            return obj1
+        else:
+            return obj
+    
+    if flag==0:
+        obj1=simplification(obj1)
+        obj2=simplification(obj2)
+    else:
+        pass
+    
+    if verbose>0:
+        print('      generating surface_obj2')
+        start=time.time()
     #
     surface_obj2=generator_surface_1(obj2)
     #
-    end=time.time()
-    time_diff=end-start
-    print('         ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
+    if verbose>0:
+        end=time.time()
+        time_diff=end-start
+        print('         ends in %4.3f sec'%time_diff)
     
-    print('      tetrahedron_not_obj_1 starts...')
-    start = time.time()
+    if verbose>0:
+        print('      tetrahedron_not_obj_1 starts...')
+        start=time.time()
     #
+    
+    out=None
     counter1=0
     for tetrahedron in obj1:
-        print('      %d-th tetrahedron in obj1'%(counter1))
-        a=tetrahedron_not_obj_1(tetrahedron.reshape(1,4,6,3),obj2,surface_obj2)
+        if verbose>0:
+            print('       %d-th tetrahedron in obj1'%(counter1))
+        a=tetrahedron_not_obj_1(tetrahedron.reshape(1,4,6,3),obj2,surface_obj2,verbose)
         if np.all(a==None):
             pass
         else:
@@ -799,13 +828,14 @@ def object_subtraction(obj1: NDArray[np.int64], obj2: NDArray[np.int64]) -> NDAr
                 out=np.vstack([out,a])
         counter1+=1
     #
-    end=time.time()
-    time_diff=end-start
-    print('         ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
+    if verbose>0:
+        end=time.time()
+        time_diff=end-start
+        print('         ends in %4.3f sec'%time_diff)
     
     return out
 
-def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64], surface_obj: NDArray[np.int64]) -> NDArray[np.int64]:
+def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64], surface_obj: NDArray[np.int64], verbose: int=0) -> NDArray[np.int64]:
     """
     get A not B = A not (A and B)
     tetrahedron: A
@@ -825,20 +855,26 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
     common=intersection_two_obj_1(tetrahedron,obj)
     #end=time.time()
     #time_diff=end-start
-    #print('          ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
+    #print('          ends in %4.3f sec'%time_diff)
     surface_common=generator_surface_1(common)
     #vertx_common=remove_doubling_in_perp_space(surface_common)
     
     vol0=obj_volume_6d(tetrahedron)
     vol1=obj_volume_6d(common)
-    #print('tetrahedron volume:',vol0,numeric_value(vol0))
-    #print('common volume:',vol1,numeric_value(vol1))
     vol2=sub(vol0,vol1)
-    #print('tetrahedron NOT obj:',vol2,numeric_value(vol2))
+    if verbose>0:
+        print('        tetrahedron volume:',vol0,numeric_value(vol0))
+        print('        common volume:',vol1,numeric_value(vol1))
+        print('        tetrahedron NOT obj:',vol2,numeric_value(vol2))
     
     out=None
     
     # get surface triangles of common part which are on the surface of obj
+    ################################################
+    #  ここに問題がある。objとtetrahedronの面がほとん   #
+    #  ど一致している場合うまくいかない。                #
+    #                                              #
+    ################################################
     counter2=0
     for triangle2 in surface_common:
         counter1=0
@@ -853,7 +889,7 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
             if counter2==0:
                 tmp=triangle2.reshape(1,3,6,3)
             else:
-                tmp=np.vappend([tmp,[triangle2]])
+                tmp=np.vstack([tmp,[triangle2]])
             counter2+=1
         else:
             pass
@@ -896,7 +932,8 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
     ### N=1の場合は、triangle_commonにある各三角形と頂点を結んだものが求めたいものになる。
     ############################################################
     if counter2==1:
-        print('         case 1')
+        if verbose>0:
+            print('         case 1')
         counter3=0
         for triangle in triangle_common:
             #print('triangle.shape',triangle.shape)
@@ -905,23 +942,73 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
             if counter3==0:
                 tmp=tet
             else:
-                tmp=np.vappend([tmp,tet])
+                tmp=np.vstack([tmp,tet])
             counter3+=1
         #print('out.shape',out.shape)
         vol=obj_volume_6d(tmp)
-        #print('obtained volume:',vol,numeric_value(vol))
+        if verbose>1:
+            print('    obtained volume:',vol,numeric_value(vol))
         if np.all(vol==vol2):
             out=tmp
+        else:
+            ################################################
+            #                                              #
+            #                                              #
+            #                                              #
+            ################################################
+            vol=np.array([0,0,1])
+            lst=list(range(0,len(tmp)))
+            for num in range(1,len(tmp)-1):
+                flag=0
+                for comb in list(itertools.combinations(lst,num)):
+                    #print(comb)
+                    for i1 in range(num):
+                        v=tetrahedron_volume_6d(tmp[comb[i1]])
+                        #print('    ',v)
+                        vol=add(vol,v)
+                    if np.all(vol==vol2):
+                        flag=1
+                        break
+                    else:
+                        pass
+                if flag==1:
+                    for i1 in range(num):
+                        if i1==0:
+                            tmp1=tmp[comb[i1]].reshape(1,4,6,3)
+                        else:
+                            tmp1=np.vstack([tmp1,[tmp[comb[i1]]]])
+                    break
+                else:
+                    pass
+            if flag==1:
+                out=tmp1
+                vol=obj_volume_6d(out)
+                if verbose>1:
+                    print('    obtained volume:',vol,numeric_value(vol))
+                if verbose>0:
+                    print('      succeeded.')
+            else:
+                if verbose>0:
+                    print('      unsucceeded.')
+                out=None
+            ################################################
+            #                                              #
+            #                                              #
+            #                                              #
+            ################################################
+            
         return out
     ############################################################
     #### N=2の場合。triangle_commonに含まれる三角形の個数で場合分けする。
     ############################################################
     elif counter2==2:
         if len(triangle_common)==1:
-            print('         case 2-1')
+            if verbose>0:
+                print('         case 2-1')
             out=tetrahedralization_points(np.vstack([vrtx1_out,triangle_common]))
         elif len(triangle_common)==2:
-            print('         case 2-2')
+            if verbose>0:
+                print('         case 2-2')
             combination=[\
             [1,2],\
             [0,2],\
@@ -954,38 +1041,49 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
                     out=tet_tot
                     break
         elif len(triangle_common)==3:
-            print('         case 2-3')
+           if verbose>0:
+                print('         case 2-3')
         elif len(triangle_common)==4:
-            print('         case 2-4')
+            if verbose>0:
+                print('         case 2-4')
         else:
-            print('         case 2-X')
+            if verbose>0:
+                print('         case 2-X')
         return out
     ############################################################
     #### N=3の場合。triangle_commonに含まれる三角形の個数で場合分けする。
     ############################################################
     elif counter2==3:
         if len(triangle_common)==1:
-            print('         case 3-1')
+            if verbose>0:
+                print('         case 3-1')
             out=tetrahedralization_points(np.vstack([vrtx1_out,triangle_common]))
         elif len(triangle_common)==2:
-            print('         case 3-2')
+            if verbose>0:
+                print('         case 3-2')
         elif len(triangle_common)==3:
-            print('         case 3-3')
+            if verbose>0:
+                print('         case 3-3')
         elif len(triangle_common)==4:
-            print('         case 3-4')
+            if verbose>0:
+                print('         case 3-4')
         else:
-            print('         case 3-X')
+            if verbose>0:
+                print('         case 3-X')
         return out
     ############################################################
     #### N=4の場合。triangle_commonに含まれる三角形の個数で場合分けする。
     ############################################################
     else:
         if len(triangle_common)==3:
-            print('         case 4-3')
+            if verbose>0:
+                print('         case 4-3')
         elif len(triangle_common)==4:
-            print('         case 4-4')
+            if verbose>0:
+                print('         case 4-4')
         else:
-            print('         case 4-X')
+            if verbose>0:
+                print('         case 4-X')
         return out
 
 def tetrahedron_not_obj_2(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]) -> NDArray[np.int64]:
