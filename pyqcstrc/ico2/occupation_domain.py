@@ -1134,17 +1134,17 @@ def simplification(obj):
         print('    zero volume')
         return 
     else:
-        v0=utils.obj_volume_6d(obj)
-        obj1=utils.generate_convex_hull(obj)
-        obj2=intsct.intersection_two_obj_1(obj1,obj)
-        v1=utils.obj_volume_6d(obj2)
-        if np.all(v0==v1):
+        vol0=utils.obj_volume_6d(obj)
+        obj_convex_hull=utils.generate_convex_hull(obj)
+        obj_tmp=intsct.intersection_two_obj_1(obj_convex_hull,obj)
+        vol1=utils.obj_volume_6d(obj_tmp)
+        if np.all(vol0==vol1):
             print('      simplification succeed:')
-            print('      num of tetrahedra: %d --> %d'%(len(obj),len(obj1)))
-            return obj2
+            print('      num of tetrahedra: %d --> %d'%(len(obj),len(obj_convex_hull)))
+            return obj_convex_hull
         else:
             print('      simplification: fail')
-            return 
+            return obj
 
 def generate_border_edges(obj):
     """
