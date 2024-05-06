@@ -52,9 +52,8 @@ if __name__ == "__main__":
     print('    simplification starts')
     start=time.time()
     ###
-    obj=common
-    a=od.simplification(obj)
-    od.write(obj=a, path=opath, basename='common_simplified', format='vesta')
+    common_simple=od.simplification(common)
+    od.write(obj=common_simple, path=opath, basename='common_simplified', format='vesta')
     ###
     end=time.time()
     time_diff=end-start
@@ -64,7 +63,8 @@ if __name__ == "__main__":
     print('    object_subtraction starts')
     start=time.time()
     ###
-    a=tod.object_subtraction(strt_aysmmetric,strt_sym_pos1)
+    a=tod.object_subtraction(strt_aysmmetric,common,flag=1,verbose=0)
+    #a=tod.object_subtraction(strt_aysmmetric[0].reshape(1,4,6,3),common_simple,flag=1)
     #od.write(obj=a, path=opath, basename='strt_subtracted_aysmmetric', format='xyz')
     od.write(obj=a, path=opath, basename='strt_subtracted_aysmmetric', format='vesta')
     ###
