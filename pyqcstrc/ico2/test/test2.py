@@ -4,13 +4,14 @@
 # PyQCstrc - Python library for Quasi-Crystal structure
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 import sys
-sys.path.append('.')
+sys.path.append('../')
 import numpy as np
 import time
 
 try:
     import occupation_domain as od
     import two_occupation_domains as tod
+    import intsct
     import utils
 except ImportError:
     print('import error\n')
@@ -114,7 +115,7 @@ if __name__ == "__main__":
     """
     
     # TEST tetrahedron_not_obj()
-    strt_aysmmetric=od.read_xyz(path='../xyz',basename='strt_aysmmetric',select='tetrahedron',verbose=0)
+    strt_aysmmetric=od.read_xyz(path='../../xyz',basename='strt_aysmmetric',select='tetrahedron',verbose=0)
     od.write(obj=strt_aysmmetric[0].reshape(1,4,6,3), path=opath, basename='strt_aysmmetric', format='vesta')
     
     # generat STRT OD located at 0,0,0,0,0,0 by symmetric operations (m-3-5).
@@ -131,10 +132,10 @@ if __name__ == "__main__":
     print('    tetrahedron_not_obj starts')
     start=time.time()
     ###
-    #tetrahedron=strt_aysmmetric[0].reshape(1,4,6,3)
-    #a=tod.tetrahedron_not_obj(tetrahedron,strt_sym_pos1)
-    obj=strt_aysmmetric
-    a=tod.object_subtraction(obj,strt_sym_pos1)
+    tetrahedron=strt_aysmmetric[0].reshape(1,4,6,3)
+    #a=intsct.tetrahedron_not_obj_1(tetrahedron,strt_sym_pos1)
+    #obj=strt_aysmmetric
+    #a=tod.object_subtraction(obj,strt_sym_pos1)
     od.write(obj=a, path=opath, basename='test', format='xyz')
     od.write(obj=a, path=opath, basename='test', format='vesta')
     ###
