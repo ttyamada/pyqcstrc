@@ -417,6 +417,24 @@ def get_triangle_edge(triangle: NDArray[np.int64]) -> NDArray[np.int64]:
 #----------------------------
 # Equivalence check
 #----------------------------
+# WIP
+def equivalent(obj1: NDArray[np.int64], obj2: NDArray[np.int64]) -> bool:
+    if obj1.ndim==3 and obj2.ndim==3:
+        n1,_,_=obj1.shape
+        n2,_,_=obj1.shape
+        if n1==4 and n2==4:
+            return equivalent_tetrahedra(obj1,obj2)
+        elif n1==3 and n2==3:
+            return equivalent_triangles(obj1,obj2)
+        elif n1==2 and n2==2:
+            return equivalent_edges(obj1,obj2)
+        else:
+            return 
+    elif obj1.ndim==4 and obj2.ndim==4:
+        return 
+    else:
+        return 
+
 def equivalent_tetrahedra(tetrahedron_1: NDArray[np.int64], tetrahedron_2: NDArray[np.int64]) -> bool:
     """Checking whether tetrahedron_1 and _2 are sharing a triangle surface or not.
     """
