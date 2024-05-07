@@ -6,23 +6,25 @@
 import sys
 sys.path.append('.')
 from math1 import (projection3,
-                    sub_vectors,
+                    add,
+                    sub,
+                    mul,
+                    div,
                     add_vectors,
+                    sub_vectors,
                     outer_product,
                     inner_product,
                     centroid,
                     coplanar_check,
-                    add,
-                    sub,
-                    mul,
-                    div)
+                    )
 from numericalc import (numeric_value,
                         numerical_vector,
                         numerical_vectors,
+                        point_on_segment,
+                        coplanar_check_numeric_tau,
                         get_internal_component_numerical,
                         get_internal_component_sets_numerical,
-                        point_on_segment,
-                        coplanar_check_numeric_tau)
+                        )
 import numpy as np
 from numpy.typing import NDArray
 from scipy.spatial import Delaunay
@@ -232,14 +234,16 @@ def generator_surface_1(obj: NDArray[np.int64]) -> NDArray[np.int64]:
             xyz[i1]=get_internal_component_numerical(vt)
         #
         #
-        # 以下のやり方では効率悪く、triangleの数が多ければ時間がかかる。改善が必要。
+        # 以下のやり方では効率悪い。
+        # triangleの数が多ければ時間がかかる。
+        #
         # xyzをxでソートし、indexを得る。
         indx_xyz=np.argsort(xyz[:,0])
         #
         # 重複しているtriangleはスキップ。表面のtriangleのみを選び出す。
         #print('number of trianges:',len(indx_xyz))
-        lst=[]
         #print('indx_xyz:',indx_xyz)
+        lst=[]
         for i1 in indx_xyz:
             counter=0
             for i2 in indx_xyz:
@@ -252,9 +256,10 @@ def generator_surface_1(obj: NDArray[np.int64]) -> NDArray[np.int64]:
             if counter==0:
                 lst.append(i1)
         #print('lst:',lst)
-        out=np.zeros((len(lst),3,6,3),dtype=np.int64)
-        #print('number of unique triangls:',len(lst))
-        for i1 in range(len(lst)):
+        num=len(lst)
+        out=np.zeros((num,3,6,3),dtype=np.int64)
+        #print('number of unique triangls:',num)
+        for i1 in range(num):
             out[i1]=triangles[lst[i1]]
         #print('shape:',out.shape)
         return out
@@ -303,7 +308,7 @@ def generator_unique_triangles(obj: NDArray[np.int64]) -> NDArray[np.int64]:
             a[i1]=triangles[b[i1]]
         return a
 
-# WIP
+#### WIP ###
 def get_common_edges(trianges: NDArray[np.int64]) -> NDArray[np.int64]:
     """Get common edges in trianges
     """
@@ -326,20 +331,25 @@ def generator_all_edges(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     
     # (1) preparing a list of edges
     n1,n2,_,_=obj.shape
-    edges=np.zeros((n1,n2,2,6,3),dtype=np.int64)
-    i1=0
-    for triangle in obj:
-        edges[i1]=get_triangle_edge(triangle)
-        i1+=1
-    return edges.reshape(n1*n2,2,6,3)
+    if n2==3:
+        edges=np.zeros((n1,3,2,6,3),dtype=np.int64)
+        i1=0
+        for triangle in obj:
+            edges[i1]=get_triangle_edge(triangle)
+            i1+=1
+        return edges.reshape(n1*3,2,6,3)
+    elif n2==4:
+        edges=np.zeros((n1,6,2,6,3),dtype=np.int64)
+        i1=0
+        for tetrahedron in obj:
+            edges[i1]=get_tetrahedron_edge(tetrahedron)
+            i1+=1
+        return edges.reshape(n1*6,2,6,3)
+    else:
+        print('obj should be a set of trianges or tetrahedra')
+        return 
 
-#----------------------------
-#
-#
-# WIP
-#
-#
-#----------------------------
+### WIP: to be checked ###
 def generator_unique_edges(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     """Return unique egdes in Object
     
@@ -355,7 +365,7 @@ def generator_unique_edges(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     elif n2==2: # obj is set of edges
         edges=obj
     elif n2==4: # obj is set of tetrahedra
-        pass 
+        edges=generator_all_edges(obj) 
     else:  
         pass
     
@@ -402,8 +412,8 @@ def get_triangle_edge(triangle: NDArray[np.int64]) -> NDArray[np.int64]:
     [0,1],\
     [0,2],\
     [1,2]] 
-    #
-    # Four triangles the tetrahedron.
+    
+    # Three egdes of the triangl.
     a=np.zeros((3,2,6,3),dtype=np.int64)
     i1=0
     for k in comb:
@@ -414,29 +424,88 @@ def get_triangle_edge(triangle: NDArray[np.int64]) -> NDArray[np.int64]:
         i1+=1
     return a
 
+### WIP: to be checked ###
+def get_tetrahedron_edge(tetrahedron: NDArray[np.int64]) -> NDArray[np.int64]:
+    """Return six edges of tetrahedron.
+    """
+    # four six of triange: 0-1, 0-2, 1-2,...
+    comb=[\
+    [0,1],\
+    [0,2],\
+    [0,3],\
+    [1,2],\
+    [1,3],\
+    [2,3],\
+    ] 
+    #
+    # Six egdes of the tetrahedron.
+    a=np.zeros((6,2,6,3),dtype=np.int64)
+    i1=0
+    for k in comb:
+        i2=0
+        for l in k:
+            a[i1][i2]=tetrahedron[l]
+            i2+=1
+        i1+=1
+    return a
+
 #----------------------------
 # Equivalence check
+#
+# 以下、4つの関数をequivalentに統合した方が良い？
+#   equivalent_tetrahedra
+#   equivalent_triangles
+#   equivalent_edges
+#   equivalent_vertices
 #----------------------------
-# WIP
+# WIP:
 def equivalent(obj1: NDArray[np.int64], obj2: NDArray[np.int64]) -> bool:
+    """Checking whether obj1 and obj1 are equivalent or not. 
+    """
+    
+    def check1(a,b,n):
+        n1,_,_=a.shape
+        n2,_,_=a.shape
+        if n1==n2:
+            a=np.vstack([a,b])
+            a=remove_doubling_in_perp_space(a)
+            if len(a)==n:
+                return True # equivalent traiangle
+            else:
+                return False # not equivalent traiangles
+        else:
+            return False
+    
+    def check2(a,b):
+        a=projection3(a)
+        b=projection3(b)
+        if np.all(a==b):
+            return True # equivalent traiangle
+        else:
+            return False
+    
     if obj1.ndim==3 and obj2.ndim==3:
         n1,_,_=obj1.shape
-        n2,_,_=obj1.shape
-        if n1==4 and n2==4:
-            return equivalent_tetrahedra(obj1,obj2)
-        elif n1==3 and n2==3:
-            return equivalent_triangles(obj1,obj2)
-        elif n1==2 and n2==2:
-            return equivalent_edges(obj1,obj2)
-        else:
-            return 
+        n2,_,_=obj2.shape
+        return check1(obj1,obj2,n1)
     elif obj1.ndim==4 and obj2.ndim==4:
-        return 
+        n1,n2,_,_=obj1.shape
+        m1,m2,_,_=obj2.shape
+        if n1==1 and m1==1:
+            obj1=obj1[0]
+            obj2=obj2[0]
+            n1,_,_=obj1.shape
+            n2,_,_=obj2.shape
+            return check1(obj1,obj2,n1)
+        else:
+            return False
+    elif obj1.ndim==2 and obj2.ndim==2:
+        return check2(obj1,obj2)
     else:
         return 
 
 def equivalent_tetrahedra(tetrahedron_1: NDArray[np.int64], tetrahedron_2: NDArray[np.int64]) -> bool:
-    """Checking whether tetrahedron_1 and _2 are sharing a triangle surface or not.
+    """Checking whether tetrahedron_1 and _2 are equivalent or not.
     """
     a=np.vstack([tetrahedron_1,tetrahedron_2])
     a=remove_doubling_in_perp_space(a)
@@ -466,7 +535,7 @@ def equivalent_tetrahedra(tetrahedron_1: NDArray[np.int64], tetrahedron_2: NDArr
     else:
         return True
     """
-    
+
 def equivalent_triangles(triangle1: NDArray[np.int64], triangle2: NDArray[np.int64]) -> bool:
     """Checking whether triangle1 and triangle2 are equivalent or not.
     """
@@ -538,7 +607,7 @@ def sort_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     return out
 
 #----------------------------
-# tetrahedralization
+# Tetrahedralization
 #----------------------------
 def decomposition(tmp2v: NDArray[np.int64]) -> NDArray[np.int64]:
     try:
@@ -749,7 +818,7 @@ def gen_border_edges_of_coplanar_triangles(coplanar_triangles: NDArray[np.int64]
 ##############################
 ####
 ####
-#### WIP: Remove
+#### WIP: Removing
 ####
 ####
 ##############################
@@ -802,15 +871,17 @@ def remove_vector(vts: NDArray[np.int64], vt: NDArray[np.int64]) -> NDArray[np.i
 ####
 ####
 #################################
+def merge_two_tetrahedra_in_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
+    
+    num=len(obj)
+    
+    
+    return obj
+
 def merge_two_tetrahedra(tetrahedron_1: NDArray[np.int64], tetrahedron_2: NDArray[np.int64]) -> NDArray[np.int64]:
-    # merge two tetrahedra
-    
-    # volume
-    #vol1=tetrahedron_volume_6d(tetrahedron_1)
-    #vol2=tetrahedron_volume_6d(tetrahedron_2)
-    #vol3=add(vol1,vol2)
-    
-    if equivalent_tetrahedra(tetrahedron_1,tetrahedron_2): # tet1とtet2が共通する三角形を持つ場合
+    """Return merged tetrahedra.
+    """
+    if check_connectivity_tetrahedra(tetrahedron_1,tetrahedron_2): # tet1とtet2が共通する三角形を持つ場合
         vtx1=remove_vectors(tetrahedron_1,tetrahedron_2) # tet1からtet1とtet2の共通頂点を消す --> 頂点1
         vtx2=remove_vectors(tetrahedron_2,tetrahedron_1) # tet2からtet1とtet2の共通頂点を消す --> 頂点2
         vtx_common=get_common_triangle_in_two_tetrahedra(tetrahedron_1,tetrahedron_2) # tet1とtet2の共通する三角形
@@ -831,15 +902,17 @@ def merge_two_tetrahedra(tetrahedron_1: NDArray[np.int64], tetrahedron_2: NDArra
             return 
     else:
         return 
-
-def merge_two_tetrahedra_in_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     
-    num=len(obj)
-    
-    
-    return obj
-
-def get_common_triangle_in_two_tetrahedra(tetrahedron_1: NDArray[np.int64], tetrahedron_2: NDArray[np.int64]) -> NDArray[np.int64]:
+def check_connectivity_tetrahedra(tetrahedron_1: NDArray[np.int64], tetrahedron_2: NDArray[np.int64]) -> bool:
+    """Checking whether tetrahedron_1 and _2 are sharing a triangle surface or not.
+    """
+    a=np.vstack([tetrahedron_1,tetrahedron_2])
+    a=remove_doubling_in_perp_space(a)
+    if len(a)==5:
+        return True # equivalent traiangle
+    else:
+        return False # not equivalent traiangles
+    """
     # generate traiangles
     surface1=get_tetrahedron_surface(tetrahedron_1)
     surface2=get_tetrahedron_surface(tetrahedron_2)
@@ -848,6 +921,31 @@ def get_common_triangle_in_two_tetrahedra(tetrahedron_1: NDArray[np.int64], tetr
     for triangle1 in surface1:
         for triangle2 in surface2: # i2-th triangle of tetrahedron2
             if equivalent_triangles(triangle1,triangle2): # equivalent
+                count+=1
+                break
+            else:
+                pass
+        if count!=0:
+            break
+        else:
+            pass
+    if count==0:
+        return False
+    else:
+        return True
+    """
+
+def get_common_triangle_in_two_tetrahedra(tetrahedron_1: NDArray[np.int64], tetrahedron_2: NDArray[np.int64]) -> NDArray[np.int64]:
+    """ Return common triangle of two connected tetrahedra.
+    """
+    surface1=get_tetrahedron_surface(tetrahedron_1)
+    surface2=get_tetrahedron_surface(tetrahedron_2)
+    
+    count=0
+    for triangle1 in surface1:
+        for triangle2 in surface2: # i2-th triangle of tetrahedron2
+            if equivalent_triangles(triangle1,triangle2): # equivalent
+            #if equivalent(triangle1,triangle2): # equivalent
                 count+=1
                 break
             else:
@@ -876,6 +974,7 @@ def two_segment_into_one(line_segment_1: NDArray[np.int64], line_segment_2: NDAr
         edge2a=line_segment_2[comb1[2]]
         edge2b=line_segment_2[comb1[3]]
         if equivalent_vertices(edge1a,edge2a): # equivalent
+        #if equivalent(edge1a,edge2a): # equivalent
             edge_new=np.vstack([[edge1b],[edge2b]])
             #print(out.shape)
             if point_on_segment(edge1a,edge_new):
@@ -891,16 +990,20 @@ def two_segment_into_one(line_segment_1: NDArray[np.int64], line_segment_2: NDAr
         return 
 
 def coplanar_check_two_triangles(triange1: NDArray[np.int64], triange2: NDArray[np.int64]) -> bool:
+    """Checking whether two triangles are coplanar or not.
     
+    Note
+    ----
+    Current implementation may return wrong judgement when the cross product of the first two vectors chosen randomly
+    are very small in coplanar_check() and coplanar_check_numeric_tau().
+    
+    vtxはソートされており、coplanar_checkやcoplanar_check_numeric_tauでの外積計算の際に小さい値になるとcoplanar判定を間違うので注意。
+    """
     vtx=np.vstack([triange1,triange2])
     vtx=remove_doubling_in_perp_space(vtx)
     
-    # メモ
-    # vtxはソートされており、coplanar_checkやcoplanar_check_numeric_tau
-    # での外積計算の際に小さい値になるとcoplanar判定を間違うので注意。
-    
-    #if coplanar_check(vtx): # math1のバージョン
-    if coplanar_check_numeric_tau(vtx): # numericalcのバージョン
+    #if coplanar_check(vtx): # in ico2.math1
+    if coplanar_check_numeric_tau(vtx): # in ico2.numericalc
         return True # coplanar
     else:
         return False
