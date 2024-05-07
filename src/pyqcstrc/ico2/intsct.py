@@ -9,13 +9,10 @@ from numpy.typing import NDArray
 import time # in object_subtraction_dev1, tetrahedron_not_obj
 import itertools
 
-from math1 import (centroid, 
+from math1 import (projection3,
+                    centroid, 
                     centroid_obj,
                     coplanar_check,
-                    projection3,
-                    sub_vectors,
-                    add_vectors, 
-                    mul_vector,
                     det_matrix,
                     dot_product,
                     inner_product,
@@ -23,28 +20,31 @@ from math1 import (centroid,
                     add,
                     sub,
                     mul,
-                    div)
-from numericalc import (length_numerical,
-                        #check_intersection_segment_surface_numerical,
+                    div,
+                    sub_vectors,
+                    add_vectors, 
+                    mul_vector,
+                    )
+from numericalc import (numeric_value,
+                        numerical_vector,
+                        length_numerical,
                         get_internal_component_sets_numerical,
                         get_internal_component_numerical,
-                        check_intersection_segment_surface_numerical_6d_tau,
-                        numeric_value,
-                        numerical_vector,
                         check_intersection_two_segment_numerical_6d_tau,
                         check_intersection_segment_surface_numerical_6d_tau,
+                        #check_intersection_segment_surface_numerical,
                         inside_outside_tetrahedron,
                         inside_outside_tetrahedron_tau,
-                        on_out_surface)
+                        on_out_surface,
+                        )
 from utils import (remove_doubling_in_perp_space,
+                    tetrahedron_volume_6d,
                     obj_volume_6d,
-                    tetrahedron_volume_6d,
-                    tetrahedron_volume_6d,
                     generator_surface_1,
                     generator_unique_triangles,
                     generator_unique_edges,
                     tetrahedralization_points,
-                    generate_convex_hull
+                    generate_convex_hull,
                     )
                     
 TAU=(1+np.sqrt(5))/2.0
