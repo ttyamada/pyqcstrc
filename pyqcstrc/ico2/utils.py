@@ -45,11 +45,20 @@ def shift_object(obj: NDArray[np.int64], shift: NDArray[np.int64]) -> NDArray[np
         print('object has an incorrect shape!')
         return 
 
-##############################
-# 体積・面積関連
-##############################
+#----------------------------
+# Volume, area
+#----------------------------
 def obj_volume_6d(obj: NDArray[np.int64]) -> NDArray[np.int64]:
-    """
+    """Calculate volume of an object (set of tetrahedra) in TAU style.
+    
+    Parameters
+    ----------
+    obj: array
+    
+    Returns
+    -------
+    volume: array
+        Volume in TAU-style.
     """
     w=np.array([0,0,1])
     if obj.ndim==4:
@@ -63,12 +72,24 @@ def obj_volume_6d(obj: NDArray[np.int64]) -> NDArray[np.int64]:
                 v=tetrahedron_volume_6d(tetrahedron)
                 w=add(w,v)
         return w
+    elif obj.ndim==3:
+        return tetrahedron_volume_6d(obj)
     else:
         print('object has an incorrect shape!')
         return 
-    
+
 def tetrahedron_volume_6d(tetrahedron: NDArray[np.int64]) -> NDArray[np.int64]:
-    """
+    """Calculate volume of tetrahedron in TAU style.
+    
+    Parameters
+    ----------
+    obj: array
+        6d vectors of tetrahedron vertices in TAU-style.
+    
+    Returns
+    -------
+    volume: array
+        Volume in TAU-style.
     """
     if tetrahedron.ndim==3:
         vts=np.zeros((4,3,3),dtype=np.int64)
@@ -80,9 +101,17 @@ def tetrahedron_volume_6d(tetrahedron: NDArray[np.int64]) -> NDArray[np.int64]:
         return 
 
 def tetrahedron_volume(vts: NDArray[np.int64]) -> NDArray[np.int64]:
-    """
-    # This function returns volume of a tetrahedron
-    # input: vertex coordinates of the tetrahedron (x0,y0,z0),(x1,y1,z1),(x2,y2,z2),(x3,y3,z3) in TAU-style.
+    """Calculate volume of tetrahedron in TAU style.
+    
+    Parameters
+    ----------
+    obj: array
+        vertex coordinates of the tetrahedron (x0,y0,z0),(x1,y1,z1),(x2,y2,z2),(x3,y3,z3) in TAU-style.
+    
+    Returns
+    -------
+    volume: array
+        Volume in TAU-style.
     """
     v1=sub_vectors(vts[1],vts[0])
     v2=sub_vectors(vts[2],vts[0])
@@ -98,11 +127,11 @@ def tetrahedron_volume(vts: NDArray[np.int64]) -> NDArray[np.int64]:
     else:
         return mul(v,np.array([1,0,6]))
 
-##############################
-# 重複関連
-##############################
+#----------------------------
+# Remove doubling
+#----------------------------
 def remove_doubling(vts: NDArray[np.int64]) -> NDArray[np.int64]:
-    """remove doubling 6d coordinates
+    """Remove doubling 6d coordinates
     
     Parameters
     ----------
@@ -127,7 +156,7 @@ def remove_doubling(vts: NDArray[np.int64]) -> NDArray[np.int64]:
         return 
 
 def remove_doubling_in_perp_space(vts: NDArray[np.int64]) -> NDArray[np.int64]:
-    """ remove 6d coordinates which is doubled in Eperp.
+    """Remove 6d coordinates which is doubled in Eperp.
     
     Parameters
     ----------
@@ -163,13 +192,23 @@ def remove_doubling_in_perp_space(vts: NDArray[np.int64]) -> NDArray[np.int64]:
         a[i]=vts[b[i]]
     return a
 
-##############################
-# objの表面関連
-##############################
+#----------------------------
+# Surface, trianges, and edges
+#
+# コメント：整理する必要あり
+#
+#----------------------------
 def generator_surface_1(obj: NDArray[np.int64]) -> NDArray[np.int64]:
-    """
-    # remove doubling surface in a set of tetrahedra in the OD (dim4)
-    #
+    """Generate triangles of the object's surface.
+    
+    Parameters
+    ----------
+    obj: array
+    
+    Returns
+    -------
+    surfaces: array
+        set of surface triangles in TAU-style.
     """
     # (1) preparing a list of triangle surfaces without doubling (tmp2)
     n1,_,_,_=obj.shape
@@ -197,7 +236,7 @@ def generator_surface_1(obj: NDArray[np.int64]) -> NDArray[np.int64]:
         # xyzをxでソートし、indexを得る。
         indx_xyz=np.argsort(xyz[:,0])
         #
-        # 重複しているtriangleはスキップ。表面のtriangleのみを選ぶ。
+        # 重複しているtriangleはスキップ。表面のtriangleのみを選び出す。
         #print('number of trianges:',len(indx_xyz))
         lst=[]
         #print('indx_xyz:',indx_xyz)
@@ -221,11 +260,17 @@ def generator_surface_1(obj: NDArray[np.int64]) -> NDArray[np.int64]:
         return out
 
 def generator_unique_triangles(obj: NDArray[np.int64]) -> NDArray[np.int64]:
-    """get unique triangles in an object (dim4)
+    """Generate unique triangles in an object
     
-    Input:
-    obj: set of tetrahedra
+    Parameters
+    ----------
+    obj: array
+        set of tetrahedra
     
+    Returns
+    -------
+    triangles: array
+        set of triangles in TAU-style.
     """
     
     # (1) preparing a list of triangle surfaces without doubling (tmp2)
@@ -258,13 +303,27 @@ def generator_unique_triangles(obj: NDArray[np.int64]) -> NDArray[np.int64]:
             a[i1]=triangles[b[i1]]
         return a
 
+# WIP
 def get_common_edges(trianges: NDArray[np.int64]) -> NDArray[np.int64]:
-    """
-    common edges in trianges
+    """Get common edges in trianges
     """
     return 
 
 def generator_all_edges(obj: NDArray[np.int64]) -> NDArray[np.int64]:
+    """Generate all egdes in Object
+    
+    Parameters
+    ----------
+    obj: array
+        set of tetrahedra
+    
+    Returns
+    -------
+    edges: array
+        set of edges in TAU-style.
+    
+    """
+    
     # (1) preparing a list of edges
     n1,n2,_,_=obj.shape
     edges=np.zeros((n1,n2,2,6,3),dtype=np.int64)
@@ -274,15 +333,19 @@ def generator_all_edges(obj: NDArray[np.int64]) -> NDArray[np.int64]:
         i1+=1
     return edges.reshape(n1*n2,2,6,3)
 
-#################
-###### WIP ######
-#################
+#----------------------------
+#
+#
+# WIP
+#
+#
+#----------------------------
 def generator_unique_edges(obj: NDArray[np.int64]) -> NDArray[np.int64]:
-    """
-    generates edges
+    """Return unique egdes in Object
     
-    Input
-    triangles, np.array with a shape=(number_of_triangles,3,6,3)
+    Note
+    ----
+    Current implementation may return wrong object when the object is a set of tetrahedra.
     """
     n1,n2,_,_=obj.shape
     
@@ -312,8 +375,7 @@ def generator_unique_edges(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     return a
 
 def get_tetrahedron_surface(tetrahedron: NDArray[np.int64]) -> NDArray[np.int64]:
-    """
-    get four triangles of tetrahedron.
+    """Return four triangles of tetrahedron.
     """
     # four triangles of tetrahedron: 1-2-3, 1-2-4, 1-3-4, 2-3-4
     comb=[\
@@ -333,8 +395,7 @@ def get_tetrahedron_surface(tetrahedron: NDArray[np.int64]) -> NDArray[np.int64]
     return a
 
 def get_triangle_edge(triangle: NDArray[np.int64]) -> NDArray[np.int64]:
-    """
-    get four triangles of tetrahedron.
+    """Return three edges of triange.
     """
     # three edges of triange: 0-1, 0-2, 1-2
     comb=[\
@@ -353,12 +414,19 @@ def get_triangle_edge(triangle: NDArray[np.int64]) -> NDArray[np.int64]:
         i1+=1
     return a
 
-##############################
-# objの等価チェック
-##############################
+#----------------------------
+# Equivalence check
+#----------------------------
 def equivalent_tetrahedra(tetrahedron_1: NDArray[np.int64], tetrahedron_2: NDArray[np.int64]) -> bool:
-    # check whether tetrahedron_1 and _2 are sharing a triangle surface or not.
-    
+    """Checking whether tetrahedron_1 and _2 are sharing a triangle surface or not.
+    """
+    a=np.vstack([tetrahedron_1,tetrahedron_2])
+    a=remove_doubling_in_perp_space(a)
+    if len(a)==4:
+        return True # equivalent traiangle
+    else:
+        return False # not equivalent traiangles
+    """
     # generate traiangles
     surface1=get_tetrahedron_surface(tetrahedron_1)
     surface2=get_tetrahedron_surface(tetrahedron_2)
@@ -379,9 +447,10 @@ def equivalent_tetrahedra(tetrahedron_1: NDArray[np.int64], tetrahedron_2: NDArr
         return False
     else:
         return True
-
+    """
+    
 def equivalent_triangles(triangle1: NDArray[np.int64], triangle2: NDArray[np.int64]) -> bool:
-    """Check whether triangle1 and triangle2 are equivalent or not.
+    """Checking whether triangle1 and triangle2 are equivalent or not.
     """
     a=np.vstack([triangle1,triangle2])
     a=remove_doubling_in_perp_space(a)
@@ -391,7 +460,7 @@ def equivalent_triangles(triangle1: NDArray[np.int64], triangle2: NDArray[np.int
         return False # not equivalent traiangles
 
 def equivalent_edges(edge1: NDArray[np.int64], edge2: NDArray[np.int64]) -> bool:
-    """Check whether edge1 and edge2 are equivalent or not.
+    """Checking whether edge1 and edge2 are equivalent or not.
     """
     a=np.vstack([edge1,edge2])
     a=remove_doubling_in_perp_space(a)
@@ -408,9 +477,9 @@ def equivalent_vertices(vertex1: NDArray[np.int64], vertex2: NDArray[np.int64]) 
     else:
         return False
 
-##############################
-# objのソート関連
-##############################
+#----------------------------
+# Sort
+#----------------------------
 def sort_vctors(vts: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     sort vectors in TAU-style
@@ -450,10 +519,9 @@ def sort_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
         out[i1]=tmp[indx[i1][0]]
     return out
 
-#################################
-#### tetrahedralization関連
-#################################
-
+#----------------------------
+# tetrahedralization
+#----------------------------
 def decomposition(tmp2v: NDArray[np.int64]) -> NDArray[np.int64]:
     try:
         tri=Delaunay(tmp2v)
@@ -466,7 +534,7 @@ def decomposition(tmp2v: NDArray[np.int64]) -> NDArray[np.int64]:
             tet=tri.simplices[i]
             tmp.append([tet[0],tet[1],tet[2],tet[3]])
     return tmp
-    
+
 def tetrahedralization_points(points: NDArray[np.int64]) -> NDArray[np.int64]:
     
     i1=0
@@ -501,9 +569,9 @@ def tetrahedralization_points(points: NDArray[np.int64]) -> NDArray[np.int64]:
     else:
         return 
 
-#################################
-# generate_convex_hull関連
-#################################
+#----------------------------
+# Convex_hull
+#----------------------------
 def generate_convex_hull(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     """generate convex hull from object
     
@@ -660,24 +728,10 @@ def gen_border_edges_of_coplanar_triangles(coplanar_triangles: NDArray[np.int64]
             pass
     return np.array(lst,dtype=np.int64)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ##############################
 ####
 ####
-#### WIP: 削除関連
+#### WIP: Remove
 ####
 ####
 ##############################
@@ -723,12 +777,10 @@ def remove_vector(vts: NDArray[np.int64], vt: NDArray[np.int64]) -> NDArray[np.i
     else:
         return vlst1
 
-
-
 #################################
 ####
 ####
-#### WIP: objの結合　　intsctへ移動しても良いかも
+#### WIP: Merging objects
 ####
 ####
 #################################
@@ -834,7 +886,6 @@ def coplanar_check_two_triangles(triange1: NDArray[np.int64], triange2: NDArray[
         return True # coplanar
     else:
         return False
-
 
 #################################
 ####
