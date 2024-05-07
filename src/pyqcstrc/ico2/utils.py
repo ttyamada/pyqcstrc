@@ -29,6 +29,7 @@ import numpy as np
 from numpy.typing import NDArray
 from scipy.spatial import Delaunay
 import itertools
+import time
 
 def shift_object(obj: NDArray[np.int64], shift: NDArray[np.int64]) -> NDArray[np.int64]:
     """shift an object
@@ -198,7 +199,6 @@ def remove_doubling_in_perp_space(vts: NDArray[np.int64]) -> NDArray[np.int64]:
 # Surface, trianges, and edges
 #
 # コメント：整理する必要あり
-#
 #----------------------------
 def generator_surface_1(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     """Generate triangles of the object's surface.
@@ -216,13 +216,27 @@ def generator_surface_1(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     n1,_,_,_=obj.shape
     triangles=np.zeros((n1,4,3,6,3),dtype=np.int64)
     i1=0
+    
+    print('      generator_surface_1 part-1')
+    start=time.time()
+    #
     for tetrahedron in obj:
         triangles[i1]=get_tetrahedron_surface(tetrahedron)
         i1+=1
     triangles=triangles.reshape(n1*4,3,6,3)
+    #
+    end=time.time()
+    time_diff=end-start
+    print('         ends in %4.3f sec'%time_diff)
+    
+    
     if n1==1:
         return triangles
     else:
+        print('      generator_surface_1 part-2')
+        start=time.time()
+        #
+        
         # (2) 重複のない三角形（すなはちobject表面の三角形）のみを得る。
         # 三角形が重複していれば重心も同じことを利用する。重心が一致すれば重複しているとは限らないが、
         # objが正しく与えられているとすれば問題ない。
@@ -232,17 +246,21 @@ def generator_surface_1(obj: NDArray[np.int64]) -> NDArray[np.int64]:
         for i1 in range(n1*4):
             vt=centroid(triangles[i1])
             xyz[i1]=get_internal_component_numerical(vt)
-        #
-        #
+        
+        
+        
+        
         # 以下のやり方では効率悪い。
-        # triangleの数が多ければ時間がかかる。
+        # triangleの数が多ければ時間がかかる(O(n^2))ので改良が必要
+        #===========ここから============
+        #"""
         #
         # xyzをxでソートし、indexを得る。
         indx_xyz=np.argsort(xyz[:,0])
-        #
-        # 重複しているtriangleはスキップ。表面のtriangleのみを選び出す。
         #print('number of trianges:',len(indx_xyz))
         #print('indx_xyz:',indx_xyz)
+        
+        # 重複しているtriangleはスキップ。表面のtriangleのみを選び出す。
         lst=[]
         for i1 in indx_xyz:
             counter=0
@@ -255,13 +273,49 @@ def generator_surface_1(obj: NDArray[np.int64]) -> NDArray[np.int64]:
                         break
             if counter==0:
                 lst.append(i1)
-        #print('lst:',lst)
+        #"""
+        #===========ここまで============
+        """
+        # xyzをxでソートし、indexを得る。
+        indx_xyz=np.argsort(xyz[:,0])
+        print('number of trianges:',len(indx_xyz))
+        #print('indx_xyz:',indx_xyz)
+        
+        # 表面のtriangleのみを選び出すには、重複しているtriangleを除けば良い。
+        # 上でちゃんとソートできていれば、着目する点の前後の点を比べるだけで重複があるか判断できる。
+        # 今はxでしかソートできていないので、y, zについてもソートされるようにしないとうまく計算できない。
+        lst=[]
+        for i1 in range(1,len(indx_xyz)-1):
+            counter=0
+            for i2 in [-1,1]:
+                if np.allclose(xyz[indx_xyz[i1]],xyz[indx_xyz[i1+i2]]): # equivalent
+                    counter+=1
+                    break
+            if counter==0:
+                lst.append(indx_xyz[i1])
+        if np.allclose(xyz[indx_xyz[0]],xyz[indx_xyz[1]]):
+            pass
+        else:
+            lst.append(indx_xyz[0])
+        if np.allclose(xyz[indx_xyz[-1]],xyz[indx_xyz[-2]]):
+            pass
+        else:
+            lst.append(indx_xyz[-1])
+        """
+        
+        print('lst:',lst)
         num=len(lst)
+        print('num:',num)
         out=np.zeros((num,3,6,3),dtype=np.int64)
         #print('number of unique triangls:',num)
         for i1 in range(num):
             out[i1]=triangles[lst[i1]]
         #print('shape:',out.shape)
+        #
+        end=time.time()
+        time_diff=end-start
+        print('         ends in %4.3f sec'%time_diff)
+        
         return out
 
 def generator_unique_triangles(obj: NDArray[np.int64]) -> NDArray[np.int64]:
@@ -307,6 +361,26 @@ def generator_unique_triangles(obj: NDArray[np.int64]) -> NDArray[np.int64]:
         for i1 in range(num):
             a[i1]=triangles[b[i1]]
         return a
+
+def get_tetrahedron_surface(tetrahedron: NDArray[np.int64]) -> NDArray[np.int64]:
+    """Return four triangles of tetrahedron.
+    """
+    # four triangles of tetrahedron: 1-2-3, 1-2-4, 1-3-4, 2-3-4
+    comb=[\
+    [0,1,2],\
+    [0,1,3],\
+    [0,2,3],\
+    [1,2,3]] 
+    #
+    a=np.zeros((4,3,6,3),dtype=np.int64)
+    i1=0
+    for k in comb:
+        i2=0
+        for l in k:
+            a[i1][i2]=tetrahedron[l]
+            i2+=1
+        i1+=1
+    return a
 
 #### WIP ###
 def get_common_edges(trianges: NDArray[np.int64]) -> NDArray[np.int64]:
@@ -384,26 +458,6 @@ def generator_unique_edges(obj: NDArray[np.int64]) -> NDArray[np.int64]:
         a[i1]=edges[b[i1]]
     return a
 
-def get_tetrahedron_surface(tetrahedron: NDArray[np.int64]) -> NDArray[np.int64]:
-    """Return four triangles of tetrahedron.
-    """
-    # four triangles of tetrahedron: 1-2-3, 1-2-4, 1-3-4, 2-3-4
-    comb=[\
-    [0,1,2],\
-    [0,1,3],\
-    [0,2,3],\
-    [1,2,3]] 
-    #
-    a=np.zeros((4,3,6,3),dtype=np.int64)
-    i1=0
-    for k in comb:
-        i2=0
-        for l in k:
-            a[i1][i2]=tetrahedron[l]
-            i2+=1
-        i1+=1
-    return a
-
 def get_triangle_edge(triangle: NDArray[np.int64]) -> NDArray[np.int64]:
     """Return three edges of triange.
     """
@@ -449,10 +503,169 @@ def get_tetrahedron_edge(tetrahedron: NDArray[np.int64]) -> NDArray[np.int64]:
         i1+=1
     return a
 
+#-------------
+# Convex_hull
+#-------------
+def generate_convex_hull(obj: NDArray[np.int64]) -> NDArray[np.int64]:
+    """generate convex hull from object
+    
+    objの凸包を得る。
+    
+    アルゴリズム
+    1. objの表面三角形を得る。
+    2. 無駄な表面三角形をなくす by surface_cleaner()。
+    3. objの頂点座標を得る
+    4. 四面体分割
+    
+    objが凸包であれば、この関数を実行することで、よりシンプルに四面体分割されたobjを得ることができる。
+    
+    """
+    # 1
+    triangle_surface=generator_surface_1(obj)
+    #print('triangle_surface.shape:',triangle_surface.shape)
+    # 2
+    edge_surface=surface_cleaner(triangle_surface)
+    #print('edge_surface.shape:',edge_surface.shape)
+    
+    # 3
+    vts=remove_doubling_in_perp_space(edge_surface)
+    #print('tmp.shape',tmp.shape)
+    
+    # 4
+    return tetrahedralization_points(vts)
+
+def surface_cleaner(surface: NDArray[np.int64]) -> NDArray[np.int64]:
+    """generate border edges from a set of triangles on the objct's surface.
+    
+    obj表面の三角形からobjの外枠を出力。
+    
+    アルゴリズム：
+    1) 同一平面上にある三角形ごとにグループ分けする
+    2) 各グループにおいて、以下を行う．
+        2-1) 三角形の３辺が、他のどの三角形とも共有していない辺を求める
+        2-3) ２つの辺が１つの辺にまとめられるのであれば、まとめる
+        2-3) 辺の集合をアウトプット
+    """
+    # 同一平面上にある三角形を求め、集合lst_setsとする
+    lst_sets=get_sets_of_coplanar_triangles(surface)
+    #print('num. of lst_sets:',len(lst_sets))
+    
+    #同一平面上にある三角形の辺のうち、どの三角形とも共有していない独立な辺を求める．
+    for i in range(len(lst_sets)):
+        #print('num. of coplanar triangles',len(lst_sets[i]))
+        edges=gen_border_edges_of_coplanar_triangles(lst_sets[i])
+        if i==0:
+            edges_new=edges
+        else:
+            edges_new=np.vstack([edges_new,edges])
+    
+    # ２辺を１つの辺にまとめられるのであれば、まとめる
+    #print('edges_new.shape',edges_new.shape)
+    edges_new=generator_unique_edges(edges_new)
+    #print('edges_new.shape',edges_new.shape)
+    num=len(edges_new)
+    lst0=[i for i in range(num)]
+    lst=lst0
+    flag=1
+    while flag>0:
+    #for _ in range(num_iteration):
+        counter=0
+        #print('lst',lst)
+        n0=len(edges_new)
+        #print('n0',n0)
+        for comb in list(itertools.combinations(lst, 2)):
+            a=two_segment_into_one(edges_new[comb[0]],edges_new[comb[1]])
+            if np.any(a==None):
+                pass
+            else:
+                counter=1
+                break
+        if counter==1:
+            lst=list(filter(lambda x: x not in list(comb), lst))
+            #print('  comb',comb)
+            #print('  lst',lst)
+            #print('  edges_new.shape',edges_new.shape)
+            #print('  a.shape',a.shape)
+            edges_new=np.vstack([edges_new,[a]])
+            lst.append(num)
+            num+=1
+            #print('  lst',lst)
+        else:
+            flag=0
+    #print('edges_new.shape',edges_new.shape)
+    n1=len(lst)
+    out=np.zeros((n1,2,6,3),dtype=np.int64)
+    for i1 in range(n1):
+        out[i1]=edges_new[lst[i1]]
+    #print('out.shape',out.shape)
+    
+    return out
+
+def get_sets_of_coplanar_triangles(surface: NDArray[np.int64]) -> NDArray[np.int64]:
+    """
+    同一平面上にある三角形の集合を作る。surfaceに含まれるtriangleについて
+    順に同一平面上にあるかどうかをチェックし、もし以前のどの三角形とも同一平面
+    にない時はそのインデックスをlst_indx_groupに収納する。また、lst_indx_triangle
+    にもそのインデックスを収納する。一方、すでにチェックした三角形と同一平面に
+    にある場合はlst_indx_triangleに同一平面三角形のインデックスを収納
+    """
+    num=len(surface)
+    lst_indx_group=[0]
+    lst_indx_triangle=[0]
+    for i1 in range(1,num):
+        counter=0
+        for i2 in lst_indx_group:
+            if coplanar_check_two_triangles(surface[i1],surface[i2]): # coplanar
+                counter=1
+                break
+            else: # non coplanar
+                pass
+        if counter==0:
+            lst_indx_triangle.append(i1)
+            lst_indx_group.append(i1)
+        else:
+            lst_indx_triangle.append(i2)
+    lst_sets=[]
+    for i1 in lst_indx_group:
+        tmp=[]
+        for i2 in range(num):
+            if i1==lst_indx_triangle[i2]:
+                tmp.append(surface[i2])
+        num_triangle=len(tmp)
+        a=np.zeros((num_triangle,3,6,3),dtype=np.int64)
+        for i2 in range(num_triangle):
+            a[i2]=tmp[i2]
+        lst_sets.append(a)
+    return lst_sets
+
+def gen_border_edges_of_coplanar_triangles(coplanar_triangles: NDArray[np.int64]) -> NDArray[np.int64]:
+    """
+    同一平面上にある三角形の辺のうち、どの三角形とも共有していない独立な辺を求める．
+    """
+    unique_edges=generator_unique_edges(coplanar_triangles)
+    edges=generator_all_edges(coplanar_triangles)
+    #print(' num. of edges:',len(edges))
+    #print(' num. of unique_edges:',len(unique_edges))
+    lst=[]
+    for edge1 in unique_edges:
+        counter=0
+        for edge2 in edges:
+            tmp=np.vstack([edge1,edge2])
+            tmp=remove_doubling_in_perp_space(tmp)
+            if len(tmp)==2:
+                counter+=1
+                if counter==2:
+                    break
+        if counter==1:
+            lst.append(edge1)
+        else:
+            pass
+    return np.array(lst,dtype=np.int64)
+
 #----------------------------
 # Equivalence check
 #
-# 以下、4つの関数をequivalentに統合した方が良い？
+# Better to merge following four functions into a function "equivalent"???
 #   equivalent_tetrahedra
 #   equivalent_triangles
 #   equivalent_edges
@@ -655,165 +868,6 @@ def tetrahedralization_points(points: NDArray[np.int64]) -> NDArray[np.int64]:
             return 
     else:
         return 
-
-#----------------------------
-# Convex_hull
-#----------------------------
-def generate_convex_hull(obj: NDArray[np.int64]) -> NDArray[np.int64]:
-    """generate convex hull from object
-    
-    objの凸包を得る。
-    
-    アルゴリズム
-    1. objの表面三角形を得る。
-    2. 無駄な表面三角形をなくす by surface_cleaner()。
-    3. objの頂点座標を得る
-    4. 四面体分割
-    
-    objが凸包であれば、この関数を実行することで、よりシンプルに四面体分割されたobjを得ることができる。
-    
-    """
-    # 1
-    triangle_surface=generator_surface_1(obj)
-    #print('triangle_surface.shape:',triangle_surface.shape)
-    # 2
-    edge_surface=surface_cleaner(triangle_surface)
-    #print('edge_surface.shape:',edge_surface.shape)
-    
-    # 3
-    vts=remove_doubling_in_perp_space(edge_surface)
-    #print('tmp.shape',tmp.shape)
-    
-    # 4
-    return tetrahedralization_points(vts)
-
-def surface_cleaner(surface: NDArray[np.int64]) -> NDArray[np.int64]:
-    """generate border edges from a set of triangles on the objct's surface.
-    
-    obj表面の三角形からobjの外枠を出力。
-    
-    アルゴリズム：
-    1) 同一平面上にある三角形ごとにグループ分けする
-    2) 各グループにおいて、以下を行う．
-        2-1) 三角形の３辺が、他のどの三角形とも共有していない辺を求める
-        2-3) ２つの辺が１つの辺にまとめられるのであれば、まとめる
-        2-3) 辺の集合をアウトプット
-    """
-    # 同一平面上にある三角形を求め、集合lst_setsとする
-    lst_sets=get_sets_of_coplanar_triangles(surface)
-    #print('num. of lst_sets:',len(lst_sets))
-    
-    #同一平面上にある三角形の辺のうち、どの三角形とも共有していない独立な辺を求める．
-    for i in range(len(lst_sets)):
-        #print('num. of coplanar triangles',len(lst_sets[i]))
-        edges=gen_border_edges_of_coplanar_triangles(lst_sets[i])
-        if i==0:
-            edges_new=edges
-        else:
-            edges_new=np.vstack([edges_new,edges])
-    
-    # ２辺を１つの辺にまとめられるのであれば、まとめる
-    #print('edges_new.shape',edges_new.shape)
-    edges_new=generator_unique_edges(edges_new)
-    #print('edges_new.shape',edges_new.shape)
-    num=len(edges_new)
-    lst0=[i for i in range(num)]
-    lst=lst0
-    flag=1
-    while flag>0:
-    #for _ in range(num_iteration):
-        counter=0
-        #print('lst',lst)
-        n0=len(edges_new)
-        #print('n0',n0)
-        for comb in list(itertools.combinations(lst, 2)):
-            a=two_segment_into_one(edges_new[comb[0]],edges_new[comb[1]])
-            if np.any(a==None):
-                pass
-            else:
-                counter=1
-                break
-        if counter==1:
-            lst=list(filter(lambda x: x not in list(comb), lst))
-            #print('  comb',comb)
-            #print('  lst',lst)
-            #print('  edges_new.shape',edges_new.shape)
-            #print('  a.shape',a.shape)
-            edges_new=np.vstack([edges_new,[a]])
-            lst.append(num)
-            num+=1
-            #print('  lst',lst)
-        else:
-            flag=0
-    #print('edges_new.shape',edges_new.shape)
-    n1=len(lst)
-    out=np.zeros((n1,2,6,3),dtype=np.int64)
-    for i1 in range(n1):
-        out[i1]=edges_new[lst[i1]]
-    #print('out.shape',out.shape)
-    
-    return out
-
-def get_sets_of_coplanar_triangles(surface: NDArray[np.int64]) -> NDArray[np.int64]:
-    """
-    同一平面上にある三角形の集合を作る。surfaceに含まれるtriangleについて
-    順に同一平面上にあるかどうかをチェックし、もし以前のどの三角形とも同一平面
-    にない時はそのインデックスをlst_indx_groupに収納する。また、lst_indx_triangle
-    にもそのインデックスを収納する。一方、すでにチェックした三角形と同一平面に
-    にある場合はlst_indx_triangleに同一平面三角形のインデックスを収納
-    """
-    num=len(surface)
-    lst_indx_group=[0]
-    lst_indx_triangle=[0]
-    for i1 in range(1,num):
-        counter=0
-        for i2 in lst_indx_group:
-            if coplanar_check_two_triangles(surface[i1],surface[i2]): # coplanar
-                counter=1
-                break
-            else: # non coplanar
-                pass
-        if counter==0:
-            lst_indx_triangle.append(i1)
-            lst_indx_group.append(i1)
-        else:
-            lst_indx_triangle.append(i2)
-    lst_sets=[]
-    for i1 in lst_indx_group:
-        tmp=[]
-        for i2 in range(num):
-            if i1==lst_indx_triangle[i2]:
-                tmp.append(surface[i2])
-        num_triangle=len(tmp)
-        a=np.zeros((num_triangle,3,6,3),dtype=np.int64)
-        for i2 in range(num_triangle):
-            a[i2]=tmp[i2]
-        lst_sets.append(a)
-    return lst_sets
-
-def gen_border_edges_of_coplanar_triangles(coplanar_triangles: NDArray[np.int64]) -> NDArray[np.int64]:
-    """
-    同一平面上にある三角形の辺のうち、どの三角形とも共有していない独立な辺を求める．
-    """
-    unique_edges=generator_unique_edges(coplanar_triangles)
-    edges=generator_all_edges(coplanar_triangles)
-    #print(' num. of edges:',len(edges))
-    #print(' num. of unique_edges:',len(unique_edges))
-    lst=[]
-    for edge1 in unique_edges:
-        counter=0
-        for edge2 in edges:
-            tmp=np.vstack([edge1,edge2])
-            tmp=remove_doubling_in_perp_space(tmp)
-            if len(tmp)==2:
-                counter+=1
-                if counter==2:
-                    break
-        if counter==1:
-            lst.append(edge1)
-        else:
-            pass
-    return np.array(lst,dtype=np.int64)
 
 ##############################
 ####
