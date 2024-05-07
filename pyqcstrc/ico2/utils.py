@@ -684,7 +684,7 @@ def surface_cleaner(surface: NDArray[np.int64]) -> NDArray[np.int64]:
     #print('out.shape',out.shape)
     
     return out
-    
+
 def get_sets_of_coplanar_triangles(surface: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     同一平面上にある三角形の集合を作る。surfaceに含まれるtriangleについて
