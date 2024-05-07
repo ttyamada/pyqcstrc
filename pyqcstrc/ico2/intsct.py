@@ -529,11 +529,9 @@ def intersection_two_obj_1(obj1,obj2,kind=None):
     Notes
     -----
     
-    'standard' intersection ...
+    'standard' intersection is default.
     
-    
-    
-    'simple' intersection ...
+    Output from 'simple' intersection is simpler but may cause a problem when generating its surface triangles.
     
     """
     
@@ -768,34 +766,39 @@ def intersection_two_obj_convex(obj1: NDArray[np.int64], obj2: NDArray[np.int64]
 ###   WIP
 ###
 #########
-def object_subtraction(obj1: NDArray[np.int64], obj2: NDArray[np.int64], flag: int, verbose: int=0) -> NDArray[np.int64]:
+def subtraction_two_obj(obj1: NDArray[np.int64], obj2: NDArray[np.int64], verbose: int=0) -> NDArray[np.int64]:
+    """Operate A not B (= A NOT (A AND B)).
+
+    Parameters
+    ----------
+    obj1: array,(number of tetrahedra, 4, 6, 3)
+        Object A to be subtracted.
+    obj2: array, (number of tetrahedra, 4, 6, 3)
+        Object B that subtracts the tetrahedron.
+    verbose: int
+
+    Returns
+    -------
+    obj: array, (number of tetrahedra, 4, 6, 3)
+    
     """
-    get A NOT B = A NOT (A AND B) = A NOT C, where C = (A AND B)
-    obj1: A
-    obj2: C
     
-    flag=0: perform simplification on obj1 and obj2.
+    #def simplification(obj):
+    #    obj1=generate_convex_hull(obj)
+    #    obj2=intersection_two_obj_1(obj1,obj)
+    #    v0=obj_volume_6d(obj)
+    #    v1=obj_volume_6d(obj2)
+    #    if np.all(v0==v1):
+    #        return obj1
+    #    else:
+    #        return obj
+    #
+    #if flag==0:
+    #    obj1=simplification(obj1)
+    #    obj2=simplification(obj2)
+    #else:
+    #    pass
     
-    """
-    #print('     object_subtraction_dev1()')
-    # surface triangles of obj2
-    
-    
-    def simplification(obj):
-        obj1=generate_convex_hull(obj)
-        obj2=intersection_two_obj_1(obj1,obj)
-        v0=obj_volume_6d(obj)
-        v1=obj_volume_6d(obj2)
-        if np.all(v0==v1):
-            return obj1
-        else:
-            return obj
-    
-    if flag==0:
-        obj1=simplification(obj1)
-        obj2=simplification(obj2)
-    else:
-        pass
     
     if verbose>0:
         print('      generating surface_obj2')
@@ -818,7 +821,7 @@ def object_subtraction(obj1: NDArray[np.int64], obj2: NDArray[np.int64], flag: i
     for tetrahedron in obj1:
         if verbose>0:
             print('       %d-th tetrahedron in obj1'%(counter1))
-        a=tetrahedron_not_obj_1(tetrahedron.reshape(1,4,6,3),obj2,surface_obj2,verbose)
+        a=tetrahedron_not_obj_1(tetrahedron.reshape(1,4,6,3),obj2,surface_obj2,verbose-1)
         if np.all(a==None):
             pass
         else:
@@ -836,12 +839,26 @@ def object_subtraction(obj1: NDArray[np.int64], obj2: NDArray[np.int64], flag: i
     return out
 
 def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64], surface_obj: NDArray[np.int64], verbose: int=0) -> NDArray[np.int64]:
-    """
-    get A not B = A not (A and B)
-    tetrahedron: A
-    obj: B
+    """Operate tetrahedron not object = tetrahedron not (tetrahedron and object).
     
-    surface_obj = surface of B
+    Parameters
+    ----------
+    tetrahedron: array, (1, 4, 6, 3)
+        Tetrahedron to be subtracted.
+    obj: array, (number of tetrahedra, 4, 6, 3)
+        Object that subtracts the tetrahedron.
+    surface_obj: array, (number of triangles, 3, 6, 3)
+        Surface trianges of the object.
+    verbose: int
+    
+    Returns
+    -------
+    obj: array, (number of tetrahedra, 4, 6, 3)
+    
+    Note
+    ----
+    Current implementation may return wrong object when the intersecting between the objects is not simple.
+    
     """
     
     #print('        tetrahedron_not_obj()')
@@ -871,9 +888,13 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
     
     # get surface triangles of common part which are on the surface of obj
     ################################################
-    #  ここに問題がある。objとtetrahedronの面がほとん   #
-    #  ど一致している場合うまくいかない。                #
-    #                                              #
+    # 問題点
+    # ここではtetrahedron NOT objは以下の2点からなると想定している。
+    # (1) objに含まれないtetrahedron頂点と、
+    # (2) tetrahedron AND objの表面にある三角形のうち、objの表面にある三角形
+    # しかし、tetrahedron AND objがobj自身である場合など、tetrahedronとobjが
+    # ほとんど重なっている場合、必ずしも上記(2)が求めたい頂点のみを含むとは限らず、
+    # 余計なもまで作ってしまう。
     ################################################
     counter2=0
     for triangle2 in surface_common:
@@ -926,7 +947,7 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
     #
     #
     #
-    # 四面体の4つの頂点のうちobjの外側にある頂点vrtx1_outの個数Nは、1, 2, 3, 4個。
+    # 四面体の4つの頂点のうちobjの外側にある頂点vrtx1_outの個数Nは、1,2,3,4。
     # 以下、それぞれの場合について考える。
     ############################################################ 
     ### N=1の場合は、triangle_commonにある各三角形と頂点を結んだものが求めたいものになる。
@@ -952,9 +973,10 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
             out=tmp
         else:
             ################################################
-            #                                              #
-            #                                              #
-            #                                              #
+            # 上記の問題点があるため、不要なものを除く必要がある。
+            # 以下では、tmpにある四面体の集合について、可能な組み合わせ
+            # のうち正しい体積になるものを見つける。
+            # 体積が正しいからといって、求めたいものではないは可能性ある。
             ################################################
             vol=np.array([0,0,1])
             lst=list(range(0,len(tmp)))
@@ -996,7 +1018,6 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
             #                                              #
             #                                              #
             ################################################
-            
         return out
     ############################################################
     #### N=2の場合。triangle_commonに含まれる三角形の個数で場合分けする。
@@ -1087,17 +1108,31 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
         return out
 
 def tetrahedron_not_obj_2(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]) -> NDArray[np.int64]:
-    """
-    tetrahedron AND (NOT object)
+    """Operate tetrahedron not object = tetrahedron not (tetrahedron and object).
     
-    # tetrahedronからobjを引いた物体の表面にある三角形を求める（本当は四面体を求めたいが難しい）
-    
+    tetrahedronからobjを引いた物体の表面にある三角形を求める（本当は四面体を求めたいが難しい）
     アルゴリズム
     1. tetrahedronとobjの共通部分Aを求める。
     2. A表面の三角形T1を求める
     3. objの表面の三角形T2を求める。
     4. T1のうち、T2上にあるものT1'を得る。T1'は求めたい差分tetrahedron NOT objの表面の一部になる。
     5. T1のうち、T2の外側にあるものとT1'を合わせる。
+    
+    Parameters
+    ----------
+    tetrahedron: array, (1, 4, 6, 3)
+        Tetrahedron to be subtracted.
+    obj: array, (number of tetrahedra, 4, 6, 3)
+        Object that subtracts the tetrahedron.
+    
+    Returns
+    -------
+    obj: array, (number of tetrahedra, 4, 6, 3)
+    
+    Note
+    ----
+    Under development.
+    
     """
     
     vol0=obj_volume_6d(tetrahedron)

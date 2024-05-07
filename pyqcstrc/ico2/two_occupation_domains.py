@@ -89,9 +89,9 @@ def intersection_convex(obj1,obj2):
         print('incorrect ndim')
         return
         
-def object_subtraction(obj1,obj2,flag=0,verbose=0):
+def subtraction(obj1,obj2,verbose=0):
     """
-    Subtraction( of two occupation domains projected onto perp space: obj1 NOT obj2 = obj1 NOT (obj1 AND obj2).
+    Subtraction of two occupation domains projected onto perp space: obj1 NOT obj2 = obj1 NOT (obj1 AND obj2).
     
     Parameters
     ----------
@@ -108,7 +108,7 @@ def object_subtraction(obj1,obj2,flag=0,verbose=0):
     """
     
     if obj1.ndim==4 and obj2.ndim==4:
-        return intsct.object_subtraction(obj1,obj2,flag,verbose)
+        return intsct.subtraction_two_obj(obj1,obj2,verbose)
     else:
         print('incorrect ndim')
         return

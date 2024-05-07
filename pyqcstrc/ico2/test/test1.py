@@ -21,6 +21,9 @@ if __name__ == "__main__":
     
     opath='.'
     
+    #--------------
+    # Object A
+    #--------------
     strt_aysmmetric=od.read_xyz(path='../../xyz',basename='strt_aysmmetric',select='tetrahedron',verbose=0)
     #od.write(obj=strt_aysmmetric, path=opath, basename='strt_aysmmetric', format='vesta')
     #obj_surface=utils.generator_surface_1(strt_aysmmetric)
@@ -28,17 +31,22 @@ if __name__ == "__main__":
     #strt_aysmmetric_convex_hull=utils.generate_convex_hull(strt_aysmmetric)
     #od.write(obj=strt_aysmmetric_convex_hull, path=opath, basename='strt_aysmmetric_convex_hull', format='vesta')
     
+    #--------------
+    # Object B
+    #--------------
     # generat STRT OD located at 0,0,0,0,0,0 by symmetric operations (m-3-5).
     pos0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
     strt_sym=od.symmetric(strt_aysmmetric,pos0)
-    
+    #
     # move STRT OD to a position 1 0 0 0 0 0.
     POS_B1=np.array([[ 1, 0, 1],[ 1, 0, 1],[ 1, 0, 1],[ 0, 0, 1],[-1, 0, 1],[ 0, 0, 1]]) # b_1
     strt_sym_pos1=od.shift(strt_sym,POS_B1)
     #od.write(obj=strt_sym_pos1, path=opath, basename='obj_strt1', format='xyz')
     #od.write(obj=strt_sym_pos1, path=opath, basename='obj_strt1', format='vesta')
     
-    # intersection
+    #--------------
+    # A AND B = C
+    #--------------
     print('    intersection starts')
     start=time.time()
     ###
@@ -48,7 +56,9 @@ if __name__ == "__main__":
     time_diff=end-start
     print('                 ends in %4.3f sec'%time_diff)
     
-    # simplification
+    #--------------
+    # Simplification
+    #--------------
     print('    simplification starts')
     start=time.time()
     ###
@@ -59,19 +69,39 @@ if __name__ == "__main__":
     time_diff=end-start
     print('                 ends in %4.3f sec'%time_diff)
     
-    # object_subtraction
-    print('    object_subtraction starts')
+    #--------------
+    # A NOT B
+    #--------------
+    print('    subtraction starts')
     start=time.time()
     ###
-    a=tod.object_subtraction(strt_aysmmetric,common,flag=1,verbose=0)
-    #a=tod.object_subtraction(strt_aysmmetric[0].reshape(1,4,6,3),common_simple,flag=1)
-    #od.write(obj=a, path=opath, basename='strt_subtracted_aysmmetric', format='xyz')
-    od.write(obj=a, path=opath, basename='strt_subtracted_aysmmetric', format='vesta')
+    a=tod.subtraction(strt_aysmmetric,strt_sym_pos1,verbose=0)
+    volume=utils.obj_volume_6d(a)
+    print('     volume=',volume)
+    #a=tod.object_subtraction(strt_aysmmetric[0].reshape(1,4,6,3),strt_sym_pos1,flag=1)
+    #od.write(obj=a, path=opath, basename='strt_subtracted_aysmmetric_1', format='xyz')
+    od.write(obj=a, path=opath, basename='strt_subtracted_aysmmetric_1', format='vesta')
     ###
     end=time.time()
     time_diff=end-start
     print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
     
+    #---------------------------
+    # A NOT B = A NOT C
+    #---------------------------
+    print('    object_subtraction starts')
+    start=time.time()
+    ###
+    a=tod.subtraction(strt_aysmmetric,common,verbose=0)
+    volume=utils.obj_volume_6d(a)
+    print('     volume=',volume)
+    #a=tod.object_subtraction(strt_aysmmetric[0].reshape(1,4,6,3),common_simple,flag=1)
+    #od.write(obj=a, path=opath, basename='strt_subtracted_aysmmetric_2', format='xyz')
+    od.write(obj=a, path=opath, basename='strt_subtracted_aysmmetric_2', format='vesta')
+    ###
+    end=time.time()
+    time_diff=end-start
+    print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
     
     
     
