@@ -20,11 +20,11 @@ except ImportError:
 if __name__ == "__main__":
     
     opath='.'
-    
+    xyzpath='../../../../pyqcstrc/xyz'
     #--------------
     # Object A
     #--------------
-    strt_aysmmetric=od.read_xyz(path='../../xyz',basename='strt_aysmmetric',select='tetrahedron',verbose=0)
+    strt_aysmmetric=od.read_xyz(path=xyzpath,basename='strt_aysmmetric',select='tetrahedron',verbose=0)
     #od.write(obj=strt_aysmmetric, path=opath, basename='strt_aysmmetric', format='vesta')
     #obj_surface=utils.generator_surface_1(strt_aysmmetric)
     
