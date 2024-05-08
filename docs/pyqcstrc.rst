@@ -7,10 +7,10 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   pyqcstrc.common
    pyqcstrc.deca
    pyqcstrc.dode
    pyqcstrc.ico
+   pyqcstrc.ico2
 
 Submodules
 ----------

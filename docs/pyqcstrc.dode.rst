@@ -20,34 +20,10 @@ pyqcstrc.dode.intsct12 module
    :undoc-members:
    :show-inheritance:
 
-pyqcstrc.dode.intsct12 module
------------------------------
-
-.. automodule:: pyqcstrc.dode.intsct12
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 pyqcstrc.dode.math12 module
 ---------------------------
 
 .. automodule:: pyqcstrc.dode.math12
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pyqcstrc.dode.math12 module
----------------------------
-
-.. automodule:: pyqcstrc.dode.math12
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pyqcstrc.dode.numericalc12 module
----------------------------------
-
-.. automodule:: pyqcstrc.dode.numericalc12
    :members:
    :undoc-members:
    :show-inheritance:
@@ -84,34 +60,10 @@ pyqcstrc.dode.strc12 module
    :undoc-members:
    :show-inheritance:
 
-pyqcstrc.dode.strc12 module
----------------------------
-
-.. automodule:: pyqcstrc.dode.strc12
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 pyqcstrc.dode.symmetry12 module
 -------------------------------
 
 .. automodule:: pyqcstrc.dode.symmetry12
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pyqcstrc.dode.symmetry12 module
--------------------------------
-
-.. automodule:: pyqcstrc.dode.symmetry12
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pyqcstrc.dode.utils12 module
-----------------------------
-
-.. automodule:: pyqcstrc.dode.utils12
    :members:
    :undoc-members:
    :show-inheritance:

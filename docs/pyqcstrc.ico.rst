@@ -12,6 +12,14 @@ Subpackages
 Submodules
 ----------
 
+pyqcstrc.ico.diffraction module
+-------------------------------
+
+.. automodule:: pyqcstrc.ico.diffraction
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 pyqcstrc.ico.intsct module
 --------------------------
 
@@ -48,6 +56,14 @@ pyqcstrc.ico.occupation\_domain module
 --------------------------------------
 
 .. automodule:: pyqcstrc.ico.occupation_domain
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pyqcstrc.ico.reciprocal module
+------------------------------
+
+.. automodule:: pyqcstrc.ico.reciprocal
    :members:
    :undoc-members:
    :show-inheritance:
