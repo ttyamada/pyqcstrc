@@ -250,15 +250,15 @@ def generator_surface_1(obj: NDArray[np.int64]) -> NDArray[np.int64]:
         
         
         
+        """
         # 以下のやり方では効率悪い。
         # triangleの数が多ければ時間がかかる(O(n^2))ので改良が必要
-        #===========ここから============
-        #"""
-        #
+        ===========ここから============
         # xyzをxでソートし、indexを得る。
         indx_xyz=np.argsort(xyz[:,0])
         #print('number of trianges:',len(indx_xyz))
         #print('indx_xyz:',indx_xyz)
+        #print(xyz[indx_xyz])
         
         # 重複しているtriangleはスキップ。表面のtriangleのみを選び出す。
         lst=[]
@@ -273,17 +273,16 @@ def generator_surface_1(obj: NDArray[np.int64]) -> NDArray[np.int64]:
                         break
             if counter==0:
                 lst.append(i1)
-        #"""
-        #===========ここまで============
+        ===========ここまで============
         """
-        # xyzをxでソートし、indexを得る。
-        indx_xyz=np.argsort(xyz[:,0])
-        print('number of trianges:',len(indx_xyz))
+        
+        # xyzをx,y,zの順で優先的にソートし、indexを得る。
+        indx_xyz=np.lexsort((xyz[:,2],xyz[:,1],xyz[:,0]))
+        #print('number of trianges:',len(indx_xyz))
         #print('indx_xyz:',indx_xyz)
         
         # 表面のtriangleのみを選び出すには、重複しているtriangleを除けば良い。
-        # 上でちゃんとソートできていれば、着目する点の前後の点を比べるだけで重複があるか判断できる。
-        # 今はxでしかソートできていないので、y, zについてもソートされるようにしないとうまく計算できない。
+        # 上でxyzをx,y,zの順で優先的にソートできていれば、着目している点をその前後と比べるだけで重複があるか判断できる。
         lst=[]
         for i1 in range(1,len(indx_xyz)-1):
             counter=0
@@ -301,7 +300,6 @@ def generator_surface_1(obj: NDArray[np.int64]) -> NDArray[np.int64]:
             pass
         else:
             lst.append(indx_xyz[-1])
-        """
         
         print('lst:',lst)
         num=len(lst)
