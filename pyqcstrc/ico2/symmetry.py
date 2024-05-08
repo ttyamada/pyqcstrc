@@ -4,15 +4,17 @@
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 #
 import sys
-sys.path.append('.')
-from math1 import (add, 
-                    matrixpow, 
-                    dot_product, 
-                    dot_product_1, 
-                    sub_vectors, 
-                    add_vectors)
-from utils import (remove_doubling_in_perp_space, 
-                    remove_doubling)
+#sys.path.append('.')
+from pyqcstrc.ico2.math1 import (add, 
+                                matrixpow, 
+                                dot_product, 
+                                dot_product_1, 
+                                sub_vectors, 
+                                add_vectors,
+                                )
+from pyqcstrc.ico2.utils import (remove_doubling_in_perp_space, 
+                                remove_doubling,
+                                )
 import numpy as np
 
 

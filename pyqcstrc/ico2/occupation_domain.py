@@ -7,15 +7,15 @@
 import timeit
 import os
 import sys
-sys.path.append('.')
+#sys.path.append('.')
 import numpy as np
 
 try:
-    import math1 as math1
-    import utils as utils
-    import numericalc as numericalc
-    import symmetry as symmetry
-    import intsct as intsct
+    import pyqcstrc.ico2.math1 as math1
+    import pyqcstrc.ico2.utils as utils
+    import pyqcstrc.ico2.numericalc as numericalc
+    import pyqcstrc.ico2.symmetry as symmetry
+    import pyqcstrc.ico2.intsct as intsct
 except ImportError:
     print('import error\n')
 

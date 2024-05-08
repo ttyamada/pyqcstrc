@@ -10,12 +10,12 @@ import sys
 import numpy as np
 
 try:
-    import math1 as math1
-    import intsct as intsct
-    import numericalc as numericalc
-    import symmetry as symmetry
-    import utils as utils
-    import occupation_domain as od
+    import pyqcstrc.ico2.math1 as math1
+    import pyqcstrc.ico2.intsct as intsct
+    import pyqcstrc.ico2.numericalc as numericalc
+    import pyqcstrc.ico2.symmetry as symmetry
+    import pyqcstrc.ico2.utils as utils
+    import pyqcstrc.ico2.occupation_domain as od
 except ImportError:
     print('import error\n')
 

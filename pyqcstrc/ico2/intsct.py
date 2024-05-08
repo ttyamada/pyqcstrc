@@ -3,49 +3,49 @@
 # PyQCstrc - Python library for Quasi-Crystal structure
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 #
-import sys
+#import sys
 import numpy as np
 from numpy.typing import NDArray
 import time # in object_subtraction_dev1, tetrahedron_not_obj
 import itertools
 
-from math1 import (projection3,
-                    centroid, 
-                    centroid_obj,
-                    coplanar_check,
-                    det_matrix,
-                    dot_product,
-                    inner_product,
-                    outer_product,
-                    add,
-                    sub,
-                    mul,
-                    div,
-                    sub_vectors,
-                    add_vectors, 
-                    mul_vector,
-                    )
-from numericalc import (numeric_value,
-                        numerical_vector,
-                        length_numerical,
-                        get_internal_component_sets_numerical,
-                        get_internal_component_numerical,
-                        check_intersection_two_segment_numerical_6d_tau,
-                        check_intersection_segment_surface_numerical_6d_tau,
-                        #check_intersection_segment_surface_numerical,
-                        inside_outside_tetrahedron,
-                        inside_outside_tetrahedron_tau,
-                        on_out_surface,
-                        )
-from utils import (remove_doubling_in_perp_space,
-                    tetrahedron_volume_6d,
-                    obj_volume_6d,
-                    generator_surface_1,
-                    generator_unique_triangles,
-                    generator_unique_edges,
-                    tetrahedralization_points,
-                    generate_convex_hull,
-                    )
+from pyqcstrc.ico2.math1 import (projection3,
+                                centroid, 
+                                centroid_obj,
+                                coplanar_check,
+                                det_matrix,
+                                dot_product,
+                                inner_product,
+                                outer_product,
+                                add,
+                                sub,
+                                mul,
+                                div,
+                                sub_vectors,
+                                add_vectors, 
+                                mul_vector,
+                                )
+from pyqcstrc.ico2.numericalc import (numeric_value,
+                                    numerical_vector,
+                                    length_numerical,
+                                    get_internal_component_sets_numerical,
+                                    get_internal_component_numerical,
+                                    check_intersection_two_segment_numerical_6d_tau,
+                                    check_intersection_segment_surface_numerical_6d_tau,
+                                    #check_intersection_segment_surface_numerical,
+                                    inside_outside_tetrahedron,
+                                    inside_outside_tetrahedron_tau,
+                                    on_out_surface,
+                                    )
+from pyqcstrc.ico2.utils import (remove_doubling_in_perp_space,
+                                tetrahedron_volume_6d,
+                                obj_volume_6d,
+                                generator_surface_1,
+                                generator_unique_triangles,
+                                generator_unique_edges,
+                                tetrahedralization_points,
+                                generate_convex_hull,
+                                )
                     
 TAU=(1+np.sqrt(5))/2.0
 EPS=1e-6

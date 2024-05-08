@@ -6,8 +6,8 @@
 import sys
 import numpy as np
 from numpy.typing import NDArray
-sys.path.append('.')
-from numericalc import coplanar_check_numeric_tau
+#sys.path.append('.')
+from pyqcstrc.ico2.numericalc import coplanar_check_numeric_tau
 
 TAU=(1+np.sqrt(5))/2.0
 

@@ -114,6 +114,7 @@ setup(
     #packages=find_packages(),
     packages = [
         'pyqcstrc/ico',
+        'pyqcstrc/ico2',
         #'pyqcstrc/ico/examples',
         #'pyqcstrc/ico/xyz',
         #'pyqcstrc/ico/tests',
