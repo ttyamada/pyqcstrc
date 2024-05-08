@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyqcstrc.ico2.utils &mdash; PyQCstrc 0.0.2a01 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=c4b47ef7"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyQCstrc
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyQCstrc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyqcstrc.ico2.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyqcstrc.ico2.utils</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1">#</span>
+<span class="c1"># PyQCstrc - Python library for Quasi-Crystal structure</span>
+<span class="c1"># Copyright (c) 2021 Tsunetomo Yamada &lt;tsunetomo.yamada@rs.tus.ac.jp&gt;</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="c1">#sys.path.append(&#39;.&#39;)</span>
+<span class="kn">from</span> <span class="nn">pyqcstrc.ico2.math1</span> <span class="kn">import</span> <span class="p">(</span><span class="n">projection3</span><span class="p">,</span>
+                                <span class="n">add</span><span class="p">,</span>
+                                <span class="n">sub</span><span class="p">,</span>
+                                <span class="n">mul</span><span class="p">,</span>
+                                <span class="n">div</span><span class="p">,</span>
+                                <span class="n">add_vectors</span><span class="p">,</span>
+                                <span class="n">sub_vectors</span><span class="p">,</span>
+                                <span class="n">outer_product</span><span class="p">,</span>
+                                <span class="n">inner_product</span><span class="p">,</span>
+                                <span class="n">centroid</span><span class="p">,</span>
+                                <span class="n">coplanar_check</span><span class="p">,</span>
+                                <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pyqcstrc.ico2.numericalc</span> <span class="kn">import</span> <span class="p">(</span><span class="n">numeric_value</span><span class="p">,</span>
+                                    <span class="n">numerical_vector</span><span class="p">,</span>
+                                    <span class="n">numerical_vectors</span><span class="p">,</span>
+                                    <span class="n">point_on_segment</span><span class="p">,</span>
+                                    <span class="n">coplanar_check_numeric_tau</span><span class="p">,</span>
+                                    <span class="n">get_internal_component_numerical</span><span class="p">,</span>
+                                    <span class="n">get_internal_component_sets_numerical</span><span class="p">,</span>
+                                    <span class="p">)</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy.typing</span> <span class="kn">import</span> <span class="n">NDArray</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">Delaunay</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<div class="viewcode-block" id="shift_object">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.shift_object">[docs]</a>
+<span class="k">def</span> <span class="nf">shift_object</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">shift</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;shift an object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">4</span><span class="p">:</span>
+        <span class="n">obj_new</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="n">i1</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">tetrahedron</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+            <span class="n">i2</span><span class="o">=</span><span class="mi">0</span>
+            <span class="k">for</span> <span class="n">vertex</span> <span class="ow">in</span> <span class="n">tetrahedron</span><span class="p">:</span>
+                <span class="n">obj_new</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">]</span><span class="o">=</span><span class="n">add_vectors</span><span class="p">(</span><span class="n">vertex</span><span class="p">,</span><span class="n">shift</span><span class="p">)</span>
+                <span class="n">i2</span><span class="o">+=</span><span class="mi">1</span>
+            <span class="n">i1</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">return</span> <span class="n">obj_new</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;object has an incorrect shape!&#39;</span><span class="p">)</span>
+        <span class="k">return</span> </div>
+
+
+<span class="c1">#----------------------------</span>
+<span class="c1"># Volume, area</span>
+<span class="c1">#----------------------------</span>
+<div class="viewcode-block" id="obj_volume_6d">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.obj_volume_6d">[docs]</a>
+<span class="k">def</span> <span class="nf">obj_volume_6d</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate volume of an object (set of tetrahedra) in TAU style.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj: array</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    volume: array</span>
+<span class="sd">        Volume in TAU-style.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">4</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">tetrahedron</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+            <span class="n">v</span><span class="o">=</span><span class="n">tetrahedron_volume_6d</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">)</span>
+            <span class="n">w</span><span class="o">=</span><span class="n">add</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">w</span>
+    <span class="k">elif</span> <span class="n">obj</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">5</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">tset</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">tetrahedron</span> <span class="ow">in</span> <span class="n">tset</span><span class="p">:</span>
+                <span class="n">v</span><span class="o">=</span><span class="n">tetrahedron_volume_6d</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">)</span>
+                <span class="n">w</span><span class="o">=</span><span class="n">add</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">w</span>
+    <span class="k">elif</span> <span class="n">obj</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">tetrahedron_volume_6d</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;object has an incorrect shape!&#39;</span><span class="p">)</span>
+        <span class="k">return</span> </div>
+
+
+<div class="viewcode-block" id="tetrahedron_volume_6d">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.tetrahedron_volume_6d">[docs]</a>
+<span class="k">def</span> <span class="nf">tetrahedron_volume_6d</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate volume of tetrahedron in TAU style.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj: array</span>
+<span class="sd">        6d vectors of tetrahedron vertices in TAU-style.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    volume: array</span>
+<span class="sd">        Volume in TAU-style.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">tetrahedron</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+        <span class="n">vts</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">vts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">projection3</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">tetrahedron_volume</span><span class="p">(</span><span class="n">vts</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;object has an incorrect shape!&#39;</span><span class="p">)</span>
+        <span class="k">return</span> </div>
+
+
+<div class="viewcode-block" id="tetrahedron_volume">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.tetrahedron_volume">[docs]</a>
+<span class="k">def</span> <span class="nf">tetrahedron_volume</span><span class="p">(</span><span class="n">vts</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate volume of tetrahedron in TAU style.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj: array</span>
+<span class="sd">        vertex coordinates of the tetrahedron (x0,y0,z0),(x1,y1,z1),(x2,y2,z2),(x3,y3,z3) in TAU-style.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    volume: array</span>
+<span class="sd">        Volume in TAU-style.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">v1</span><span class="o">=</span><span class="n">sub_vectors</span><span class="p">(</span><span class="n">vts</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">vts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">v2</span><span class="o">=</span><span class="n">sub_vectors</span><span class="p">(</span><span class="n">vts</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">vts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">v3</span><span class="o">=</span><span class="n">sub_vectors</span><span class="p">(</span><span class="n">vts</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">vts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    
+    <span class="n">v</span><span class="o">=</span><span class="n">outer_product</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span>
+    <span class="n">v</span><span class="o">=</span><span class="n">inner_product</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">v3</span><span class="p">)</span>
+    
+    <span class="c1"># avoid a negative value</span>
+    <span class="n">val</span><span class="o">=</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">val</span><span class="o">&lt;</span><span class="mf">0.0</span><span class="p">:</span> <span class="c1"># to avoid negative volume</span>
+        <span class="k">return</span> <span class="n">mul</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">mul</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">]))</span></div>
+
+
+<span class="c1">#----------------------------</span>
+<span class="c1"># Remove doubling</span>
+<span class="c1">#----------------------------</span>
+<div class="viewcode-block" id="remove_doubling">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.remove_doubling">[docs]</a>
+<span class="k">def</span> <span class="nf">remove_doubling</span><span class="p">(</span><span class="n">vts</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove doubling 6d coordinates</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj: array</span>
+<span class="sd">        set of 6-dimensional vectors in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    obj: array</span>
+<span class="sd">        set of 6-dimensional vectors in TAU-style</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ndim</span><span class="o">=</span><span class="n">vts</span><span class="o">.</span><span class="n">ndim</span>
+    <span class="k">if</span> <span class="n">ndim</span><span class="o">==</span><span class="mi">4</span><span class="p">:</span>
+        <span class="n">n1</span><span class="p">,</span><span class="n">n2</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">vts</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">num</span><span class="o">=</span><span class="n">n1</span><span class="o">*</span><span class="n">n2</span>
+        <span class="n">vts</span><span class="o">=</span><span class="n">vts</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">num</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">vts</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">ndim</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">vts</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ndim should be 3 or 4.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> </div>
+
+
+<div class="viewcode-block" id="remove_doubling_in_perp_space">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.remove_doubling_in_perp_space">[docs]</a>
+<span class="k">def</span> <span class="nf">remove_doubling_in_perp_space</span><span class="p">(</span><span class="n">vts</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove 6d coordinates which is doubled in Eperp.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vts: array</span>
+<span class="sd">        set of 6-dimensional vectors in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    vts: array</span>
+<span class="sd">        set of 6-dimensional vectors in TAU-style</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ndim</span><span class="o">=</span><span class="n">vts</span><span class="o">.</span><span class="n">ndim</span>
+    <span class="k">if</span> <span class="n">ndim</span><span class="o">==</span><span class="mi">4</span><span class="p">:</span>
+        <span class="n">n1</span><span class="p">,</span><span class="n">n2</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">vts</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">num</span><span class="o">=</span><span class="n">n1</span><span class="o">*</span><span class="n">n2</span>
+        <span class="n">vst</span><span class="o">=</span><span class="n">vts</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">num</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">ndim</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+        <span class="c1">#num,_,_=vts.shape</span>
+        <span class="k">pass</span>
+    
+    <span class="c1"># first run remove_doubling()</span>
+    <span class="n">vts</span><span class="o">=</span><span class="n">remove_doubling</span><span class="p">(</span><span class="n">vts</span><span class="p">)</span>
+    <span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">vts</span><span class="p">)</span>
+    
+    <span class="c1"># then, remove doubling in perp space.</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+        <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">projection3</span><span class="p">(</span><span class="n">vts</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+        <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">vts</span><span class="p">[</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+    <span class="k">return</span> <span class="n">a</span></div>
+
+
+<span class="c1">#----------------------------</span>
+<span class="c1"># Surface, trianges, and edges</span>
+<span class="c1">#</span>
+<span class="c1"># Comment：Need to be reorganised.</span>
+<span class="c1">#----------------------------</span>
+<div class="viewcode-block" id="generator_surface_1">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.generator_surface_1">[docs]</a>
+<span class="k">def</span> <span class="nf">generator_surface_1</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate triangles of the object&#39;s surface.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj: array</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    surfaces: array</span>
+<span class="sd">        set of surface triangles in TAU-style.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># (1) preparing a list of triangle surfaces without doubling (tmp2)</span>
+    <span class="n">n1</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">obj</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">triangles</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">i1</span><span class="o">=</span><span class="mi">0</span>
+    
+    <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;      generator_surface_1 part-1&#39;</span><span class="p">)</span>
+        <span class="n">start</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="c1">#</span>
+    <span class="k">for</span> <span class="n">tetrahedron</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+        <span class="n">triangles</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">get_tetrahedron_surface</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">)</span>
+        <span class="n">i1</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="n">triangles</span><span class="o">=</span><span class="n">triangles</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n1</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    <span class="c1">#</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">end</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">time_diff</span><span class="o">=</span><span class="n">end</span><span class="o">-</span><span class="n">start</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;         ends in </span><span class="si">%4.3f</span><span class="s1"> sec&#39;</span><span class="o">%</span><span class="n">time_diff</span><span class="p">)</span>
+    
+    
+    <span class="k">if</span> <span class="n">n1</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">triangles</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;      generator_surface_1 part-2&#39;</span><span class="p">)</span>
+            <span class="n">start</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="c1">#</span>
+        
+        <span class="c1"># (2) 重複のない三角形（すなはちobject表面の三角形）のみを得る。</span>
+        <span class="c1"># 三角形が重複していれば重心も同じことを利用する。重心が一致すれば重複しているとは限らないが、</span>
+        <span class="c1"># objが正しく与えられているとすれば問題ない。</span>
+        <span class="c1">#</span>
+        <span class="c1"># まず重心xyzを求める</span>
+        <span class="n">xyz</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n1</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n1</span><span class="o">*</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">vt</span><span class="o">=</span><span class="n">centroid</span><span class="p">(</span><span class="n">triangles</span><span class="p">[</span><span class="n">i1</span><span class="p">])</span>
+            <span class="n">xyz</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">get_internal_component_numerical</span><span class="p">(</span><span class="n">vt</span><span class="p">)</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        # 以下のやり方では効率悪い。</span>
+<span class="sd">        # triangleの数が多ければ時間がかかる(O(n^2))ので改良が必要</span>
+<span class="sd">        #===========ここから============</span>
+<span class="sd">        # xyzをxでソートし、indexを得る。</span>
+<span class="sd">        indx_xyz=np.argsort(xyz[:,0])</span>
+<span class="sd">        #print(&#39;number of trianges:&#39;,len(indx_xyz))</span>
+<span class="sd">        #print(&#39;indx_xyz:&#39;,indx_xyz)</span>
+<span class="sd">        #print(xyz[indx_xyz])</span>
+<span class="sd">        </span>
+<span class="sd">        # 重複しているtriangleはスキップ。表面のtriangleのみを選び出す。</span>
+<span class="sd">        lst=[]</span>
+<span class="sd">        for i1 in indx_xyz:</span>
+<span class="sd">            counter=0</span>
+<span class="sd">            for i2 in indx_xyz:</span>
+<span class="sd">                if i1==i2:</span>
+<span class="sd">                    pass</span>
+<span class="sd">                else:</span>
+<span class="sd">                    if np.allclose(xyz[i1],xyz[i2]): # equivalent</span>
+<span class="sd">                        counter+=1</span>
+<span class="sd">                        break</span>
+<span class="sd">            if counter==0:</span>
+<span class="sd">                lst.append(i1)</span>
+<span class="sd">        #===========ここまで============</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#&quot;&quot;&quot;</span>
+        <span class="c1"># xyz座標のソートをx,y,zに対して行い、重複チェックを効率化(O(n))。</span>
+        <span class="c1">#===========ここから============</span>
+        <span class="c1"># xyzをx,y,zの順で優先的にソートし、indexを得る。</span>
+        <span class="n">indx_xyz</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">lexsort</span><span class="p">((</span><span class="n">xyz</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span><span class="n">xyz</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">xyz</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="c1">#print(&#39;number of trianges:&#39;,len(indx_xyz))</span>
+        <span class="c1">#print(&#39;indx_xyz:&#39;,indx_xyz)</span>
+        
+        <span class="c1"># 表面のtriangleのみを選び出すには、重複しているtriangleを除けば良い。</span>
+        <span class="c1"># 上でxyzをx,y,zの順で優先的にソートできていれば、着目している点をその前後と比べるだけで重複があるか判断できる。</span>
+        <span class="n">lst</span><span class="o">=</span><span class="p">[]</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">xyz</span><span class="p">[</span><span class="n">indx_xyz</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span><span class="n">xyz</span><span class="p">[</span><span class="n">indx_xyz</span><span class="p">[</span><span class="mi">1</span><span class="p">]]):</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indx_xyz</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">indx_xyz</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">counter</span><span class="o">=</span><span class="mi">0</span>
+            <span class="k">for</span> <span class="n">i2</span> <span class="ow">in</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">xyz</span><span class="p">[</span><span class="n">indx_xyz</span><span class="p">[</span><span class="n">i1</span><span class="p">]],</span><span class="n">xyz</span><span class="p">[</span><span class="n">indx_xyz</span><span class="p">[</span><span class="n">i1</span><span class="o">+</span><span class="n">i2</span><span class="p">]]):</span> <span class="c1"># equivalent</span>
+                    <span class="n">counter</span><span class="o">+=</span><span class="mi">1</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="n">counter</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indx_xyz</span><span class="p">[</span><span class="n">i1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">xyz</span><span class="p">[</span><span class="n">indx_xyz</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span><span class="n">xyz</span><span class="p">[</span><span class="n">indx_xyz</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]]):</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indx_xyz</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="c1">#===========ここまで============</span>
+        <span class="c1">#&quot;&quot;&quot;</span>
+        
+        <span class="c1">#print(&#39;lst:&#39;,lst)</span>
+        <span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">)</span>
+        <span class="c1">#print(&#39;num:&#39;,num)</span>
+        <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="c1">#print(&#39;number of unique triangls:&#39;,num)</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">triangles</span><span class="p">[</span><span class="n">lst</span><span class="p">[</span><span class="n">i1</span><span class="p">]]</span>
+        <span class="c1">#print(&#39;shape:&#39;,out.shape)</span>
+        
+        <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">end</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="n">time_diff</span><span class="o">=</span><span class="n">end</span><span class="o">-</span><span class="n">start</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;         ends in </span><span class="si">%4.3f</span><span class="s1"> sec&#39;</span><span class="o">%</span><span class="n">time_diff</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="generator_unique_triangles">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.generator_unique_triangles">[docs]</a>
+<span class="k">def</span> <span class="nf">generator_unique_triangles</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate unique triangles in an object</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj: array</span>
+<span class="sd">        set of tetrahedra</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    triangles: array</span>
+<span class="sd">        set of triangles in TAU-style.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># (1) preparing a list of triangle surfaces without doubling (tmp2)</span>
+    <span class="c1">#print(&#39;get_tetrahedron_surface() starts&#39;)</span>
+    <span class="n">n1</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">obj</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">triangles</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">i1</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">tetrahedron</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+        <span class="n">triangles</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">get_tetrahedron_surface</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">)</span>
+        <span class="n">i1</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="n">triangles</span><span class="o">=</span><span class="n">triangles</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n1</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    <span class="c1">#print(&#39;get_tetrahedron_surface() ends&#39;)</span>
+    <span class="c1">#print(&#39;      number of triangle&#39;,len(triangles))</span>
+    <span class="k">if</span> <span class="n">n1</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">triangles</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># (2) ユニークな三角形を得る。</span>
+        <span class="c1"># 三角形が重複していれば重心も同じことを利用する。重心が一致すれば重複しているとは限らないが、</span>
+        <span class="c1"># objが正しく与えられているとすれば問題ない。</span>
+        <span class="c1">#print(&#39;number of trianges:&#39;,len(triangles))</span>
+        <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n1</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n1</span><span class="o">*</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">vt</span><span class="o">=</span><span class="n">centroid</span><span class="p">(</span><span class="n">triangles</span><span class="p">[</span><span class="n">i1</span><span class="p">])</span>
+            <span class="n">a</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">get_internal_component_numerical</span><span class="p">(</span><span class="n">vt</span><span class="p">)</span>
+        <span class="n">b</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="c1">#print(&#39;number of unique trianges:&#39;,num)</span>
+        <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+            <span class="n">a</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">triangles</span><span class="p">[</span><span class="n">b</span><span class="p">[</span><span class="n">i1</span><span class="p">]]</span>
+        <span class="k">return</span> <span class="n">a</span></div>
+
+
+<div class="viewcode-block" id="get_tetrahedron_surface">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.get_tetrahedron_surface">[docs]</a>
+<span class="k">def</span> <span class="nf">get_tetrahedron_surface</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return four triangles of tetrahedron.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># four triangles of tetrahedron: 1-2-3, 1-2-4, 1-3-4, 2-3-4</span>
+    <span class="n">comb</span><span class="o">=</span><span class="p">[</span>\
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span> 
+    <span class="c1">#</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">i1</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">comb</span><span class="p">:</span>
+        <span class="n">i2</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">k</span><span class="p">:</span>
+            <span class="n">a</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">]</span><span class="o">=</span><span class="n">tetrahedron</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+            <span class="n">i2</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="n">i1</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">a</span></div>
+
+
+<span class="c1">#### WIP ###</span>
+<div class="viewcode-block" id="get_common_edges">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.get_common_edges">[docs]</a>
+<span class="k">def</span> <span class="nf">get_common_edges</span><span class="p">(</span><span class="n">trianges</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get common edges in trianges</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> </div>
+
+
+<div class="viewcode-block" id="generator_all_edges">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.generator_all_edges">[docs]</a>
+<span class="k">def</span> <span class="nf">generator_all_edges</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate all egdes in Object</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj: array</span>
+<span class="sd">        set of tetrahedra</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    edges: array</span>
+<span class="sd">        set of edges in TAU-style.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># (1) preparing a list of edges</span>
+    <span class="n">n1</span><span class="p">,</span><span class="n">n2</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">obj</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">if</span> <span class="n">n2</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+        <span class="n">edges</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="n">i1</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">triangle</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+            <span class="n">edges</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">get_triangle_edge</span><span class="p">(</span><span class="n">triangle</span><span class="p">)</span>
+            <span class="n">i1</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">return</span> <span class="n">edges</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n1</span><span class="o">*</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">n2</span><span class="o">==</span><span class="mi">4</span><span class="p">:</span>
+        <span class="n">edges</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n1</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="n">i1</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">tetrahedron</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+            <span class="n">edges</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">get_tetrahedron_edge</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">)</span>
+            <span class="n">i1</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">return</span> <span class="n">edges</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n1</span><span class="o">*</span><span class="mi">6</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;obj should be a set of trianges or tetrahedra&#39;</span><span class="p">)</span>
+        <span class="k">return</span> </div>
+
+
+<span class="c1">### WIP: to be checked ###</span>
+<div class="viewcode-block" id="generator_unique_edges">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.generator_unique_edges">[docs]</a>
+<span class="k">def</span> <span class="nf">generator_unique_edges</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return unique egdes in Object</span>
+<span class="sd">    </span>
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    Current implementation may return wrong object when the object is a set of tetrahedra.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n1</span><span class="p">,</span><span class="n">n2</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">obj</span><span class="o">.</span><span class="n">shape</span>
+    
+    <span class="c1"># (1) preparing a list of edges</span>
+    <span class="k">if</span> <span class="n">n2</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span> <span class="c1"># obj is set of trianges</span>
+        <span class="n">edges</span><span class="o">=</span><span class="n">generator_all_edges</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">n2</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span> <span class="c1"># obj is set of edges</span>
+        <span class="n">edges</span><span class="o">=</span><span class="n">obj</span>
+    <span class="k">elif</span> <span class="n">n2</span><span class="o">==</span><span class="mi">4</span><span class="p">:</span> <span class="c1"># obj is set of tetrahedra</span>
+        <span class="n">edges</span><span class="o">=</span><span class="n">generator_all_edges</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> 
+    <span class="k">else</span><span class="p">:</span>  
+        <span class="k">pass</span>
+    
+    <span class="c1"># (2) 重複のないユニークな辺を得る。</span>
+    <span class="c1">#print(&#39;number of edges:&#39;,len(edges))</span>
+    <span class="n">num_edges</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num_edges</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_edges</span><span class="p">):</span>
+        <span class="n">vt</span><span class="o">=</span><span class="n">centroid</span><span class="p">(</span><span class="n">edges</span><span class="p">[</span><span class="n">i1</span><span class="p">])</span>
+        <span class="n">a</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">get_internal_component_numerical</span><span class="p">(</span><span class="n">vt</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="c1">#print(&#39;number of unique edges:&#39;,num)</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+        <span class="n">a</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">edges</span><span class="p">[</span><span class="n">b</span><span class="p">[</span><span class="n">i1</span><span class="p">]]</span>
+    <span class="k">return</span> <span class="n">a</span></div>
+
+
+<div class="viewcode-block" id="get_triangle_edge">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.get_triangle_edge">[docs]</a>
+<span class="k">def</span> <span class="nf">get_triangle_edge</span><span class="p">(</span><span class="n">triangle</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return three edges of triange.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># three edges of triange: 0-1, 0-2, 1-2</span>
+    <span class="n">comb</span><span class="o">=</span><span class="p">[</span>\
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]]</span> 
+    
+    <span class="c1"># Three egdes of the triangl.</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">i1</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">comb</span><span class="p">:</span>
+        <span class="n">i2</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">k</span><span class="p">:</span>
+            <span class="n">a</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">]</span><span class="o">=</span><span class="n">triangle</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+            <span class="n">i2</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="n">i1</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">a</span></div>
+
+
+<span class="c1">### WIP: to be checked ###</span>
+<div class="viewcode-block" id="get_tetrahedron_edge">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.get_tetrahedron_edge">[docs]</a>
+<span class="k">def</span> <span class="nf">get_tetrahedron_edge</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return six edges of tetrahedron.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># four six of triange: 0-1, 0-2, 1-2,...</span>
+    <span class="n">comb</span><span class="o">=</span><span class="p">[</span>\
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+    <span class="p">]</span> 
+    <span class="c1">#</span>
+    <span class="c1"># Six egdes of the tetrahedron.</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">6</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">i1</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">comb</span><span class="p">:</span>
+        <span class="n">i2</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">k</span><span class="p">:</span>
+            <span class="n">a</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">]</span><span class="o">=</span><span class="n">tetrahedron</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+            <span class="n">i2</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="n">i1</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">a</span></div>
+
+
+<span class="c1">#-------------</span>
+<span class="c1"># Convex_hull</span>
+<span class="c1">#-------------</span>
+<div class="viewcode-block" id="generate_convex_hull">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.generate_convex_hull">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_convex_hull</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;generate convex hull from object</span>
+<span class="sd">    </span>
+<span class="sd">    objの凸包を得る。</span>
+<span class="sd">    </span>
+<span class="sd">    アルゴリズム</span>
+<span class="sd">    1. objの表面三角形を得る。</span>
+<span class="sd">    2. 無駄な表面三角形をなくす by surface_cleaner()。</span>
+<span class="sd">    3. objの頂点座標を得る</span>
+<span class="sd">    4. 四面体分割</span>
+<span class="sd">    </span>
+<span class="sd">    objが凸包であれば、この関数を実行することで、よりシンプルに四面体分割されたobjを得ることができる。</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 1</span>
+    <span class="n">triangle_surface</span><span class="o">=</span><span class="n">generator_surface_1</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="c1">#print(&#39;triangle_surface.shape:&#39;,triangle_surface.shape)</span>
+    <span class="c1"># 2</span>
+    <span class="n">edge_surface</span><span class="o">=</span><span class="n">surface_cleaner</span><span class="p">(</span><span class="n">triangle_surface</span><span class="p">)</span>
+    <span class="c1">#print(&#39;edge_surface.shape:&#39;,edge_surface.shape)</span>
+    
+    <span class="c1"># 3</span>
+    <span class="n">vts</span><span class="o">=</span><span class="n">remove_doubling_in_perp_space</span><span class="p">(</span><span class="n">edge_surface</span><span class="p">)</span>
+    <span class="c1">#print(&#39;tmp.shape&#39;,tmp.shape)</span>
+    
+    <span class="c1"># 4</span>
+    <span class="k">return</span> <span class="n">tetrahedralization_points</span><span class="p">(</span><span class="n">vts</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="surface_cleaner">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.surface_cleaner">[docs]</a>
+<span class="k">def</span> <span class="nf">surface_cleaner</span><span class="p">(</span><span class="n">surface</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;generate border edges from a set of triangles on the objct&#39;s surface.</span>
+<span class="sd">    </span>
+<span class="sd">    obj表面の三角形からobjの外枠を出力。</span>
+<span class="sd">    </span>
+<span class="sd">    アルゴリズム：</span>
+<span class="sd">    1) 同一平面上にある三角形ごとにグループ分けする</span>
+<span class="sd">    2) 各グループにおいて、以下を行う．</span>
+<span class="sd">        2-1) 三角形の３辺が、他のどの三角形とも共有していない辺を求める</span>
+<span class="sd">        2-3) ２つの辺が１つの辺にまとめられるのであれば、まとめる</span>
+<span class="sd">        2-3) 辺の集合をアウトプット</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 同一平面上にある三角形を求め、集合lst_setsとする</span>
+    <span class="n">lst_sets</span><span class="o">=</span><span class="n">get_sets_of_coplanar_triangles</span><span class="p">(</span><span class="n">surface</span><span class="p">)</span>
+    <span class="c1">#print(&#39;num. of lst_sets:&#39;,len(lst_sets))</span>
+    
+    <span class="c1">#同一平面上にある三角形の辺のうち、どの三角形とも共有していない独立な辺を求める．</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lst_sets</span><span class="p">)):</span>
+        <span class="c1">#print(&#39;num. of coplanar triangles&#39;,len(lst_sets[i]))</span>
+        <span class="n">edges</span><span class="o">=</span><span class="n">gen_border_edges_of_coplanar_triangles</span><span class="p">(</span><span class="n">lst_sets</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">i</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">edges_new</span><span class="o">=</span><span class="n">edges</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">edges_new</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">edges_new</span><span class="p">,</span><span class="n">edges</span><span class="p">])</span>
+    
+    <span class="c1"># ２辺を１つの辺にまとめられるのであれば、まとめる</span>
+    <span class="c1">#print(&#39;edges_new.shape&#39;,edges_new.shape)</span>
+    <span class="n">edges_new</span><span class="o">=</span><span class="n">generator_unique_edges</span><span class="p">(</span><span class="n">edges_new</span><span class="p">)</span>
+    <span class="c1">#print(&#39;edges_new.shape&#39;,edges_new.shape)</span>
+    <span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">edges_new</span><span class="p">)</span>
+    <span class="n">lst0</span><span class="o">=</span><span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">)]</span>
+    <span class="n">lst</span><span class="o">=</span><span class="n">lst0</span>
+    <span class="n">flag</span><span class="o">=</span><span class="mi">1</span>
+    <span class="k">while</span> <span class="n">flag</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+    <span class="c1">#for _ in range(num_iteration):</span>
+        <span class="n">counter</span><span class="o">=</span><span class="mi">0</span>
+        <span class="c1">#print(&#39;lst&#39;,lst)</span>
+        <span class="n">n0</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">edges_new</span><span class="p">)</span>
+        <span class="c1">#print(&#39;n0&#39;,n0)</span>
+        <span class="k">for</span> <span class="n">comb</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="mi">2</span><span class="p">)):</span>
+            <span class="n">a</span><span class="o">=</span><span class="n">two_segment_into_one</span><span class="p">(</span><span class="n">edges_new</span><span class="p">[</span><span class="n">comb</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span><span class="n">edges_new</span><span class="p">[</span><span class="n">comb</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">a</span><span class="o">==</span><span class="kc">None</span><span class="p">):</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">counter</span><span class="o">=</span><span class="mi">1</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="n">counter</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">lst</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">comb</span><span class="p">),</span> <span class="n">lst</span><span class="p">))</span>
+            <span class="c1">#print(&#39;  comb&#39;,comb)</span>
+            <span class="c1">#print(&#39;  lst&#39;,lst)</span>
+            <span class="c1">#print(&#39;  edges_new.shape&#39;,edges_new.shape)</span>
+            <span class="c1">#print(&#39;  a.shape&#39;,a.shape)</span>
+            <span class="n">edges_new</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">edges_new</span><span class="p">,[</span><span class="n">a</span><span class="p">]])</span>
+            <span class="n">lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+            <span class="n">num</span><span class="o">+=</span><span class="mi">1</span>
+            <span class="c1">#print(&#39;  lst&#39;,lst)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">flag</span><span class="o">=</span><span class="mi">0</span>
+    <span class="c1">#print(&#39;edges_new.shape&#39;,edges_new.shape)</span>
+    <span class="n">n1</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">)</span>
+    <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n1</span><span class="p">):</span>
+        <span class="n">out</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">edges_new</span><span class="p">[</span><span class="n">lst</span><span class="p">[</span><span class="n">i1</span><span class="p">]]</span>
+    <span class="c1">#print(&#39;out.shape&#39;,out.shape)</span>
+    
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="get_sets_of_coplanar_triangles">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.get_sets_of_coplanar_triangles">[docs]</a>
+<span class="k">def</span> <span class="nf">get_sets_of_coplanar_triangles</span><span class="p">(</span><span class="n">surface</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    同一平面上にある三角形の集合を作る。surfaceに含まれるtriangleについて</span>
+<span class="sd">    順に同一平面上にあるかどうかをチェックし、もし以前のどの三角形とも同一平面</span>
+<span class="sd">    にない時はそのインデックスをlst_indx_groupに収納する。また、lst_indx_triangle</span>
+<span class="sd">    にもそのインデックスを収納する。一方、すでにチェックした三角形と同一平面に</span>
+<span class="sd">    にある場合はlst_indx_triangleに同一平面三角形のインデックスを収納</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">surface</span><span class="p">)</span>
+    <span class="n">lst_indx_group</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">lst_indx_triangle</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">num</span><span class="p">):</span>
+        <span class="n">counter</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i2</span> <span class="ow">in</span> <span class="n">lst_indx_group</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">coplanar_check_two_triangles</span><span class="p">(</span><span class="n">surface</span><span class="p">[</span><span class="n">i1</span><span class="p">],</span><span class="n">surface</span><span class="p">[</span><span class="n">i2</span><span class="p">]):</span> <span class="c1"># coplanar</span>
+                <span class="n">counter</span><span class="o">=</span><span class="mi">1</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span> <span class="c1"># non coplanar</span>
+                <span class="k">pass</span>
+        <span class="k">if</span> <span class="n">counter</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">lst_indx_triangle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i1</span><span class="p">)</span>
+            <span class="n">lst_indx_group</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lst_indx_triangle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i2</span><span class="p">)</span>
+    <span class="n">lst_sets</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="n">lst_indx_group</span><span class="p">:</span>
+        <span class="n">tmp</span><span class="o">=</span><span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i1</span><span class="o">==</span><span class="n">lst_indx_triangle</span><span class="p">[</span><span class="n">i2</span><span class="p">]:</span>
+                <span class="n">tmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">surface</span><span class="p">[</span><span class="n">i2</span><span class="p">])</span>
+        <span class="n">num_triangle</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+        <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num_triangle</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_triangle</span><span class="p">):</span>
+            <span class="n">a</span><span class="p">[</span><span class="n">i2</span><span class="p">]</span><span class="o">=</span><span class="n">tmp</span><span class="p">[</span><span class="n">i2</span><span class="p">]</span>
+        <span class="n">lst_sets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">lst_sets</span></div>
+
+
+<div class="viewcode-block" id="gen_border_edges_of_coplanar_triangles">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.gen_border_edges_of_coplanar_triangles">[docs]</a>
+<span class="k">def</span> <span class="nf">gen_border_edges_of_coplanar_triangles</span><span class="p">(</span><span class="n">coplanar_triangles</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    同一平面上にある三角形の辺のうち、どの三角形とも共有していない独立な辺を求める．</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">unique_edges</span><span class="o">=</span><span class="n">generator_unique_edges</span><span class="p">(</span><span class="n">coplanar_triangles</span><span class="p">)</span>
+    <span class="n">edges</span><span class="o">=</span><span class="n">generator_all_edges</span><span class="p">(</span><span class="n">coplanar_triangles</span><span class="p">)</span>
+    <span class="c1">#print(&#39; num. of edges:&#39;,len(edges))</span>
+    <span class="c1">#print(&#39; num. of unique_edges:&#39;,len(unique_edges))</span>
+    <span class="n">lst</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">for</span> <span class="n">edge1</span> <span class="ow">in</span> <span class="n">unique_edges</span><span class="p">:</span>
+        <span class="n">counter</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">edge2</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+            <span class="n">tmp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">edge1</span><span class="p">,</span><span class="n">edge2</span><span class="p">])</span>
+            <span class="n">tmp</span><span class="o">=</span><span class="n">remove_doubling_in_perp_space</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+                <span class="n">counter</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="k">if</span> <span class="n">counter</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+                    <span class="k">break</span>
+        <span class="k">if</span> <span class="n">counter</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">edge1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span></div>
+
+
+<span class="c1">#----------------------------</span>
+<span class="c1"># Equivalence check</span>
+<span class="c1">#</span>
+<span class="c1"># Better to merge following four functions into a function &quot;equivalent&quot;???</span>
+<span class="c1">#   equivalent_tetrahedra</span>
+<span class="c1">#   equivalent_triangles</span>
+<span class="c1">#   equivalent_edges</span>
+<span class="c1">#   equivalent_vertices</span>
+<span class="c1">#----------------------------</span>
+<span class="c1"># WIP:</span>
+<div class="viewcode-block" id="equivalent">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.equivalent">[docs]</a>
+<span class="k">def</span> <span class="nf">equivalent</span><span class="p">(</span><span class="n">obj1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">obj2</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checking whether obj1 and obj1 are equivalent or not. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">check1</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">n1</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">n2</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="n">n1</span><span class="o">==</span><span class="n">n2</span><span class="p">:</span>
+            <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">])</span>
+            <span class="n">a</span><span class="o">=</span><span class="n">remove_doubling_in_perp_space</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">==</span><span class="n">n</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span> <span class="c1"># equivalent traiangle</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span> <span class="c1"># not equivalent traiangles</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    
+    <span class="k">def</span> <span class="nf">check2</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+        <span class="n">a</span><span class="o">=</span><span class="n">projection3</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="n">b</span><span class="o">=</span><span class="n">projection3</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">a</span><span class="o">==</span><span class="n">b</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span> <span class="c1"># equivalent traiangle</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    
+    <span class="k">if</span> <span class="n">obj1</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">3</span> <span class="ow">and</span> <span class="n">obj2</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+        <span class="n">n1</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">obj1</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">n2</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">obj2</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">return</span> <span class="n">check1</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span><span class="n">obj2</span><span class="p">,</span><span class="n">n1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">obj1</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">4</span> <span class="ow">and</span> <span class="n">obj2</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">4</span><span class="p">:</span>
+        <span class="n">n1</span><span class="p">,</span><span class="n">n2</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">obj1</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">m1</span><span class="p">,</span><span class="n">m2</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">obj2</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="n">n1</span><span class="o">==</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">m1</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">obj1</span><span class="o">=</span><span class="n">obj1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">obj2</span><span class="o">=</span><span class="n">obj2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">n1</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">obj1</span><span class="o">.</span><span class="n">shape</span>
+            <span class="n">n2</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">obj2</span><span class="o">.</span><span class="n">shape</span>
+            <span class="k">return</span> <span class="n">check1</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span><span class="n">obj2</span><span class="p">,</span><span class="n">n1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">elif</span> <span class="n">obj1</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">2</span> <span class="ow">and</span> <span class="n">obj2</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">check2</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span><span class="n">obj2</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> </div>
+
+
+<div class="viewcode-block" id="equivalent_tetrahedra">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.equivalent_tetrahedra">[docs]</a>
+<span class="k">def</span> <span class="nf">equivalent_tetrahedra</span><span class="p">(</span><span class="n">tetrahedron_1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">tetrahedron_2</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checking whether tetrahedron_1 and _2 are equivalent or not.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">tetrahedron_1</span><span class="p">,</span><span class="n">tetrahedron_2</span><span class="p">])</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">remove_doubling_in_perp_space</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">==</span><span class="mi">4</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span> <span class="c1"># equivalent traiangle</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span> <span class="c1"># not equivalent traiangles</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    # generate traiangles</span>
+<span class="sd">    surface1=get_tetrahedron_surface(tetrahedron_1)</span>
+<span class="sd">    surface2=get_tetrahedron_surface(tetrahedron_2)</span>
+<span class="sd">    </span>
+<span class="sd">    count=0</span>
+<span class="sd">    for triangle1 in surface1:</span>
+<span class="sd">        for triangle2 in surface2: # i2-th triangle of tetrahedron2</span>
+<span class="sd">            if equivalent_triangles(triangle1,triangle2): # equivalent</span>
+<span class="sd">                count+=1</span>
+<span class="sd">                break</span>
+<span class="sd">            else:</span>
+<span class="sd">                pass</span>
+<span class="sd">        if count!=0:</span>
+<span class="sd">            break</span>
+<span class="sd">        else:</span>
+<span class="sd">            pass</span>
+<span class="sd">    if count==0:</span>
+<span class="sd">        return False</span>
+<span class="sd">    else:</span>
+<span class="sd">        return True</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="equivalent_triangles">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.equivalent_triangles">[docs]</a>
+<span class="k">def</span> <span class="nf">equivalent_triangles</span><span class="p">(</span><span class="n">triangle1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">triangle2</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checking whether triangle1 and triangle2 are equivalent or not.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">triangle1</span><span class="p">,</span><span class="n">triangle2</span><span class="p">])</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">remove_doubling_in_perp_space</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span> <span class="c1"># equivalent traiangle</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span> <span class="c1"># not equivalent traiangles</span></div>
+
+
+<div class="viewcode-block" id="equivalent_edges">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.equivalent_edges">[docs]</a>
+<span class="k">def</span> <span class="nf">equivalent_edges</span><span class="p">(</span><span class="n">edge1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">edge2</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checking whether edge1 and edge2 are equivalent or not.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">edge1</span><span class="p">,</span><span class="n">edge2</span><span class="p">])</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">remove_doubling_in_perp_space</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span> <span class="c1"># equivalent</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span> <span class="c1"># not equivalent</span></div>
+
+
+<div class="viewcode-block" id="equivalent_vertices">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.equivalent_vertices">[docs]</a>
+<span class="k">def</span> <span class="nf">equivalent_vertices</span><span class="p">(</span><span class="n">vertex1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">vertex2</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="n">xyz1</span><span class="o">=</span><span class="n">projection3</span><span class="p">(</span><span class="n">vertex1</span><span class="p">)</span>
+    <span class="n">xyz2</span><span class="o">=</span><span class="n">projection3</span><span class="p">(</span><span class="n">vertex2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">xyz1</span><span class="o">==</span><span class="n">xyz2</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span> <span class="c1"># equivalent</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<span class="c1">#----------------------------</span>
+<span class="c1"># Sort</span>
+<span class="c1">#----------------------------</span>
+<div class="viewcode-block" id="sort_vctors">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.sort_vctors">[docs]</a>
+<span class="k">def</span> <span class="nf">sort_vctors</span><span class="p">(</span><span class="n">vts</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    sort vectors in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    xi,yi,ziをxiでソート</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n1</span><span class="p">,</span><span class="n">n2</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">vts</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">vts</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">vns</span><span class="o">=</span><span class="n">get_internal_component_sets_numerical</span><span class="p">(</span><span class="n">vts</span><span class="p">)</span>
+    
+    <span class="c1">#tmp=np.argsort(vns,axis=0)</span>
+    <span class="n">tmp</span><span class="o">=</span><span class="n">vns</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">vns</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])]</span>
+    <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n1</span><span class="p">):</span>
+        <span class="n">out</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">vts</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="sort_obj">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.sort_obj">[docs]</a>
+<span class="k">def</span> <span class="nf">sort_obj</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    sort tehtahedra in an object</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">vts</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">centroids</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">tmp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">obj</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    
+    <span class="c1"># 各tetrahedronの頂点xyzをx順にソートすると同時に重心を求めておく。</span>
+    <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)):</span>
+        <span class="n">tmp</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">sort_vctors</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">])</span>
+        <span class="n">centroids</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">centroid</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">])</span>
+    
+    <span class="c1"># 四面体の重心xyzのx順にソート</span>
+    <span class="c1">#indx=np.argsort(centroids,axis=0)</span>
+    <span class="n">indx</span><span class="o">=</span><span class="n">centroids</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">centroids</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])]</span>
+    
+    <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n1</span><span class="p">):</span>
+        <span class="n">out</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">tmp</span><span class="p">[</span><span class="n">indx</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+<span class="c1">#----------------------------</span>
+<span class="c1"># Tetrahedralization</span>
+<span class="c1">#----------------------------</span>
+<div class="viewcode-block" id="decomposition">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.decomposition">[docs]</a>
+<span class="k">def</span> <span class="nf">decomposition</span><span class="p">(</span><span class="n">tmp2v</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">tri</span><span class="o">=</span><span class="n">Delaunay</span><span class="p">(</span><span class="n">tmp2v</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;error in decomposition&#39;</span><span class="p">)</span>
+        <span class="k">return</span> 
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">tmp</span><span class="o">=</span><span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tri</span><span class="o">.</span><span class="n">simplices</span><span class="p">)):</span>
+            <span class="n">tet</span><span class="o">=</span><span class="n">tri</span><span class="o">.</span><span class="n">simplices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">tmp</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">tet</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">tet</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">tet</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">tet</span><span class="p">[</span><span class="mi">3</span><span class="p">]])</span>
+    <span class="k">return</span> <span class="n">tmp</span></div>
+
+
+<div class="viewcode-block" id="tetrahedralization_points">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.tetrahedralization_points">[docs]</a>
+<span class="k">def</span> <span class="nf">tetrahedralization_points</span><span class="p">(</span><span class="n">points</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+    
+    <span class="n">i1</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">points</span><span class="p">:</span>
+        <span class="n">v</span><span class="o">=</span><span class="n">projection3</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">v</span><span class="o">=</span><span class="n">numerical_vector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">i1</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">tmp</span><span class="o">=</span><span class="n">v</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tmp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">tmp</span><span class="p">,</span><span class="n">v</span><span class="p">])</span>
+        <span class="n">i1</span><span class="o">+=</span><span class="mi">1</span>
+        
+    <span class="n">ltmp</span><span class="o">=</span><span class="n">decomposition</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">=</span><span class="n">points</span>
+    <span class="k">if</span> <span class="n">ltmp</span><span class="o">!=</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="n">counter</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ltmp</span><span class="p">:</span>
+            <span class="n">tmp3</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">3</span><span class="p">]]])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+            <span class="n">vol</span><span class="o">=</span><span class="n">tetrahedron_volume_6d</span><span class="p">(</span><span class="n">tmp3</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">vol</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">vol</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">counter</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="n">tmp1</span><span class="o">=</span><span class="n">tmp3</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">72</span><span class="p">)</span> <span class="c1"># 4*6*3=72</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">tmp1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp1</span><span class="p">,</span><span class="n">tmp3</span><span class="p">)</span>
+                <span class="n">counter</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="n">counter</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">tmp1</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tmp1</span><span class="p">)</span><span class="o">/</span><span class="mi">72</span><span class="p">),</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="c1"># 4*6*3=72</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> 
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> </div>
+
+
+<span class="c1">##############################</span>
+<span class="c1">####</span>
+<span class="c1">####</span>
+<span class="c1">#### WIP: Removing</span>
+<span class="c1">####</span>
+<span class="c1">####</span>
+<span class="c1">##############################</span>
+<div class="viewcode-block" id="remove_vectors">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.remove_vectors">[docs]</a>
+<span class="k">def</span> <span class="nf">remove_vectors</span><span class="p">(</span><span class="n">vts1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">vts2</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;remove 6d vectors in a set vts2 from a set vts1.</span>
+<span class="sd">    6次元ベクトルリストvts1から6次元ベクトルリストvts2にあるベクトルを抜きとる</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lst</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vts1</span><span class="p">)):</span>
+        <span class="n">counter</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vts2</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">vts1</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">==</span><span class="n">vts2</span><span class="p">[</span><span class="n">i2</span><span class="p">]):</span>
+                <span class="n">counter</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="n">counter</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i1</span><span class="p">)</span>
+    <span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">num</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">),</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">)):</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">vts1</span><span class="p">[</span><span class="n">lst</span><span class="p">[</span><span class="n">i1</span><span class="p">]]</span>
+        <span class="k">return</span> <span class="n">out</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">vts1</span></div>
+
+
+<div class="viewcode-block" id="remove_vector">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.remove_vector">[docs]</a>
+<span class="k">def</span> <span class="nf">remove_vector</span><span class="p">(</span><span class="n">vts</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">vt</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; remove a 6d vector(vt2) from a set of 6d vectors (vts).</span>
+<span class="sd">    6次元ベクトルリストvlst1から6次元ベクトルvt2を抜きとる</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lst</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vts</span><span class="p">)):</span>
+        <span class="n">counter</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">vts</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">==</span><span class="n">vt</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i1</span><span class="p">)</span>
+    <span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">num</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">),</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">)):</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">vts1</span><span class="p">[</span><span class="n">lst</span><span class="p">[</span><span class="n">i1</span><span class="p">]]</span>
+        <span class="k">return</span> <span class="n">out</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">vlst1</span></div>
+
+
+<span class="c1">#################################</span>
+<span class="c1">####</span>
+<span class="c1">####</span>
+<span class="c1">#### WIP: Merging objects</span>
+<span class="c1">####</span>
+<span class="c1">####</span>
+<span class="c1">#################################</span>
+<div class="viewcode-block" id="merge_two_tetrahedra_in_obj">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.merge_two_tetrahedra_in_obj">[docs]</a>
+<span class="k">def</span> <span class="nf">merge_two_tetrahedra_in_obj</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+    
+    <span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    
+    
+    <span class="k">return</span> <span class="n">obj</span></div>
+
+
+<div class="viewcode-block" id="merge_two_tetrahedra">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.merge_two_tetrahedra">[docs]</a>
+<span class="k">def</span> <span class="nf">merge_two_tetrahedra</span><span class="p">(</span><span class="n">tetrahedron_1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">tetrahedron_2</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return merged tetrahedra.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">check_connectivity_tetrahedra</span><span class="p">(</span><span class="n">tetrahedron_1</span><span class="p">,</span><span class="n">tetrahedron_2</span><span class="p">):</span> <span class="c1"># tet1とtet2が共通する三角形を持つ場合</span>
+        <span class="n">vtx1</span><span class="o">=</span><span class="n">remove_vectors</span><span class="p">(</span><span class="n">tetrahedron_1</span><span class="p">,</span><span class="n">tetrahedron_2</span><span class="p">)</span> <span class="c1"># tet1からtet1とtet2の共通頂点を消す --&gt; 頂点1</span>
+        <span class="n">vtx2</span><span class="o">=</span><span class="n">remove_vectors</span><span class="p">(</span><span class="n">tetrahedron_2</span><span class="p">,</span><span class="n">tetrahedron_1</span><span class="p">)</span> <span class="c1"># tet2からtet1とtet2の共通頂点を消す --&gt; 頂点2</span>
+        <span class="n">vtx_common</span><span class="o">=</span><span class="n">get_common_triangle_in_two_tetrahedra</span><span class="p">(</span><span class="n">tetrahedron_1</span><span class="p">,</span><span class="n">tetrahedron_2</span><span class="p">)</span> <span class="c1"># tet1とtet2の共通する三角形</span>
+        <span class="n">line_segment</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">vtx1</span><span class="p">,</span><span class="n">vtx2</span><span class="p">])</span><span class="c1"># 頂点1と頂点２を繋いだ辺</span>
+        <span class="n">flg</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">vtx</span> <span class="ow">in</span> <span class="n">vtx_common</span><span class="p">:</span>
+            <span class="c1"># 2つの四面体を一つの四面体に結合できる時、その頂点は上の三角形の3つの頂点のうち2つの頂点と頂点1と頂点２。</span>
+            <span class="k">if</span> <span class="n">point_on_segment</span><span class="p">(</span><span class="n">vtx</span><span class="p">,</span><span class="n">line_segment</span><span class="p">):</span>
+                <span class="n">tmp</span><span class="o">=</span><span class="n">remove_vector</span><span class="p">(</span><span class="n">vtx_common</span><span class="p">,</span><span class="n">vtx</span><span class="p">)</span>
+                <span class="n">tetrahedron_new</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span><span class="n">line_segment</span><span class="p">)</span>
+                <span class="n">flg</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">if</span> <span class="n">flg</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">tetrahedron_new</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> 
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> </div>
+
+    
+<div class="viewcode-block" id="check_connectivity_tetrahedra">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.check_connectivity_tetrahedra">[docs]</a>
+<span class="k">def</span> <span class="nf">check_connectivity_tetrahedra</span><span class="p">(</span><span class="n">tetrahedron_1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">tetrahedron_2</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checking whether tetrahedron_1 and _2 are sharing a triangle surface or not.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">tetrahedron_1</span><span class="p">,</span><span class="n">tetrahedron_2</span><span class="p">])</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">remove_doubling_in_perp_space</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">==</span><span class="mi">5</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span> <span class="c1"># equivalent traiangle</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span> <span class="c1"># not equivalent traiangles</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    # generate traiangles</span>
+<span class="sd">    surface1=get_tetrahedron_surface(tetrahedron_1)</span>
+<span class="sd">    surface2=get_tetrahedron_surface(tetrahedron_2)</span>
+<span class="sd">    </span>
+<span class="sd">    count=0</span>
+<span class="sd">    for triangle1 in surface1:</span>
+<span class="sd">        for triangle2 in surface2: # i2-th triangle of tetrahedron2</span>
+<span class="sd">            if equivalent_triangles(triangle1,triangle2): # equivalent</span>
+<span class="sd">                count+=1</span>
+<span class="sd">                break</span>
+<span class="sd">            else:</span>
+<span class="sd">                pass</span>
+<span class="sd">        if count!=0:</span>
+<span class="sd">            break</span>
+<span class="sd">        else:</span>
+<span class="sd">            pass</span>
+<span class="sd">    if count==0:</span>
+<span class="sd">        return False</span>
+<span class="sd">    else:</span>
+<span class="sd">        return True</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="get_common_triangle_in_two_tetrahedra">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.get_common_triangle_in_two_tetrahedra">[docs]</a>
+<span class="k">def</span> <span class="nf">get_common_triangle_in_two_tetrahedra</span><span class="p">(</span><span class="n">tetrahedron_1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">tetrahedron_2</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Return common triangle of two connected tetrahedra.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">surface1</span><span class="o">=</span><span class="n">get_tetrahedron_surface</span><span class="p">(</span><span class="n">tetrahedron_1</span><span class="p">)</span>
+    <span class="n">surface2</span><span class="o">=</span><span class="n">get_tetrahedron_surface</span><span class="p">(</span><span class="n">tetrahedron_2</span><span class="p">)</span>
+    
+    <span class="n">count</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">triangle1</span> <span class="ow">in</span> <span class="n">surface1</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">triangle2</span> <span class="ow">in</span> <span class="n">surface2</span><span class="p">:</span> <span class="c1"># i2-th triangle of tetrahedron2</span>
+            <span class="k">if</span> <span class="n">equivalent_triangles</span><span class="p">(</span><span class="n">triangle1</span><span class="p">,</span><span class="n">triangle2</span><span class="p">):</span> <span class="c1"># equivalent</span>
+            <span class="c1">#if equivalent(triangle1,triangle2): # equivalent</span>
+                <span class="n">count</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">if</span> <span class="n">count</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">if</span> <span class="n">count</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">triangle1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> </div>
+
+
+<div class="viewcode-block" id="two_segment_into_one">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.two_segment_into_one">[docs]</a>
+<span class="k">def</span> <span class="nf">two_segment_into_one</span><span class="p">(</span><span class="n">line_segment_1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">line_segment_2</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+    
+    <span class="n">combination</span><span class="o">=</span><span class="p">[</span>\
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]]</span>
+    
+    <span class="n">counter</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">comb1</span> <span class="ow">in</span> <span class="n">combination</span><span class="p">:</span>
+        <span class="n">edge1a</span><span class="o">=</span><span class="n">line_segment_1</span><span class="p">[</span><span class="n">comb1</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">edge1b</span><span class="o">=</span><span class="n">line_segment_1</span><span class="p">[</span><span class="n">comb1</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">edge2a</span><span class="o">=</span><span class="n">line_segment_2</span><span class="p">[</span><span class="n">comb1</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
+        <span class="n">edge2b</span><span class="o">=</span><span class="n">line_segment_2</span><span class="p">[</span><span class="n">comb1</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="n">equivalent_vertices</span><span class="p">(</span><span class="n">edge1a</span><span class="p">,</span><span class="n">edge2a</span><span class="p">):</span> <span class="c1"># equivalent</span>
+        <span class="c1">#if equivalent(edge1a,edge2a): # equivalent</span>
+            <span class="n">edge_new</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([[</span><span class="n">edge1b</span><span class="p">],[</span><span class="n">edge2b</span><span class="p">]])</span>
+            <span class="c1">#print(out.shape)</span>
+            <span class="k">if</span> <span class="n">point_on_segment</span><span class="p">(</span><span class="n">edge1a</span><span class="p">,</span><span class="n">edge_new</span><span class="p">):</span>
+                <span class="n">counter</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">if</span> <span class="n">counter</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">edge_new</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> </div>
+
+
+<div class="viewcode-block" id="coplanar_check_two_triangles">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.coplanar_check_two_triangles">[docs]</a>
+<span class="k">def</span> <span class="nf">coplanar_check_two_triangles</span><span class="p">(</span><span class="n">triange1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">triange2</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checking whether two triangles are coplanar or not.</span>
+<span class="sd">    </span>
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    Current implementation may return wrong judgement when the cross product of the first two vectors chosen randomly</span>
+<span class="sd">    are very small in coplanar_check() and coplanar_check_numeric_tau().</span>
+<span class="sd">    </span>
+<span class="sd">    vtxはソートされており、coplanar_checkやcoplanar_check_numeric_tauでの外積計算の際に小さい値になるとcoplanar判定を間違うので注意。</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vtx</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">triange1</span><span class="p">,</span><span class="n">triange2</span><span class="p">])</span>
+    <span class="n">vtx</span><span class="o">=</span><span class="n">remove_doubling_in_perp_space</span><span class="p">(</span><span class="n">vtx</span><span class="p">)</span>
+    
+    <span class="c1">#if coplanar_check(vtx): # in ico2.math1</span>
+    <span class="k">if</span> <span class="n">coplanar_check_numeric_tau</span><span class="p">(</span><span class="n">vtx</span><span class="p">):</span> <span class="c1"># in ico2.numericalc</span>
+        <span class="k">return</span> <span class="kc">True</span> <span class="c1"># coplanar</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<span class="c1">#################################</span>
+<span class="c1">####</span>
+<span class="c1">####</span>
+<span class="c1">#### WIP: B-reps</span>
+<span class="c1">####</span>
+<span class="c1">####</span>
+<span class="c1">#################################</span>
+<div class="viewcode-block" id="breps">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.utils.breps">[docs]</a>
+<span class="k">def</span> <span class="nf">breps</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    四面体の頂点を指す6d vectors (TAU-style)から</span>
+<span class="sd">    境界表現 (Boundary Representation, B-reps)</span>
+<span class="sd">    に変換する。</span>
+<span class="sd">    </span>
+<span class="sd">    四面体の重心を求める。稜線</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    
+    <span class="c1"># test</span>
+    
+    <span class="kn">import</span> <span class="nn">random</span>
+    
+    <span class="k">def</span> <span class="nf">generate_random_value</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; generate value in TAU-style</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nmax</span><span class="o">=</span><span class="mi">10</span>
+        <span class="n">v</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">v</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="o">-</span><span class="n">nmax</span><span class="p">,</span><span class="n">nmax</span><span class="p">)</span> <span class="c1"># a and b in (a+b*TAU)/c.</span>
+        <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">nmax</span><span class="p">)</span> <span class="c1"># c in (a+b*TAU)/c.</span>
+        <span class="k">return</span> <span class="n">v</span>
+        
+    <span class="k">def</span> <span class="nf">generate_random_vector</span><span class="p">(</span><span class="n">ndim</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; generate ndim vector in TAU-style</span>
+<span class="sd">        ndim: dimension of vectors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nmax</span><span class="o">=</span><span class="mi">10</span>
+        <span class="n">v</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">ndim</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="p">):</span>
+            <span class="n">v</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">generate_random_value</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">v</span>
+        
+    <span class="k">def</span> <span class="nf">generate_random_vectors</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">ndim</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        num: number of generated vectors.</span>
+<span class="sd">        ndim: dimension of vectors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">v</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="n">ndim</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">v</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">generate_random_vector</span><span class="p">(</span><span class="n">ndim</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span>
+    
+    <span class="k">def</span> <span class="nf">generate_random_tetrahedron</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">generate_random_vectors</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+    
+    
+    
+    <span class="c1">#================</span>
+    <span class="c1"># ソートのテスト</span>
+    <span class="c1">#================</span>
+    <span class="n">nset</span><span class="o">=</span><span class="mi">10</span>
+    <span class="n">vts</span><span class="o">=</span><span class="n">generate_random_vectors</span><span class="p">(</span><span class="n">nset</span><span class="p">)</span>
+    <span class="n">vns</span><span class="o">=</span><span class="n">get_internal_component_sets_numerical</span><span class="p">(</span><span class="n">vts</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">vn</span> <span class="ow">in</span> <span class="n">vns</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">vn</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">vts1</span><span class="o">=</span><span class="n">sort_vctors</span><span class="p">(</span><span class="n">vts</span><span class="p">)</span>
+    <span class="n">vns1</span><span class="o">=</span><span class="n">get_internal_component_sets_numerical</span><span class="p">(</span><span class="n">vts1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">vn</span> <span class="ow">in</span> <span class="n">vns1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">vn</span><span class="p">)</span>
+    
+    <span class="c1">#================</span>
+    <span class="c1"># 重複のテスト</span>
+    <span class="c1">#================</span>
+    <span class="n">nset</span><span class="o">=</span><span class="mi">10</span>
+    <span class="n">vst</span><span class="o">=</span><span class="n">generate_random_vectors</span><span class="p">(</span><span class="n">nset</span><span class="p">)</span>
+    <span class="n">vst_d3</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">vst</span><span class="p">,</span><span class="n">vst</span><span class="p">])</span> <span class="c1"># doubling dim3 vectors</span>
+    <span class="n">vst_d4</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">vst_d3</span><span class="p">,</span><span class="n">vst_d3</span><span class="p">])</span> <span class="c1"># doubling dim4 vectors</span>
+    
+    <span class="n">a</span><span class="o">=</span><span class="n">remove_doubling</span><span class="p">(</span><span class="n">vst_d4</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">==</span><span class="n">nset</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;remove_doubling: pass&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;remove_doubling: error&#39;</span><span class="p">)</span>
+        
+    <span class="n">a</span><span class="o">=</span><span class="n">remove_doubling_in_perp_space</span><span class="p">(</span><span class="n">vst_d4</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">==</span><span class="n">nset</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;remove_doubling_in_perp_space: pass&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;remove_doubling_in_perp_space: error&#39;</span><span class="p">)</span>
+    
+    <span class="c1">#================</span>
+    <span class="c1"># 面と辺のテスト</span>
+    <span class="c1">#================</span>
+    <span class="n">tetrahedron</span><span class="o">=</span><span class="n">generate_random_tetrahedron</span><span class="p">()</span>
+    
+    <span class="c1"># doubled tetrahedon</span>
+    <span class="n">obj</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">tetrahedron</span><span class="p">,</span><span class="n">tetrahedron</span><span class="p">])</span> <span class="c1"># doubled tetrahedon</span>
+    <span class="n">generator_surface_1</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    
+    <span class="c1"># a tetrahedon</span>
+    <span class="n">obj</span><span class="o">=</span><span class="n">tetrahedron</span>
+    <span class="n">surface</span><span class="o">=</span><span class="n">generator_surface_1</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+    <span class="n">generator_edge</span><span class="p">(</span><span class="n">surface</span><span class="p">)</span>
+    
+    
+    
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Tsunetomo Yamada.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyqcstrc.ico2.two_occupation_domains &mdash; PyQCstrc 0.0.2a01 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=c4b47ef7"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyQCstrc
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyQCstrc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyqcstrc.ico2.two_occupation_domains</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyqcstrc.ico2.two_occupation_domains</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="c1"># PyQCstrc - Python library for Quasi-Crystal structure</span>
+<span class="c1"># Copyright (c) 2021 Tsunetomo Yamada &lt;tsunetomo.yamada@rs.tus.ac.jp&gt;</span>
+
+<span class="kn">import</span> <span class="nn">timeit</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pyqcstrc.ico2.math1</span> <span class="k">as</span> <span class="nn">math1</span>
+    <span class="kn">import</span> <span class="nn">pyqcstrc.ico2.intsct</span> <span class="k">as</span> <span class="nn">intsct</span>
+    <span class="kn">import</span> <span class="nn">pyqcstrc.ico2.numericalc</span> <span class="k">as</span> <span class="nn">numericalc</span>
+    <span class="kn">import</span> <span class="nn">pyqcstrc.ico2.symmetry</span> <span class="k">as</span> <span class="nn">symmetry</span>
+    <span class="kn">import</span> <span class="nn">pyqcstrc.ico2.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+    <span class="kn">import</span> <span class="nn">pyqcstrc.ico2.occupation_domain</span> <span class="k">as</span> <span class="nn">od</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;import error</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">TAU</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span><span class="o">/</span><span class="mf">2.0</span>
+
+<div class="viewcode-block" id="intersection">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.two_occupation_domains.intersection">[docs]</a>
+<span class="k">def</span> <span class="nf">intersection</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span><span class="n">obj2</span><span class="p">,</span><span class="n">kind</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return an intersection between two objects: obj1 AND obj2.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj1 : ndarray</span>
+<span class="sd">        a set of tetrahedra to be intersected with obj2.</span>
+<span class="sd">    obj2 : ndarray</span>
+<span class="sd">        a set of tetrahedra to be intersected with obj1.</span>
+<span class="sd">    kind : {&#39;standard&#39;, &#39;simple&#39;}, optional</span>
+<span class="sd">        The default is &#39;standard&#39;. </span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    intersection between obj1 and obj2 : ndarray</span>
+<span class="sd">        Array of the same type and shape as `obj1` and `obj2`.</span>
+<span class="sd">    </span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;standard&#39; intersection ...</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    &#39;simple&#39; intersection ...</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">obj1</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">4</span> <span class="ow">and</span> <span class="n">obj2</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">4</span><span class="p">:</span>
+        <span class="n">common</span><span class="o">=</span><span class="n">intsct</span><span class="o">.</span><span class="n">intersection_two_obj_1</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span><span class="n">obj2</span><span class="p">,</span><span class="n">kind</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">common</span><span class="o">==</span><span class="kc">None</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;no common part&#39;</span><span class="p">)</span>
+            <span class="k">return</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">common</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;incorrect ndim&#39;</span><span class="p">)</span>
+        <span class="k">return</span> </div>
+
+
+<div class="viewcode-block" id="intersection_convex">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.two_occupation_domains.intersection_convex">[docs]</a>
+<span class="k">def</span> <span class="nf">intersection_convex</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span><span class="n">obj2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Intersection of two occupation domains projected onto perp space: obj1 AND obj2.</span>
+<span class="sd">    The common part forms convex hull.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj1 (numpy.ndarray):</span>
+<span class="sd">        The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.</span>
+<span class="sd">    obj2 (numpy.ndarray):</span>
+<span class="sd">        The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Common part of two occupation domains projected onto perp space (numpy.ndarray)</span>
+<span class="sd">        The shape is (num,4,6,3), where num=numbre_of_tetrahedron.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">obj1</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">4</span> <span class="ow">and</span> <span class="n">obj2</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">4</span><span class="p">:</span>
+        <span class="n">common</span><span class="o">=</span><span class="n">intsct</span><span class="o">.</span><span class="n">intersection_two_obj_convex</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span><span class="n">obj2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">common</span><span class="o">==</span><span class="kc">None</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;no common part&#39;</span><span class="p">)</span>
+            <span class="k">return</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">common</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;incorrect ndim&#39;</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+        
+<div class="viewcode-block" id="subtraction">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.two_occupation_domains.subtraction">[docs]</a>
+<span class="k">def</span> <span class="nf">subtraction</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span><span class="n">obj2</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Subtraction of two occupation domains projected onto perp space: obj1 NOT obj2 = obj1 NOT (obj1 AND obj2).</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj1 (numpy.ndarray):</span>
+<span class="sd">        The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.</span>
+<span class="sd">    obj2 (numpy.ndarray):</span>
+<span class="sd">        The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    obj1 NOT obj2</span>
+<span class="sd">        The shape is (num,4,6,3), where num=numbre_of_tetrahedron.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">obj1</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">4</span> <span class="ow">and</span> <span class="n">obj2</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">4</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">intsct</span><span class="o">.</span><span class="n">subtraction_two_obj</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span><span class="n">obj2</span><span class="p">,</span><span class="n">verbose</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;incorrect ndim&#39;</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Tsunetomo Yamada.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

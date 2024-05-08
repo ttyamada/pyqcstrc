@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyqcstrc.ico2.numericalc &mdash; PyQCstrc 0.0.2a01 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=c4b47ef7"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyQCstrc
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyQCstrc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyqcstrc.ico2.numericalc</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyqcstrc.ico2.numericalc</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1">#</span>
+<span class="c1"># PyQCstrc - Python library for Quasi-Crystal structure</span>
+<span class="c1"># Copyright (c) 2021 Tsunetomo Yamada &lt;tsunetomo.yamada@rs.tus.ac.jp&gt;</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy.typing</span> <span class="kn">import</span> <span class="n">NDArray</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+<span class="n">TAU</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span><span class="o">/</span><span class="mf">2.0</span>
+<span class="n">EPS</span><span class="o">=</span><span class="mf">1e-6</span>
+
+<div class="viewcode-block" id="coplanar_check_numeric_tau">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.coplanar_check_numeric_tau">[docs]</a>
+<span class="k">def</span> <span class="nf">coplanar_check_numeric_tau</span><span class="p">(</span><span class="n">pts</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">num_iteration</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;check the points (pts) are in coplanar or not</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pns: array</span>
+<span class="sd">        6d coordinates of the points, xyz, in TAU-style</span>
+<span class="sd">    num_iteration: int</span>
+<span class="sd">        number of iterations.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">p</span><span class="o">=</span><span class="n">get_internal_component_sets_numerical</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">coplanar_check_numeric</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">num_iteration</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="coplanar_check_numeric">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.coplanar_check_numeric">[docs]</a>
+<span class="k">def</span> <span class="nf">coplanar_check_numeric</span><span class="p">(</span><span class="n">pns</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">],</span><span class="n">num_iteration</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;check the points (pns) are in coplanar or not</span>
+<span class="sd">    メモ：xyz1とxyz2の選び方次第で、outer_product(v1,v2)が小さくなりcoplanarと間違って判定する場合がある。</span>
+<span class="sd">    これを避けるために適切なxyz1とxyz2の選び方が必要。以下では、ランダムにxyz1とxyz2の選ぶ。</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pns: array</span>
+<span class="sd">        coordinate of the points in Eperp, xyz.</span>
+<span class="sd">    num_iteration: int</span>
+<span class="sd">        number of iterations.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">pns</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">num</span><span class="o">&gt;</span><span class="mi">3</span><span class="p">:</span>
+        <span class="n">flag</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">lst0</span><span class="o">=</span><span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_iteration</span><span class="p">):</span>
+            <span class="n">lst3</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">lst0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="c1">#</span>
+            <span class="n">xyz1</span><span class="o">=</span><span class="n">pns</span><span class="p">[</span><span class="n">lst3</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">-</span><span class="n">pns</span><span class="p">[</span><span class="n">lst3</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="n">xyz2</span><span class="o">=</span><span class="n">pns</span><span class="p">[</span><span class="n">lst3</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span><span class="o">-</span><span class="n">pns</span><span class="p">[</span><span class="n">lst3</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="n">vec</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">xyz1</span><span class="p">,</span><span class="n">xyz2</span><span class="p">)</span>
+            <span class="n">flg</span><span class="o">=</span><span class="mi">0</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span><span class="o">&lt;</span><span class="n">EPS</span><span class="p">):</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flag</span><span class="o">=</span><span class="mi">1</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="n">flag</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">counter</span><span class="o">=</span><span class="mi">0</span>
+            <span class="n">lst</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">lst3</span><span class="p">,</span> <span class="n">lst0</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">lst</span><span class="p">:</span>
+            <span class="c1">#for i in list(filter(lambda x: x not in lst3, lst0)):</span>
+                <span class="n">xyzi</span><span class="o">=</span><span class="n">pns</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">pns</span><span class="p">[</span><span class="n">lst3</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+                <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span><span class="n">xyzi</span><span class="p">))</span><span class="o">&lt;</span><span class="mf">1e-10</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">counter</span><span class="o">=</span><span class="mi">1</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="n">counter</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="s1">&#39;error in coplanar_check_numeric. increase num_iteration.&#39;</span>
+            <span class="k">return</span> 
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="point_on_segment">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.point_on_segment">[docs]</a>
+<span class="k">def</span> <span class="nf">point_on_segment</span><span class="p">(</span><span class="n">point</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">line_segment</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;judge whether a point is on a line segment, A-B, or not.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    point: array</span>
+<span class="sd">        coordinate of the point, xyz</span>
+<span class="sd">    line_segment: array</span>
+<span class="sd">        two coordinates of line segment, xyz0, xyz1</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">point</span><span class="o">=</span><span class="n">numerical_vector</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+    <span class="n">ln</span><span class="o">=</span><span class="n">numerical_vectors</span><span class="p">(</span><span class="n">line_segment</span><span class="p">)</span>
+    
+    <span class="n">xyx0</span><span class="o">=</span><span class="n">projection3_numerical</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+    <span class="n">tmp</span><span class="o">=</span><span class="n">projection3_sets_numerical</span><span class="p">(</span><span class="n">ln</span><span class="p">)</span>
+    <span class="n">xyx1</span><span class="o">=</span><span class="n">tmp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">xyx2</span><span class="o">=</span><span class="n">tmp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    
+    <span class="n">vecPA</span><span class="o">=</span><span class="n">xyx0</span><span class="o">-</span><span class="n">xyx1</span> <span class="c1"># np.array([x0-x1,y0-y1,z0-z1])</span>
+    <span class="n">vecBA</span><span class="o">=</span><span class="n">xyx2</span><span class="o">-</span><span class="n">xyx1</span> <span class="c1"># np.array([x2-x1,y2-y1,z2-z1])</span>
+    <span class="n">lPA</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vecPA</span><span class="p">)</span>
+    <span class="n">lBA</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vecBA</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">lBA</span><span class="o">&gt;</span><span class="mf">0.0</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vecPA</span><span class="p">,</span><span class="n">vecBA</span><span class="p">)</span><span class="o">-</span><span class="n">lPA</span><span class="o">*</span><span class="n">lBA</span><span class="p">)</span><span class="o">&lt;</span><span class="n">EPS</span><span class="p">:</span>
+        <span class="n">s</span><span class="o">=</span><span class="n">lPA</span><span class="o">/</span><span class="n">lBA</span>
+        <span class="k">if</span> <span class="n">s</span><span class="o">&gt;=</span><span class="mf">0.0</span> <span class="ow">and</span> <span class="n">s</span><span class="o">&lt;=</span><span class="mf">1.0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">s</span><span class="o">&gt;</span><span class="mf">1.0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span> <span class="c1">#       A==B P</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span> <span class="c1">#    P A==B</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="on_out_surface">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.on_out_surface">[docs]</a>
+<span class="k">def</span> <span class="nf">on_out_surface</span><span class="p">(</span><span class="n">point</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">triangle</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    check whether the point is inside the triangle.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    point: array</span>
+<span class="sd">        6d coordinates of the point in TAU-style.</span>
+<span class="sd">    triangle: array</span>
+<span class="sd">        6d coordinates of three vertices of triangle in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">p_xyz</span><span class="p">,</span><span class="n">tr_xyz</span><span class="p">,</span><span class="n">indx</span><span class="p">):</span>
+        <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span><span class="o">==</span><span class="n">indx</span><span class="p">:</span>
+                <span class="n">out</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">p_xyz</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">out</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">tr_xyz</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">out</span>
+        
+    <span class="n">p</span><span class="o">=</span><span class="n">get_internal_component_numerical</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+    <span class="n">triangle0</span><span class="o">=</span><span class="n">get_internal_component_sets_numerical</span><span class="p">(</span><span class="n">triangle</span><span class="p">)</span>
+    
+    <span class="n">area0</span><span class="o">=</span><span class="n">triangle_area_numerical</span><span class="p">(</span><span class="n">triangle0</span><span class="p">)</span>
+    
+    <span class="n">triangle1</span><span class="o">=</span><span class="n">func</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">triangle0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">triangle2</span><span class="o">=</span><span class="n">func</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">triangle0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">triangle3</span><span class="o">=</span><span class="n">func</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">triangle0</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    
+    <span class="n">area1</span><span class="o">=</span><span class="n">triangle_area_numerical</span><span class="p">(</span><span class="n">triangle1</span><span class="p">)</span><span class="o">+</span><span class="n">triangle_area_numerical</span><span class="p">(</span><span class="n">triangle2</span><span class="p">)</span><span class="o">+</span><span class="n">triangle_area_numerical</span><span class="p">(</span><span class="n">triangle3</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">area0</span><span class="o">-</span><span class="n">area1</span><span class="p">)</span><span class="o">&lt;</span> <span class="n">EPS</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="numeric_value">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.numeric_value">[docs]</a>
+<span class="k">def</span> <span class="nf">numeric_value</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Numeric value of a TAU-style value, a.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t: array</span>
+<span class="sd">        value in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">TAU</span><span class="p">)</span><span class="o">/</span><span class="n">t</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="numerical_vector">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.numerical_vector">[docs]</a>
+<span class="k">def</span> <span class="nf">numerical_vector</span><span class="p">(</span><span class="n">vt</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Numeric value of a TAU-style vector, v.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vt: array</span>
+<span class="sd">        vector in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">vt</span><span class="p">)</span>
+    <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">vt</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">w</span></div>
+
+
+<div class="viewcode-block" id="numerical_vectors">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.numerical_vectors">[docs]</a>
+<span class="k">def</span> <span class="nf">numerical_vectors</span><span class="p">(</span><span class="n">vts</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Numeric value of a TAU-style vector, v.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vts: array</span>
+<span class="sd">        vector in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n1</span><span class="p">,</span><span class="n">n2</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">vts</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n1</span><span class="p">,</span><span class="n">n2</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n1</span><span class="p">):</span>
+        <span class="n">w</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">numerical_vector</span><span class="p">(</span><span class="n">vts</span><span class="p">[</span><span class="n">i1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">w</span></div>
+
+
+<div class="viewcode-block" id="length_numerical">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.length_numerical">[docs]</a>
+<span class="k">def</span> <span class="nf">length_numerical</span><span class="p">(</span><span class="n">vt</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;numerical value of norm of vector, v, in Tau-style</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vt: array</span>
+<span class="sd">        vector in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vn</span><span class="o">=</span><span class="n">numerical_vector</span><span class="p">(</span><span class="n">vt</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vn</span><span class="p">)</span></div>
+
+    <span class="c1">#return np.sqrt(np.sum(np.abs(v**2)))</span>
+
+
+
+<div class="viewcode-block" id="check_intersection_segment_surface_numerical_6d_tau">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.check_intersection_segment_surface_numerical_6d_tau">[docs]</a>
+<span class="k">def</span> <span class="nf">check_intersection_segment_surface_numerical_6d_tau</span><span class="p">(</span><span class="n">line_segment</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">triangle</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;check intersection between a line segment and a triangle.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    line_segment: array</span>
+<span class="sd">        6-dimensional coordinates of line segment,xyzuvw1, xyzuvw2, in TAU-style</span>
+<span class="sd">    triangle: array</span>
+<span class="sd">        containing 6-dimensional coordinates of tree vertecies of a triangle (a) in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ln</span><span class="o">=</span><span class="n">get_internal_component_sets_numerical</span><span class="p">(</span><span class="n">line_segment</span><span class="p">)</span>
+    <span class="n">tr</span><span class="o">=</span><span class="n">get_internal_component_sets_numerical</span><span class="p">(</span><span class="n">triangle</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">check_intersection_segment_surface_numerical</span><span class="p">(</span><span class="n">ln</span><span class="p">,</span><span class="n">tr</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="check_intersection_segment_surface_numerical">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.check_intersection_segment_surface_numerical">[docs]</a>
+<span class="k">def</span> <span class="nf">check_intersection_segment_surface_numerical</span><span class="p">(</span><span class="n">ln</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">],</span> <span class="n">tr</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;check intersection between a line segment and a triangle.</span>
+<span class="sd">    </span>
+<span class="sd">    Möller–Trumbore intersection algorithm</span>
+<span class="sd">    https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    line_segment: array</span>
+<span class="sd">        two 3-dimensional coordinates of line segment, xyz1, xyz2.</span>
+<span class="sd">    triangle: array</span>
+<span class="sd">        containing 3-dimensional coordinates of tree vertecies of a triangle (a), xyz1, xyz2, xyz3.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vecAB</span><span class="o">=</span><span class="n">ln</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">ln</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># AB # R</span>
+    <span class="n">vecCD</span><span class="o">=</span><span class="n">tr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">tr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># CD # E1</span>
+    <span class="n">vecCE</span><span class="o">=</span><span class="n">tr</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="n">tr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># CE # E2</span>
+    <span class="n">vecCA</span><span class="o">=</span><span class="n">ln</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">tr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># CA # T</span>
+    
+    <span class="n">vecP</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">vecAB</span><span class="p">,</span><span class="n">vecCE</span><span class="p">)</span> <span class="c1"># P</span>
+    <span class="n">vecQ</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">vecCA</span><span class="p">,</span><span class="n">vecCD</span><span class="p">)</span> <span class="c1"># Q</span>
+    
+    <span class="n">bunbo</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vecP</span><span class="p">,</span><span class="n">vecCD</span><span class="p">)</span>
+    <span class="c1">#print(&#39;bunbo=&#39;,bunbo)</span>
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">bunbo</span><span class="p">)</span><span class="o">&lt;</span><span class="n">EPS</span><span class="p">:</span> <span class="c1"># the line_segment is parrallel to the triangle.</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">u</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vecP</span><span class="p">,</span><span class="n">vecCA</span><span class="p">)</span><span class="o">/</span><span class="n">bunbo</span>
+        <span class="c1">#print(&#39;u=&#39;,u)</span>
+        <span class="k">if</span> <span class="n">u</span><span class="o">&gt;=</span><span class="mf">0.0</span><span class="o">-</span><span class="n">EPS</span> <span class="ow">and</span> <span class="n">u</span><span class="o">&lt;=</span><span class="mf">1.0</span><span class="o">+</span><span class="n">EPS</span><span class="p">:</span>
+            <span class="n">v</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vecQ</span><span class="p">,</span><span class="n">vecAB</span><span class="p">)</span><span class="o">/</span><span class="n">bunbo</span>
+            <span class="c1">#print(&#39;v=&#39;,v)</span>
+            <span class="k">if</span> <span class="n">v</span><span class="o">&gt;=</span><span class="mf">0.0</span><span class="o">-</span><span class="n">EPS</span> <span class="ow">and</span> <span class="n">u</span><span class="o">+</span><span class="n">v</span><span class="o">&lt;=</span><span class="mf">1.0</span><span class="o">+</span><span class="n">EPS</span><span class="p">:</span>
+                <span class="n">t</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vecQ</span><span class="p">,</span><span class="n">vecCE</span><span class="p">)</span><span class="o">/</span><span class="n">bunbo</span>
+                <span class="c1">#print(&#39;t=&#39;,t)</span>
+                <span class="k">if</span> <span class="n">t</span><span class="o">&gt;=</span><span class="mf">0.0</span><span class="o">-</span><span class="n">EPS</span> <span class="ow">and</span> <span class="n">t</span><span class="o">&lt;=</span><span class="mf">1.0</span><span class="o">+</span><span class="n">EPS</span><span class="p">:</span>
+                    <span class="c1">#print(&#39;  intersect\n&#39;)</span>
+                    <span class="k">return</span> <span class="kc">True</span> <span class="c1"># intersect</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1">#print(&#39;\n&#39;)</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1">#print(&#39;\n&#39;)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">#print(&#39;\n&#39;)</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="check_intersection_two_segment_numerical_6d_tau">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.check_intersection_two_segment_numerical_6d_tau">[docs]</a>
+<span class="k">def</span> <span class="nf">check_intersection_two_segment_numerical_6d_tau</span><span class="p">(</span><span class="n">segment_1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">segment_2</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;check intersection between two line segments</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    line_segment_1,line_segment_2 : array</span>
+<span class="sd">        two 6-dimensional coordinates of line segment,xyzuvw1, xyzuvw2, in TAU-style</span>
+<span class="sd">    triangle: array</span>
+<span class="sd">        containing 3-dimensional coordinates of tree vertecies of a triangle (a), xyz1, xyz2, xyz3.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TAU-style to Float</span>
+    <span class="c1">#segment_1=numerical_vectors(segment_1)</span>
+    <span class="c1">#segment_2=numerical_vectors(segment_2)</span>
+    
+    <span class="n">ln1</span><span class="o">=</span><span class="n">get_internal_component_sets_numerical</span><span class="p">(</span><span class="n">segment_1</span><span class="p">)</span>
+    <span class="n">ln2</span><span class="o">=</span><span class="n">get_internal_component_sets_numerical</span><span class="p">(</span><span class="n">segment_2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">check_intersection_two_segment_numerical</span><span class="p">(</span><span class="n">ln1</span><span class="p">,</span><span class="n">ln2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="check_intersection_two_segment_numerical">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.check_intersection_two_segment_numerical">[docs]</a>
+<span class="k">def</span> <span class="nf">check_intersection_two_segment_numerical</span><span class="p">(</span><span class="n">ln1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">],</span> <span class="n">ln2</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;check intersection between two line segments.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    line_segment_1,line_segment_2: array</span>
+<span class="sd">        two 3-dimensional coordinates of line segment, xyz1, xyz2.</span>
+<span class="sd">        line_segment_1: A--B</span>
+<span class="sd">        line_segment_2: C--D</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">        int, out = 0 (Intersection was found when a view allong to Z-axis)</span>
+<span class="sd">                   1 (Intersection was found when a view allong to X-axis)</span>
+<span class="sd">                   2 (Intersection was found when a view allong to Y-axis)</span>
+<span class="sd">                   3 (No intersection was found)</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vecAB</span><span class="o">=</span><span class="n">ln1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">ln1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># AB</span>
+    <span class="n">vecCD</span><span class="o">=</span><span class="n">ln2</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="n">ln2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># CD</span>
+    <span class="n">vecCA</span><span class="o">=</span><span class="n">ln1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">ln2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># CA</span>
+    
+    <span class="c1"># check whether two line-segments are intersecting or not.</span>
+    <span class="n">comb</span><span class="o">=</span><span class="p">[</span>\
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="n">out</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">comb</span><span class="p">:</span>
+        <span class="n">bunbo</span><span class="o">=</span><span class="n">vecAB</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">*</span><span class="n">vecCD</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">-</span><span class="n">vecCD</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">*</span><span class="n">vecAB</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">bunbo</span><span class="p">)</span><span class="o">&lt;</span><span class="n">EPS</span><span class="p">:</span>
+            <span class="n">t</span><span class="o">=</span><span class="p">(</span><span class="n">vecAB</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">*</span><span class="n">vecCA</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">-</span><span class="n">vecCA</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">*</span><span class="n">vecAB</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span><span class="o">/</span><span class="n">bunbo</span>
+            <span class="k">if</span> <span class="n">t</span><span class="o">&gt;=</span><span class="mf">0.0</span> <span class="ow">and</span> <span class="n">t</span><span class="o">&lt;=</span><span class="mf">1.0</span><span class="p">:</span>
+                <span class="n">s</span><span class="o">=</span><span class="p">(</span><span class="n">vecCD</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">*</span><span class="n">vecCA</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">-</span><span class="n">vecCA</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">*</span><span class="n">vecCD</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span><span class="o">/</span><span class="n">bunbo</span>
+                <span class="k">if</span> <span class="n">s</span><span class="o">&gt;=</span><span class="mf">0.0</span> <span class="ow">and</span> <span class="n">s</span><span class="o">&lt;=</span><span class="mf">1.0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="o">-</span><span class="n">s</span><span class="o">*</span><span class="n">vecAB</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span><span class="o">+</span><span class="n">t</span><span class="o">*</span><span class="n">vecCD</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span><span class="o">-</span><span class="n">vecCA</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span><span class="o">&lt;=</span><span class="n">EPS</span><span class="p">:</span>
+                        <span class="k">break</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">out</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">out</span><span class="o">+=</span><span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">out</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+
+    
+<div class="viewcode-block" id="triangle_area">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.triangle_area">[docs]</a>
+<span class="k">def</span> <span class="nf">triangle_area</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Numerial calcuration of area of given triangle, a.</span>
+<span class="sd">    The coordinates of the tree vertecies of the triangle are given in TAU-style.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a: array containing 3-dimensional coordinates of tree vertecies of a triangle (a) in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    area of given triangle: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">x1</span><span class="o">=</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">-</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">y1</span><span class="o">=</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span><span class="o">-</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">z1</span><span class="o">=</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span><span class="o">-</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span>
+    
+    <span class="n">x2</span><span class="o">=</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">-</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">y2</span><span class="o">=</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span><span class="o">-</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">z2</span><span class="o">=</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span><span class="o">-</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span>
+    
+    <span class="n">v1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x1</span><span class="p">,</span><span class="n">y1</span><span class="p">,</span><span class="n">z1</span><span class="p">])</span>
+    <span class="n">v2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x2</span><span class="p">,</span><span class="n">y2</span><span class="p">,</span><span class="n">z2</span><span class="p">])</span>
+    
+    <span class="n">v3</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">v1</span><span class="p">)</span> <span class="c1"># cross product</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">v3</span><span class="o">**</span><span class="mi">2</span><span class="p">)))</span><span class="o">/</span><span class="mf">2.0</span></div>
+
+
+<div class="viewcode-block" id="triangle_area_numerical">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.triangle_area_numerical">[docs]</a>
+<span class="k">def</span> <span class="nf">triangle_area_numerical</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Numerial calcuration of area of given triangle, a.</span>
+<span class="sd">    The coordinates of the tree vertecies of the triangle are given.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a: array containing 3-dimensional coordinates of tree vertecies of a triangle (a)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    area of given triangle: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">x1</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">y1</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">z1</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+    
+    <span class="n">x2</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">y2</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">z2</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+    
+    <span class="n">v1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x1</span><span class="p">,</span><span class="n">y1</span><span class="p">,</span><span class="n">z1</span><span class="p">])</span>
+    <span class="n">v2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x2</span><span class="p">,</span><span class="n">y2</span><span class="p">,</span><span class="n">z2</span><span class="p">])</span>
+    
+    <span class="n">v3</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">v1</span><span class="p">)</span> <span class="c1"># cross product</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">v3</span><span class="o">**</span><span class="mi">2</span><span class="p">)))</span><span class="o">/</span><span class="mf">2.0</span></div>
+
+
+<div class="viewcode-block" id="inside_outside_obj_tau">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.inside_outside_obj_tau">[docs]</a>
+<span class="k">def</span> <span class="nf">inside_outside_obj_tau</span><span class="p">(</span><span class="n">point</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">obj</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    
+    <span class="c1"># TAU-style to Float</span>
+    <span class="n">point</span><span class="o">=</span><span class="n">numerical_vector</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+    <span class="n">obj</span><span class="o">=</span><span class="n">numerical_vectors</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="c1"># </span>
+    <span class="n">point</span><span class="o">=</span><span class="n">get_internal_component_numerical</span><span class="p">(</span><span class="n">ln</span><span class="p">)</span>
+    <span class="n">obj</span><span class="o">=</span><span class="n">get_internal_component_sets_numerical</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">inside_outside_obj</span><span class="p">(</span><span class="n">point</span><span class="p">,</span><span class="n">obj</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="inside_outside_obj">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.inside_outside_obj">[docs]</a>
+<span class="k">def</span> <span class="nf">inside_outside_obj</span><span class="p">(</span><span class="n">point</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">],</span> <span class="n">obj</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;this function judges whether the point is inside an object (set of tetrahedra) or not</span>
+<span class="sd">        </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    point: array</span>
+<span class="sd">        coordinate of the point,xyz</span>
+<span class="sd">    obj: array</span>
+<span class="sd">        vertex coordinates of tetrahedra, (xyz1, xyz2, xyz3, xyz4), (), (), ...</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">flg</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">tetrahedron</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">inside_outside_tetrahedron</span><span class="p">(</span><span class="n">point</span><span class="p">,</span><span class="n">tetrahedron</span><span class="p">):</span>
+            <span class="n">flg</span><span class="o">+=</span><span class="mi">1</span>
+            <span class="k">break</span>
+    <span class="k">if</span> <span class="n">flg</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span> <span class="c1"># inside</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span> <span class="c1"># outside</span></div>
+
+
+<div class="viewcode-block" id="inside_outside_tetrahedron_tau">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.inside_outside_tetrahedron_tau">[docs]</a>
+<span class="k">def</span> <span class="nf">inside_outside_tetrahedron_tau</span><span class="p">(</span><span class="n">point</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">tetrahedron</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;this function judges whether the point is inside a tetrahedron or not</span>
+<span class="sd">        </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    point: array</span>
+<span class="sd">        6d coordinate of the point in TAU-style.</span>
+<span class="sd">    tetrahedron: array</span>
+<span class="sd">        6d vertex coordinates of tetrahedron in TAU-style.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#point=numerical_vector(point)</span>
+    <span class="c1">#tetrahedron=numerical_vectors(tetrahedron)</span>
+    <span class="c1"># </span>
+    <span class="n">point</span><span class="o">=</span><span class="n">get_internal_component_numerical</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+    <span class="n">tetrahedron</span><span class="o">=</span><span class="n">get_internal_component_sets_numerical</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">inside_outside_tetrahedron</span><span class="p">(</span><span class="n">point</span><span class="p">,</span><span class="n">tetrahedron</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="inside_outside_tetrahedron">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.inside_outside_tetrahedron">[docs]</a>
+<span class="k">def</span> <span class="nf">inside_outside_tetrahedron</span><span class="p">(</span><span class="n">point</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">],</span> <span class="n">tetrahedron</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;this function judges whether the point is inside a tetrahedron or not</span>
+<span class="sd">        </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    point: array</span>
+<span class="sd">        coordinate of the point,xyz</span>
+<span class="sd">    tetrahedron: array</span>
+<span class="sd">        vertex coordinates of tetrahedron, (xyz1, xyz2, xyz3, xyz4)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vol0</span><span class="o">=</span><span class="n">tetrahedron_volume_numerical</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">small_tetrahedron</span><span class="p">(</span><span class="n">indx</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">tetrahedron0</span><span class="p">):</span>
+        <span class="n">tet</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span><span class="o">==</span><span class="n">indx</span><span class="p">:</span>
+                <span class="n">tet</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">p</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tet</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">tetrahedron0</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">tet</span>
+    
+    <span class="n">tet1</span><span class="o">=</span><span class="n">small_tetrahedron</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">point</span><span class="p">,</span><span class="n">tetrahedron</span><span class="p">)</span>
+    <span class="n">vol1</span><span class="o">=</span><span class="n">tetrahedron_volume_numerical</span><span class="p">(</span><span class="n">tet1</span><span class="p">)</span>
+    <span class="c1">#</span>
+    <span class="n">tet2</span><span class="o">=</span><span class="n">small_tetrahedron</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">point</span><span class="p">,</span><span class="n">tetrahedron</span><span class="p">)</span>
+    <span class="n">vol2</span><span class="o">=</span><span class="n">tetrahedron_volume_numerical</span><span class="p">(</span><span class="n">tet2</span><span class="p">)</span>
+    <span class="c1">#</span>
+    <span class="n">tet3</span><span class="o">=</span><span class="n">small_tetrahedron</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">point</span><span class="p">,</span><span class="n">tetrahedron</span><span class="p">)</span>
+    <span class="n">vol3</span><span class="o">=</span><span class="n">tetrahedron_volume_numerical</span><span class="p">(</span><span class="n">tet3</span><span class="p">)</span>
+    <span class="c1">#</span>
+    <span class="n">tet4</span><span class="o">=</span><span class="n">small_tetrahedron</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="n">point</span><span class="p">,</span><span class="n">tetrahedron</span><span class="p">)</span>
+    <span class="n">vol4</span><span class="o">=</span><span class="n">tetrahedron_volume_numerical</span><span class="p">(</span><span class="n">tet4</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">vol0</span><span class="o">-</span><span class="n">vol1</span><span class="o">-</span><span class="n">vol2</span><span class="o">-</span><span class="n">vol3</span><span class="o">-</span><span class="n">vol4</span><span class="p">)</span><span class="o">&lt;</span><span class="n">EPS</span><span class="o">*</span><span class="n">vol0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span> <span class="c1"># inside</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span> <span class="c1"># outside</span></div>
+
+
+
+
+
+
+
+<div class="viewcode-block" id="obj_volume_6d_numerical">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.obj_volume_6d_numerical">[docs]</a>
+<span class="k">def</span> <span class="nf">obj_volume_6d_numerical</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This function returns volume of an object (set of tetrahedra).</span>
+<span class="sd">        </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    object: array</span>
+<span class="sd">        6-dimensional vertex coordinates of tetrahedra.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vol</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">tetrahedron</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+        <span class="n">vol</span><span class="o">+=</span><span class="n">tetrahedron_volume_6d_numerical</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">vol</span></div>
+
+
+<div class="viewcode-block" id="tetrahedron_volume_6d_numerical">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.tetrahedron_volume_6d_numerical">[docs]</a>
+<span class="k">def</span> <span class="nf">tetrahedron_volume_6d_numerical</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This function returns volume of a tetrahedron</span>
+<span class="sd">        </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tetrahedron: array</span>
+<span class="sd">        6-dimensional vertex coordinates of the tetrahedron, xyzuvw0,xyzuvw1,xyzuvw2,xyzuvw3</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">get_internal_component_sets_numerical</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tetrahedron_volume_numerical</span><span class="p">(</span><span class="n">a</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="obj_volume_numerical">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.obj_volume_numerical">[docs]</a>
+<span class="k">def</span> <span class="nf">obj_volume_numerical</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This function returns volume of an object (set of tetrahedra).</span>
+<span class="sd">        </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    object: array</span>
+<span class="sd">        3-dimensional vertex coordinates of tetrahedra.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vol</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">tetrahedron</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+        <span class="n">vol</span><span class="o">+=</span><span class="n">tetrahedron_volume_numerical</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">vol</span></div>
+
+
+<div class="viewcode-block" id="tetrahedron_volume_numerical">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.tetrahedron_volume_numerical">[docs]</a>
+<span class="k">def</span> <span class="nf">tetrahedron_volume_numerical</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This function returns volume of a tetrahedron</span>
+<span class="sd">        </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tetrahedron: array</span>
+<span class="sd">        vertex coordinates of the tetrahedron, xyz0,xyz1,xyz2,xyz3</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xyz</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+        <span class="n">xyz</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">tetrahedron</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">tetrahedron</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">detm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">detm</span><span class="p">)</span><span class="o">/</span><span class="mf">6.0</span></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="viewcode-block" id="get_internal_component_numerical">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.get_internal_component_numerical">[docs]</a>
+<span class="k">def</span> <span class="nf">get_internal_component_numerical</span><span class="p">(</span><span class="n">vt</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vn: array</span>
+<span class="sd">        6-dimensional vector, xyzuvw.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vn</span><span class="o">=</span><span class="n">numerical_vector</span><span class="p">(</span><span class="n">vt</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">projection3_numerical</span><span class="p">(</span><span class="n">vn</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_internal_component_sets_numerical">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.get_internal_component_sets_numerical">[docs]</a>
+<span class="k">def</span> <span class="nf">get_internal_component_sets_numerical</span><span class="p">(</span><span class="n">vts</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;parallel and perpendicular components of a 6D lattice vector in direct space.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vsn: array</span>
+<span class="sd">        set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vns</span><span class="o">=</span><span class="n">numerical_vectors</span><span class="p">(</span><span class="n">vts</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">projection3_sets_numerical</span><span class="p">(</span><span class="n">vns</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="projection_numerical">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.projection_numerical">[docs]</a>
+<span class="k">def</span> <span class="nf">projection_numerical</span><span class="p">(</span><span class="n">vn</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;parallel and perpendicular components of a 6D lattice vector in direct space.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vn: array</span>
+<span class="sd">        6-dimensional vector, xyzuvw.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">v1</span> <span class="o">=</span>  <span class="p">(</span><span class="n">vn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">vn</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">+</span> <span class="n">TAU</span><span class="o">*</span><span class="p">(</span><span class="n">vn</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">vn</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="c1"># x in Epar</span>
+    <span class="n">v2</span> <span class="o">=</span>  <span class="p">(</span><span class="n">vn</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="n">vn</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span> <span class="o">+</span> <span class="n">TAU</span><span class="o">*</span><span class="p">(</span><span class="n">vn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">vn</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="c1"># y in Epar</span>
+    <span class="n">v3</span> <span class="o">=</span>  <span class="p">(</span><span class="n">vn</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">vn</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">-</span> <span class="n">TAU</span><span class="o">*</span><span class="p">(</span><span class="n">vn</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">-</span><span class="n">vn</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span> <span class="c1"># z in Epar</span>
+    <span class="n">v4</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">vn</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">vn</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="n">TAU</span><span class="o">*</span><span class="p">(</span><span class="n">vn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">vn</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="c1"># x in Eperp</span>
+    <span class="n">v5</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">vn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">vn</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">+</span> <span class="n">TAU</span><span class="o">*</span><span class="p">(</span><span class="n">vn</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="n">vn</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span> <span class="c1"># y in Eperp</span>
+    <span class="n">v6</span> <span class="o">=</span>  <span class="p">(</span><span class="n">vn</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">-</span><span class="n">vn</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span> <span class="o">+</span> <span class="n">TAU</span><span class="o">*</span><span class="p">(</span><span class="n">vn</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">vn</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="c1"># z in Eperp</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">,</span><span class="n">v3</span><span class="p">,</span><span class="n">v4</span><span class="p">,</span><span class="n">v5</span><span class="p">,</span><span class="n">v6</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="projection_sets_numerical">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.projection_sets_numerical">[docs]</a>
+<span class="k">def</span> <span class="nf">projection_sets_numerical</span><span class="p">(</span><span class="n">vns</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;parallel and perpendicular components of a 6D lattice vector in direct space.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vsn: array</span>
+<span class="sd">        set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">vns</span><span class="p">)</span>
+    <span class="n">m</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+        <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">projection_numerical</span><span class="p">(</span><span class="n">vns</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">m</span></div>
+
+    
+<div class="viewcode-block" id="projection3_numerical">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.projection3_numerical">[docs]</a>
+<span class="k">def</span> <span class="nf">projection3_numerical</span><span class="p">(</span><span class="n">vn</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;perpendicular component of a 6D lattice vector in direct space.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vn: array</span>
+<span class="sd">        6-dimensional vector, xyzuvw.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">v4</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">vn</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">vn</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="n">TAU</span><span class="o">*</span><span class="p">(</span><span class="n">vn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">vn</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="c1"># x in Eperp</span>
+    <span class="n">v5</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">vn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">vn</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">+</span> <span class="n">TAU</span><span class="o">*</span><span class="p">(</span><span class="n">vn</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="n">vn</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span> <span class="c1"># y in Eperp</span>
+    <span class="n">v6</span> <span class="o">=</span>  <span class="p">(</span><span class="n">vn</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">-</span><span class="n">vn</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span> <span class="o">+</span> <span class="n">TAU</span><span class="o">*</span><span class="p">(</span><span class="n">vn</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">vn</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="c1"># z in Eperp</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v4</span><span class="p">,</span><span class="n">v5</span><span class="p">,</span><span class="n">v6</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="projection3_sets_numerical">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.projection3_sets_numerical">[docs]</a>
+<span class="k">def</span> <span class="nf">projection3_sets_numerical</span><span class="p">(</span><span class="n">vns</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;perpendicular component of a 6D lattice vector in direct space.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vsn: array</span>
+<span class="sd">        set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">vns</span><span class="p">)</span>
+    <span class="n">m</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+        <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">projection3_numerical</span><span class="p">(</span><span class="n">vns</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">m</span></div>
+
+
+
+
+<span class="c1">################</span>
+<span class="c1"># Unnecessary functions？？？</span>
+<span class="c1">################</span>
+
+<div class="viewcode-block" id="matrix_dot">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.matrix_dot">[docs]</a>
+<span class="k">def</span> <span class="nf">matrix_dot</span><span class="p">(</span><span class="n">m1</span><span class="p">,</span><span class="n">m2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">m1</span><span class="p">,</span><span class="n">m2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="inner_product_numerical">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.numericalc.inner_product_numerical">[docs]</a>
+<span class="k">def</span> <span class="nf">inner_product_numerical</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    
+    <span class="c1"># test</span>
+    
+    <span class="kn">import</span> <span class="nn">random</span>
+    
+    <span class="k">def</span> <span class="nf">generate_random_value</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; generate value in TAU-style</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nmax</span><span class="o">=</span><span class="mi">10</span>
+        <span class="n">v</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">v</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="o">-</span><span class="n">nmax</span><span class="p">,</span><span class="n">nmax</span><span class="p">)</span> <span class="c1"># a and b in (a+b*TAU)/c.</span>
+        <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">nmax</span><span class="p">)</span> <span class="c1"># c in (a+b*TAU)/c.</span>
+        <span class="k">return</span> <span class="n">v</span>
+        
+    <span class="k">def</span> <span class="nf">generate_random_vector</span><span class="p">(</span><span class="n">ndim</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; generate ndim vector in TAU-style</span>
+<span class="sd">        ndim: dimension of vectors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nmax</span><span class="o">=</span><span class="mi">10</span>
+        <span class="n">v</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">ndim</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="p">):</span>
+            <span class="n">v</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">generate_random_value</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">v</span>
+        
+    <span class="k">def</span> <span class="nf">generate_random_vectors</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">ndim</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        num: number of generated vectors.</span>
+<span class="sd">        ndim: dimension of vectors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">v</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="n">ndim</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">v</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">generate_random_vector</span><span class="p">(</span><span class="n">ndim</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span>
+    
+    <span class="k">def</span> <span class="nf">generate_random_tetrahedron</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">generate_random_vectors</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    print(&#39;check projection&#39;)</span>
+<span class="sd">    </span>
+<span class="sd">    nset=2</span>
+<span class="sd">    vst=generate_random_vectors(nset)</span>
+<span class="sd">    vsn=numerical_vectors(vst)</span>
+<span class="sd">    #</span>
+<span class="sd">    # TAU-style</span>
+<span class="sd">    vset=get_internal_component_sets_numerical(vst)</span>
+<span class="sd">    for v in vset:</span>
+<span class="sd">        print(v)</span>
+<span class="sd">    # float</span>
+<span class="sd">    viset=projection3_sets_numerical(vsn)</span>
+<span class="sd">    for v in viset:</span>
+<span class="sd">        print(v)</span>
+<span class="sd">    vset=projection_sets_numerical(vsn)</span>
+<span class="sd">    for v in vset:</span>
+<span class="sd">        print(v)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    print(&#39;check tetrahedron&#39;)</span>
+<span class="sd">    tetrahedron=generate_random_tetrahedron() # in TAU-style</span>
+<span class="sd">    tetrahedron_num=numerical_vectors(tetrahedron) # in float</span>
+<span class="sd">    #print(tetrahedron_num)</span>
+<span class="sd">    vol=tetrahedron_volume_6d_numerical(tetrahedron_num)</span>
+<span class="sd">    print(vol)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">ln</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>\
+    <span class="p">[</span><span class="mf">1.61803399</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.</span><span class="p">,</span>          <span class="mf">0.</span> <span class="p">],</span>\
+    <span class="p">[</span><span class="mf">3.73607</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.19098</span><span class="p">,</span><span class="mf">1.30902</span> <span class="p">]])</span>
+    
+    <span class="n">tr</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>\
+    <span class="p">[</span><span class="mf">3.61803399</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.</span><span class="p">,</span>          <span class="mf">0.38197</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mf">2.61803399</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.38196601</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mf">2.61803399</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mf">1.</span> <span class="p">]])</span>
+    
+    <span class="n">a</span><span class="o">=</span><span class="n">check_intersection_segment_surface_numerical</span><span class="p">(</span><span class="n">ln</span><span class="p">,</span><span class="n">tr</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Tsunetomo Yamada.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyqcstrc.ico2.math1 &mdash; PyQCstrc 0.0.2a01 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=c4b47ef7"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyQCstrc
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyQCstrc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyqcstrc.ico2.math1</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyqcstrc.ico2.math1</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1">#</span>
+<span class="c1"># PyQCstrc - Python library for Quasi-Crystal structure</span>
+<span class="c1"># Copyright (c) 2021 Tsunetomo Yamada &lt;tsunetomo.yamada@rs.tus.ac.jp&gt;</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy.typing</span> <span class="kn">import</span> <span class="n">NDArray</span>
+<span class="c1">#sys.path.append(&#39;.&#39;)</span>
+<span class="kn">from</span> <span class="nn">pyqcstrc.ico2.numericalc</span> <span class="kn">import</span> <span class="n">coplanar_check_numeric_tau</span>
+
+<span class="n">TAU</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span><span class="o">/</span><span class="mf">2.0</span>
+
+<div class="viewcode-block" id="add">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.math1.add">[docs]</a>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">b</span><span class="p">:</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    # summation (a+b) in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a: array</span>
+<span class="sd">        value in TAU-style</span>
+<span class="sd">    b: array</span>
+<span class="sd">        value in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">c1</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">c2</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">c3</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">c1</span><span class="p">,</span><span class="n">c2</span><span class="p">,</span><span class="n">c3</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">gcd</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">c1</span><span class="o">=</span><span class="n">c1</span><span class="o">/</span><span class="n">g</span>
+    <span class="n">c2</span><span class="o">=</span><span class="n">c2</span><span class="o">/</span><span class="n">g</span>
+    <span class="n">c3</span><span class="o">=</span><span class="n">c3</span><span class="o">/</span><span class="n">g</span>
+    <span class="k">if</span> <span class="n">c3</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="n">c1</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="n">c2</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="n">c3</span><span class="p">)])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">c1</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">c2</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">c3</span><span class="p">)])</span></div>
+
+
+<div class="viewcode-block" id="mul">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.math1.mul">[docs]</a>
+<span class="k">def</span> <span class="nf">mul</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">b</span><span class="p">:</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    # multiplication (a*b) in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a: array</span>
+<span class="sd">        value in TAU-style</span>
+<span class="sd">    b: array</span>
+<span class="sd">        value in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">c1</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">c2</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">c3</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">c1</span><span class="p">,</span><span class="n">c2</span><span class="p">,</span><span class="n">c3</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">gcd</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">c1</span><span class="o">=</span><span class="n">c1</span><span class="o">/</span><span class="n">g</span>
+    <span class="n">c2</span><span class="o">=</span><span class="n">c2</span><span class="o">/</span><span class="n">g</span>
+    <span class="n">c3</span><span class="o">=</span><span class="n">c3</span><span class="o">/</span><span class="n">g</span>
+    <span class="k">if</span> <span class="n">c3</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="n">c1</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="n">c2</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="n">c3</span><span class="p">)])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">c1</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">c2</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">c3</span><span class="p">)])</span></div>
+
+
+<div class="viewcode-block" id="sub">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.math1.sub">[docs]</a>
+<span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">b</span><span class="p">:</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    # subtraction (a/b) in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a: array</span>
+<span class="sd">        value in TAU-style</span>
+<span class="sd">    b: array</span>
+<span class="sd">        value in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">c</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="div">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.math1.div">[docs]</a>
+<span class="k">def</span> <span class="nf">div</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">b</span><span class="p">:</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    # division (a/b) in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a: array</span>
+<span class="sd">        value in TAU-style</span>
+<span class="sd">    b: array</span>
+<span class="sd">        value in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">b</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ERROR_1:division error&#39;</span><span class="p">)</span>
+        <span class="k">return</span> 
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">a</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="n">c1</span><span class="o">=</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="n">c2</span><span class="o">=</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>            <span class="p">)</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="n">c3</span><span class="o">=</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">c1</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="n">c2</span><span class="o">=</span>        <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="n">c3</span><span class="o">=</span>        <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">c1</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">c2</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">c3</span><span class="o">=</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">c1</span><span class="p">,</span><span class="n">c2</span><span class="p">,</span><span class="n">c3</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">gcd</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">g</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">c1</span><span class="o">=</span><span class="n">c1</span><span class="o">/</span><span class="n">g</span>
+                <span class="n">c2</span><span class="o">=</span><span class="n">c2</span><span class="o">/</span><span class="n">g</span>
+                <span class="n">c3</span><span class="o">=</span><span class="n">c3</span><span class="o">/</span><span class="n">g</span>
+                <span class="k">if</span> <span class="n">c3</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="n">c1</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="n">c2</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="n">c3</span><span class="p">)],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">c1</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">c2</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">c3</span><span class="p">)],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ERROR_2:division error&#39;</span><span class="p">)</span>
+                <span class="k">return</span> </div>
+
+
+<div class="viewcode-block" id="add_vectors">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.math1.add_vectors">[docs]</a>
+<span class="k">def</span> <span class="nf">add_vectors</span><span class="p">(</span><span class="n">vt1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">vt2</span><span class="p">:</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Composition of two vectors, v1+v2</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vt1: array</span>
+<span class="sd">        a vector in TAU-style</span>
+<span class="sd">    vt2: array,</span>
+<span class="sd">        a scalar in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Composition of two vectors: array in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">vt1</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vt1</span><span class="p">)):</span>
+        <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">add</span><span class="p">(</span><span class="n">vt1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">vt2</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">a</span></div>
+
+
+<div class="viewcode-block" id="sub_vectors">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.math1.sub_vectors">[docs]</a>
+<span class="k">def</span> <span class="nf">sub_vectors</span><span class="p">(</span><span class="n">vt1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">vt2</span><span class="p">:</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Subtraction of two vectors, v1-v2</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vt1: array</span>
+<span class="sd">        a vector in TAU-style</span>
+<span class="sd">    vt2: array,</span>
+<span class="sd">        a scalar in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Subtraction of two vectors: array in TAU-style</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">vt1</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">2</span> <span class="ow">and</span> <span class="n">vt2</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="n">const</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="n">vt2</span><span class="o">=</span><span class="n">mul_vector</span><span class="p">(</span><span class="n">vt2</span><span class="p">,</span><span class="n">const</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">add_vectors</span><span class="p">(</span><span class="n">vt1</span><span class="p">,</span><span class="n">vt2</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;incorrect shape&#39;</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="mul_vector">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.math1.mul_vector">[docs]</a>
+<span class="k">def</span> <span class="nf">mul_vector</span><span class="p">(</span><span class="n">vt</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">coeff</span><span class="p">:</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Multiplying a vector by a scalar in TAU-style.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vt: array</span>
+<span class="sd">        a vector in TAU-style</span>
+<span class="sd">    coeff: array,</span>
+<span class="sd">        a scalar in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Multiplied vector: array in TAU-style</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">vt</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">vt</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vt</span><span class="p">)):</span>
+            <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">vt</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">coeff</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">a</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;incorrect shape&#39;</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="mul_vectors">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.math1.mul_vectors">[docs]</a>
+<span class="k">def</span> <span class="nf">mul_vectors</span><span class="p">(</span><span class="n">vts</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">coeff</span><span class="p">:</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;multiplying a set of vectors by a scalar in TAU-style.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vts: array</span>
+<span class="sd">        a set of vectors in TAU-style</span>
+<span class="sd">    coeff: array,</span>
+<span class="sd">        a scalar in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Multiplied vectors: array in TAU-style</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">vts</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+        <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">vts</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vts</span><span class="p">)):</span>
+            <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">mul_vector</span><span class="p">(</span><span class="n">vts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">coeff</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">a</span>
+    <span class="k">elif</span> <span class="n">vts</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">4</span><span class="p">:</span>
+        <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">vts</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vts</span><span class="p">[</span><span class="n">i1</span><span class="p">])):</span>
+            <span class="k">for</span> <span class="n">i2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vts</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">])):</span>
+                <span class="n">a</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">]</span><span class="o">=</span><span class="n">mul_vector</span><span class="p">(</span><span class="n">vts</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">],</span><span class="n">coeff</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;incorrect shape&#39;</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="outer_product">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.math1.outer_product">[docs]</a>
+<span class="k">def</span> <span class="nf">outer_product</span><span class="p">(</span><span class="n">vt1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">vt2</span><span class="p">:</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Outer product of two 3d vectors, v1 and v2 in TAU-style.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    v1: array</span>
+<span class="sd">        3-dimensional vector in TAU-style</span>
+<span class="sd">    v2: array,</span>
+<span class="sd">        3-dimensional vector in TAU-style</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Outer product: array in TAU-style</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">vt1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">vt2</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">vt1</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">vt2</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">c1</span><span class="o">=</span><span class="n">sub</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+    <span class="c1">#</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">vt1</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">vt2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">vt1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">vt2</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">c2</span><span class="o">=</span><span class="n">sub</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+    <span class="c1">#</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">vt1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">vt2</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">vt1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">vt2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">c3</span><span class="o">=</span><span class="n">sub</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+    <span class="c1">#</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">c1</span><span class="p">,</span><span class="n">c2</span><span class="p">,</span><span class="n">c3</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="inner_product">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.math1.inner_product">[docs]</a>
+<span class="k">def</span> <span class="nf">inner_product</span><span class="p">(</span><span class="n">vt1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">vt2</span><span class="p">:</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inner product of two vectors, v1 and v2 in TAU-style.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vt1: array</span>
+<span class="sd">        vector in TAU-style</span>
+<span class="sd">    vt2: array,</span>
+<span class="sd">         vector in TAU-style</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Inner product: array in TAU-style</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">s1</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">vt1</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">s2</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">vt2</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">if</span> <span class="n">s1</span><span class="o">!=</span><span class="n">s2</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;matrices have not a proper shape.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> 
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">s1</span><span class="p">):</span>
+            <span class="n">b</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">vt1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">vt2</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">a</span><span class="o">=</span><span class="n">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">a</span></div>
+
+
+<div class="viewcode-block" id="dot_product">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.math1.dot_product">[docs]</a>
+<span class="k">def</span> <span class="nf">dot_product</span><span class="p">(</span><span class="n">mat1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">mat2</span><span class="p">:</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;product of two matrices, mat1*mat2.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mat1: ndarray</span>
+<span class="sd">        (s,t) in TAU-style</span>
+<span class="sd">    mat2: ndarray</span>
+<span class="sd">        (t,u) in TAU-style</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Inner product: array in TAU-style</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ndim1</span><span class="o">=</span><span class="n">mat1</span><span class="o">.</span><span class="n">ndim</span>
+    <span class="n">ndim2</span><span class="o">=</span><span class="n">mat2</span><span class="o">.</span><span class="n">ndim</span>
+    
+    <span class="k">if</span> <span class="n">ndim1</span><span class="o">==</span><span class="mi">2</span> <span class="ow">and</span> <span class="n">ndim2</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">inner_product</span><span class="p">(</span><span class="n">mat1</span><span class="p">,</span><span class="n">mat2</span><span class="p">)</span>
+    
+    <span class="k">elif</span> <span class="n">ndim1</span><span class="o">==</span><span class="mi">3</span> <span class="ow">and</span> <span class="n">ndim2</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="n">s</span><span class="p">,</span><span class="n">t1</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">mat1</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">t2</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">mat2</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="n">t1</span><span class="o">!=</span><span class="n">t2</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;incorrect shape found in dot_product&#39;</span><span class="p">)</span>
+            <span class="k">return</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mat_new</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">s</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+                <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">t1</span><span class="p">):</span>
+                    <span class="n">b</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">mat1</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">j</span><span class="p">],</span><span class="n">mat2</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                    <span class="n">a</span><span class="o">=</span><span class="n">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+                <span class="n">mat_new</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">a</span>
+            <span class="k">return</span> <span class="n">mat_new</span>
+            
+    <span class="k">elif</span> <span class="n">ndim1</span><span class="o">==</span><span class="mi">3</span> <span class="ow">and</span> <span class="n">ndim2</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+        <span class="n">s</span><span class="p">,</span><span class="n">t1</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">mat1</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">t2</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">mat2</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="n">t1</span><span class="o">!=</span><span class="n">t2</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;incorrect shape found in dot_product&#39;</span><span class="p">)</span>
+            <span class="k">return</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mat_new</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">s</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+                    <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">t1</span><span class="p">):</span>
+                        <span class="n">b</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">mat1</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">i</span><span class="p">],</span><span class="n">mat2</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
+                        <span class="n">a</span><span class="o">=</span><span class="n">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+                    <span class="n">mat_new</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="n">a</span>
+            <span class="k">return</span> <span class="n">mat_new</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;incorrect shape found in dot_product&#39;</span><span class="p">)</span>
+        <span class="k">return</span> </div>
+
+
+<div class="viewcode-block" id="dot_product_1">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.math1.dot_product_1">[docs]</a>
+<span class="k">def</span> <span class="nf">dot_product_1</span><span class="p">(</span><span class="n">mat1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">mat2</span><span class="p">:</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;product of two matrices, mat1*mat2.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mat1: ndarray</span>
+<span class="sd">        (s,t) in &quot;NOT&quot; TAU-style</span>
+<span class="sd">    mat2: ndarray</span>
+<span class="sd">        (t,u) in TAU-style</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Inner product: array in TAU-style</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ndim1</span><span class="o">=</span><span class="n">mat1</span><span class="o">.</span><span class="n">ndim</span>
+    <span class="n">ndim2</span><span class="o">=</span><span class="n">mat2</span><span class="o">.</span><span class="n">ndim</span>
+    
+    <span class="k">if</span> <span class="n">ndim1</span><span class="o">==</span><span class="mi">2</span> <span class="ow">and</span> <span class="n">ndim2</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="n">s</span><span class="p">,</span><span class="n">t1</span><span class="p">,</span><span class="o">=</span><span class="n">mat1</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">t2</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">mat2</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="n">t1</span><span class="o">!=</span><span class="n">t2</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;incorrect shape found in dot_product&#39;</span><span class="p">)</span>
+            <span class="k">return</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mat_new</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">s</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+                <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">t1</span><span class="p">):</span>
+                    <span class="n">val</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">mat1</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">j</span><span class="p">],</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="n">b</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">val</span><span class="p">,</span><span class="n">mat2</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                    <span class="n">a</span><span class="o">=</span><span class="n">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+                <span class="n">mat_new</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">a</span>
+            <span class="k">return</span> <span class="n">mat_new</span>
+            
+    <span class="k">elif</span> <span class="n">ndim1</span><span class="o">==</span><span class="mi">2</span> <span class="ow">and</span> <span class="n">ndim2</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+        <span class="n">s</span><span class="p">,</span><span class="n">t1</span><span class="p">,</span><span class="o">=</span><span class="n">mat1</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">t2</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">mat2</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="n">t1</span><span class="o">!=</span><span class="n">t2</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;incorrect shape found in dot_product&#39;</span><span class="p">)</span>
+            <span class="k">return</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mat_new</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">s</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+                    <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">t1</span><span class="p">):</span>
+                        <span class="n">val</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">mat1</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">j</span><span class="p">],</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="n">b</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">val</span><span class="p">,</span><span class="n">mat2</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
+                        <span class="n">a</span><span class="o">=</span><span class="n">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+                    <span class="n">mat_new</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="n">a</span>
+            <span class="k">return</span> <span class="n">mat_new</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;incorrect shape found in dot_product&#39;</span><span class="p">)</span>
+        <span class="k">return</span> </div>
+
+
+
+
+
+
+
+
+
+<div class="viewcode-block" id="projection">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.math1.projection">[docs]</a>
+<span class="k">def</span> <span class="nf">projection</span><span class="p">(</span><span class="n">vt</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;projection of a 6d vector onto Epar and Eperp in &quot;TAU-style&quot;</span>
+<span class="sd">    NOTE: coefficient (alpha) of the projection matrix is set to be 1.</span>
+<span class="sd">    alpha = a/np.sqrt(2.0+TAU)</span>
+<span class="sd">    see Yamamoto ActaCrystal (1997)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vt: array</span>
+<span class="sd">        6-dimensional vector in TAU-style</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    array containing two 3d vectors projected onto Epar and Eperp in TAU-style.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">m0</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="c1">#  0 in &#39;TAU-style&#39;</span>
+    <span class="n">m1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="c1">#  1</span>
+    <span class="n">m2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="c1"># -1</span>
+    <span class="n">m3</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="c1">#  tau</span>
+    <span class="n">m4</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="c1"># -tau</span>
+    <span class="n">v1e</span><span class="o">=</span><span class="n">mtrixcal</span><span class="p">(</span><span class="n">m1</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">m0</span><span class="p">,</span><span class="n">m2</span><span class="p">,</span><span class="n">m0</span><span class="p">,</span><span class="n">vt</span><span class="p">)</span> <span class="c1"># 1,tau,tau,0,-1,0</span>
+    <span class="n">v2e</span><span class="o">=</span><span class="n">mtrixcal</span><span class="p">(</span><span class="n">m3</span><span class="p">,</span><span class="n">m0</span><span class="p">,</span><span class="n">m0</span><span class="p">,</span><span class="n">m1</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">m1</span><span class="p">,</span><span class="n">vt</span><span class="p">)</span> <span class="c1"># tau,0,0,1,TAU,1</span>
+    <span class="n">v3e</span><span class="o">=</span><span class="n">mtrixcal</span><span class="p">(</span><span class="n">m0</span><span class="p">,</span><span class="n">m1</span><span class="p">,</span><span class="n">m2</span><span class="p">,</span><span class="n">m4</span><span class="p">,</span><span class="n">m0</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">vt</span><span class="p">)</span> <span class="c1"># 0,1,-1,-tau,0,tau</span>
+    <span class="n">v1i</span><span class="o">=</span><span class="n">mtrixcal</span><span class="p">(</span><span class="n">m3</span><span class="p">,</span><span class="n">m2</span><span class="p">,</span><span class="n">m2</span><span class="p">,</span><span class="n">m0</span><span class="p">,</span><span class="n">m4</span><span class="p">,</span><span class="n">m0</span><span class="p">,</span><span class="n">vt</span><span class="p">)</span> <span class="c1"># tau,-1,-1,0,-tau,0</span>
+    <span class="n">v2i</span><span class="o">=</span><span class="n">mtrixcal</span><span class="p">(</span><span class="n">m2</span><span class="p">,</span><span class="n">m0</span><span class="p">,</span><span class="n">m0</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">m2</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">vt</span><span class="p">)</span> <span class="c1"># -1,0,0,tau,-1,tau</span>
+    <span class="n">v3i</span><span class="o">=</span><span class="n">mtrixcal</span><span class="p">(</span><span class="n">m0</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">m4</span><span class="p">,</span><span class="n">m1</span><span class="p">,</span><span class="n">m0</span><span class="p">,</span><span class="n">m2</span><span class="p">,</span><span class="n">vt</span><span class="p">)</span> <span class="c1"># 0,tau,-tau,1,0,-1</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">v1e</span><span class="p">,</span><span class="n">v2e</span><span class="p">,</span><span class="n">v3e</span><span class="p">],[</span><span class="n">v1i</span><span class="p">,</span><span class="n">v2i</span><span class="p">,</span><span class="n">v3i</span><span class="p">]],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="projection3">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.math1.projection3">[docs]</a>
+<span class="k">def</span> <span class="nf">projection3</span><span class="p">(</span><span class="n">vt</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;projection of a 6d vector onto Eperp in &quot;TAU-style&quot;</span>
+<span class="sd">    NOTE: coefficient (alpha) of the projection matrix is set to be 1.</span>
+<span class="sd">    alpha = a/np.sqrt(2.0+TAU)</span>
+<span class="sd">    see Yamamoto ActaCrystal (1997)</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vt: array</span>
+<span class="sd">        6-dimensional vector in TAU-style</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    3d vectors projected onto Eperp in TAU-style.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">m0</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="c1">#  0 in &#39;TAU-style&#39;</span>
+    <span class="n">m1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="c1">#  1</span>
+    <span class="n">m2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="c1"># -1</span>
+    <span class="n">m3</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="c1">#  tau</span>
+    <span class="n">m4</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="c1"># -tau</span>
+    <span class="c1">#v1e=mtrixcal(m1,m3,m3,m0,m2,m0,h1,h2,h3,h4,h5,h6) # 1,tau,tau,0,-1,0</span>
+    <span class="c1">#v2e=mtrixcal(m3,m0,m0,m1,m3,m1,h1,h2,h3,h4,h5,h6) # tau,0,0,1,TAU,1</span>
+    <span class="c1">#v3e=mtrixcal(m0,m1,m2,m4,m0,m3,h1,h2,h3,h4,h5,h6) # 0,1,-1,-tau,0,tau</span>
+    <span class="n">v1i</span><span class="o">=</span><span class="n">mtrixcal</span><span class="p">(</span><span class="n">m3</span><span class="p">,</span><span class="n">m2</span><span class="p">,</span><span class="n">m2</span><span class="p">,</span><span class="n">m0</span><span class="p">,</span><span class="n">m4</span><span class="p">,</span><span class="n">m0</span><span class="p">,</span><span class="n">vt</span><span class="p">)</span> <span class="c1"># tau,-1,-1,0,-tau,0</span>
+    <span class="n">v2i</span><span class="o">=</span><span class="n">mtrixcal</span><span class="p">(</span><span class="n">m2</span><span class="p">,</span><span class="n">m0</span><span class="p">,</span><span class="n">m0</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">m2</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">vt</span><span class="p">)</span> <span class="c1"># -1,0,0,tau,-1,tau</span>
+    <span class="n">v3i</span><span class="o">=</span><span class="n">mtrixcal</span><span class="p">(</span><span class="n">m0</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">m4</span><span class="p">,</span><span class="n">m1</span><span class="p">,</span><span class="n">m0</span><span class="p">,</span><span class="n">m2</span><span class="p">,</span><span class="n">vt</span><span class="p">)</span> <span class="c1"># 0,tau,-tau,1,0,-1</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v1i</span><span class="p">,</span><span class="n">v2i</span><span class="p">,</span><span class="n">v3i</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="projection_perp">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.math1.projection_perp">[docs]</a>
+<span class="k">def</span> <span class="nf">projection_perp</span><span class="p">(</span><span class="n">vt</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This returns 6D indeces of a projection of 6D vector (v) onto Eperp</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    v: array</span>
+<span class="sd">        6-dimensional vector in TAU-style</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    6d vectors projected onto Eperp in TAU-style.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">m1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span> <span class="c1">#  (TAU+2)/2/(2+TAU)=1/2 in &#39;TAU-style&#39;</span>
+    <span class="n">m2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span><span class="mi">10</span><span class="p">])</span> <span class="c1">#  TAU/2/(2+TAU)</span>
+    <span class="n">m3</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">10</span><span class="p">])</span> <span class="c1"># -TAU/2/(2+TAU)</span>
+    <span class="n">h1</span><span class="o">=</span><span class="n">mtrixcal</span><span class="p">(</span><span class="n">m1</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">vt</span><span class="p">)</span> <span class="c1"># (tau+2,-tau,-tau,-tau,-tau,-tau)/2</span>
+    <span class="n">h2</span><span class="o">=</span><span class="n">mtrixcal</span><span class="p">(</span><span class="n">m3</span><span class="p">,</span><span class="n">m1</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">m2</span><span class="p">,</span><span class="n">m2</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">vt</span><span class="p">)</span> <span class="c1"># (-tau,tau+2,-tau,tau,tau,-tau)/2</span>
+    <span class="n">h3</span><span class="o">=</span><span class="n">mtrixcal</span><span class="p">(</span><span class="n">m3</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">m1</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">m2</span><span class="p">,</span><span class="n">m2</span><span class="p">,</span><span class="n">vt</span><span class="p">)</span> <span class="c1"># (-tau,-tau,tau+2,-tau,tau,tau)/2</span>
+    <span class="n">h4</span><span class="o">=</span><span class="n">mtrixcal</span><span class="p">(</span><span class="n">m3</span><span class="p">,</span><span class="n">m2</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">m1</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">m2</span><span class="p">,</span><span class="n">vt</span><span class="p">)</span> <span class="c1"># (-tau,tau,-tau,tau+2,-tau,tau)/2</span>
+    <span class="n">h5</span><span class="o">=</span><span class="n">mtrixcal</span><span class="p">(</span><span class="n">m3</span><span class="p">,</span><span class="n">m2</span><span class="p">,</span><span class="n">m2</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">m1</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">vt</span><span class="p">)</span> <span class="c1"># (-tau,tau,tau,-tau,tau+2,-tau)/2</span>
+    <span class="n">h6</span><span class="o">=</span><span class="n">mtrixcal</span><span class="p">(</span><span class="n">m3</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">m2</span><span class="p">,</span><span class="n">m2</span><span class="p">,</span><span class="n">m3</span><span class="p">,</span><span class="n">m1</span><span class="p">,</span><span class="n">vt</span><span class="p">)</span> <span class="c1"># (-tau,-tau,tau,tau,-tau,tau+2)/2</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">h1</span><span class="p">,</span><span class="n">h2</span><span class="p">,</span><span class="n">h3</span><span class="p">,</span><span class="n">h4</span><span class="p">,</span><span class="n">h5</span><span class="p">,</span><span class="n">h6</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span></div>
+
+    <span class="c1">#const=1/(2.0+TAU)</span>
+    <span class="c1">#m1 =((TAU+2)*n1 -     TAU*n2 -     TAU*n3 -     TAU*n4 -     TAU*n5 -     TAU*n6)/2.0*const</span>
+    <span class="c1">#m2 = ( - TAU*n1 + (TAU+2)*n2 -     TAU*n3 +     TAU*n4 +     TAU*n5 -     TAU*n6)/2.0*const</span>
+    <span class="c1">#m3 = ( - TAU*n1 -     TAU*n2 + (TAU+2)*n3 -     TAU*n4 +     TAU*n5 +     TAU*n6)/2.0*const</span>
+    <span class="c1">#m4 = ( - TAU*n1 +     TAU*n2 -     TAU*n3 + (TAU+2)*n4 -     TAU*n5 +     TAU*n6)/2.0*const</span>
+    <span class="c1">#m5 = ( - TAU*n1 +     TAU*n2 +     TAU*n3 -     TAU*n4 + (TAU+2)*n5 -     TAU*n6)/2.0*const</span>
+    <span class="c1">#m6 = ( - TAU*n1 -     TAU*n2 +     TAU*n3 +     TAU*n4 -     TAU*n5 + (TAU+2)*n6)/2.0*const</span>
+    <span class="c1">#return m1,m2,m3,m4,m5,m6</span>
+
+<div class="viewcode-block" id="mtrixcal">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.math1.mtrixcal">[docs]</a>
+<span class="k">def</span> <span class="nf">mtrixcal</span><span class="p">(</span>
+    <span class="n">m1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span>
+    <span class="n">m2</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span>
+    <span class="n">m3</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span>
+    <span class="n">m4</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span>
+    <span class="n">m5</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span>
+    <span class="n">m6</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span>
+    <span class="n">v</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;function used in projection()</span>
+<span class="sd">                        projection3()</span>
+<span class="sd">                        projection_perp()</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    m1,m2,m3,m4,m5,m6:array for projection materix</span>
+<span class="sd">    v: array</span>
+<span class="sd">        6-dimensional vector in TAU-style</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    6d vectors projected onto Eperp in TAU-style.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a1</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">m1</span><span class="p">,</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">a2</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">m2</span><span class="p">,</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">a3</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">m3</span><span class="p">,</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">a4</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">m4</span><span class="p">,</span><span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+    <span class="n">a5</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">m5</span><span class="p">,</span><span class="n">v</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+    <span class="n">a6</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">m6</span><span class="p">,</span><span class="n">v</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+    <span class="n">a1</span><span class="o">=</span><span class="n">add</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="n">a2</span><span class="p">)</span>
+    <span class="n">a1</span><span class="o">=</span><span class="n">add</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="n">a3</span><span class="p">)</span>
+    <span class="n">a1</span><span class="o">=</span><span class="n">add</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="n">a4</span><span class="p">)</span>
+    <span class="n">a1</span><span class="o">=</span><span class="n">add</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="n">a5</span><span class="p">)</span>
+    <span class="n">a1</span><span class="o">=</span><span class="n">add</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="n">a6</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">a1</span></div>
+
+
+<div class="viewcode-block" id="centroid">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.math1.centroid">[docs]</a>
+<span class="k">def</span> <span class="nf">centroid</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;geometric center, centroid of tetrahedron, triangle or edge, in TAU-style.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj: array</span>
+<span class="sd">        6-dimensional vector in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    centroid: array in TAU-style</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="n">v0</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">i2</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+        <span class="n">v2</span><span class="o">=</span><span class="n">v0</span><span class="p">[</span><span class="n">i2</span><span class="p">]</span>
+        <span class="n">i1</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+            <span class="n">v2</span><span class="o">=</span><span class="n">add</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">])</span>
+            <span class="n">i1</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="n">v0</span><span class="p">[</span><span class="n">i2</span><span class="p">]</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">num</span><span class="p">]))</span>
+        <span class="n">i2</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">v0</span></div>
+
+
+<div class="viewcode-block" id="centroid_obj">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.math1.centroid_obj">[docs]</a>
+<span class="k">def</span> <span class="nf">centroid_obj</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;geometric center, centroid of tetrahedron, in TAU-style.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tetrahedron: array</span>
+<span class="sd">        6-dimensional vector in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    centroid: array in TAU-style</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#print(&#39;centroid_obj&#39;)</span>
+    
+    <span class="c1">#  geometric center, centroid of OBJ</span>
+    <span class="n">tmp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">tetrahedron</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+        <span class="n">p</span><span class="o">=</span><span class="n">centroid</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">)</span>
+        <span class="n">tmp</span><span class="o">=</span><span class="n">add_vectors</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mul_vector</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)]))</span></div>
+
+
+<div class="viewcode-block" id="coplanar_check">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.math1.coplanar_check">[docs]</a>
+<span class="k">def</span> <span class="nf">coplanar_check</span><span class="p">(</span><span class="n">p</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span><span class="n">num_iteration</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check whether a given set of points (in TAU-style) is coplanar or not.</span>
+<span class="sd">    </span>
+<span class="sd">    メモ：xyz1とxyz2の選び方次第で、outer_product(v1,v2)が小さくなりcoplanarと間違って判定する場合がある。</span>
+<span class="sd">    これを避けるために適切なxyz1とxyz2の選び方が必要。以下では、ランダムにxyz1とxyz2の選ぶ。</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    p: array</span>
+<span class="sd">        a set of pointsin TAU-style.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int</span>
+<span class="sd">    #bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    num=len(p)</span>
+<span class="sd">    if num&gt;3:</span>
+<span class="sd">        flag=0</span>
+<span class="sd">        lst0=[i for i in range(num)]</span>
+<span class="sd">        for _ in range(num_iteration):</span>
+<span class="sd">            lst3=random.sample(lst0, 3)</span>
+<span class="sd">            xyz0i=projection3(p[lst3[0]])</span>
+<span class="sd">            xyz1i=projection3(p[lst3[1]])</span>
+<span class="sd">            xyz2i=projection3(p[lst3[2]])</span>
+<span class="sd">            v1=sub_vectors(xyz1i,xyz0i)</span>
+<span class="sd">            v2=sub_vectors(xyz2i,xyz0i)</span>
+<span class="sd">            v3=outer_product(v1,v2)</span>
+<span class="sd">            flag=0</span>
+<span class="sd">            if np.all(d[:2])==0):</span>
+<span class="sd">                pass</span>
+<span class="sd">            else:</span>
+<span class="sd">                flag=1</span>
+<span class="sd">                break</span>
+<span class="sd">        if flag==1:</span>
+<span class="sd">            counter=0</span>
+<span class="sd">            lst=list(filter(lambda x: x not in lst3, lst0))</span>
+<span class="sd">            for i in lst:</span>
+<span class="sd">                xyz3i=projection3(p[i])</span>
+<span class="sd">                v4=sub_vectors(xyz3i,xyz0i)</span>
+<span class="sd">                d=inner_product(v3,v4)</span>
+<span class="sd">                if np.all(d[:2])==0:</span>
+<span class="sd">                    pass</span>
+<span class="sd">                else:</span>
+<span class="sd">                    counter=1</span>
+<span class="sd">                    break</span>
+<span class="sd">            if counter==0:</span>
+<span class="sd">                return True # coplanar</span>
+<span class="sd">            else:</span>
+<span class="sd">                return False</span>
+<span class="sd">        else:</span>
+<span class="sd">            &#39;error in coplanar_check_numeric. increase num_iteration.&#39;</span>
+<span class="sd">            return </span>
+<span class="sd">    else:</span>
+<span class="sd">        return True # coplanar</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">coplanar_check_numeric_tau</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">num_iteration</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="matrixpow">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.math1.matrixpow">[docs]</a>
+<span class="k">def</span> <span class="nf">matrixpow</span><span class="p">(</span><span class="n">ma</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="p">(</span><span class="n">mx</span><span class="p">,</span><span class="n">my</span><span class="p">)</span><span class="o">=</span><span class="n">ma</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">if</span> <span class="n">mx</span><span class="o">==</span><span class="n">my</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">mx</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">n</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">tmp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">mx</span><span class="p">)</span>
+            <span class="n">inva</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">ma</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">n</span><span class="p">):</span>
+                <span class="n">tmp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span><span class="n">inva</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">tmp</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tmp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">mx</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+                <span class="n">tmp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span><span class="n">ma</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">tmp</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;matrix has not regular shape&#39;</span><span class="p">)</span>
+        <span class="k">return</span> </div>
+
+
+<div class="viewcode-block" id="det_matrix">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.math1.det_matrix">[docs]</a>
+<span class="k">def</span> <span class="nf">det_matrix</span><span class="p">(</span><span class="n">mtx</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determinant of 3x3 matrix, mtx, in TAU style</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mtx: array</span>
+<span class="sd">        3x3 matrix in TAU-style</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    6d vectors projected onto Eperp in TAU-style.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">t3</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">mtx</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">mtx</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">t1</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">t3</span><span class="p">,</span><span class="n">mtx</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span>
+    <span class="c1">#</span>
+    <span class="n">t3</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">mtx</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span><span class="n">mtx</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">t2</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">t3</span><span class="p">,</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c1">#</span>
+    <span class="n">t1</span><span class="o">=</span><span class="n">add</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">)</span>
+    
+    <span class="n">t3</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">mtx</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">mtx</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">t3</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">t3</span><span class="p">,</span><span class="n">mtx</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="c1">#</span>
+    <span class="n">t1</span><span class="o">=</span><span class="n">add</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span><span class="n">t3</span><span class="p">)</span>
+    
+    <span class="n">t3</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">mtx</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span><span class="n">mtx</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">t2</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">t3</span><span class="p">,</span><span class="n">mtx</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="c1">#</span>
+    <span class="n">t1</span><span class="o">=</span><span class="n">sub</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">)</span>
+    
+    <span class="n">t3</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">mtx</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">mtx</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">t2</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">t3</span><span class="p">,</span><span class="n">mtx</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span>
+    <span class="c1">#</span>
+    <span class="n">t1</span><span class="o">=</span><span class="n">sub</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">)</span>
+    
+    <span class="n">t3</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">mtx</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">mtx</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">t2</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">t3</span><span class="p">,</span><span class="n">mtx</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c1">#</span>
+    <span class="n">t1</span><span class="o">=</span><span class="n">sub</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span><span class="n">t2</span><span class="p">)</span>
+    <span class="c1">#</span>
+    <span class="k">return</span> <span class="n">t1</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    
+    <span class="c1"># test</span>
+    
+    <span class="kn">import</span> <span class="nn">random</span>
+    <span class="kn">from</span> <span class="nn">numericalc</span> <span class="kn">import</span> <span class="p">(</span><span class="n">numeric_value</span><span class="p">,</span>
+                            <span class="n">numerical_vector</span><span class="p">,</span>
+                            <span class="n">numerical_vectors</span><span class="p">,</span>
+                            <span class="n">get_internal_component_numerical</span><span class="p">,</span>
+                            <span class="n">get_internal_component_sets_numerical</span><span class="p">,</span>
+                            <span class="n">point_on_segment</span><span class="p">,</span>
+                            <span class="n">coplanar_check_numeric_tau</span><span class="p">)</span>
+    
+    <span class="n">ncycle</span><span class="o">=</span><span class="mi">20</span>
+    <span class="n">eps</span><span class="o">=</span><span class="mf">1e-3</span>
+    
+    <span class="k">def</span> <span class="nf">math_check</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;checking basic arithmetic operations in TAU-style.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">flg</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">a1</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="n">b1</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        
+        <span class="n">c</span><span class="o">=</span><span class="n">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">c1</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+        <span class="n">c2</span><span class="o">=</span><span class="n">a1</span><span class="o">+</span><span class="n">b1</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">c1</span><span class="o">-</span><span class="n">c2</span><span class="p">)</span><span class="o">&lt;</span><span class="n">eps</span><span class="p">:</span>
+            <span class="n">flg</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">)</span>
+            
+        <span class="n">c</span><span class="o">=</span><span class="n">sub</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">c1</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+        <span class="n">c2</span><span class="o">=</span><span class="n">a1</span><span class="o">-</span><span class="n">b1</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">c1</span><span class="o">-</span><span class="n">c2</span><span class="p">)</span><span class="o">&lt;</span><span class="n">eps</span><span class="p">:</span>
+            <span class="n">flg</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+            
+        <span class="n">c</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">c1</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+        <span class="n">c2</span><span class="o">=</span><span class="n">a1</span><span class="o">*</span><span class="n">b1</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">c1</span><span class="o">-</span><span class="n">c2</span><span class="p">)</span><span class="o">&lt;</span><span class="n">eps</span><span class="p">:</span>
+            <span class="n">flg</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span>
+            
+        <span class="n">c</span><span class="o">=</span><span class="n">div</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">c1</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+        <span class="n">c2</span><span class="o">=</span><span class="n">a1</span><span class="o">/</span><span class="n">b1</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">c1</span><span class="o">-</span><span class="n">c2</span><span class="p">)</span><span class="o">&lt;</span><span class="n">eps</span><span class="p">:</span>
+            <span class="n">flg</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">flg</span><span class="o">==</span><span class="mi">4</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mi">1</span>
+    
+    <span class="k">def</span> <span class="nf">generate_random_value</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; generate value in TAU-style</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nmax</span><span class="o">=</span><span class="mi">10</span>
+        <span class="n">v</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">v</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="o">-</span><span class="n">nmax</span><span class="p">,</span><span class="n">nmax</span><span class="p">)</span> <span class="c1"># a and b in (a+b*TAU)/c.</span>
+        <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">nmax</span><span class="p">)</span> <span class="c1"># c in (a+b*TAU)/c.</span>
+        <span class="k">return</span> <span class="n">v</span>
+        
+    <span class="k">def</span> <span class="nf">generate_random_vector</span><span class="p">(</span><span class="n">ndim</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; generate ndim vector in TAU-style</span>
+<span class="sd">        ndim: dimension of vectors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nmax</span><span class="o">=</span><span class="mi">10</span>
+        <span class="n">v</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">ndim</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="p">):</span>
+            <span class="n">v</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">generate_random_value</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">v</span>
+        
+    <span class="k">def</span> <span class="nf">generate_random_vectors</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">ndim</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        num: number of generated vectors.</span>
+<span class="sd">        ndim: dimension of vectors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">v</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="n">ndim</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">v</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">generate_random_vector</span><span class="p">(</span><span class="n">ndim</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span>
+    
+    <span class="c1">#-----------------------------------</span>
+    <span class="c1"># check basic arithmetic operations</span>
+    <span class="c1">#-----------------------------------</span>
+    <span class="n">flg</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ncycle</span><span class="p">):</span>
+        <span class="n">a</span><span class="o">=</span><span class="n">generate_random_value</span><span class="p">()</span>
+        <span class="n">b</span><span class="o">=</span><span class="n">generate_random_value</span><span class="p">()</span>
+        <span class="n">flg</span><span class="o">+=</span><span class="n">math_check</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">flg</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;math_check: Correct!&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;math_check: Wrong&#39;</span><span class="p">)</span>
+    
+    <span class="c1">#-----------------------------------</span>
+    <span class="c1"># check operations on vectors</span>
+    <span class="c1">#-----------------------------------</span>
+    
+    <span class="c1"># 積：定数xベクトル</span>
+    <span class="n">flg</span><span class="o">=</span><span class="mi">0</span>
+    <span class="n">const</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">nconst</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">const</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ncycle</span><span class="p">):</span>
+        <span class="n">v1</span><span class="o">=</span><span class="n">generate_random_vector</span><span class="p">()</span>
+        <span class="n">nv1</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numerical_vector</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>
+        <span class="n">a</span><span class="o">=</span><span class="n">nv1</span><span class="o">*</span><span class="n">nconst</span>
+        <span class="n">v</span><span class="o">=</span><span class="n">mul_vector</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">const</span><span class="p">)</span>
+        <span class="n">b</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numerical_vector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">flg</span><span class="o">+=</span><span class="mi">0</span>
+    <span class="k">if</span> <span class="n">flg</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mul_vector: Correct!&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mul_vector: Wrong&#39;</span><span class="p">)</span>
+        
+    <span class="c1"># 積：定数xベクトルのセット</span>
+    <span class="n">nset</span><span class="o">=</span><span class="mi">5</span>
+    <span class="n">flg</span><span class="o">=</span><span class="mi">0</span>
+    <span class="n">const</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">nconst</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">const</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ncycle</span><span class="p">):</span>
+        <span class="n">vs</span><span class="o">=</span><span class="n">generate_random_vectors</span><span class="p">(</span><span class="n">nset</span><span class="p">)</span>
+        <span class="n">mvs</span><span class="o">=</span><span class="n">mul_vectors</span><span class="p">(</span><span class="n">vs</span><span class="p">,</span><span class="n">const</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vs</span><span class="p">)):</span>
+            <span class="n">nv1</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numerical_vector</span><span class="p">(</span><span class="n">vs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">a</span><span class="o">=</span><span class="n">nv1</span><span class="o">*</span><span class="n">nconst</span>
+            <span class="n">b</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numerical_vector</span><span class="p">(</span><span class="n">mvs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flg</span><span class="o">+=</span><span class="mi">0</span>
+    <span class="k">if</span> <span class="n">flg</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mul_vectors: Correct!&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mul_vectors: Wrong&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># ベクトル合成</span>
+    <span class="n">flg</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ncycle</span><span class="p">):</span>
+        <span class="n">v1</span><span class="o">=</span><span class="n">generate_random_vector</span><span class="p">()</span>
+        <span class="n">v2</span><span class="o">=</span><span class="n">generate_random_vector</span><span class="p">()</span>
+        <span class="c1">#</span>
+        <span class="n">n1</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numerical_vector</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>
+        <span class="n">n2</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numerical_vector</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span>
+        <span class="n">a</span><span class="o">=</span><span class="n">n1</span><span class="o">+</span><span class="n">n2</span>
+        <span class="c1">#</span>
+        <span class="n">v</span><span class="o">=</span><span class="n">add_vectors</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span>
+        <span class="n">b</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numerical_vector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="c1">#print(b)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">flg</span><span class="o">+=</span><span class="mi">0</span>
+    <span class="k">if</span> <span class="n">flg</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;add_vectors: Correct!&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;add_vectors: Wrong&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># ベクトルの差</span>
+    <span class="n">flg</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ncycle</span><span class="p">):</span>
+        <span class="n">v1</span><span class="o">=</span><span class="n">generate_random_vector</span><span class="p">()</span>
+        <span class="n">v2</span><span class="o">=</span><span class="n">generate_random_vector</span><span class="p">()</span>
+        <span class="c1">#</span>
+        <span class="n">n1</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numerical_vector</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>
+        <span class="n">n2</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numerical_vector</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span>
+        <span class="n">a</span><span class="o">=</span><span class="n">n1</span><span class="o">-</span><span class="n">n2</span>
+        <span class="c1">#</span>
+        <span class="n">v</span><span class="o">=</span><span class="n">sub_vectors</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span>
+        <span class="n">b</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numerical_vector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="c1">#print(b)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">flg</span><span class="o">+=</span><span class="mi">0</span>
+    <span class="k">if</span> <span class="n">flg</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;sub_vectors: Correct!&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;sub_vectors: Wrong&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># 外積</span>
+    <span class="n">flg</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ncycle</span><span class="p">):</span>
+        <span class="n">v1</span><span class="o">=</span><span class="n">generate_random_vector</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">v2</span><span class="o">=</span><span class="n">generate_random_vector</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="n">n1</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numerical_vector</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>
+        <span class="n">n2</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numerical_vector</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span>
+        <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span><span class="n">n2</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="n">v</span><span class="o">=</span><span class="n">outer_product</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span>
+        <span class="n">b</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numerical_vector</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="c1">#print(b)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">flg</span><span class="o">+=</span><span class="mi">0</span>
+    <span class="k">if</span> <span class="n">flg</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;outer_product: Correct!&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;outer_product: Wrong&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 内積</span>
+    <span class="n">flg</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ncycle</span><span class="p">):</span>
+        <span class="n">v1</span><span class="o">=</span><span class="n">generate_random_vector</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">v2</span><span class="o">=</span><span class="n">generate_random_vector</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="n">n1</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numerical_vector</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>
+        <span class="n">n2</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numerical_vector</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span>
+        <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span><span class="n">n2</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="n">v</span><span class="o">=</span><span class="n">inner_product</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span>
+        <span class="n">b</span><span class="o">=</span><span class="n">numericalc</span><span class="o">.</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="c1">#print(b)</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="o">-</span><span class="n">b</span><span class="p">)</span><span class="o">&lt;</span><span class="n">eps</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">flg</span><span class="o">+=</span><span class="mi">0</span>
+    <span class="k">if</span> <span class="n">flg</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;inner_product: Correct!&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;inner_product: Wrong&#39;</span><span class="p">)</span>
+    
+    
+    <span class="c1">#-----------------------------------</span>
+    <span class="c1"># check: projection</span>
+    <span class="c1">#-----------------------------------</span>
+    
+    <span class="n">v</span><span class="o">=</span><span class="n">generate_random_vector</span><span class="p">()</span>
+    <span class="n">v</span><span class="o">=</span><span class="n">projection</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">ve</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">vi</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Tsunetomo Yamada.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

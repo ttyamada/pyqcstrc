@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyqcstrc.ico.two_occupation_domains &mdash; PyQCstrc 0.0.2a01 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=c4b47ef7"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyQCstrc
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyQCstrc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyqcstrc.ico.two_occupation_domains</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyqcstrc.ico.two_occupation_domains</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="c1"># PyQCstrc - Python library for Quasi-Crystal structure</span>
+<span class="c1"># Copyright (c) 2021 Tsunetomo Yamada &lt;tsunetomo.yamada@rs.tus.ac.jp&gt;</span>
+
+<span class="kn">import</span> <span class="nn">timeit</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pyqcstrc.ico.math1</span> <span class="k">as</span> <span class="nn">math1</span>
+    <span class="kn">import</span> <span class="nn">pyqcstrc.ico.intsct</span> <span class="k">as</span> <span class="nn">intsct</span>
+    <span class="kn">import</span> <span class="nn">pyqcstrc.ico.mics</span> <span class="k">as</span> <span class="nn">mics</span>
+    <span class="kn">import</span> <span class="nn">pyqcstrc.ico.numericalc</span> <span class="k">as</span> <span class="nn">numericalc</span>
+    <span class="kn">import</span> <span class="nn">pyqcstrc.ico.symmetry</span> <span class="k">as</span> <span class="nn">symmetry</span>
+    <span class="kn">import</span> <span class="nn">pyqcstrc.ico.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+    <span class="kn">import</span> <span class="nn">pyqcstrc.ico.occupation_domain</span> <span class="k">as</span> <span class="nn">od</span>
+
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;import error</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">TAU</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span><span class="o">/</span><span class="mf">2.0</span>
+
+<div class="viewcode-block" id="intersection">
+<a class="viewcode-back" href="../../../pyqcstrc.ico.html#pyqcstrc.ico.two_occupation_domains.intersection">[docs]</a>
+<span class="k">def</span> <span class="nf">intersection</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">,</span> <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Intersection of two occupation domains projected onto perp space.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        obj1 (numpy.ndarray):</span>
+<span class="sd">            The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.</span>
+<span class="sd">        obj2 (numpy.ndarray):</span>
+<span class="sd">            The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.</span>
+<span class="sd">        flag (int):</span>
+<span class="sd">            flag = 0, Intersection with rough checking.</span>
+<span class="sd">            flag = 1, Intersection without checking.</span>
+<span class="sd">        verbose (int):</span>
+<span class="sd">            verbose = 0 (silent, default)</span>
+<span class="sd">            verbose = 1 (normal)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Common part of two occupation domains projected onto perp space (numpy.ndarray):</span>
+<span class="sd">            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">obj1</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">obj1</span><span class="o">=</span><span class="n">obj1</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj1</span><span class="p">)</span><span class="o">/</span><span class="mi">4</span><span class="p">),</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">if</span> <span class="n">obj2</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">obj2</span><span class="o">=</span><span class="n">obj2</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj2</span><span class="p">)</span><span class="o">/</span><span class="mi">4</span><span class="p">),</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
+    <span class="n">common</span><span class="o">=</span><span class="n">intsct</span><span class="o">.</span><span class="n">intersection_two_obj_1</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">,</span> <span class="n">flag</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+    <span class="c1">#if flag1==0:</span>
+    <span class="c1">#    common=intsct.intersection_two_obj(obj1, obj2, flag1, flag2, flag3, verbose)</span>
+    <span class="c1">#elif flag1!=0:</span>
+    <span class="c1">#    common=intsct.intersection_using_tetrahedron_4(obj1, obj2, flag1, verbose, dummy=0)</span>
+    <span class="k">if</span> <span class="n">common</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="o">!=</span><span class="p">[[[[</span><span class="mi">0</span><span class="p">]]]]:</span>
+        <span class="p">[</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">,</span><span class="n">v3</span><span class="p">]</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">obj_volume_6d</span><span class="p">(</span><span class="n">common</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    common part found: volume = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">).&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">,</span><span class="n">v3</span><span class="p">,(</span><span class="n">v1</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">v2</span><span class="p">)</span><span class="o">/</span><span class="n">v3</span><span class="p">))</span>
+        <span class="c1">#od.write(common, path=&#39;.&#39;, basename=fname, format=&#39;xyz&#39;)</span>
+        <span class="k">return</span> <span class="n">common</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    no intersection found.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[[[</span><span class="mi">0</span><span class="p">]]]])</span></div>
+
+
+<div class="viewcode-block" id="intersection_2">
+<a class="viewcode-back" href="../../../pyqcstrc.ico.html#pyqcstrc.ico.two_occupation_domains.intersection_2">[docs]</a>
+<span class="k">def</span> <span class="nf">intersection_2</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Intersection of two occupation domains projected onto perp space.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        obj1 (numpy.ndarray):</span>
+<span class="sd">            The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.</span>
+<span class="sd">        obj2 (numpy.ndarray):</span>
+<span class="sd">            The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.</span>
+<span class="sd">        verbose (int):</span>
+<span class="sd">            verbose = 0 (silent, default)</span>
+<span class="sd">            verbose = 1 (normal)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Common part of two occupation domains projected onto perp space (numpy.ndarray):</span>
+<span class="sd">            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">obj1</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">obj1</span><span class="o">=</span><span class="n">obj1</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj1</span><span class="p">)</span><span class="o">/</span><span class="mi">4</span><span class="p">),</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">if</span> <span class="n">obj2</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">obj2</span><span class="o">=</span><span class="n">obj2</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj2</span><span class="p">)</span><span class="o">/</span><span class="mi">4</span><span class="p">),</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
+    <span class="n">common</span><span class="o">=</span><span class="n">intsct</span><span class="o">.</span><span class="n">intersection_two_obj_2</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">common</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="o">!=</span><span class="p">[[[[</span><span class="mi">0</span><span class="p">]]]]:</span>
+        <span class="p">[</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">,</span><span class="n">v3</span><span class="p">]</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">obj_volume_6d</span><span class="p">(</span><span class="n">common</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    common part found: volume = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">).&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">,</span><span class="n">v3</span><span class="p">,(</span><span class="n">v1</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">v2</span><span class="p">)</span><span class="o">/</span><span class="n">v3</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">common</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    no intersection found.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[[[</span><span class="mi">0</span><span class="p">]]]])</span></div>
+
+
+<div class="viewcode-block" id="intersection_3">
+<a class="viewcode-back" href="../../../pyqcstrc.ico.html#pyqcstrc.ico.two_occupation_domains.intersection_3">[docs]</a>
+<span class="k">def</span> <span class="nf">intersection_3</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Intersection of two occupation domains projected onto perp space.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        obj1 (numpy.ndarray):</span>
+<span class="sd">            The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.</span>
+<span class="sd">        obj2 (numpy.ndarray):</span>
+<span class="sd">            The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.</span>
+<span class="sd">        verbose (int):</span>
+<span class="sd">            verbose = 0 (silent, default)</span>
+<span class="sd">            verbose = 1 (normal)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Common part of two occupation domains projected onto perp space (numpy.ndarray):</span>
+<span class="sd">            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">obj1</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">obj1</span><span class="o">=</span><span class="n">obj1</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj1</span><span class="p">)</span><span class="o">/</span><span class="mi">4</span><span class="p">),</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">if</span> <span class="n">obj2</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">obj2</span><span class="o">=</span><span class="n">obj2</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj2</span><span class="p">)</span><span class="o">/</span><span class="mi">4</span><span class="p">),</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
+    <span class="n">common</span><span class="o">=</span><span class="n">intsct</span><span class="o">.</span><span class="n">intersection_two_obj_3</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">common</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="o">!=</span><span class="p">[[[[</span><span class="mi">0</span><span class="p">]]]]:</span>
+        <span class="p">[</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">,</span><span class="n">v3</span><span class="p">]</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">obj_volume_6d</span><span class="p">(</span><span class="n">common</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    common part found: volume = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">).&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">,</span><span class="n">v3</span><span class="p">,(</span><span class="n">v1</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">v2</span><span class="p">)</span><span class="o">/</span><span class="n">v3</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">common</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    no intersection found.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[[[</span><span class="mi">0</span><span class="p">]]]])</span></div>
+
+
+<div class="viewcode-block" id="intersection_convex">
+<a class="viewcode-back" href="../../../pyqcstrc.ico.html#pyqcstrc.ico.two_occupation_domains.intersection_convex">[docs]</a>
+<span class="k">def</span> <span class="nf">intersection_convex</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Intersection of two occupation domains projected onto perp space.</span>
+<span class="sd">    The common part forms convex hull.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        obj1 (numpy.ndarray):</span>
+<span class="sd">            The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.</span>
+<span class="sd">        obj2 (numpy.ndarray):</span>
+<span class="sd">            The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.</span>
+<span class="sd">        verbose (int):</span>
+<span class="sd">            verbose = 0 (silent, default)</span>
+<span class="sd">            verbose = 1 (normal)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Common part of two occupation domains projected onto perp space (numpy.ndarray)</span>
+<span class="sd">            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">point_common</span><span class="p">,</span><span class="n">point_a</span><span class="p">,</span><span class="n">point_b</span> <span class="o">=</span> <span class="n">intsct</span><span class="o">.</span><span class="n">intersection_two_obj_convex</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+    <span class="n">common</span><span class="o">=</span><span class="n">intsct</span><span class="o">.</span><span class="n">tetrahedralization_points</span><span class="p">(</span><span class="n">point_common</span><span class="p">,</span><span class="n">verbose</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">common</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="o">!=</span><span class="p">[[[[</span><span class="mi">0</span><span class="p">]]]]:</span>
+        <span class="p">[</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">,</span><span class="n">v3</span><span class="p">]</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">obj_volume_6d</span><span class="p">(</span><span class="n">common</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    common part found: volume = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">).&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">,</span><span class="n">v3</span><span class="p">,(</span><span class="n">v1</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">v2</span><span class="p">)</span><span class="o">/</span><span class="n">v3</span><span class="p">))</span>
+        <span class="c1">#od.write(common, path=&#39;.&#39;, basename=fname, format=&#39;xyz&#39;)</span>
+        <span class="k">return</span> <span class="n">common</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    no intersection found.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[[[</span><span class="mi">0</span><span class="p">]]]])</span></div>
+
+
+<div class="viewcode-block" id="intersection_old">
+<a class="viewcode-back" href="../../../pyqcstrc.ico.html#pyqcstrc.ico.two_occupation_domains.intersection_old">[docs]</a>
+<span class="k">def</span> <span class="nf">intersection_old</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">,</span> <span class="n">flag</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;tmp0&#39;</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    legacy</span>
+<span class="sd">    Intersection of two occupation domains projected onto perp space.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        obj1 (numpy.ndarray):</span>
+<span class="sd">            The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.</span>
+<span class="sd">        obj2 (numpy.ndarray):</span>
+<span class="sd">            The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.</span>
+<span class="sd">        flag (list): list = [a1,a2,a3]</span>
+<span class="sd">            a1 = 0, rough check intersection of obj1 and obj2; a1 = 1, no</span>
+<span class="sd">            a2 = 0, rough check intersection of tetrahedron in obj1 and obj2; a2 = 1, no</span>
+<span class="sd">            a3 = 0, rough check intersection of tetrahedron in obj1 and tetrahedron in obj2; a3 = 1, no</span>
+<span class="sd">        fname (str): filename of output</span>
+<span class="sd">        verbose (int):</span>
+<span class="sd">            verbose = 0 (silent, default)</span>
+<span class="sd">            verbose = 1 (normal)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Common part of two occupation domains projected onto perp space (numpy.ndarray):</span>
+<span class="sd">            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">obj1</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">obj1</span><span class="o">=</span><span class="n">obj1</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj1</span><span class="p">)</span><span class="o">/</span><span class="mi">4</span><span class="p">),</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">if</span> <span class="n">obj2</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">obj2</span><span class="o">=</span><span class="n">obj2</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj2</span><span class="p">)</span><span class="o">/</span><span class="mi">4</span><span class="p">),</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
+    <span class="n">common</span><span class="o">=</span><span class="n">intsct</span><span class="o">.</span><span class="n">intersection_two_obj</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">,</span> <span class="n">flag</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">flag</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">flag</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">verbose</span><span class="p">)</span>
+    <span class="c1">#if flag1==0:</span>
+    <span class="c1">#    common=intsct.intersection_two_obj(obj1, obj2, flag1, flag2, flag3, verbose)</span>
+    <span class="c1">#elif flag1!=0:</span>
+    <span class="c1">#    common=intsct.intersection_using_tetrahedron_4(obj1, obj2, flag1, verbose, dummy=0)</span>
+    <span class="k">if</span> <span class="n">common</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="o">!=</span><span class="p">[[[[</span><span class="mi">0</span><span class="p">]]]]:</span>
+        <span class="p">[</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">,</span><span class="n">v3</span><span class="p">]</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">obj_volume_6d</span><span class="p">(</span><span class="n">common</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    common part found: volume = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">).&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">,</span><span class="n">v3</span><span class="p">,(</span><span class="n">v1</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">v2</span><span class="p">)</span><span class="o">/</span><span class="n">v3</span><span class="p">))</span>
+        <span class="c1">#od.write(common, path=&#39;.&#39;, basename=fname, format=&#39;xyz&#39;)</span>
+        <span class="k">return</span> <span class="n">common</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    no intersection found.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[[[</span><span class="mi">0</span><span class="p">]]]])</span></div>
+
+
+<div class="viewcode-block" id="subtraction">
+<a class="viewcode-back" href="../../../pyqcstrc.ico.html#pyqcstrc.ico.two_occupation_domains.subtraction">[docs]</a>
+<span class="k">def</span> <span class="nf">subtraction</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">,</span> <span class="n">obj_common</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; obj1 NOT obj2</span>
+
+<span class="sd">    legacy</span>
+<span class="sd">    Substruction of two occupation domains (obj1, obj2) projected onto perp space, obj1 NOT obj2</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        obj1 (numpy.ndarray):</span>
+<span class="sd">            The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.</span>
+<span class="sd">        obj2 (numpy.ndarray):</span>
+<span class="sd">            The shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.</span>
+<span class="sd">        obj_common (numpy.ndarray):</span>
+<span class="sd">            Common part of two occupation domains projected onto perp space.</span>
+<span class="sd">            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.</span>
+<span class="sd">        verbose (int):</span>
+<span class="sd">            verbose = 0 (silent, default)</span>
+<span class="sd">            verbose = 1 (normal)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Substructed part of two occupation domains projected onto perp space (numpy.ndarray)</span>
+<span class="sd">            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a1</span><span class="p">,</span><span class="n">b1</span><span class="p">,</span><span class="n">c1</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">obj_volume_6d</span><span class="p">(</span><span class="n">obj1</span><span class="p">)</span>
+    <span class="n">a2</span><span class="p">,</span><span class="n">b2</span><span class="p">,</span><span class="n">c2</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">obj_volume_6d</span><span class="p">(</span><span class="n">obj_common</span><span class="p">)</span>
+
+    <span class="n">obj3</span><span class="o">=</span><span class="n">mics</span><span class="o">.</span><span class="n">object_subtraction_2</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj_common</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">obj3</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="o">!=</span><span class="p">[[[[</span><span class="mi">0</span><span class="p">]]]]:</span>
+        <span class="n">a3</span><span class="p">,</span><span class="n">b3</span><span class="p">,</span><span class="n">c3</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">obj_volume_6d</span><span class="p">(</span><span class="n">obj3</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+       <span class="n">a3</span><span class="p">,</span><span class="n">b3</span><span class="p">,</span><span class="n">c3</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span>
+    <span class="n">a4</span><span class="p">,</span><span class="n">b4</span><span class="p">,</span><span class="n">c4</span><span class="o">=</span><span class="n">math1</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span><span class="n">b2</span><span class="p">,</span><span class="n">c2</span><span class="p">,</span><span class="n">a3</span><span class="p">,</span><span class="n">b3</span><span class="p">,</span><span class="n">c3</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;       Volume0 (obj1)          = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="n">b1</span><span class="p">,</span><span class="n">c1</span><span class="p">,(</span><span class="n">a1</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">b1</span><span class="p">)</span><span class="o">/</span><span class="n">c1</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;       Volume1 (obj1 AND obj2) = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span><span class="n">b2</span><span class="p">,</span><span class="n">c2</span><span class="p">,(</span><span class="n">a2</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">b2</span><span class="p">)</span><span class="o">/</span><span class="n">c2</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;       Volume2 (obj1 NOT obj2) = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">a3</span><span class="p">,</span><span class="n">b3</span><span class="p">,</span><span class="n">c3</span><span class="p">,(</span><span class="n">a3</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">b3</span><span class="p">)</span><span class="o">/</span><span class="n">c3</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;       Volume1+Volume2         = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">a4</span><span class="p">,</span><span class="n">b4</span><span class="p">,</span><span class="n">c4</span><span class="p">,(</span><span class="n">a4</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">b4</span><span class="p">)</span><span class="o">/</span><span class="n">c4</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">a1</span><span class="o">==</span><span class="n">a4</span> <span class="ow">and</span> <span class="n">b1</span><span class="o">==</span><span class="n">b4</span> <span class="ow">and</span> <span class="n">c1</span><span class="o">==</span><span class="n">c4</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    succeeded: object_subtraction_2()&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;      obj1 NOT obj2: volume = (</span><span class="si">%d</span><span class="s1">+</span><span class="si">%d</span><span class="s1">*TAU)/</span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">).&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">a3</span><span class="p">,</span><span class="n">b3</span><span class="p">,</span><span class="n">c3</span><span class="p">,(</span><span class="n">a3</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">b3</span><span class="p">)</span><span class="o">/</span><span class="n">c3</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">obj3</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;fail: object_subtraction_2()&#39;</span><span class="p">)</span>
+        <span class="n">obj3</span><span class="o">=</span><span class="n">mics</span><span class="o">.</span><span class="n">object_subtraction_dev2</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj_common</span><span class="p">,</span> <span class="n">obj2</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">obj3</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="o">!=</span><span class="p">[[[[</span><span class="mi">0</span><span class="p">]]]]:</span>
+            <span class="n">a3</span><span class="p">,</span><span class="n">b3</span><span class="p">,</span><span class="n">c3</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">obj_volume_6d</span><span class="p">(</span><span class="n">obj3</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+           <span class="n">a3</span><span class="p">,</span><span class="n">b3</span><span class="p">,</span><span class="n">c3</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span>
+        <span class="n">a4</span><span class="p">,</span><span class="n">b4</span><span class="p">,</span><span class="n">c4</span><span class="o">=</span><span class="n">math1</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span><span class="n">b2</span><span class="p">,</span><span class="n">c2</span><span class="p">,</span><span class="n">a3</span><span class="p">,</span><span class="n">b3</span><span class="p">,</span><span class="n">c3</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;       Volume0 (obj1)          = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="n">b1</span><span class="p">,</span><span class="n">c1</span><span class="p">,(</span><span class="n">a1</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">b1</span><span class="p">)</span><span class="o">/</span><span class="n">c1</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;       Volume1 (obj1 AND obj2) = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span><span class="n">b2</span><span class="p">,</span><span class="n">c2</span><span class="p">,(</span><span class="n">a2</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">b2</span><span class="p">)</span><span class="o">/</span><span class="n">c2</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;       Volume2 (obj1 NOT obj2) = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">a3</span><span class="p">,</span><span class="n">b3</span><span class="p">,</span><span class="n">c3</span><span class="p">,(</span><span class="n">a3</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">b3</span><span class="p">)</span><span class="o">/</span><span class="n">c3</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;       Volume1+Volume2         = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">a4</span><span class="p">,</span><span class="n">b4</span><span class="p">,</span><span class="n">c4</span><span class="p">,(</span><span class="n">a4</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">b4</span><span class="p">)</span><span class="o">/</span><span class="n">c4</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">a1</span><span class="o">==</span><span class="n">a4</span> <span class="ow">and</span> <span class="n">b1</span><span class="o">==</span><span class="n">b4</span> <span class="ow">and</span> <span class="n">c1</span><span class="o">==</span><span class="n">c4</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    succeeded: object_subtraction_dev2()&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;      obj1 NOT obj2: volume = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">).&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">a3</span><span class="p">,</span><span class="n">b3</span><span class="p">,</span><span class="n">c3</span><span class="p">,(</span><span class="n">a3</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">b3</span><span class="p">)</span><span class="o">/</span><span class="n">c3</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">obj3</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;fail: object_subtraction_dev2()&#39;</span><span class="p">)</span>
+            <span class="n">obj3</span><span class="o">=</span><span class="n">mics</span><span class="o">.</span><span class="n">object_subtraction_dev1</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj_common</span><span class="p">,</span> <span class="n">obj2</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">obj3</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="o">!=</span><span class="p">[[[[</span><span class="mi">0</span><span class="p">]]]]:</span>
+                <span class="n">a3</span><span class="p">,</span><span class="n">b3</span><span class="p">,</span><span class="n">c3</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">obj_volume_6d</span><span class="p">(</span><span class="n">obj3</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+               <span class="n">a3</span><span class="p">,</span><span class="n">b3</span><span class="p">,</span><span class="n">c3</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span>
+            <span class="n">a4</span><span class="p">,</span><span class="n">b4</span><span class="p">,</span><span class="n">c4</span><span class="o">=</span><span class="n">math1</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span><span class="n">b2</span><span class="p">,</span><span class="n">c2</span><span class="p">,</span><span class="n">a3</span><span class="p">,</span><span class="n">b3</span><span class="p">,</span><span class="n">c3</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;       Volume0 (obj1)          = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="n">b1</span><span class="p">,</span><span class="n">c1</span><span class="p">,(</span><span class="n">a1</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">b1</span><span class="p">)</span><span class="o">/</span><span class="n">c1</span><span class="p">))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;       Volume1 (obj1 AND obj2) = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span><span class="n">b2</span><span class="p">,</span><span class="n">c2</span><span class="p">,(</span><span class="n">a2</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">b2</span><span class="p">)</span><span class="o">/</span><span class="n">c2</span><span class="p">))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;       Volume2 (obj1 NOT obj2) = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">a3</span><span class="p">,</span><span class="n">b3</span><span class="p">,</span><span class="n">c3</span><span class="p">,(</span><span class="n">a3</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">b3</span><span class="p">)</span><span class="o">/</span><span class="n">c3</span><span class="p">))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;       Volume1+Volume2         = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">a4</span><span class="p">,</span><span class="n">b4</span><span class="p">,</span><span class="n">c4</span><span class="p">,(</span><span class="n">a4</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">b4</span><span class="p">)</span><span class="o">/</span><span class="n">c4</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">a1</span><span class="o">==</span><span class="n">a4</span> <span class="ow">and</span> <span class="n">b1</span><span class="o">==</span><span class="n">b4</span> <span class="ow">and</span> <span class="n">c1</span><span class="o">==</span><span class="n">c4</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    succeeded: object_subtraction_dev1()&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;      obj1 NOT obj2: volume = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">).&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">a3</span><span class="p">,</span><span class="n">b3</span><span class="p">,</span><span class="n">c3</span><span class="p">,(</span><span class="n">a3</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">b3</span><span class="p">)</span><span class="o">/</span><span class="n">c3</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">obj3</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;fail: object_subtraction_dev1()&#39;</span><span class="p">)</span>
+                <span class="n">obj3</span><span class="o">=</span><span class="n">mics</span><span class="o">.</span><span class="n">object_subtraction_dev</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj_common</span><span class="p">,</span> <span class="n">obj2</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">obj3</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="o">!=</span><span class="p">[[[[</span><span class="mi">0</span><span class="p">]]]]:</span>
+                    <span class="n">a3</span><span class="p">,</span><span class="n">b3</span><span class="p">,</span><span class="n">c3</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">obj_volume_6d</span><span class="p">(</span><span class="n">obj3</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                   <span class="n">a3</span><span class="p">,</span><span class="n">b3</span><span class="p">,</span><span class="n">c3</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span>
+                <span class="n">a4</span><span class="p">,</span><span class="n">b4</span><span class="p">,</span><span class="n">c4</span><span class="o">=</span><span class="n">math1</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span><span class="n">b2</span><span class="p">,</span><span class="n">c2</span><span class="p">,</span><span class="n">a3</span><span class="p">,</span><span class="n">b3</span><span class="p">,</span><span class="n">c3</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;       Volume0 (obj1)          = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="n">b1</span><span class="p">,</span><span class="n">c1</span><span class="p">,(</span><span class="n">a1</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">b1</span><span class="p">)</span><span class="o">/</span><span class="n">c1</span><span class="p">))</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;       Volume1 (obj1 AND obj2) = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span><span class="n">b2</span><span class="p">,</span><span class="n">c2</span><span class="p">,(</span><span class="n">a2</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">b2</span><span class="p">)</span><span class="o">/</span><span class="n">c2</span><span class="p">))</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;       Volume2 (obj1 NOT obj2) = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">a3</span><span class="p">,</span><span class="n">b3</span><span class="p">,</span><span class="n">c3</span><span class="p">,(</span><span class="n">a3</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">b3</span><span class="p">)</span><span class="o">/</span><span class="n">c3</span><span class="p">))</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;       Volume1+Volume2         = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">a4</span><span class="p">,</span><span class="n">b4</span><span class="p">,</span><span class="n">c4</span><span class="p">,(</span><span class="n">a4</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">b4</span><span class="p">)</span><span class="o">/</span><span class="n">c4</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">a1</span><span class="o">==</span><span class="n">a4</span> <span class="ow">and</span> <span class="n">b1</span><span class="o">==</span><span class="n">b4</span> <span class="ow">and</span> <span class="n">c1</span><span class="o">==</span><span class="n">c4</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    succeeded: object_subtraction_dev()&#39;</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;      obj1 NOT obj2: volume = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> ( = </span><span class="si">%8.6f</span><span class="s1">).&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">a3</span><span class="p">,</span><span class="n">b3</span><span class="p">,</span><span class="n">c3</span><span class="p">,(</span><span class="n">a3</span><span class="o">+</span><span class="n">TAU</span><span class="o">*</span><span class="n">b3</span><span class="p">)</span><span class="o">/</span><span class="n">c3</span><span class="p">))</span>
+                    <span class="k">return</span> <span class="n">obj3</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;subtraction fail&#39;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[[[</span><span class="mi">0</span><span class="p">]]]])</span></div>
+
+
+<div class="viewcode-block" id="mergev">
+<a class="viewcode-back" href="../../../pyqcstrc.ico.html#pyqcstrc.ico.two_occupation_domains.mergev">[docs]</a>
+<span class="k">def</span> <span class="nf">mergev</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">basename</span> <span class="o">=</span> <span class="s1">&#39;tmp&#39;</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    merge vertices of two obj</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">v</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span><span class="n">obj2</span><span class="p">)</span>
+    <span class="n">v</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">remove_doubling_dim3_in_perp_space</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">/</span><span class="mi">18</span><span class="p">),</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+    <span class="n">od</span><span class="o">.</span><span class="n">write_xyz</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">basename</span><span class="o">=</span><span class="n">basename</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;vertex&#39;</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;vertices merged, </span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">basename</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
+    <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="mergev3">
+<a class="viewcode-back" href="../../../pyqcstrc.ico.html#pyqcstrc.ico.two_occupation_domains.mergev3">[docs]</a>
+<span class="k">def</span> <span class="nf">mergev3</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">,</span> <span class="n">obj3</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">basename</span> <span class="o">=</span> <span class="s1">&#39;tmp&#39;</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    merge vertices of three obj</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">v</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span><span class="n">obj2</span><span class="p">)</span>
+    <span class="n">v</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">obj3</span><span class="p">)</span>
+    <span class="n">v</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">remove_doubling_dim3_in_perp_space</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">/</span><span class="mi">18</span><span class="p">),</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+    <span class="n">od</span><span class="o">.</span><span class="n">write_xyz</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">basename</span><span class="o">=</span><span class="n">basename</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;vertex&#39;</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;vertices merged, </span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">basename</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
+    <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="mergev_objs">
+<a class="viewcode-back" href="../../../pyqcstrc.ico.html#pyqcstrc.ico.two_occupation_domains.mergev_objs">[docs]</a>
+<span class="k">def</span> <span class="nf">mergev_objs</span><span class="p">(</span><span class="n">objs_in_list</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">basename</span> <span class="o">=</span> <span class="s1">&#39;tmp&#39;</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    merge vertices of objs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">v</span><span class="o">=</span><span class="n">objs_in_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">objs_in_list</span><span class="p">)):</span>
+        <span class="n">v</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">objs_in_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">v</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">remove_doubling_dim3_in_perp_space</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">/</span><span class="mi">18</span><span class="p">),</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+    <span class="n">od</span><span class="o">.</span><span class="n">write_xyz</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">basename</span><span class="o">=</span><span class="n">basename</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;vertex&#39;</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;vertices merged, </span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">basename</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
+    <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="genobjv">
+<a class="viewcode-back" href="../../../pyqcstrc.ico.html#pyqcstrc.ico.two_occupation_domains.genobjv">[docs]</a>
+<span class="k">def</span> <span class="nf">genobjv</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">vlist</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">basename</span> <span class="o">=</span> <span class="s1">&#39;tmp&#39;</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate objs from vlist.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        obj (numpy.ndarray): ndarray contains vertices</span>
+<span class="sd">            The shape is (num,4,6,3), where num=numbre_of_vertices.</span>
+<span class="sd">        vlist (list): </span>
+<span class="sd">        path (str): Path of the output files</span>
+<span class="sd">        basename (str): Basename of the output files</span>
+<span class="sd">        verbose (int):</span>
+<span class="sd">            verbose = 0 (silent, default)</span>
+<span class="sd">            verbose = 1 (normal)</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        int: 0 (succeed), 1 (fail)</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vlist</span><span class="p">)):</span>
+        <span class="n">a</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vlist</span><span class="p">[</span><span class="n">i1</span><span class="p">])):</span>
+            <span class="k">for</span> <span class="n">i3</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i2</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">i3</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="n">a</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="n">vlist</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">obj</span><span class="p">[</span><span class="n">vlist</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="n">i3</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">/</span><span class="mi">72</span><span class="p">),</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">od</span><span class="o">.</span><span class="n">write_xyz</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">basename</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_part</span><span class="si">%d</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">basename</span><span class="p">,</span><span class="n">i1</span><span class="p">),</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">od</span><span class="o">.</span><span class="n">write_vesta</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">basename</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_part</span><span class="si">%d</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">basename</span><span class="p">,</span><span class="n">i1</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">0</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Tsunetomo Yamada.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

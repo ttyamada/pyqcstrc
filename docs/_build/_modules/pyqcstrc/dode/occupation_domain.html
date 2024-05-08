@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyqcstrc.dode.occupation_domain &mdash; PyQCstrc 0.0.2a01 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=c4b47ef7"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyQCstrc
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyQCstrc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyqcstrc.dode.occupation_domain</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyqcstrc.dode.occupation_domain</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="c1"># PyQCstrc - Python library for Quasi-Crystal structure</span>
+<span class="c1"># Copyright (c) 2021 Tsunetomo Yamada &lt;tsunetomo.yamada@rs.tus.ac.jp&gt;</span>
+
+<span class="kn">import</span> <span class="nn">timeit</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="c1">#sys.path.append(&#39;.&#39;)</span>
+
+<span class="n">EPS</span><span class="o">=</span><span class="mf">1e-6</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pyqcstrc.dode.math12</span> <span class="k">as</span> <span class="nn">math12</span>
+    <span class="kn">import</span> <span class="nn">pyqcstrc.dode.symmetry12</span> <span class="k">as</span> <span class="nn">symmetry12</span>
+    <span class="kn">import</span> <span class="nn">pyqcstrc.dode.intsct12</span> <span class="k">as</span> <span class="nn">intsct12</span>
+    <span class="kn">import</span> <span class="nn">pyqcstrc.dode.utils12</span> <span class="k">as</span> <span class="nn">utils12</span>
+    <span class="kn">import</span> <span class="nn">pyqcstrc.dode.strc12</span> <span class="k">as</span> <span class="nn">strc12</span>
+    <span class="kn">import</span> <span class="nn">pyqcstrc.dode.numericalc12</span> <span class="k">as</span> <span class="nn">numericalc12</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;import error</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+
+<span class="n">SIN</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span>
+<span class="n">V0</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]])</span>
+
+<div class="viewcode-block" id="as_it_is">
+<a class="viewcode-back" href="../../../pyqcstrc.dode.html#pyqcstrc.dode.occupation_domain.as_it_is">[docs]</a>
+<span class="k">def</span> <span class="nf">as_it_is</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns an object as it is,</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        obj (numpy.ndarray): the shape is (num,3,6,3) or (num*3,6,3), where num=numbre_of_triangle.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Occupation domains (numpy.ndarray): the shape is (num,3,6,3), where num=numbre_of_triangle.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">),</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">obj</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">obj</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="get_perp_component">
+<a class="viewcode-back" href="../../../pyqcstrc.dode.html#pyqcstrc.dode.occupation_domain.get_perp_component">[docs]</a>
+<span class="k">def</span> <span class="nf">get_perp_component</span><span class="p">(</span><span class="n">vec6</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">math12</span><span class="o">.</span><span class="n">projection3</span><span class="p">(</span><span class="n">vec6</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">vec6</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">vec6</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">vec6</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">vec6</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="n">vec6</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span></div>
+
+    
+<div class="viewcode-block" id="write">
+<a class="viewcode-back" href="../../../pyqcstrc.dode.html#pyqcstrc.dode.occupation_domain.write">[docs]</a>
+<span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">basename</span> <span class="o">=</span> <span class="s1">&#39;tmp&#39;</span><span class="p">,</span> <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">dmax</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Export occupation domains.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        obj (numpy.ndarray): the occupation domain</span>
+<span class="sd">            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.</span>
+<span class="sd">        path (str): Path of the output XYZ file</span>
+<span class="sd">        basename (str): Basename of the output XYZ file</span>
+<span class="sd">        format (str): format of output file</span>
+<span class="sd">            format = &#39;xyz&#39; (default)</span>
+<span class="sd">            format = &#39;vesta&#39;</span>
+<span class="sd">        color (str)</span>
+<span class="sd">            one of the characters {&#39;k&#39;,&#39;r&#39;,&#39;b&#39;,&#39;p&#39;}, which are short-hand notations </span>
+<span class="sd">            for shades of black, red, blue, and pink, in case where &#39;vesta&#39; format is</span>
+<span class="sd">            selected (default, color = &#39;k&#39;).</span>
+<span class="sd">        dmax (float)</span>
+<span class="sd">            Distance for bonds in case where &#39;vesta&#39; format is selected.</span>
+<span class="sd">            (default, dmax = 5.0)</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        int: 0 (succeed), 1 (fail)</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+        
+    <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="o">==</span><span class="p">[[[[</span><span class="mi">0</span><span class="p">]]]]:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    Empty OD&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s1">&#39;vesta&#39;</span> <span class="ow">or</span> <span class="nb">format</span> <span class="o">==</span> <span class="s1">&#39;v&#39;</span> <span class="ow">or</span> <span class="nb">format</span> <span class="o">==</span> <span class="s1">&#39;VESTA&#39;</span><span class="p">:</span>
+            <span class="n">write_vesta</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">basename</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">dmax</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">format</span> <span class="o">==</span> <span class="s1">&#39;xyz&#39;</span><span class="p">:</span>
+            <span class="n">write_xyz</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">basename</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="write_vesta">
+<a class="viewcode-back" href="../../../pyqcstrc.dode.html#pyqcstrc.dode.occupation_domain.write_vesta">[docs]</a>
+<span class="k">def</span> <span class="nf">write_vesta</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">basename</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">dmax</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">,</span> <span class="n">select</span> <span class="o">=</span> <span class="s1">&#39;normal&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Export occupation domains in VESTA format.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        obj (numpy.ndarray): the occupation domain</span>
+<span class="sd">            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.</span>
+<span class="sd">        path (str): Path of the output XYZ file</span>
+<span class="sd">        basename (str): Basename of the output XYZ file</span>
+<span class="sd">        color (str)</span>
+<span class="sd">            one of the characters {&#39;k&#39;,&#39;r&#39;,&#39;b&#39;,&#39;p&#39;}, which are short-hand notations </span>
+<span class="sd">            for shades of black, red, blue, and pink, in case where &#39;vesta&#39; format is</span>
+<span class="sd">            selected (default, color = &#39;k&#39;).</span>
+<span class="sd">        dmax (float)</span>
+<span class="sd">            Distance for bonds in case where &#39;vesta&#39; format is selected.</span>
+<span class="sd">            (default, dmax = 5.0)</span>
+<span class="sd">        select (str):</span>
+<span class="sd">            (default, select = &#39;normal&#39;)</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        int: 0 (succeed), 1 (fail)</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">file_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">.vesta&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">basename</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">file_name</span><span class="p">),</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;#VESTA_FORMAT_VERSION 3.5.0</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;MOLECULE</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">TITLE&#39;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">_</span><span class="si">%d</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">basename</span><span class="p">,</span><span class="n">i1</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;GROUP</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">1 1 Custom</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">SYMOP</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000  0.000000  1  0  0    0  1  0    0  0  1    1</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1"> -1.0 -1.0 -1.0  0 0 0  0 0 0  0 0 0</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">TRANM 0</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000  0.000000  1  0  0    0  1  0    0  0  1</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">LTRANSL</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1"> -1</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000  0.000000  0.000000  0.000000  0.000000</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">LORIENT</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1"> -1    0    0    0    0</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1"> 1.000000  0.000000  0.000000  1.000000  0.000000  0.000000</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000  1.000000  0.000000  0.000000  1.000000</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">LMATRIX</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1"> 1.000000  0.000000  0.000000  0.000000</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1"> 0.000000  1.000000  0.000000  0.000000</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000  1.000000  0.000000</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000  0.000000  1.000000</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000  0.000000</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">CELLP</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">  1.000000    1.000000    1.000000  90.000000  90.000000  90.000000</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">STRUC&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">])):</span>
+            <span class="n">a4</span><span class="p">,</span><span class="n">a5</span><span class="p">,</span><span class="n">a6</span> <span class="o">=</span> <span class="n">math12</span><span class="o">.</span><span class="n">projection3</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">4</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">5</span><span class="p">])</span>
+            <span class="c1">#print(a4,a5,a6)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%4d</span><span class="s1"> Xx        Xx</span><span class="si">%d</span><span class="s1">  1.0000    </span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1">        1&#39;</span><span class="o">%</span>\
+            <span class="p">(</span><span class="n">i2</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">i2</span><span class="o">+</span><span class="mi">1</span><span class="p">,(</span><span class="n">a4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">a4</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">SIN</span><span class="p">)</span><span class="o">/</span><span class="n">a4</span><span class="p">[</span><span class="mi">2</span><span class="p">],(</span><span class="n">a5</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">a5</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">SIN</span><span class="p">)</span><span class="o">/</span><span class="n">a5</span><span class="p">[</span><span class="mi">2</span><span class="p">],(</span><span class="n">a6</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">a6</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">SIN</span><span class="p">)</span><span class="o">/</span><span class="n">a6</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;                             0.000000    0.000000    0.000000  0.00&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  0 0 0 0 0 0 0</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">THERI 0&#39;</span><span class="p">,</span> <span class="n">file</span> <span class="o">=</span> <span class="n">f</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">])):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  </span><span class="si">%d</span><span class="s1">        Xx</span><span class="si">%d</span><span class="s1">  1.000000&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">i2</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">i2</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  0 0 0</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">SHAPE</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">  0         0         0         0    0.000000  0    192    192    192    192</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">BOUND</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">         0          1        0          1        0          1</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">  0    0    0    0  0</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">SBOND&#39;</span><span class="p">,</span> <span class="n">file</span> <span class="o">=</span> <span class="n">f</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">color</span> <span class="o">==</span> <span class="s1">&#39;r&#39;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  1     Xx     Xx     0.00000     </span><span class="si">%3.2f</span><span class="s1">  0  1  1  0  2  0.250  2.000 255 0 0&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">dmax</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">color</span> <span class="o">==</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  1     Xx     Xx     0.00000     </span><span class="si">%3.2f</span><span class="s1">  0  1  1  0  2  0.250  2.000 0 0 255&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">dmax</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">color</span> <span class="o">==</span> <span class="s1">&#39;k&#39;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  1     Xx     Xx     0.00000     </span><span class="si">%3.2f</span><span class="s1">  0  1  1  0  2  0.250  2.000 127 127 127&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">dmax</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">color</span> <span class="o">==</span> <span class="s1">&#39;p&#39;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  1     Xx     Xx     0.00000     </span><span class="si">%3.2f</span><span class="s1">  0  1  1  0  2  0.250  2.000 255 0 255&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">dmax</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  1     Xx     Xx     0.00000     </span><span class="si">%3.2f</span><span class="s1">  0  1  1  0  2  0.250  2.000 127 127 127&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">dmax</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  0 0 0 0</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">SITET&#39;</span><span class="p">,</span> <span class="n">file</span> <span class="o">=</span> <span class="n">f</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">])):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    </span><span class="si">%d</span><span class="s1">        Xx</span><span class="si">%d</span><span class="s1">  0.0100  76  76  76  76  76  76 204  0&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">i2</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">i2</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  0 0 0 0 0 0</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">VECTR</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1"> 0 0 0 0 0</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">VECTT</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1"> 0 0 0 0 0</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">SPLAN</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">  0    0    0    0</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">LBLAT</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1"> -1</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">LBLSP</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1"> -1</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">DLATM</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1"> -1</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">DLBND</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1"> -1</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">DLPLY</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1"> -1</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">PLN2D</span><span class="se">\</span>
+<span class="s1">        </span><span class="se">\n</span><span class="s1">  0    0    0    0&#39;</span><span class="p">,</span> <span class="n">file</span> <span class="o">=</span> <span class="n">f</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ATOMT</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">  1        Xx  0.0100  76  76  76  76  76  76 204</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">  0 0 0 0 0 0</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">SCENE</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">-0.538344 -0.838391  0.085359  0.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">-0.362057  0.138632 -0.921789  0.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 0.760986 -0.527145 -0.378177  0.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000  0.000000  1.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">  0.000    0.000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">  0.000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">  1.320</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">HBOND 0 2</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">STYLE</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">DISPF 37753794</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">MODEL    0  1  0</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">SURFS    0  1  1</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">SECTS  32  1</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">FORMS    0  1</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">ATOMS    0  0  1</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">BONDS    2</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">POLYS    1</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">VECTS 1.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">FORMP</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">  1  1.0    0    0    0</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">ATOMP</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 24  24    0  50  2.0    0</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">BONDP</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">  1  16  0.250  2.000 127 127 127</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">POLYP</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 204 1  1.000 180 180 180</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">ISURF</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">  0    0    0    0</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">TEX3P</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">  1  0.00000E+00  1.00000E+00</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">SECTP</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">  1  5.00000E-01  5.00000E-01  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">CONTR</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 0.1 -1 1 1 10 -1 2 5</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 2 1 2 1</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">    0    0    0</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">    0    0    0</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">    0    0    0</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">    0    0    0</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">HKLPP</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 192 1  1.000 255    0 255</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">UCOLP</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">    0    1  1.000    0    0    0</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">COMPS 0</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">LABEL 1     12  1.000 0</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">PROJT 0  0.962</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">BKGRC</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 255 255 255</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">DPTHQ 1 -0.5000  3.5000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">LIGHT0 1</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 1.000000  0.000000  0.000000  0.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 0.000000  1.000000  0.000000  0.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000  1.000000  0.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000  0.000000  1.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000 20.000000  0.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000 -1.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">  26  26  26 255</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 179 179 179 255</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 255 255 255 255</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">LIGHT1</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 1.000000  0.000000  0.000000  0.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 0.000000  1.000000  0.000000  0.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000  1.000000  0.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000  0.000000  1.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000 20.000000  0.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000 -1.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">    0    0    0    0</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">    0    0    0    0</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">    0    0    0    0</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">LIGHT2</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 1.000000  0.000000  0.000000  0.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 0.000000  1.000000  0.000000  0.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000  1.000000  0.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000  0.000000  1.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000 20.000000  0.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000 -1.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">    0    0    0    0</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">    0    0    0    0</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">    0    0    0    0</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">LIGHT3</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 1.000000  0.000000  0.000000  0.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 0.000000  1.000000  0.000000  0.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000  1.000000  0.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000  0.000000  1.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000 20.000000  0.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 0.000000  0.000000 -1.000000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">    0    0    0    0</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">    0    0    0    0</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">    0    0    0    0</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">ATOMM</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 204 204 204 255</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">  25.600</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">BONDM</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 255 255 255 255</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 128.000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">POLYM</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 255 255 255 255</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 128.000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">SURFM</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">    0    0    0 255</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 128.000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">FORMM</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 255 255 255 255</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 128.000</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1">HKLPM</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 255 255 255 255</span><span class="se">\</span>
+<span class="s1">    </span><span class="se">\n</span><span class="s1"> 128.000&#39;</span><span class="p">,</span><span class="n">file</span> <span class="o">=</span> <span class="n">f</span><span class="p">)</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="c1">#write_vesta_separate(obj, path, basename, color, dmax)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    written in </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">file_name</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="write_xyz">
+<a class="viewcode-back" href="../../../pyqcstrc.dode.html#pyqcstrc.dode.occupation_domain.write_xyz">[docs]</a>
+<span class="k">def</span> <span class="nf">write_xyz</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">basename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Export occupation domains in XYZ format.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        obj (numpy.ndarray): the occupation domain</span>
+<span class="sd">            The shape is (num,3,6,3), where num=numbre_of_triangle.</span>
+<span class="sd">        path (str): Path of the output XYZ file</span>
+<span class="sd">        basename (str): Basename of the output XYZ file</span>
+<span class="sd">        select (str)</span>
+<span class="sd">            &#39;triangle&#39;: set of triangle (default)</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        int: 0 (succeed), 1 (fail)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">generator_xyz</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate object (set of triangle) object in XYZ format.</span>
+<span class="sd">    </span>
+<span class="sd">         Args:</span>
+<span class="sd">            obj (numpy.ndarray): the occupation domain</span>
+<span class="sd">                The shape is (num,3,6,3), where num=numbre_of_triangle.</span>
+<span class="sd">            filename (str): filename of the output XYZ file</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            int: 0 (succeed), 1 (fail)</span>
+<span class="sd">    </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">f</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">*</span><span class="n">num</span><span class="p">))</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">i2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+                <span class="n">a4</span><span class="p">,</span><span class="n">a5</span><span class="p">,</span><span class="n">a6</span><span class="o">=</span><span class="n">math12</span><span class="o">.</span><span class="n">projection3</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>\
+                                                    <span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>\
+                                                    <span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span>\
+                                                    <span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span>\
+                                                    <span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">4</span><span class="p">],</span>\
+                                                    <span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">5</span><span class="p">])</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Xx </span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1"> # </span><span class="si">%3d</span><span class="s1">-the triangle </span><span class="si">%d</span><span class="s1">-th vertex # </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">%</span>\
+                <span class="p">((</span><span class="n">a4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">a4</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">SIN</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">a4</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>\
+                <span class="p">(</span><span class="n">a5</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">a5</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">SIN</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">a5</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>\
+                <span class="p">(</span><span class="n">a6</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">a6</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">SIN</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">a6</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>\
+                <span class="n">i1</span><span class="p">,</span><span class="n">i2</span><span class="p">,</span>\
+                <span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span>\
+                <span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span>\
+                <span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span>\
+                <span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">3</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">3</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">3</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span>\
+                <span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">4</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">4</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">4</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span>\
+                <span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">5</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">5</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">5</span><span class="p">][</span><span class="mi">2</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">num</span><span class="o">&gt;</span><span class="mi">2</span><span class="p">:</span>
+            <span class="n">w1</span><span class="p">,</span><span class="n">w2</span><span class="p">,</span><span class="n">w3</span><span class="o">=</span><span class="n">utils12</span><span class="o">.</span><span class="n">obj_area_6d</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;area = </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> (</span><span class="si">%8.6f</span><span class="s1">)</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span><span class="n">w2</span><span class="p">,</span><span class="n">w3</span><span class="p">,(</span><span class="n">w1</span><span class="o">+</span><span class="n">SIN</span><span class="o">*</span><span class="n">w2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">w3</span><span class="p">)))</span>
+            <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)):</span>
+                <span class="p">[</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">,</span><span class="n">v3</span><span class="p">]</span><span class="o">=</span><span class="n">utils12</span><span class="o">.</span><span class="n">triangle_area_6d</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">])</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%3d</span><span class="s1">-the triangle, </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> (</span><span class="si">%8.6f</span><span class="s1">)</span><span class="se">\n</span><span class="s1">&#39;</span>\
+                        <span class="o">%</span><span class="p">(</span><span class="n">i1</span><span class="p">,</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">,</span><span class="n">v3</span><span class="p">,(</span><span class="n">v1</span><span class="o">+</span><span class="n">SIN</span><span class="o">*</span><span class="n">v2</span><span class="p">)</span><span class="o">/</span><span class="n">v3</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">closed</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    
+    <span class="k">def</span> <span class="nf">generator_xyz_vertex</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate object (set of triangle) object in XYZ format.</span>
+<span class="sd">    </span>
+<span class="sd">         Args:</span>
+<span class="sd">            obj (numpy.ndarray): the occupation domain</span>
+<span class="sd">                The shape is (num,6,3), where num=numbre_of_vertex.</span>
+<span class="sd">            filename (str): filename of the output XYZ file</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            int: 0 (succeed), 1 (fail)</span>
+<span class="sd">    </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">f</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)))</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)):</span>
+            <span class="n">a4</span><span class="p">,</span><span class="n">a5</span><span class="p">,</span><span class="n">a6</span><span class="o">=</span><span class="n">math12</span><span class="o">.</span><span class="n">projection3</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>\
+                                        <span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>\
+                                        <span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span>\
+                                        <span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span>\
+                                        <span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">4</span><span class="p">],</span>\
+                                        <span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">5</span><span class="p">])</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Xx </span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1"> # </span><span class="si">%3d</span><span class="s1">-the vertex # # # </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">%</span>\
+            <span class="p">((</span><span class="n">a4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">a4</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">SIN</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">a4</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>\
+            <span class="p">(</span><span class="n">a5</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">a5</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">SIN</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">a5</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>\
+            <span class="p">(</span><span class="n">a6</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">a6</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">SIN</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">a6</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>\
+            <span class="n">i1</span><span class="p">,</span>\
+            <span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span>\
+            <span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span>\
+            <span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span>\
+            <span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">3</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">3</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">3</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span>\
+            <span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">4</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">4</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">4</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span>\
+            <span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">5</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">5</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">obj</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">5</span><span class="p">][</span><span class="mi">2</span><span class="p">]))</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">closed</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    
+    <span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">.xyz&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">basename</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">ndim</span><span class="o">&gt;</span><span class="mi">3</span><span class="p">:</span>
+        <span class="n">generator_xyz</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">obj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">obj</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+        <span class="n">generator_xyz_vertex</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    written in </span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">.xyz&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">basename</span><span class="p">))</span>
+    <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="read_xyz">
+<a class="viewcode-back" href="../../../pyqcstrc.dode.html#pyqcstrc.dode.occupation_domain.read_xyz">[docs]</a>
+<span class="k">def</span> <span class="nf">read_xyz</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">basename</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;triangle&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load new occupation domain on input XYZ file.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): Path of the input XYZ file</span>
+<span class="sd">        basename (str): Basename of the input XYZ file</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Occupation domains (numpy.ndarray):</span>
+<span class="sd">            Loaded occupation domains.</span>
+<span class="sd">            The shape is (num,3,6,3), where num=numbre_of_triangle.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">read_file</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">line</span><span class="o">=</span><span class="p">[]</span>
+        <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">a</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">a</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">line</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">line</span>
+    
+    <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">.xyz&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">basename</span><span class="p">)</span>
+    
+    <span class="n">f1</span><span class="o">=</span><span class="n">read_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">f0</span><span class="o">=</span><span class="n">f1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">num</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">f0</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">num</span><span class="o">+</span><span class="mi">2</span><span class="p">):</span>
+         <span class="n">fi</span><span class="o">=</span><span class="n">f1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+         <span class="n">fi</span><span class="o">=</span><span class="n">fi</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+         <span class="n">a1</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">fi</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span>
+         <span class="n">b1</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">fi</span><span class="p">[</span><span class="mi">11</span><span class="p">])</span>
+         <span class="n">c1</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">fi</span><span class="p">[</span><span class="mi">12</span><span class="p">])</span>
+         <span class="n">a2</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">fi</span><span class="p">[</span><span class="mi">13</span><span class="p">])</span>
+         <span class="n">b2</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">fi</span><span class="p">[</span><span class="mi">14</span><span class="p">])</span>
+         <span class="n">c2</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">fi</span><span class="p">[</span><span class="mi">15</span><span class="p">])</span>
+         <span class="n">a3</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">fi</span><span class="p">[</span><span class="mi">16</span><span class="p">])</span>
+         <span class="n">b3</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">fi</span><span class="p">[</span><span class="mi">17</span><span class="p">])</span>
+         <span class="n">c3</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">fi</span><span class="p">[</span><span class="mi">18</span><span class="p">])</span>
+         <span class="n">a4</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">fi</span><span class="p">[</span><span class="mi">19</span><span class="p">])</span>
+         <span class="n">b4</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">fi</span><span class="p">[</span><span class="mi">20</span><span class="p">])</span>
+         <span class="n">c4</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">fi</span><span class="p">[</span><span class="mi">21</span><span class="p">])</span>
+         <span class="n">a5</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">fi</span><span class="p">[</span><span class="mi">22</span><span class="p">])</span>
+         <span class="n">b5</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">fi</span><span class="p">[</span><span class="mi">23</span><span class="p">])</span>
+         <span class="n">c5</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">fi</span><span class="p">[</span><span class="mi">24</span><span class="p">])</span>
+         <span class="n">a6</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">fi</span><span class="p">[</span><span class="mi">25</span><span class="p">])</span>
+         <span class="n">b6</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">fi</span><span class="p">[</span><span class="mi">26</span><span class="p">])</span>
+         <span class="n">c6</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">fi</span><span class="p">[</span><span class="mi">27</span><span class="p">])</span>
+         <span class="k">if</span> <span class="n">i</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+             <span class="n">tmp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">a1</span><span class="p">,</span><span class="n">b1</span><span class="p">,</span><span class="n">c1</span><span class="p">,</span><span class="n">a2</span><span class="p">,</span><span class="n">b2</span><span class="p">,</span><span class="n">c2</span><span class="p">,</span><span class="n">a3</span><span class="p">,</span><span class="n">b3</span><span class="p">,</span><span class="n">c3</span><span class="p">,</span><span class="n">a4</span><span class="p">,</span><span class="n">b4</span><span class="p">,</span><span class="n">c4</span><span class="p">,</span><span class="n">a5</span><span class="p">,</span><span class="n">b5</span><span class="p">,</span><span class="n">c5</span><span class="p">,</span><span class="n">a6</span><span class="p">,</span><span class="n">b6</span><span class="p">,</span><span class="n">c6</span><span class="p">])</span>
+         <span class="k">else</span><span class="p">:</span>
+             <span class="n">tmp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">,[</span><span class="n">a1</span><span class="p">,</span><span class="n">b1</span><span class="p">,</span><span class="n">c1</span><span class="p">,</span><span class="n">a2</span><span class="p">,</span><span class="n">b2</span><span class="p">,</span><span class="n">c2</span><span class="p">,</span><span class="n">a3</span><span class="p">,</span><span class="n">b3</span><span class="p">,</span><span class="n">c3</span><span class="p">,</span><span class="n">a4</span><span class="p">,</span><span class="n">b4</span><span class="p">,</span><span class="n">c4</span><span class="p">,</span><span class="n">a5</span><span class="p">,</span><span class="n">b5</span><span class="p">,</span><span class="n">c5</span><span class="p">,</span><span class="n">a6</span><span class="p">,</span><span class="n">b6</span><span class="p">,</span><span class="n">c6</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    read </span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">.xyz&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">basename</span><span class="p">))</span>
+    
+    <span class="k">if</span> <span class="n">select</span><span class="o">==</span><span class="s1">&#39;triangle&#39;</span><span class="p">:</span>
+        <span class="n">num1</span><span class="o">=</span><span class="mi">3</span>
+        <span class="k">return</span> <span class="n">tmp</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">num</span><span class="o">/</span><span class="n">num1</span><span class="p">),</span><span class="n">num1</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">select</span><span class="o">==</span><span class="s1">&#39;egde&#39;</span><span class="p">:</span>
+        <span class="n">num1</span><span class="o">=</span><span class="mi">2</span>
+        <span class="k">return</span> <span class="n">tmp</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">num</span><span class="o">/</span><span class="n">num1</span><span class="p">),</span><span class="n">num1</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">num1</span><span class="o">=</span><span class="mi">1</span>
+        <span class="k">return</span> <span class="n">tmp</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">num1</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">num</span><span class="o">/</span><span class="n">num1</span><span class="p">),</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="intersection_two_segments">
+<a class="viewcode-back" href="../../../pyqcstrc.dode.html#pyqcstrc.dode.occupation_domain.intersection_two_segments">[docs]</a>
+<span class="k">def</span> <span class="nf">intersection_two_segments</span><span class="p">(</span><span class="n">segment1</span><span class="p">,</span> <span class="n">segment2</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns an intersecting point of two line segments.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        segment1 (numpy.ndarray): the shape is (2,6,3).</span>
+<span class="sd">        segment2 (numpy.ndarray): the shape is (2,6,3).</span>
+<span class="sd">        verbose (int): 0 (defalt)</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        intersecting point (numpy.ndarray): the shape is (6,3).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">p</span><span class="o">=</span><span class="n">intsct12</span><span class="o">.</span><span class="n">intersection_two_segment</span><span class="p">(</span><span class="n">segment1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">segment1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">segment2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">segment2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">verbose</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">p</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="symmetric_12">
+<a class="viewcode-back" href="../../../pyqcstrc.dode.html#pyqcstrc.dode.occupation_domain.symmetric_12">[docs]</a>
+<span class="k">def</span> <span class="nf">symmetric_12</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate symmteric occupation domain by symmetric elements of 12m on the input.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        obj (numpy.ndarray):</span>
+<span class="sd">            occupation domain</span>
+<span class="sd">            The shape is (num,3,6,3), where num=numbre_of_triangle.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Symmetric occupation domains (numpy.ndarray):</span>
+<span class="sd">            The shape is (num,3,6,3), where num=numbre_of_triangle.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">asymmetric_part_obj</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">symmetry12</span><span class="o">.</span><span class="n">generator_obj_symmetric_triangle</span><span class="p">(</span><span class="n">asymmetric_part_obj</span><span class="p">,</span> <span class="n">V0</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">asymmetric_part_obj</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">asymmetric_part_obj</span><span class="o">=</span><span class="n">asymmetric_part_obj</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">asymmetric_part_obj</span><span class="p">)</span><span class="o">*</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">symmetry12</span><span class="o">.</span><span class="n">generator_obj_symmetric_triangle</span><span class="p">(</span><span class="n">asymmetric_part_obj</span><span class="p">,</span> <span class="n">V0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="site_symmetry">
+<a class="viewcode-back" href="../../../pyqcstrc.dode.html#pyqcstrc.dode.occupation_domain.site_symmetry">[docs]</a>
+<span class="k">def</span> <span class="nf">site_symmetry</span><span class="p">(</span><span class="n">wyckoff_position</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Symmetry operators in the site symmetry group G and its left coset decomposition.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        Wyckoff position (numpy.ndarray):</span>
+<span class="sd">            4D coordinate.</span>
+<span class="sd">            The shape is (6,3).</span>
+<span class="sd">        verbose (int)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        List of index of symmetry operators of the site symmetry group G (list):</span>
+<span class="sd">            The symmetry operators leaves xyz identical.</span>
+<span class="sd">        </span>
+<span class="sd">        List of index of symmetry operators in the left coset representatives of the poibt group G (list):</span>
+<span class="sd">            The symmetry operators generates equivalent positions of the site xyz.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">translation</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        translational symmetry</span>
+<span class="sd">        primitive type lattice is assumed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">symop</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">tmp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">symop</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">i2</span> <span class="ow">in</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">i3</span> <span class="ow">in</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">for</span> <span class="n">i4</span> <span class="ow">in</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]:</span>
+                        <span class="n">tmp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i1</span><span class="p">,</span><span class="n">i2</span><span class="p">,</span><span class="n">i3</span><span class="p">,</span><span class="n">i4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="n">symop</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">symop</span>
+    
+    <span class="k">def</span> <span class="nf">remove_overlaps_in_a_list</span><span class="p">(</span><span class="n">l1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove overlap elements in list with set method.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            l1 (list):</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            l2 (list)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tmp</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="n">l1</span><span class="p">)</span>
+        <span class="n">l2</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+        <span class="n">l2</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">l2</span>
+    
+    <span class="k">def</span> <span class="nf">find_overlaps</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span><span class="n">l2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        find overlap or not btween list1 and list2.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            l1 (list):</span>
+<span class="sd">            l2 (list):</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            0 (int): no intersection</span>
+<span class="sd">            1 (int): intersection</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">l3</span><span class="o">=</span><span class="n">remove_overlaps_in_a_list</span><span class="p">(</span><span class="n">l1</span><span class="o">+</span><span class="n">l2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l1</span><span class="p">)</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">l2</span><span class="p">)</span><span class="o">==</span><span class="nb">len</span><span class="p">(</span><span class="n">l3</span><span class="p">):</span> <span class="c1"># no overlap</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+    
+    <span class="n">symop</span><span class="o">=</span><span class="n">symmetry12</span><span class="o">.</span><span class="n">dodesymop</span><span class="p">()</span>
+    <span class="n">traop</span><span class="o">=</span><span class="n">translation</span><span class="p">()</span>
+    
+     <span class="c1"># List of index of symmetry operators of the site symmetry group G.</span>
+     <span class="c1"># The symmetry operators leaves xyz identical.</span>
+    <span class="n">list1</span><span class="o">=</span><span class="p">[]</span>
+    
+    <span class="c1"># List of index of symmetry operators which are not in the G.</span>
+    <span class="n">list2</span><span class="o">=</span><span class="p">[]</span>
+    
+    <span class="n">pos</span><span class="o">=</span><span class="n">wyckoff_position</span>
+    <span class="n">a1</span><span class="o">=</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">SIN</span><span class="o">*</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">a2</span><span class="o">=</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">SIN</span><span class="o">*</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">a3</span><span class="o">=</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">SIN</span><span class="o">*</span><span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">a4</span><span class="o">=</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">SIN</span><span class="o">*</span><span class="n">pos</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="n">pos</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">xyz</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">a1</span><span class="p">,</span><span class="n">a2</span><span class="p">,</span><span class="n">a3</span><span class="p">,</span><span class="n">a4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    
+    <span class="n">xyi</span><span class="o">=</span><span class="n">numericalc12</span><span class="o">.</span><span class="n">projection_1_numerical</span><span class="p">(</span><span class="n">xyz</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">xyz</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">xyz</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">xyz</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">xyz</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="n">xyz</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+    <span class="n">xi</span><span class="o">=</span><span class="n">xyi</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">yi</span><span class="o">=</span><span class="n">xyi</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39; site coordinates: </span><span class="si">%3.2f</span><span class="s1"> </span><span class="si">%3.2f</span><span class="s1"> </span><span class="si">%3.2f</span><span class="s1"> </span><span class="si">%3.2f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">xyz</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">xyz</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">xyz</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">xyz</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;         in Epar : </span><span class="si">%5.3f</span><span class="s1"> </span><span class="si">%5.3f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">xyi</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">xyi</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;         in Eperp: </span><span class="si">%5.3f</span><span class="s1"> </span><span class="si">%5.3f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">xyi</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">xyi</span><span class="p">[</span><span class="mi">4</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
+    <span class="k">for</span> <span class="n">i2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">symop</span><span class="p">)):</span>
+        <span class="n">flag</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">traop</span><span class="p">)):</span>
+            <span class="n">xyz1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">symop</span><span class="p">[</span><span class="n">i2</span><span class="p">],</span><span class="n">xyz</span><span class="p">)</span>
+            <span class="n">xyz2</span><span class="o">=</span><span class="n">xyz1</span><span class="o">+</span><span class="n">traop</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span>
+            <span class="n">a</span><span class="o">=</span><span class="n">numericalc12</span><span class="o">.</span><span class="n">projection_1_numerical</span><span class="p">(</span><span class="n">xyz2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">xyz2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">xyz2</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">xyz2</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">xyz2</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="n">xyz2</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">-</span><span class="n">xi</span><span class="p">)</span><span class="o">&lt;</span><span class="n">EPS</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">-</span><span class="n">yi</span><span class="p">)</span><span class="o">&lt;</span><span class="n">EPS</span><span class="p">:</span>
+                <span class="n">list1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i2</span><span class="p">)</span>
+                <span class="n">flag</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">if</span> <span class="n">flag</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">list2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i2</span><span class="p">)</span>
+    
+    <span class="n">list1_new</span><span class="o">=</span><span class="n">remove_overlaps_in_a_list</span><span class="p">(</span><span class="n">list1</span><span class="p">)</span>
+    <span class="n">list2_new</span><span class="o">=</span><span class="n">remove_overlaps_in_a_list</span><span class="p">(</span><span class="n">list2</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;     multiplicity:&#39;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">list1_new</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    site symmetry:&#39;</span><span class="p">,</span><span class="n">list1_new</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
+    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">symop</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">list1_new</span><span class="p">))</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">list5</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;       left coset:&#39;</span><span class="p">,</span><span class="n">list5</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+    
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># left coset decomposition:</span>
+        <span class="n">list4</span><span class="o">=</span><span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i2</span> <span class="ow">in</span> <span class="n">list2_new</span><span class="p">:</span>
+            <span class="n">list3</span><span class="o">=</span><span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="n">list1_new</span><span class="p">:</span>
+                <span class="n">op1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">symop</span><span class="p">[</span><span class="n">i2</span><span class="p">],</span><span class="n">symop</span><span class="p">[</span><span class="n">i1</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">i3</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">symop</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">op1</span><span class="o">==</span><span class="n">symop</span><span class="p">[</span><span class="n">i3</span><span class="p">]):</span>
+                        <span class="n">list3</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i3</span><span class="p">)</span>
+                        <span class="k">break</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">pass</span>
+            <span class="n">list4</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">list3</span><span class="p">)</span>
+        
+        <span class="c1">#print(&#39;----------------&#39;)</span>
+        <span class="c1">#for i2 in range(len(list4)):</span>
+        <span class="c1">#    print(list4[i2])</span>
+        <span class="c1">#print(&#39;----------------&#39;)</span>
+        
+        <span class="k">for</span> <span class="n">i2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">list4</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">a</span><span class="o">=</span><span class="n">list4</span><span class="p">[</span><span class="n">i2</span><span class="p">]</span>
+            <span class="n">b</span><span class="o">=</span><span class="p">[]</span>
+            <span class="n">d</span><span class="o">=</span><span class="p">[]</span>
+            <span class="n">list5</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># symmetry element of identity, symop[0]</span>
+            <span class="n">list5</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">list2_new</span><span class="p">[</span><span class="n">i2</span><span class="p">])</span>
+            <span class="n">i3</span><span class="o">=</span><span class="n">i2</span><span class="o">+</span><span class="mi">1</span>
+            <span class="k">while</span> <span class="n">i3</span><span class="o">&lt;</span><span class="nb">len</span><span class="p">(</span><span class="n">list4</span><span class="p">):</span>
+                <span class="n">b</span><span class="o">=</span><span class="n">list4</span><span class="p">[</span><span class="n">i3</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">find_overlaps</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                        <span class="n">d</span><span class="o">=</span><span class="n">a</span><span class="o">+</span><span class="n">b</span>
+                        <span class="n">list5</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">list2_new</span><span class="p">[</span><span class="n">i3</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">find_overlaps</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">b</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                        <span class="n">d</span><span class="o">=</span><span class="n">d</span><span class="o">+</span><span class="n">b</span>
+                        <span class="n">list5</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">list2_new</span><span class="p">[</span><span class="n">i3</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">pass</span>
+                <span class="n">i3</span><span class="o">+=</span><span class="mi">1</span>
+            <span class="n">b</span><span class="o">=</span><span class="n">remove_overlaps_in_a_list</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">symop</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">list1_new</span><span class="p">))</span><span class="o">==</span><span class="nb">len</span><span class="p">(</span><span class="n">list5</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;       left coset:&#39;</span><span class="p">,</span><span class="n">list5</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">pass</span>
+    
+    <span class="k">return</span> <span class="n">list1_new</span><span class="p">,</span> <span class="n">list5</span></div>
+
+
+<div class="viewcode-block" id="symmetric">
+<a class="viewcode-back" href="../../../pyqcstrc.dode.html#pyqcstrc.dode.occupation_domain.symmetric">[docs]</a>
+<span class="k">def</span> <span class="nf">symmetric</span><span class="p">(</span><span class="n">asymmetric_unit</span><span class="p">,</span> <span class="n">site</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate symmterical occupation domain from its asymmetric unit by applying site simmetry.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        asymmetric_unit (numpy.ndarray):</span>
+<span class="sd">            Asymmetric unit of the occupation domain</span>
+<span class="sd">            The shape is (num,3,6,3), where num=numbre_of_triangle.</span>
+<span class="sd">        site (numpy.ndarray):</span>
+<span class="sd">            6d coordinate of the site of which the occupation domain centres.</span>
+<span class="sd">            The symmetric centre.</span>
+<span class="sd">            The shape is (6,3)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Symmetric occupation domains (numpy.ndarray):</span>
+<span class="sd">            The shape is (num,3,6,3), where num=numbre_of_triangle.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># get site symmetry</span>
+    <span class="c1">#a1=(site[0][0]+SIN*site[0][1])/site[0][2]</span>
+    <span class="c1">#a2=(site[1][0]+SIN*site[1][1])/site[1][2]</span>
+    <span class="c1">#a3=(site[2][0]+SIN*site[2][1])/site[2][2]</span>
+    <span class="c1">#a4=(site[3][0]+SIN*site[3][1])/site[3][2]</span>
+    <span class="c1">#xyz=np.array([a1,a2,a3,a4,0,0])</span>
+    <span class="n">num_symop</span><span class="p">,</span><span class="n">num_coset</span><span class="o">=</span><span class="n">site_symmetry</span><span class="p">(</span><span class="n">site</span><span class="p">,</span><span class="n">verbose</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">asymmetric_unit</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">asym_obj</span><span class="o">=</span><span class="n">asymmetric_unit</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">asymmetric_unit</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">),</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span><span class="c1"># asymmetric_unit.ndim == 4:</span>
+        <span class="n">asym_obj</span><span class="o">=</span><span class="n">asymmetric_unit</span>
+   
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">num_symop</span><span class="p">)):</span>
+        <span class="n">obj1</span><span class="o">=</span><span class="n">symmetry12</span><span class="o">.</span><span class="n">generator_symmetric_obj_0</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">asym_obj</span><span class="p">,</span><span class="n">centre</span><span class="o">=</span><span class="n">site</span><span class="p">,</span><span class="n">numop</span><span class="o">=</span><span class="n">num_symop</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">i</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">objs</span><span class="o">=</span><span class="n">obj1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">objs</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">objs</span><span class="p">,</span><span class="n">obj1</span><span class="p">)</span>
+    <span class="n">objs</span><span class="o">=</span><span class="n">objs</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">objs</span><span class="p">)</span><span class="o">/</span><span class="mi">54</span><span class="p">),</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">objs</span></div>
+
+
+<span class="c1"># dev, currently this does not work...</span>
+<div class="viewcode-block" id="asymmetric">
+<a class="viewcode-back" href="../../../pyqcstrc.dode.html#pyqcstrc.dode.occupation_domain.asymmetric">[docs]</a>
+<span class="k">def</span> <span class="nf">asymmetric</span><span class="p">(</span><span class="n">symmetric_obj</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">vecs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Asymmetric part of occupation domain.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        symmetric_obj (numpy.ndarray):</span>
+<span class="sd">            Occupation domain of which the asymmetric part is calculated.</span>
+<span class="sd">            The shape is (num,2,6,3), where num=numbre_of_triangle.</span>
+<span class="sd">        position (numpy.ndarray):</span>
+<span class="sd">            6d coordinate of the site of which the occupation domain centres.</span>
+<span class="sd">            The shape is (6,3)</span>
+<span class="sd">        vecs (numpy.ndarray):</span>
+<span class="sd">            Three vectors that defines the asymmetric part.</span>
+<span class="sd">            The shape is (2,6,3)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Asymmetric part of the occupation domains (numpy.ndarray):</span>
+<span class="sd">            The shape is (num,3,6,3), where num=numbre_of_triangle.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">v0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]])</span>
+    <span class="n">vecs</span> <span class="o">=</span> <span class="n">math12</span><span class="o">.</span><span class="n">mul_vectors</span><span class="p">(</span><span class="n">vecs</span><span class="p">,[</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c1"># vecs multiplied by [a,b,c], where [a,b,c]=(a+TAU*b)/c. </span>
+    <span class="c1"># [a,b,c] has to be defined so that the tetrahedron whose vertices are defined </span>
+    <span class="c1"># by v0, and vecs covers the asymmetric unit of the ocuppation domains.</span>
+    <span class="c1"># (default) [a,b,c]=[5,0,1].</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span><span class="n">vecs</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">aum</span> <span class="o">=</span> <span class="n">as_it_is</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+    <span class="n">aum</span> <span class="o">=</span> <span class="n">shift</span><span class="p">(</span><span class="n">aum</span><span class="p">,</span><span class="n">position</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">aum</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">aum</span><span class="p">)</span>
+    <span class="n">od_asym</span> <span class="o">=</span> <span class="n">intersection</span><span class="p">(</span><span class="n">symmetric_obj</span><span class="p">,</span><span class="n">aum</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">od_asym_1</span><span class="o">=</span><span class="n">outline1</span><span class="p">(</span><span class="n">od_asym</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">od_asym_1</span></div>
+
+
+<div class="viewcode-block" id="outline">
+<a class="viewcode-back" href="../../../pyqcstrc.dode.html#pyqcstrc.dode.occupation_domain.outline">[docs]</a>
+<span class="k">def</span> <span class="nf">outline</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate outline of the occupation domain.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        obj (numpy.ndarray): the shape is (num,3,6,3), where num=numbre_of_triangle.</span>
+<span class="sd">        verbose (int): 0 (defalt)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Outline of the occupation domain (numpy.ndarray):</span>
+<span class="sd">            The shape is (num,2,6,3), where num=number of the outlines.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">utils12</span><span class="o">.</span><span class="n">generator_obj_outline</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">verbose</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="outline1">
+<a class="viewcode-back" href="../../../pyqcstrc.dode.html#pyqcstrc.dode.occupation_domain.outline1">[docs]</a>
+<span class="k">def</span> <span class="nf">outline1</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">num_cycle</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate outline of the occupation domain.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        obj (numpy.ndarray): the shape is (num,3,6,3), where num=numbre_of_triangle.</span>
+<span class="sd">        num_cycle (int): 10 (defalt)</span>
+<span class="sd">        verbose (int): 0 (defalt)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Outline of the occupation domain (numpy.ndarray):</span>
+<span class="sd">            The shape is (num,2,6,3), where num=number of the outlines.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">utils12</span><span class="o">.</span><span class="n">surface_cleaner</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">num_cycle</span><span class="p">,</span><span class="n">verbose</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="triangulation">
+<a class="viewcode-back" href="../../../pyqcstrc.dode.html#pyqcstrc.dode.occupation_domain.triangulation">[docs]</a>
+<span class="k">def</span> <span class="nf">triangulation</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">num_cycle</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Triangulation of the occupation domain.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        obj (numpy.ndarray): the shape is (num,3,6,3), where num=numbre_of_triangle.</span>
+<span class="sd">        position (numpy.ndarray): 6d vector. the shape is (6,3)</span>
+<span class="sd">        num_cycle (int): 10 (defalt)</span>
+<span class="sd">        verbose (int): 0 (defalt)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Outline of the occupation domain (numpy.ndarray):</span>
+<span class="sd">            The shape is (num,3,6,3), where num=number of triangles.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">utils12</span><span class="o">.</span><span class="n">surface_cleaner</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">num_cycle</span><span class="p">,</span><span class="n">verbose</span><span class="p">)</span>
+    <span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">num</span><span class="p">):</span>
+        <span class="n">b</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">position</span><span class="p">,</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">i</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">=</span><span class="n">b</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">c</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">num</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="shift">
+<a class="viewcode-back" href="../../../pyqcstrc.dode.html#pyqcstrc.dode.occupation_domain.shift">[docs]</a>
+<span class="k">def</span> <span class="nf">shift</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">shift</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Shift the occupation domain.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        obj (numpy.ndarray):</span>
+<span class="sd">            The occupation domain</span>
+<span class="sd">            The shape is (num,3,6,3), where num=numbre_of_triangle.</span>
+<span class="sd">        shift (numpy.ndarray):</span>
+<span class="sd">            6d coordinate to which the occupation domain is shifted.</span>
+<span class="sd">            The shape is (6,3)</span>
+<span class="sd">        verbose (int):</span>
+<span class="sd">            verbose = 0 (silent, default)</span>
+<span class="sd">            verbose = 1 (normal)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Shifted occupation domains (numpy.ndarray):</span>
+<span class="sd">            The shape is (num,3,6,3), where num=numbre_of_triangle.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">utils12</span><span class="o">.</span><span class="n">shift_object</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">shift</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="intersection">
+<a class="viewcode-back" href="../../../pyqcstrc.dode.html#pyqcstrc.dode.occupation_domain.intersection">[docs]</a>
+<span class="k">def</span> <span class="nf">intersection</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span><span class="n">obj2</span><span class="p">,</span><span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+    
+    <span class="n">tmp</span><span class="o">=</span><span class="n">intsct12</span><span class="o">.</span><span class="n">intersection_two_obj</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span><span class="n">obj2</span><span class="p">,</span><span class="n">verbose</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">tmp</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="o">!=</span><span class="p">[[[[</span><span class="mi">0</span><span class="p">]]]]:</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;empty&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+    
+    <span class="k">return</span> <span class="n">tmp</span></div>
+
+
+<div class="viewcode-block" id="similarity">
+<a class="viewcode-back" href="../../../pyqcstrc.dode.html#pyqcstrc.dode.occupation_domain.similarity">[docs]</a>
+<span class="k">def</span> <span class="nf">similarity</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">order</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">symmetry12</span><span class="o">.</span><span class="n">similarity_obj</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">order</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">obj</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">obj</span><span class="o">=</span><span class="n">obj</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">*</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">symmetry12</span><span class="o">.</span><span class="n">similarity_obj</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">order</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span></div>
+
+    
+<div class="viewcode-block" id="qcstrc">
+<a class="viewcode-back" href="../../../pyqcstrc.dode.html#pyqcstrc.dode.occupation_domain.qcstrc">[docs]</a>
+<span class="k">def</span> <span class="nf">qcstrc</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">basename</span><span class="p">,</span> <span class="n">atm</span><span class="p">,</span> <span class="n">phason_matrix</span><span class="p">,</span> <span class="n">nmax</span><span class="p">,</span> <span class="n">shift</span><span class="p">,</span> <span class="n">origin_shift</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">option</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+    
+    <span class="c1">#if phason_matrix == 0 or phason_matrix==[[[0]]] or phason_matrix==[[0]] or phason_matrix==[0]:</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">phason_matrix</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">phason_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">]])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">==</span><span class="nb">len</span><span class="p">(</span><span class="n">atm</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">==</span><span class="nb">len</span><span class="p">(</span><span class="n">positions</span><span class="p">):</span>
+        <span class="c1">#ishift=[0.00178250, 0.00137613, 0.003987675, 0.2387783, 0, 0]</span>
+        
+        <span class="n">lst</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">a</span><span class="o">=</span><span class="n">strc12</span><span class="o">.</span><span class="n">strc</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">positions</span><span class="p">,</span><span class="n">phason_matrix</span><span class="p">,</span><span class="n">nmax</span><span class="p">,</span><span class="n">shift</span><span class="p">,</span><span class="n">origin_shift</span><span class="p">,</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">.xyz&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">basename</span><span class="p">),</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.xyz</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">basename</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)):</span>
+            <span class="c1">#print(a[i1][3])</span>
+            <span class="k">if</span> <span class="n">option</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">atm</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">3</span><span class="p">])],</span><span class="n">a</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">a</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">a</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">2</span><span class="p">]))</span>
+            <span class="k">elif</span> <span class="n">option</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># Eperp, x, y</span>
+                <span class="c1">#f.write(&#39;%s %8.6f %8.6f %8.6f # %8.6f %8.6f %8.6f\n&#39;%(atm[int(a[i1][3])],a[i1][0],a[i1][1],a[i1][2],a[i1][4],a[i1][5],a[i1][6]))</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1"> # </span><span class="si">%3d</span><span class="s1"> </span><span class="si">%3d</span><span class="s1"> </span><span class="si">%3d</span><span class="s1"> </span><span class="si">%3d</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">atm</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">3</span><span class="p">])],</span><span class="n">a</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">a</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">a</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span><span class="n">a</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">4</span><span class="p">],</span><span class="n">a</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">5</span><span class="p">],</span><span class="n">a</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">6</span><span class="p">],</span><span class="n">a</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="mi">7</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">closed</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    written in </span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">basename</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<span class="c1"># dev.</span>
+<div class="viewcode-block" id="genstrc">
+<a class="viewcode-back" href="../../../pyqcstrc.dode.html#pyqcstrc.dode.occupation_domain.genstrc">[docs]</a>
+<span class="k">def</span> <span class="nf">genstrc</span><span class="p">(</span><span class="n">l1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate atomic structure of DD QC.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        l1 (list):</span>
+<span class="sd">            List contains structural dataThe occupation domain, which contains following:</span>
+<span class="sd">            </span>
+<span class="sd">            (1) The shape is (num,3,6,3), where num=numbre_of_triangle.</span>
+<span class="sd">            </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        0 (int):</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="genobjv">
+<a class="viewcode-back" href="../../../pyqcstrc.dode.html#pyqcstrc.dode.occupation_domain.genobjv">[docs]</a>
+<span class="k">def</span> <span class="nf">genobjv</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">vlist</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">basename</span> <span class="o">=</span> <span class="s1">&#39;tmp&#39;</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate objs from vlist.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        obj (numpy.ndarray): ndarray contains vertices</span>
+<span class="sd">            The shape is (num,4,6,3), where num=numbre_of_vertices.</span>
+<span class="sd">        vlist (list): </span>
+<span class="sd">        path (str): Path of the output files</span>
+<span class="sd">        basename (str): Basename of the output files</span>
+<span class="sd">        verbose (int):</span>
+<span class="sd">            verbose = 0 (silent, default)</span>
+<span class="sd">            verbose = 1 (normal)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        int: 0 (succeed), 1 (fail)</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vlist</span><span class="p">)):</span>
+        <span class="n">a</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vlist</span><span class="p">[</span><span class="n">i1</span><span class="p">])):</span>
+            <span class="k">for</span> <span class="n">i3</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i2</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">i3</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="n">a</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="n">vlist</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">a</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">obj</span><span class="p">[</span><span class="n">vlist</span><span class="p">[</span><span class="n">i1</span><span class="p">][</span><span class="n">i2</span><span class="p">][</span><span class="n">i3</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">/</span><span class="mi">54</span><span class="p">),</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vlist</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">basename1</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">basename</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">basename1</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_part</span><span class="si">%d</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">basename</span><span class="p">,</span><span class="n">i1</span><span class="p">)</span>
+        <span class="n">write_xyz</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">basename</span><span class="o">=</span><span class="n">basename1</span><span class="p">)</span>
+        <span class="n">write_vesta</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">basename</span><span class="o">=</span><span class="n">basename1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    
+    <span class="c1"># Three 6D vectors which define the asymmetric part of the occupation domain for Nizeki-Gahler dodecagonal tiling</span>
+    <span class="c1"># Note that 5-th and 6-th components of each 6D vectors are dummy, and they correspond to Z coordinate in Epar and Eperp, respectively.</span>
+    <span class="n">v0</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span> <span class="c1"># (0,0,0,0)</span>
+    <span class="n">v1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span> <span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span> <span class="c1">#</span>
+    <span class="n">v2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span> <span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],[</span> <span class="mi">3</span><span class="p">,</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],[</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span> <span class="c1">#</span>
+    <span class="n">asym_obj</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">v0</span><span class="p">,</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    
+    <span class="c1"># OBJ_1</span>
+    <span class="n">obj1</span><span class="o">=</span><span class="n">symmetric</span><span class="p">(</span><span class="n">asym_obj</span><span class="p">,</span><span class="n">v0</span><span class="p">)</span>
+    <span class="c1"># Shift vector for OBJ_2</span>
+    <span class="n">pos</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span> <span class="c1"># ( 0,1,0,0)</span>
+
+    <span class="c1"># OBJ_1</span>
+    <span class="c1">#obj1=asym_obj.reshape(1,3,6,3)</span>
+    <span class="c1"># Shift vector for OBJ_2</span>
+    <span class="c1">#pos=np.array([[ 0, 0, 1],[ 1, 0, 4],[ 1, 0, 4],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]]) # ( 0,1/4,1/4,0)</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;symmetric obj:&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj1</span><span class="p">)):</span>
+        <span class="n">vi</span><span class="o">=</span><span class="n">obj1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vi</span><span class="p">)):</span>
+            <span class="n">vj</span><span class="o">=</span><span class="n">vi</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">v1i</span><span class="p">,</span><span class="n">v2i</span><span class="p">,</span><span class="n">v3i</span><span class="o">=</span><span class="n">math12</span><span class="o">.</span><span class="n">projection3</span><span class="p">(</span><span class="n">vj</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">vj</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">vj</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">vj</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">vj</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="n">vj</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(((</span><span class="n">v1i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">v1i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">SIN</span><span class="p">)</span><span class="o">/</span><span class="n">v1i</span><span class="p">[</span><span class="mi">2</span><span class="p">],(</span><span class="n">v2i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">v2i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">SIN</span><span class="p">)</span><span class="o">/</span><span class="n">v2i</span><span class="p">[</span><span class="mi">2</span><span class="p">],(</span><span class="n">v3i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">v3i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">SIN</span><span class="p">)</span><span class="o">/</span><span class="n">v3i</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">outline of obj:&#39;</span><span class="p">)</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">outline</span><span class="p">(</span><span class="n">obj1</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;number of line segments = </span><span class="si">%d</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)):</span>
+        <span class="n">ai</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">v1i</span><span class="p">,</span><span class="n">v2i</span><span class="p">,</span><span class="n">v3i</span><span class="o">=</span><span class="n">math12</span><span class="o">.</span><span class="n">projection3</span><span class="p">(</span><span class="n">ai</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">ai</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">ai</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span><span class="n">ai</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span><span class="n">ai</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">4</span><span class="p">],</span><span class="n">ai</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">5</span><span class="p">])</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(((</span><span class="n">v1i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">v1i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">SIN</span><span class="p">)</span><span class="o">/</span><span class="n">v1i</span><span class="p">[</span><span class="mi">2</span><span class="p">],(</span><span class="n">v2i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">v2i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">SIN</span><span class="p">)</span><span class="o">/</span><span class="n">v2i</span><span class="p">[</span><span class="mi">2</span><span class="p">],(</span><span class="n">v3i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">v3i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">SIN</span><span class="p">)</span><span class="o">/</span><span class="n">v3i</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Shift obj:&#39;</span><span class="p">)</span>
+    <span class="n">obj2</span><span class="o">=</span><span class="n">shift</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span><span class="n">pos</span><span class="p">)</span>
+    <span class="c1">#</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">outline of shifted obj:&#39;</span><span class="p">)</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">outline</span><span class="p">(</span><span class="n">obj2</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;number of line segments = </span><span class="si">%d</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)):</span>
+        <span class="n">ai</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">v1i</span><span class="p">,</span><span class="n">v2i</span><span class="p">,</span><span class="n">v3i</span><span class="o">=</span><span class="n">math12</span><span class="o">.</span><span class="n">projection3</span><span class="p">(</span><span class="n">ai</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">ai</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">ai</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span><span class="n">ai</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span><span class="n">ai</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">4</span><span class="p">],</span><span class="n">ai</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">5</span><span class="p">])</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(((</span><span class="n">v1i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">v1i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">SIN</span><span class="p">)</span><span class="o">/</span><span class="n">v1i</span><span class="p">[</span><span class="mi">2</span><span class="p">],(</span><span class="n">v2i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">v2i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">SIN</span><span class="p">)</span><span class="o">/</span><span class="n">v2i</span><span class="p">[</span><span class="mi">2</span><span class="p">],(</span><span class="n">v3i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">v3i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">SIN</span><span class="p">)</span><span class="o">/</span><span class="n">v3i</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Intersection of two objs:&#39;</span><span class="p">)</span>
+    <span class="n">obj3</span><span class="o">=</span><span class="n">intersection</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span><span class="n">obj2</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">obj3</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="o">!=</span><span class="p">[[[[</span><span class="mi">0</span><span class="p">]]]]:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;number of common triangles = </span><span class="si">%d</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj3</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj3</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="n">v1i</span><span class="p">,</span><span class="n">v2i</span><span class="p">,</span><span class="n">v3i</span><span class="o">=</span><span class="n">math12</span><span class="o">.</span><span class="n">projection3</span><span class="p">(</span><span class="n">obj3</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">obj3</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">obj3</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span><span class="n">obj3</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span><span class="n">obj3</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">4</span><span class="p">],</span><span class="n">obj3</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">5</span><span class="p">])</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(((</span><span class="n">v1i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">v1i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">SIN</span><span class="p">)</span><span class="o">/</span><span class="n">v1i</span><span class="p">[</span><span class="mi">2</span><span class="p">],(</span><span class="n">v2i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">v2i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">SIN</span><span class="p">)</span><span class="o">/</span><span class="n">v2i</span><span class="p">[</span><span class="mi">2</span><span class="p">],(</span><span class="n">v3i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">v3i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">SIN</span><span class="p">)</span><span class="o">/</span><span class="n">v3i</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39; no common part found&#39;</span><span class="p">)</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    vj=np.array([[-1,0,2],[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])</span>
+<span class="sd">    v1i,v2i,v3i=math12.projection3(vj[0],vj[1],vj[2],vj[3],vj[4],vj[5])</span>
+<span class="sd">    print(&#39;%8.6f %8.6f %8.6f&#39;%(((v1i[0]+v1i[1]*SIN)/v1i[2],(v2i[0]+v2i[1]*SIN)/v2i[2],(v3i[0]+v3i[1]*SIN)/v3i[2])))</span>
+<span class="sd">    </span>
+<span class="sd">    vj=np.array([[-1,0,1],[1,0,1],[-1,1,1],[1,-1,1],[0,0,1],[0,0,1]])</span>
+<span class="sd">    v1i,v2i,v3i=math12.projection3(vj[0],vj[1],vj[2],vj[3],vj[4],vj[5])</span>
+<span class="sd">    print(&#39;%8.6f %8.6f %8.6f&#39;%(((v1i[0]+v1i[1]*SIN)/v1i[2],(v2i[0]+v2i[1]*SIN)/v2i[2],(v3i[0]+v3i[1]*SIN)/v3i[2])))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Tsunetomo Yamada.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

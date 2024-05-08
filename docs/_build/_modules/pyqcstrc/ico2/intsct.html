@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyqcstrc.ico2.intsct &mdash; PyQCstrc 0.0.2a01 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=c4b47ef7"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyQCstrc
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyQCstrc</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyqcstrc.ico2.intsct</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyqcstrc.ico2.intsct</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1">#</span>
+<span class="c1"># PyQCstrc - Python library for Quasi-Crystal structure</span>
+<span class="c1"># Copyright (c) 2021 Tsunetomo Yamada &lt;tsunetomo.yamada@rs.tus.ac.jp&gt;</span>
+<span class="c1">#</span>
+<span class="c1">#import sys</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy.typing</span> <span class="kn">import</span> <span class="n">NDArray</span>
+<span class="kn">import</span> <span class="nn">time</span> <span class="c1"># in object_subtraction_dev1, tetrahedron_not_obj</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+
+<span class="kn">from</span> <span class="nn">pyqcstrc.ico2.math1</span> <span class="kn">import</span> <span class="p">(</span><span class="n">projection3</span><span class="p">,</span>
+                                <span class="n">centroid</span><span class="p">,</span> 
+                                <span class="n">centroid_obj</span><span class="p">,</span>
+                                <span class="n">coplanar_check</span><span class="p">,</span>
+                                <span class="n">det_matrix</span><span class="p">,</span>
+                                <span class="n">dot_product</span><span class="p">,</span>
+                                <span class="n">inner_product</span><span class="p">,</span>
+                                <span class="n">outer_product</span><span class="p">,</span>
+                                <span class="n">add</span><span class="p">,</span>
+                                <span class="n">sub</span><span class="p">,</span>
+                                <span class="n">mul</span><span class="p">,</span>
+                                <span class="n">div</span><span class="p">,</span>
+                                <span class="n">sub_vectors</span><span class="p">,</span>
+                                <span class="n">add_vectors</span><span class="p">,</span> 
+                                <span class="n">mul_vector</span><span class="p">,</span>
+                                <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pyqcstrc.ico2.numericalc</span> <span class="kn">import</span> <span class="p">(</span><span class="n">numeric_value</span><span class="p">,</span>
+                                    <span class="n">numerical_vector</span><span class="p">,</span>
+                                    <span class="n">length_numerical</span><span class="p">,</span>
+                                    <span class="n">get_internal_component_sets_numerical</span><span class="p">,</span>
+                                    <span class="n">get_internal_component_numerical</span><span class="p">,</span>
+                                    <span class="n">check_intersection_two_segment_numerical_6d_tau</span><span class="p">,</span>
+                                    <span class="n">check_intersection_segment_surface_numerical_6d_tau</span><span class="p">,</span>
+                                    <span class="c1">#check_intersection_segment_surface_numerical,</span>
+                                    <span class="n">inside_outside_tetrahedron</span><span class="p">,</span>
+                                    <span class="n">inside_outside_tetrahedron_tau</span><span class="p">,</span>
+                                    <span class="n">on_out_surface</span><span class="p">,</span>
+                                    <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pyqcstrc.ico2.utils</span> <span class="kn">import</span> <span class="p">(</span><span class="n">remove_doubling_in_perp_space</span><span class="p">,</span>
+                                <span class="n">tetrahedron_volume_6d</span><span class="p">,</span>
+                                <span class="n">obj_volume_6d</span><span class="p">,</span>
+                                <span class="n">generator_surface_1</span><span class="p">,</span>
+                                <span class="n">generator_unique_triangles</span><span class="p">,</span>
+                                <span class="n">generator_unique_edges</span><span class="p">,</span>
+                                <span class="n">tetrahedralization_points</span><span class="p">,</span>
+                                <span class="n">generate_convex_hull</span><span class="p">,</span>
+                                <span class="p">)</span>
+                    
+<span class="n">TAU</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span><span class="o">/</span><span class="mf">2.0</span>
+<span class="n">EPS</span><span class="o">=</span><span class="mf">1e-6</span>
+
+<div class="viewcode-block" id="decomposition">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.intsct.decomposition">[docs]</a>
+<span class="k">def</span> <span class="nf">decomposition</span><span class="p">(</span><span class="n">p</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">tri</span><span class="o">=</span><span class="n">Delaunay</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;error in decomposition()&#39;</span><span class="p">)</span>
+        <span class="n">tmp</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1">#for i in range(len(tri.simplices)):</span>
+        <span class="c1">#    tet=tri.simplices[i]</span>
+        <span class="c1">#    tmp.append([tet[0],tet[1],tet[2],tet[3]])</span>
+        <span class="k">for</span> <span class="n">tet</span> <span class="ow">in</span> <span class="n">tri</span><span class="o">.</span><span class="n">simplices</span><span class="p">:</span>
+            <span class="n">tmp</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">tet</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">tet</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">tet</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">tet</span><span class="p">[</span><span class="mi">3</span><span class="p">]])</span>
+    <span class="k">return</span> <span class="n">tmp</span></div>
+
+
+<div class="viewcode-block" id="ball_radius_obj">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.intsct.ball_radius_obj">[docs]</a>
+<span class="k">def</span> <span class="nf">ball_radius_obj</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">centroid</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;estimate maximum distance between verices of given OBJ and its centroid.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj: array (ndim=4)</span>
+<span class="sd">        in TAU-style</span>
+<span class="sd">    centroid: array, (ndim=2)</span>
+<span class="sd">        a 6-dimensional coordinates in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    length: float</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#print(&quot;ball_radius_obj&quot;)</span>
+    
+    <span class="n">vertices</span><span class="o">=</span><span class="n">remove_doubling_in_perp_space</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="n">dd</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vertices</span><span class="p">:</span>
+        <span class="n">a</span><span class="o">=</span><span class="n">sub_vectors</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">centroid</span><span class="p">)</span>
+        <span class="n">a</span><span class="o">=</span><span class="n">projection3</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="n">dd1</span><span class="o">=</span><span class="n">length_numerical</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dd1</span><span class="o">&gt;</span><span class="n">dd</span><span class="p">:</span>
+            <span class="n">dd</span><span class="o">=</span><span class="n">dd1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">return</span> <span class="n">dd</span></div>
+
+
+<div class="viewcode-block" id="ball_radius">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.intsct.ball_radius">[docs]</a>
+<span class="k">def</span> <span class="nf">ball_radius</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">centroid</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="c1">#  this transforms a tetrahedron to a boll which covers the tetrahedron</span>
+    <span class="c1">#  the centre of the boll is the centroid of the tetrahedron.</span>
+    <span class="k">return</span> <span class="n">ball_radius_obj</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">,</span><span class="n">centroid</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="distance_in_perp_space">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.intsct.distance_in_perp_space">[docs]</a>
+<span class="k">def</span> <span class="nf">distance_in_perp_space</span><span class="p">(</span><span class="n">vt1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">vt2</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">sub_vectors</span><span class="p">(</span><span class="n">vt1</span><span class="p">,</span><span class="n">vt2</span><span class="p">)</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">projection3</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">length_numerical</span><span class="p">(</span><span class="n">a</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="rough_check_intersection_tetrahedron_obj">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.intsct.rough_check_intersection_tetrahedron_obj">[docs]</a>
+<span class="k">def</span> <span class="nf">rough_check_intersection_tetrahedron_obj</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">cententer</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="n">cen1</span><span class="o">=</span><span class="n">centroid</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">)</span>
+    <span class="n">dd1</span><span class="o">=</span><span class="n">ball_radius</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">,</span><span class="n">cen1</span><span class="p">)</span>
+    <span class="n">dd0</span><span class="o">=</span><span class="n">distance_in_perp_space</span><span class="p">(</span><span class="n">cen1</span><span class="p">,</span><span class="n">cententer</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dd0</span> <span class="o">&lt;=</span> <span class="n">dd1</span><span class="o">+</span><span class="n">distance</span><span class="p">:</span> <span class="c1"># two balls are intersecting.</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span> <span class="c1">#</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="check_intersection_two_tetrahedron_4">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.intsct.check_intersection_two_tetrahedron_4">[docs]</a>
+<span class="k">def</span> <span class="nf">check_intersection_two_tetrahedron_4</span><span class="p">(</span><span class="n">tetrahedron_1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">tetrahedron_2</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="c1"># checking whether tetrahedron_1 is fully inside tetrahedron_2 or not</span>
+    <span class="n">counter2</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">vtx</span> <span class="ow">in</span> <span class="n">tetrahedron_1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">inside_outside_tetrahedron_tau</span><span class="p">(</span><span class="n">vtx</span><span class="p">,</span><span class="n">tetrahedron_2</span><span class="p">):</span> <span class="c1"># inside</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">counter2</span><span class="o">+=</span><span class="mi">1</span>
+            <span class="k">break</span>
+    <span class="c1"># checking whether tetrahedron_2 is fully inside tetrahedron_3 or not</span>
+    <span class="n">counter3</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">vtx</span> <span class="ow">in</span> <span class="n">tetrahedron_2</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">inside_outside_tetrahedron_tau</span><span class="p">(</span><span class="n">vtx</span><span class="p">,</span><span class="n">tetrahedron_1</span><span class="p">):</span> <span class="c1"># inside</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">counter3</span><span class="o">+=</span><span class="mi">1</span>
+            <span class="k">break</span>
+    <span class="k">if</span> <span class="n">counter2</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span> <span class="c1"># tetrahedron_1 is fully inside tetrahedron_2</span>
+    <span class="k">elif</span> <span class="n">counter3</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">2</span> <span class="c1"># tetrahedron_2 is fully inside tetrahedron_1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1">#</span>
+        <span class="c1"># -----------------</span>
+        <span class="c1"># tetrahedron_1</span>
+        <span class="c1"># -----------------</span>
+        <span class="c1"># vertex 1: tetrahedron_1[0],  consist of (a1+b1*TAU)/c1, ... (a6+b6*TAU)/c6    a_i,b_i,c_i = tetrahedron_1[0][i:0~5][0],tetrahedron_1[0][i:0~5][1],tetrahedron_1[0][i:0~5][2]</span>
+        <span class="c1"># vertex 2: tetrahedron_1[1]</span>
+        <span class="c1"># vertex 3: tetrahedron_1[2]</span>
+        <span class="c1"># vertex 4: tetrahedron_1[3]</span>
+        <span class="c1">#</span>
+        <span class="c1"># 4 surfaces of tetrahedron_1</span>
+        <span class="c1"># surface 1: v1,v2,v3</span>
+        <span class="c1"># surface 2: v1,v2,v4</span>
+        <span class="c1"># surface 3: v1,v3,v4</span>
+        <span class="c1"># surface 4: v2,v3,v4</span>
+        <span class="c1">#</span>
+        <span class="c1"># 6 edges of tetrahedron_1</span>
+        <span class="c1"># edge 1: v1,v2</span>
+        <span class="c1"># edge 2: v1,v3</span>
+        <span class="c1"># edge 3: v1,v4</span>
+        <span class="c1"># edge 4: v2,v3</span>
+        <span class="c1"># edge 5: v2,v4</span>
+        <span class="c1"># edge 6: v3,v4</span>
+        <span class="c1">#</span>
+        <span class="c1"># -----------------</span>
+        <span class="c1"># tetrahedron_2</span>
+        <span class="c1"># -----------------</span>
+        <span class="c1"># vertex 1: tetrahedron_2[0]</span>
+        <span class="c1"># vertex 2: tetrahedron_2[1]</span>
+        <span class="c1"># vertex 3: tetrahedron_2[2]</span>
+        <span class="c1"># vertex 4: tetrahedron_2[3]</span>
+        <span class="c1">#</span>
+        <span class="c1"># 4 surfaces of tetrahedron_2</span>
+        <span class="c1"># surface 1: w1,w2,w3</span>
+        <span class="c1"># surface 2: w1,w2,w4</span>
+        <span class="c1"># surface 3: w1,w3,w4</span>
+        <span class="c1"># surface 4: w2,w3,w4</span>
+        <span class="c1">#</span>
+        <span class="c1"># 6 edges of tetrahedron_2</span>
+        <span class="c1"># edge 1: w1,w2</span>
+        <span class="c1"># edge 2: w1,w3</span>
+        <span class="c1"># edge 3: w1,w4</span>
+        <span class="c1"># edge 4: w2,w3</span>
+        <span class="c1"># edge 5: w2,w4</span>
+        <span class="c1"># edge 6: w3,w4</span>
+        <span class="c1">#</span>
+        <span class="c1"># case 1: intersection between (edge of tetrahedron_1) and (surface of tetrahedron_2)</span>
+        <span class="c1"># case 2: intersection between (edge of tetrahedron_2) and (surface of tetrahedron_1)</span>
+        <span class="c1">#</span>
+        <span class="c1"># combination_index</span>
+        <span class="c1"># e.g. v1,v2,w1,w2,w3 (edge 1 and surface 1) ...</span>
+        <span class="n">comb</span><span class="o">=</span><span class="p">[</span>\
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
+    
+        <span class="n">counter1</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">comb</span><span class="p">:</span> <span class="c1"># len(combination_index) = 24</span>
+            <span class="c1"># case 1: intersection between</span>
+            <span class="c1"># 6 edges of tetrahedron_1</span>
+            <span class="c1"># 4 surfaces of tetrahedron_2</span>
+            <span class="n">segment</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">tetrahedron_1</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span><span class="n">tetrahedron_1</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]]])</span>
+            <span class="n">surface</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">tetrahedron_2</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span><span class="n">tetrahedron_2</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">3</span><span class="p">]],</span><span class="n">tetrahedron_2</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">4</span><span class="p">]]])</span>
+            <span class="c1">#print(segment.shape)</span>
+            <span class="c1">#print(surface.shape)</span>
+            <span class="k">if</span> <span class="n">check_intersection_segment_surface_numerical_6d_tau</span><span class="p">(</span><span class="n">segment</span><span class="p">,</span><span class="n">surface</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span> <span class="c1"># intersectiing</span>
+                <span class="n">counter1</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="c1"># case 2: intersection between</span>
+            <span class="c1"># 6 edges of tetrahedron_2</span>
+            <span class="c1"># 4 surfaces of tetrahedron_1</span>
+            <span class="n">segment</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">tetrahedron_2</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span><span class="n">tetrahedron_2</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]]])</span>
+            <span class="n">surface</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">tetrahedron_1</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span><span class="n">tetrahedron_1</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">3</span><span class="p">]],</span><span class="n">tetrahedron_1</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">4</span><span class="p">]]])</span>
+            <span class="k">if</span> <span class="n">check_intersection_segment_surface_numerical_6d_tau</span><span class="p">(</span><span class="n">segment</span><span class="p">,</span><span class="n">surface</span><span class="p">):</span> <span class="c1"># intersectiing</span>
+                <span class="n">counter1</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">if</span> <span class="n">counter1</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">3</span> <span class="c1"># intersecting</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span> <span class="c1"># no intersection</span></div>
+
+
+<div class="viewcode-block" id="intersection_two_segment">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.intsct.intersection_two_segment">[docs]</a>
+<span class="k">def</span> <span class="nf">intersection_two_segment</span><span class="p">(</span><span class="n">segment_1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">segment_2</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;check intersection between two line segments.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    line_segment_1 line_segment_2: array</span>
+<span class="sd">        6-dimensional coordinates of line segment,(xyzuvw1, xyzuvw2) and (xyzuvw3, xyzuvw4), in TAU-style</span>
+<span class="sd">   </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check whether two line segments are intersecting or not by numerical calc.</span>
+    <span class="n">flg</span><span class="o">=</span><span class="n">check_intersection_two_segment_numerical</span><span class="p">(</span><span class="n">segment_1</span><span class="p">,</span><span class="n">segment_2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">flg</span><span class="o">!=</span><span class="mi">3</span><span class="p">:</span> <span class="c1"># intersecting</span>
+        <span class="c1"># calc in TAU-style</span>
+        <span class="n">vec6AB</span><span class="o">=</span><span class="n">sub_vectors</span><span class="p">(</span><span class="n">segment_1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">segment_1</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">vecAB</span><span class="o">=</span><span class="n">projection3</span><span class="p">(</span><span class="n">vec6AB</span><span class="p">)</span>                 <span class="c1"># AB</span>
+        <span class="c1">#</span>
+        <span class="n">tmp</span><span class="o">=</span><span class="n">sub_vectors</span><span class="p">(</span><span class="n">segment_2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">segment_2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">vecCD</span><span class="o">=</span><span class="n">projection3</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>                    <span class="c1"># CD</span>
+        <span class="c1">#</span>
+        <span class="n">tmp</span><span class="o">=</span><span class="n">sub_vectors</span><span class="p">(</span><span class="n">segment_1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">segment_2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">vecCA</span><span class="o">=</span><span class="n">projection3</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>                    <span class="c1"># CA</span>
+        
+        <span class="n">comb</span><span class="o">=</span><span class="p">[</span>\
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>\
+        <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">c</span><span class="o">=</span><span class="n">comb</span><span class="p">[</span><span class="n">flg</span><span class="p">]</span>
+        <span class="c1">#</span>
+        <span class="c1">#bunbo=vecAB[c[0]]*vecCD[c[1]]-vecCD[c[0]]*vecAB[c[1]]</span>
+        <span class="n">tmp1</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">vecAB</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span><span class="n">vecCD</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+        <span class="n">tmp2</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">vecCD</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span><span class="n">vecAB</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+        <span class="n">bunbo</span><span class="o">=</span><span class="n">sub</span><span class="p">(</span><span class="n">tmp1</span><span class="p">,</span><span class="n">tmp2</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="c1">#s=(vecCD[c[0]]*vecCA[c[1]]-vecCA[c[0]]*vecCD[c[1]])/bunbo</span>
+        <span class="n">tmp1</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">vecCD</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span><span class="n">vecCA</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+        <span class="n">tmp2</span><span class="o">=</span><span class="n">mul</span><span class="p">(</span><span class="n">vecCA</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span><span class="n">vecCD</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+        <span class="n">tmp1</span><span class="o">=</span><span class="n">sub</span><span class="p">(</span><span class="n">tmp1</span><span class="p">,</span><span class="n">tmp2</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">=</span><span class="n">div</span><span class="p">(</span><span class="n">tmp1</span><span class="p">,</span><span class="n">bunbo</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="c1"># OP = OA + s*AB</span>
+        <span class="n">tmp</span><span class="o">=</span><span class="n">mul_vector</span><span class="p">(</span><span class="n">vecAB</span><span class="p">,</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">add_vectors</span><span class="p">(</span><span class="n">segment_1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">tmp</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span> <span class="c1"># no intersection</span>
+        <span class="k">return</span> </div>
+
+
+<div class="viewcode-block" id="intersection_segment_surface">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.intsct.intersection_segment_surface">[docs]</a>
+<span class="k">def</span> <span class="nf">intersection_segment_surface</span><span class="p">(</span><span class="n">segment</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">surface</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;check intersection between a line segment and a triangle.</span>
+<span class="sd">    </span>
+<span class="sd">    Möller–Trumbore intersection algorithm</span>
+<span class="sd">    https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    line_segment: array</span>
+<span class="sd">        6-dimensional coordinates of line segment,xyzuvw1, xyzuvw2, in TAU-style</span>
+<span class="sd">    triangle: array</span>
+<span class="sd">        containing 6-dimensional coordinates of tree vertecies of a triangle, xyzuvw1, xyzuvw2, xyzuvw3, xyzuvw4 in TAU-style</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check whether the line segment and the surface are intersecting or not by numerical calc.</span>
+    <span class="k">if</span> <span class="n">check_intersection_segment_surface_numerical_6d_tau</span><span class="p">(</span><span class="n">segment</span><span class="p">,</span><span class="n">surface</span><span class="p">):</span> <span class="c1"># intersecting</span>
+        <span class="c1"># calc in TAU-style</span>
+        <span class="n">vec6AB</span><span class="o">=</span><span class="n">sub_vectors</span><span class="p">(</span><span class="n">segment</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">segment</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">vecAB</span><span class="o">=</span><span class="n">projection3</span><span class="p">(</span><span class="n">vec6AB</span><span class="p">)</span>                 <span class="c1"># AB # R</span>
+        <span class="c1">#</span>
+        <span class="n">tmp</span><span class="o">=</span><span class="n">sub_vectors</span><span class="p">(</span><span class="n">surface</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">surface</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">vecCD</span><span class="o">=</span><span class="n">projection3</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>                 <span class="c1"># CD # E1</span>
+        <span class="c1">#</span>
+        <span class="n">tmp</span><span class="o">=</span><span class="n">sub_vectors</span><span class="p">(</span><span class="n">surface</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">surface</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">vecCE</span><span class="o">=</span><span class="n">projection3</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>                 <span class="c1"># CE # E2</span>
+        <span class="c1">#</span>
+        <span class="n">tmp</span><span class="o">=</span><span class="n">sub_vectors</span><span class="p">(</span><span class="n">segment</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">surface</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">vecCA</span><span class="o">=</span><span class="n">projection3</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>                 <span class="c1"># CA # T</span>
+        
+        <span class="n">vecP</span><span class="o">=</span><span class="n">outer_product</span><span class="p">(</span><span class="n">vecAB</span><span class="p">,</span><span class="n">vecCE</span><span class="p">)</span> <span class="c1"># P</span>
+        <span class="n">vecQ</span><span class="o">=</span><span class="n">outer_product</span><span class="p">(</span><span class="n">vecCA</span><span class="p">,</span><span class="n">vecCD</span><span class="p">)</span> <span class="c1"># Q</span>
+        
+        <span class="n">bunbo</span><span class="o">=</span><span class="n">inner_product</span><span class="p">(</span><span class="n">vecP</span><span class="p">,</span><span class="n">vecCD</span><span class="p">)</span>
+        
+        <span class="n">bunshi</span><span class="o">=</span><span class="n">inner_product</span><span class="p">(</span><span class="n">vecQ</span><span class="p">,</span><span class="n">vecCE</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">=</span><span class="n">div</span><span class="p">(</span><span class="n">bunshi</span><span class="p">,</span><span class="n">bunbo</span><span class="p">)</span>
+        
+        <span class="c1"># intersecting point: OA + t*AB</span>
+        <span class="n">tmp</span><span class="o">=</span><span class="n">mul_vector</span><span class="p">(</span><span class="n">vec6AB</span><span class="p">,</span><span class="n">t</span><span class="p">)</span> <span class="c1"># t*AB</span>
+        <span class="c1">#print(&#39;   t=&#39;,numeric_value(t))</span>
+        <span class="k">return</span> <span class="n">add_vectors</span><span class="p">(</span><span class="n">segment</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">tmp</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span> <span class="c1"># no intersection</span>
+        <span class="k">return</span> </div>
+
+
+<div class="viewcode-block" id="intersection_two_tetrahedron_4">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.intsct.intersection_two_tetrahedron_4">[docs]</a>
+<span class="k">def</span> <span class="nf">intersection_two_tetrahedron_4</span><span class="p">(</span><span class="n">tetrahedron_1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">tetrahedron_2</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+    <span class="c1">#print(&#39;intersection_two_tetrahedron_4()&#39;)</span>
+    <span class="c1">#</span>
+    <span class="c1"># -----------------</span>
+    <span class="c1"># tetrahedron_1</span>
+    <span class="c1"># -----------------</span>
+    <span class="c1"># vertex 1: tetrahedron_1[0],  consist of (a1+b1*TAU)/c1, ... (a6+b6*TAU)/c6    a_i,b_i,c_i = tetrahedron_1[0][i:0~5][0],tetrahedron_1[0][i:0~5][1],tetrahedron_1[0][i:0~5][2]</span>
+    <span class="c1"># vertex 2: tetrahedron_1[1]</span>
+    <span class="c1"># vertex 3: tetrahedron_1[2]</span>
+    <span class="c1"># vertex 4: tetrahedron_1[3]</span>
+    <span class="c1">#</span>
+    <span class="c1"># 4 surfaces of tetrahedron_1</span>
+    <span class="c1"># surface 1: v1,v2,v3</span>
+    <span class="c1"># surface 2: v1,v2,v4</span>
+    <span class="c1"># surface 3: v1,v3,v4</span>
+    <span class="c1"># surface 4: v2,v3,v4</span>
+    <span class="c1">#</span>
+    <span class="c1"># 6 edges of tetrahedron_1</span>
+    <span class="c1"># edge 1: v1,v2</span>
+    <span class="c1"># edge 2: v1,v3</span>
+    <span class="c1"># edge 3: v1,v4</span>
+    <span class="c1"># edge 4: v2,v3</span>
+    <span class="c1"># edge 5: v2,v4</span>
+    <span class="c1"># edge 6: v3,v4</span>
+    <span class="c1">#</span>
+    <span class="c1"># -----------------</span>
+    <span class="c1"># tetrahedron_2</span>
+    <span class="c1"># -----------------</span>
+    <span class="c1"># vertex 1: tetrahedron_2[0]</span>
+    <span class="c1"># vertex 2: tetrahedron_2[1]</span>
+    <span class="c1"># vertex 3: tetrahedron_2[2]</span>
+    <span class="c1"># vertex 4: tetrahedron_2[3]</span>
+    <span class="c1">#</span>
+    <span class="c1"># 4 surfaces of tetrahedron_2</span>
+    <span class="c1"># surface 1: w1,w2,w3</span>
+    <span class="c1"># surface 2: w1,w2,w4</span>
+    <span class="c1"># surface 3: w1,w3,w4</span>
+    <span class="c1"># surface 4: w2,w3,w4</span>
+    <span class="c1">#</span>
+    <span class="c1"># 6 edges of tetrahedron_2</span>
+    <span class="c1"># edge 1: w1,w2</span>
+    <span class="c1"># edge 2: w1,w3</span>
+    <span class="c1"># edge 3: w1,w4</span>
+    <span class="c1"># edge 4: w2,w3</span>
+    <span class="c1"># edge 5: w2,w4</span>
+    <span class="c1"># edge 6: w3,w4</span>
+    <span class="c1">#</span>
+    <span class="c1"># case 1: intersection between (edge of tetrahedron_1) and (surface of tetrahedron_2)</span>
+    <span class="c1"># case 2: intersection between (edge of tetrahedron_2) and (surface of tetrahedron_1)</span>
+    <span class="c1">#</span>
+    <span class="c1"># combination_index</span>
+    <span class="c1"># e.g. v1,v2,w1,w2,w3 (edge 1 and surface 1) ...</span>
+    <span class="n">comb</span><span class="o">=</span><span class="p">[</span>\
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>\
+    <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
+    
+    <span class="c1">#tmp=np.array([])</span>
+    <span class="c1">#tmp1=np.array([])</span>
+    <span class="c1">#array0=np.zeros((6,3),dtype=np.int64)</span>
+    
+    <span class="n">counter</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">comb</span><span class="p">:</span>
+        <span class="c1"># case 1: intersection between (edge of tetrahedron_1) and (surface of tetrahedron_2)</span>
+        <span class="n">segment</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">tetrahedron_1</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span><span class="n">tetrahedron_1</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]]])</span>
+        <span class="n">surface</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">tetrahedron_2</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span><span class="n">tetrahedron_2</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">3</span><span class="p">]],</span><span class="n">tetrahedron_2</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">4</span><span class="p">]]])</span>
+        <span class="n">vtx</span><span class="o">=</span><span class="n">intersection_segment_surface</span><span class="p">(</span><span class="n">segment</span><span class="p">,</span><span class="n">surface</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">vtx</span><span class="o">==</span><span class="kc">None</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">#print(&#39;tmp1&#39;,tmp1)</span>
+            <span class="k">if</span> <span class="n">counter</span><span class="o">==</span><span class="mi">0</span> <span class="p">:</span>
+                <span class="n">tmp</span><span class="o">=</span><span class="n">vtx</span> <span class="c1"># intersection points</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tmp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">tmp</span><span class="p">,</span><span class="n">vtx</span><span class="p">])</span> <span class="c1"># intersecting points</span>
+            <span class="n">counter</span><span class="o">+=</span><span class="mi">1</span>
+            <span class="c1">#print(&#39;tmp&#39;,tmp)</span>
+        <span class="c1"># case 2: intersection between (edge of tetrahedron_2) and (surface of tetrahedron_1)</span>
+        <span class="n">segment</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">tetrahedron_2</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span><span class="n">tetrahedron_2</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]]])</span>
+        <span class="n">surface</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">tetrahedron_1</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span><span class="n">tetrahedron_1</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">3</span><span class="p">]],</span><span class="n">tetrahedron_1</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">4</span><span class="p">]]])</span>
+        <span class="n">vtx</span><span class="o">=</span><span class="n">intersection_segment_surface</span><span class="p">(</span><span class="n">segment</span><span class="p">,</span><span class="n">surface</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">vtx</span><span class="o">==</span><span class="kc">None</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">#print(&#39;tmp1&#39;,tmp1)</span>
+            <span class="k">if</span> <span class="n">counter</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">tmp</span><span class="o">=</span><span class="n">vtx</span> <span class="c1"># intersection points</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1">#print(&#39;   tmp.shape&#39;,tmp.shape)</span>
+                <span class="c1">#print(&#39;   tmp1.shape&#39;,tmp1.shape)</span>
+                <span class="n">tmp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">tmp</span><span class="p">,</span><span class="n">vtx</span><span class="p">])</span> <span class="c1"># intersecting points</span>
+            <span class="n">counter</span><span class="o">+=</span><span class="mi">1</span>
+            <span class="c1">#print(&#39;tmp&#39;,tmp)</span>
+    <span class="c1">#tmp=remove_doubling_in_perp_space(tmp)</span>
+    <span class="c1">#print(&#39;   (1) num of points=&#39;,len(tmp))</span>
+    <span class="c1">#a=get_internal_component_sets_numerical(tmp)</span>
+    <span class="c1">#print(a)</span>
+    
+    <span class="c1"># get vertces of tetrahedron_1 that are inside tetrahedron_2</span>
+    <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tetrahedron_1</span><span class="p">)):</span>
+        <span class="n">vtx</span><span class="o">=</span><span class="n">tetrahedron_1</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">inside_outside_tetrahedron_tau</span><span class="p">(</span><span class="n">vtx</span><span class="p">,</span><span class="n">tetrahedron_2</span><span class="p">):</span> <span class="c1"># inside</span>
+            <span class="c1">#print(&#39;tetrahedron_1[i1]&#39;,tetrahedron_1[i1])</span>
+            <span class="c1">#a=get_internal_component_numerical(tetrahedron_1[i1])</span>
+            <span class="c1">#print(&#39;      vertex of tet1&#39;,a)</span>
+            <span class="k">if</span> <span class="n">counter</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">tmp</span><span class="o">=</span><span class="n">vtx</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tmp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">tmp</span><span class="p">,[</span><span class="n">vtx</span><span class="p">]])</span>
+            <span class="n">counter</span><span class="o">+=</span><span class="mi">1</span>
+            <span class="c1">#print(&#39;tmp&#39;,tmp)</span>
+    <span class="c1"># get vertces of tetrahedron_2 that are inside tetrahedron_1</span>
+    <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tetrahedron_2</span><span class="p">)):</span>
+        <span class="n">vtx</span><span class="o">=</span><span class="n">tetrahedron_2</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">inside_outside_tetrahedron_tau</span><span class="p">(</span><span class="n">vtx</span><span class="p">,</span><span class="n">tetrahedron_1</span><span class="p">):</span> <span class="c1"># inside</span>
+            <span class="c1">#print(&#39;tetrahedron_2[i1]&#39;,tetrahedron_2[i1])</span>
+            <span class="k">if</span> <span class="n">counter</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">tmp</span><span class="o">=</span><span class="n">vtx</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tmp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">tmp</span><span class="p">,[</span><span class="n">vtx</span><span class="p">]])</span>
+            <span class="n">counter</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="c1">#print(&#39;tmp.shape&#39;,tmp.shape)</span>
+    <span class="c1">#tmp=tmp.reshape(int(len(tmp)/6),6,3)</span>
+    <span class="c1">#print(&#39;tmp:&#39;,tmp)</span>
+    <span class="c1">#tmp=remove_doubling_in_perp_space(tmp)</span>
+    <span class="c1">#print(&#39;   (2) num of points=&#39;,len(tmp))</span>
+    <span class="c1">#a=get_internal_component_sets_numerical(tmp)</span>
+    <span class="c1">#print(a)</span>
+    
+    <span class="c1">#tmp4=np.array([[[[0]]]])</span>
+    <span class="k">if</span> <span class="n">counter</span><span class="o">&gt;=</span><span class="mi">4</span><span class="p">:</span>
+        <span class="n">tmp</span><span class="o">=</span><span class="n">remove_doubling_in_perp_space</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+        <span class="c1">#print(len(tmp))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">4</span><span class="p">:</span>
+            <span class="c1"># Tetrahedralization</span>
+            <span class="k">if</span> <span class="n">coplanar_check</span><span class="p">(</span><span class="n">tmp</span><span class="p">):</span> <span class="c1"># coplanar</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span><span class="o">==</span><span class="mi">4</span><span class="p">:</span>
+                    <span class="n">tmp4</span><span class="o">=</span><span class="n">tmp</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">tmp4</span><span class="o">=</span><span class="n">tetrahedralization_points</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+                <span class="n">v</span><span class="o">=</span><span class="n">obj_volume_6d</span><span class="p">(</span><span class="n">tmp4</span><span class="p">)</span>
+                <span class="n">nv</span><span class="o">=</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="c1">#print(&#39;     common vol:&#39;,v,nv)</span>
+                <span class="k">return</span> <span class="n">tmp4</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> 
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> </div>
+
+
+<div class="viewcode-block" id="intersection_two_obj_1">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.intsct.intersection_two_obj_1">[docs]</a>
+<span class="k">def</span> <span class="nf">intersection_two_obj_1</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span><span class="n">obj2</span><span class="p">,</span><span class="n">kind</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return an intersection between two objects.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj1 : ndarray</span>
+<span class="sd">        a set of tetrahedra to be intersected with obj2.</span>
+<span class="sd">    obj2 : ndarray</span>
+<span class="sd">        a set of tetrahedra to be intersected with obj1.</span>
+<span class="sd">    kind : {&#39;standard&#39;, &#39;simple&#39;}, optional</span>
+<span class="sd">        The default is &#39;standard&#39;. </span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    intersection between obj1 and obj2 : ndarray</span>
+<span class="sd">        Array of the same type and shape as `obj1` and `obj2`.</span>
+<span class="sd">    </span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;standard&#39; intersection is default.</span>
+<span class="sd">    </span>
+<span class="sd">    Output from &#39;simple&#39; intersection is simpler but may cause a problem when generating its surface triangles.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">cent2</span><span class="o">=</span><span class="n">centroid_obj</span><span class="p">(</span><span class="n">obj2</span><span class="p">)</span>
+    <span class="n">dd2</span><span class="o">=</span><span class="n">ball_radius_obj</span><span class="p">(</span><span class="n">obj2</span><span class="p">,</span><span class="n">cent2</span><span class="p">)</span>
+    
+    <span class="n">counter0</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">tetrahedron1</span> <span class="ow">in</span> <span class="n">obj1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">rough_check_intersection_tetrahedron_obj</span><span class="p">(</span><span class="n">tetrahedron1</span><span class="p">,</span><span class="n">cent2</span><span class="p">,</span><span class="n">dd2</span><span class="p">):</span>
+            <span class="n">counter1</span><span class="o">=</span><span class="mi">0</span>
+            <span class="c1">#vol1=tetrahedron_volume_6d(tetrahedron1)</span>
+            <span class="c1">#print(&#39;vol1&#39;,vol1,numeric_value(vol1))</span>
+            <span class="k">for</span> <span class="n">tetrahedron2</span> <span class="ow">in</span> <span class="n">obj2</span><span class="p">:</span>
+                <span class="n">flag</span><span class="o">=</span><span class="n">check_intersection_two_tetrahedron_4</span><span class="p">(</span><span class="n">tetrahedron1</span><span class="p">,</span><span class="n">tetrahedron2</span><span class="p">)</span>
+                <span class="c1">#</span>
+                <span class="c1"># tetrahedron_1 is fully inside tetrahedron_2</span>
+                <span class="k">if</span> <span class="n">flag</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">counter0</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                        <span class="n">common4</span><span class="o">=</span><span class="n">tetrahedron1</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+                        <span class="n">counter0</span><span class="o">+=</span><span class="mi">1</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">common4</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">common4</span><span class="p">,[</span><span class="n">tetrahedron1</span><span class="p">]])</span>
+                    <span class="k">break</span>
+                <span class="c1">#</span>
+                <span class="c1"># tetrahedron_2 is fully inside tetrahedron_1</span>
+                <span class="k">elif</span> <span class="n">flag</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">counter1</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                        <span class="n">tmp_common4</span><span class="o">=</span><span class="n">tetrahedron2</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+                        <span class="n">counter1</span><span class="o">+=</span><span class="mi">1</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">tmp_common4</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">tmp_common4</span><span class="p">,[</span><span class="n">tetrahedron2</span><span class="p">]])</span>
+                <span class="c1">#</span>
+                <span class="c1"># tetrahedron_1 and tetrahedron_2 are intersecting</span>
+                <span class="k">elif</span> <span class="n">flag</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+                    <span class="n">tmp4</span><span class="o">=</span><span class="n">intersection_two_tetrahedron_4</span><span class="p">(</span><span class="n">tetrahedron1</span><span class="p">,</span><span class="n">tetrahedron2</span><span class="p">)</span>
+                    <span class="c1">###</span>
+                    <span class="c1">### Comment:</span>
+                    <span class="c1">### intersection_two_tetrahedron_4()で見つからないのに</span>
+                    <span class="c1">### check_intersection_two_tetrahedron_4()では交差して</span>
+                    <span class="c1">### いると判定される場合がある。2つの四面体の交差点が3つ以下の場合</span>
+                    <span class="c1">###（つまり接している場合）がこれに相当するので、以下のようにする。</span>
+                    <span class="c1">###</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">tmp4</span><span class="o">==</span><span class="kc">None</span><span class="p">):</span>
+                        <span class="k">pass</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1">#print(i)</span>
+                        <span class="c1">#v=obj_volume_6d(tmp4)</span>
+                        <span class="c1">#print(&#39;.    common vol:&#39;,v,numeric_value(v))</span>
+                        <span class="k">if</span> <span class="n">counter1</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                            <span class="n">tmp_common4</span><span class="o">=</span><span class="n">tmp4</span>
+                            <span class="n">counter1</span><span class="o">+=</span><span class="mi">1</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">tmp_common4</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">tmp_common4</span><span class="p">,</span><span class="n">tmp4</span><span class="p">))</span>
+                    <span class="c1">#if counter1==0:</span>
+                    <span class="c1">#    tmp_common4=tmp4</span>
+                    <span class="c1">#    counter1+=1</span>
+                    <span class="c1">#else:</span>
+                    <span class="c1">#    tmp_common4=np.vstack((tmp_common4,tmp4))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="c1">#i+=1</span>
+                
+            <span class="k">if</span> <span class="n">counter1</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+                <span class="c1">#print(&#39;tmp_common4&#39;,tmp_common4)</span>
+                <span class="c1">#vol2=obj_volume_6d(tmp_common4)</span>
+                <span class="c1">#print(&#39;vol2&#39;,vol2,numeric_value(vol2))</span>
+                <span class="k">if</span> <span class="n">kind</span><span class="o">==</span><span class="s1">&#39;simple&#39;</span><span class="p">:</span>
+                    <span class="n">vol1</span><span class="o">=</span><span class="n">tetrahedron_volume_6d</span><span class="p">(</span><span class="n">tetrahedron1</span><span class="p">)</span>
+                    <span class="n">vol2</span><span class="o">=</span><span class="n">obj_volume_6d</span><span class="p">(</span><span class="n">tmp_common4</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">vol1</span><span class="o">==</span><span class="n">vol2</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">counter0</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                            <span class="n">common4</span><span class="o">=</span><span class="n">tetrahedron1</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+                            <span class="c1">#print(&#39;common4.shape&#39;,common4.shape)</span>
+                            <span class="n">counter0</span><span class="o">+=</span><span class="mi">1</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="c1">#common4=np.concatenate([common4,tetrahedron1])</span>
+                            <span class="n">common4</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">common4</span><span class="p">,[</span><span class="n">tetrahedron1</span><span class="p">]])</span>
+                            <span class="c1">#print(&#39;common4.shape&#39;,common4.shape)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">counter0</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                            <span class="n">common4</span><span class="o">=</span><span class="n">tmp_common4</span>
+                            <span class="n">counter0</span><span class="o">+=</span><span class="mi">1</span>
+                            <span class="c1">#print(&#39;tmp_common4.shape&#39;,tmp_common4.shape)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="c1">#common4=np.concatenate([common4,tmp_common4])</span>
+                            <span class="n">common4</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">common4</span><span class="p">,</span><span class="n">tmp_common4</span><span class="p">])</span>
+                            <span class="c1">#print(&#39;tmp_common4.shape&#39;,tmp_common4.shape)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1">#print(&#39;tmp_common4.shape:&#39;,tmp_common4.shape)</span>
+                    <span class="k">if</span> <span class="n">counter0</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                        <span class="n">common4</span><span class="o">=</span><span class="n">tmp_common4</span>
+                        <span class="n">counter0</span><span class="o">+=</span><span class="mi">1</span>
+                        <span class="c1">#print(&#39;tmp_common4.shape&#39;,tmp_common4.shape)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1">#print(&#39;common4.shape:&#39;,common4.shape)</span>
+                        <span class="c1">#common4=np.concatenate([common4,tmp_common4])</span>
+                        <span class="n">common4</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">common4</span><span class="p">,</span><span class="n">tmp_common4</span><span class="p">])</span>
+                        <span class="c1">#print(&#39;tmp_common4.shape&#39;,tmp_common4.shape)</span>
+                <span class="c1">#print(common4.shape)</span>
+                <span class="c1">#return common4</span>
+    
+    <span class="k">if</span> <span class="n">counter0</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">common4</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> </div>
+
+
+<div class="viewcode-block" id="intersection_two_obj_convex">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.intsct.intersection_two_obj_convex">[docs]</a>
+<span class="k">def</span> <span class="nf">intersection_two_obj_convex</span><span class="p">(</span><span class="n">obj1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">obj2</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">vervose</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    # This is very simple but work correctly only when each subdivided </span>
+<span class="sd">    # three ODs (i.e part part, ODA and ODB) are able to define as a</span>
+<span class="sd">    # set of tetrahedra.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">vervose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;       start: intersection_two_obj_convex()&quot;</span><span class="p">)</span>
+    
+    <span class="n">obj1_surf</span><span class="o">=</span><span class="n">generator_surface_1</span><span class="p">(</span><span class="n">obj1</span><span class="p">)</span>
+    <span class="n">obj2_surf</span><span class="o">=</span><span class="n">generator_surface_1</span><span class="p">(</span><span class="n">obj2</span><span class="p">)</span>
+    <span class="n">obj1_edge</span><span class="o">=</span><span class="n">generator_unique_edges</span><span class="p">(</span><span class="n">obj1_surf</span><span class="p">)</span>
+    <span class="n">obj2_edge</span><span class="o">=</span><span class="n">generator_unique_edges</span><span class="p">(</span><span class="n">obj2_surf</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">vervose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;         num. of unique triangles in obj1:&quot;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">obj1_surf</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;         num. of unique triangles in obj2:&quot;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">obj2_surf</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;         num. of unique deges in obj1:&quot;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">obj1_edge</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;         num. of unique deges in obj2:&quot;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">obj2_edge</span><span class="p">))</span>
+    
+    
+    <span class="c1">#</span>
+    <span class="c1"># (1) Extract vertces of 2nd OD which are insede 1st OD --&gt; point_a1</span>
+    <span class="c1">#     Extract vertces of 2nd OD which are outsede 1st OD --&gt; point_b2</span>
+    <span class="c1">#</span>
+    <span class="n">counter1a</span><span class="o">=</span><span class="mi">0</span>
+    <span class="c1">#counter2a=0</span>
+    <span class="n">vertices1</span><span class="o">=</span><span class="n">remove_doubling_in_perp_space</span><span class="p">(</span><span class="n">obj1_edge</span><span class="p">)</span> <span class="c1"># generating vertces of 1st OD</span>
+    <span class="k">for</span> <span class="n">vrtx</span> <span class="ow">in</span> <span class="n">vertices1</span><span class="p">:</span>
+        <span class="n">counter2a</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">tetrahedron2</span> <span class="ow">in</span> <span class="n">obj2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">inside_outside_tetrahedron_tau</span><span class="p">(</span><span class="n">vrtx</span><span class="p">,</span><span class="n">tetrahedron2</span><span class="p">):</span>
+                <span class="n">counter2a</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">if</span> <span class="n">counter2a</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">counter1a</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">point_a1</span><span class="o">=</span><span class="n">vrtx</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">point_a1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">point_a1</span><span class="p">,[</span><span class="n">vrtx</span><span class="p">]])</span>
+            <span class="n">counter1a</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="c1">#else:</span>
+        <span class="c1">#    if counter2==0:</span>
+        <span class="c1">#        point_b2=vrtx.reshape(1,6,3)</span>
+        <span class="c1">#    else:</span>
+        <span class="c1">#        point_b2=np.vstack([point_b2,[vrtx]])</span>
+        <span class="c1">#    counter2+=1</span>
+    <span class="c1">#</span>
+    <span class="c1"># (2) Extract vertces of 1st OD which are insede 2nd OD --&gt; point_b1</span>
+    <span class="c1">#     Extract vertces of 1st OD which are outsede 2nd OD --&gt; point_a2</span>
+    <span class="c1">#</span>
+    <span class="n">counter1b</span><span class="o">=</span><span class="mi">0</span>
+    <span class="c1">#counter2b=0</span>
+    <span class="n">vertices2</span><span class="o">=</span><span class="n">remove_doubling_in_perp_space</span><span class="p">(</span><span class="n">obj2_edge</span><span class="p">)</span> <span class="c1"># generating vertces of 2nd OD</span>
+    <span class="k">for</span> <span class="n">vrtx</span> <span class="ow">in</span> <span class="n">vertices2</span><span class="p">:</span>
+        <span class="n">counter2b</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">tetrahedron1</span> <span class="ow">in</span> <span class="n">obj1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">inside_outside_tetrahedron_tau</span><span class="p">(</span><span class="n">vrtx</span><span class="p">,</span><span class="n">tetrahedron1</span><span class="p">):</span>
+                <span class="n">counter2b</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">if</span> <span class="n">counter2b</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">counter1b</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">point_b1</span><span class="o">=</span><span class="n">vrtx</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">point_b1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">point_b1</span><span class="p">,[</span><span class="n">vrtx</span><span class="p">]])</span>
+            <span class="n">counter1b</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="c1">#else:</span>
+        <span class="c1">#    if counter2==0:</span>
+        <span class="c1">#        point_a2=vrtx.reshape(1,6,3)</span>
+        <span class="c1">#    else:</span>
+        <span class="c1">#        point_a2=np.vstack([point_a2,[vrtx]])</span>
+        <span class="c1">#    counter2+=1</span>
+    <span class="k">if</span> <span class="n">counter1a</span><span class="o">==</span><span class="nb">len</span><span class="p">(</span><span class="n">vertices1</span><span class="p">):</span> <span class="c1"># obj1 is fully inside obj2</span>
+        <span class="k">return</span> <span class="n">obj1</span>
+    <span class="k">elif</span> <span class="n">counter1b</span><span class="o">==</span><span class="nb">len</span><span class="p">(</span><span class="n">vertices2</span><span class="p">):</span> <span class="c1"># obj2 is fully inside obj1</span>
+        <span class="k">return</span> <span class="n">obj2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1">#</span>
+        <span class="c1"># (3) Get intersecting points between obj1 and obj2</span>
+        <span class="c1">#</span>
+        <span class="n">counter</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">tr1</span> <span class="ow">in</span> <span class="n">obj1_surf</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">ed2</span> <span class="ow">in</span> <span class="n">obj2_edge</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">check_intersection_segment_surface_numerical_6d_tau</span><span class="p">(</span><span class="n">ed2</span><span class="p">,</span><span class="n">tr1</span><span class="p">):</span> <span class="c1"># intersection</span>
+                    <span class="n">tmp</span><span class="o">=</span><span class="n">intersection_segment_surface</span><span class="p">(</span><span class="n">ed2</span><span class="p">,</span><span class="n">tr1</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">counter</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                        <span class="n">p</span><span class="o">=</span><span class="n">tmp</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">p</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">p</span><span class="p">,</span><span class="n">tmp</span><span class="p">])</span>
+                    <span class="n">counter</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">pass</span>
+        <span class="k">for</span> <span class="n">tr2</span> <span class="ow">in</span> <span class="n">obj2_surf</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">ed1</span> <span class="ow">in</span> <span class="n">obj1_edge</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">check_intersection_segment_surface_numerical_6d_tau</span><span class="p">(</span><span class="n">ed1</span><span class="p">,</span><span class="n">tr2</span><span class="p">):</span> <span class="c1"># intersection</span>
+                    <span class="n">tmp</span><span class="o">=</span><span class="n">intersection_segment_surface</span><span class="p">(</span><span class="n">ed1</span><span class="p">,</span><span class="n">tr2</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">counter</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                        <span class="n">p</span><span class="o">=</span><span class="n">tmp</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">p</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">p</span><span class="p">,</span><span class="n">tmp</span><span class="p">])</span>
+                    <span class="n">counter</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">pass</span>
+        <span class="k">if</span> <span class="n">counter</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">point1</span><span class="o">=</span><span class="n">remove_doubling_in_perp_space</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="c1">#</span>
+            <span class="c1"># (3) Sum point A, point B and Intersections ---&gt;&gt;&gt; common part</span>
+            <span class="c1">#</span>
+            <span class="c1"># common part = point1 + point_a1 + point_b1</span>
+            <span class="n">points</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">point1</span><span class="p">,</span><span class="n">point_a1</span><span class="p">,</span><span class="n">point_b1</span><span class="p">])</span>
+            <span class="n">points</span><span class="o">=</span><span class="n">remove_doubling_in_perp_space</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+            <span class="n">common</span><span class="o">=</span><span class="n">tetrahedralization_points</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">common</span><span class="o">==</span><span class="kc">None</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;no common part&#39;</span><span class="p">)</span>
+                <span class="k">return</span> 
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">common</span></div>
+
+
+<span class="c1">#########</span>
+<span class="c1">###</span>
+<span class="c1">###   WIP</span>
+<span class="c1">###</span>
+<span class="c1">#########</span>
+<div class="viewcode-block" id="subtraction_two_obj">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.intsct.subtraction_two_obj">[docs]</a>
+<span class="k">def</span> <span class="nf">subtraction_two_obj</span><span class="p">(</span><span class="n">obj1</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">obj2</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Operate A not B (= A NOT (A AND B)).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    obj1: array,(number of tetrahedra, 4, 6, 3)</span>
+<span class="sd">        Object A to be subtracted.</span>
+<span class="sd">    obj2: array, (number of tetrahedra, 4, 6, 3)</span>
+<span class="sd">        Object B that subtracts the tetrahedron.</span>
+<span class="sd">    verbose: int</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    obj: array, (number of tetrahedra, 4, 6, 3)</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1">#def simplification(obj):</span>
+    <span class="c1">#    obj1=generate_convex_hull(obj)</span>
+    <span class="c1">#    obj2=intersection_two_obj_1(obj1,obj)</span>
+    <span class="c1">#    v0=obj_volume_6d(obj)</span>
+    <span class="c1">#    v1=obj_volume_6d(obj2)</span>
+    <span class="c1">#    if np.all(v0==v1):</span>
+    <span class="c1">#        return obj1</span>
+    <span class="c1">#    else:</span>
+    <span class="c1">#        return obj</span>
+    <span class="c1">#</span>
+    <span class="c1">#if flag==0:</span>
+    <span class="c1">#    obj1=simplification(obj1)</span>
+    <span class="c1">#    obj2=simplification(obj2)</span>
+    <span class="c1">#else:</span>
+    <span class="c1">#    pass</span>
+    
+    
+    <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;      generating surface_obj2&#39;</span><span class="p">)</span>
+        <span class="n">start</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="c1">#</span>
+    <span class="n">surface_obj2</span><span class="o">=</span><span class="n">generator_surface_1</span><span class="p">(</span><span class="n">obj2</span><span class="p">,</span><span class="n">verbose</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1">#</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">end</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">time_diff</span><span class="o">=</span><span class="n">end</span><span class="o">-</span><span class="n">start</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;         ends in </span><span class="si">%4.3f</span><span class="s1"> sec&#39;</span><span class="o">%</span><span class="n">time_diff</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;      tetrahedron_not_obj_1 starts...&#39;</span><span class="p">)</span>
+        <span class="n">start</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="c1">#</span>
+    
+    <span class="n">flag</span><span class="o">=</span><span class="mi">0</span>
+    <span class="n">out</span><span class="o">=</span><span class="kc">None</span>
+    <span class="n">counter1</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">tetrahedron</span> <span class="ow">in</span> <span class="n">obj1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;       </span><span class="si">%d</span><span class="s1">-th tetrahedron in obj1&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">counter1</span><span class="p">))</span>
+        <span class="n">a</span><span class="o">=</span><span class="n">tetrahedron_not_obj_1</span><span class="p">(</span><span class="n">tetrahedron</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">obj2</span><span class="p">,</span><span class="n">surface_obj2</span><span class="p">,</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">a</span><span class="o">==</span><span class="kc">None</span><span class="p">):</span>
+            <span class="n">out</span><span class="o">=</span><span class="kc">None</span>
+            <span class="n">flag</span><span class="o">=</span><span class="mi">1</span>
+            <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">counter1</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">out</span><span class="o">=</span><span class="n">a</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">out</span><span class="p">,</span><span class="n">a</span><span class="p">])</span>
+        <span class="n">counter1</span><span class="o">+=</span><span class="mi">1</span>
+    
+    <span class="k">if</span> <span class="n">flag</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">end</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="n">time_diff</span><span class="o">=</span><span class="n">end</span><span class="o">-</span><span class="n">start</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;         ends in </span><span class="si">%4.3f</span><span class="s1"> sec&#39;</span><span class="o">%</span><span class="n">time_diff</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="tetrahedron_not_obj_1">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.intsct.tetrahedron_not_obj_1">[docs]</a>
+<span class="k">def</span> <span class="nf">tetrahedron_not_obj_1</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">obj</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">surface_obj</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Operate tetrahedron not object = tetrahedron not (tetrahedron and object).</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tetrahedron: array, (1, 4, 6, 3)</span>
+<span class="sd">        Tetrahedron to be subtracted.</span>
+<span class="sd">    obj: array, (number of tetrahedra, 4, 6, 3)</span>
+<span class="sd">        Object that subtracts the tetrahedron.</span>
+<span class="sd">    surface_obj: array, (number of triangles, 3, 6, 3)</span>
+<span class="sd">        Surface trianges of the object.</span>
+<span class="sd">    verbose: int</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    obj: array, (number of tetrahedra, 4, 6, 3)</span>
+<span class="sd">    </span>
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    Current implementation may return wrong object when the intersecting between the objects is not simple.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1">#print(&#39;        tetrahedron_not_obj()&#39;)</span>
+        
+    <span class="c1"># surface triangles of obj</span>
+    <span class="c1">#surface_obj=generator_surface_1(obj)</span>
+    
+    <span class="c1"># surface triangles and vertices of common</span>
+    <span class="c1">#print(&#39;         intersection_two_obj_1()&#39;)</span>
+    <span class="c1">#start=time.time()</span>
+    <span class="n">common</span><span class="o">=</span><span class="n">intersection_two_obj_1</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">,</span><span class="n">obj</span><span class="p">)</span>
+    <span class="c1">#end=time.time()</span>
+    <span class="c1">#time_diff=end-start</span>
+    <span class="c1">#print(&#39;          ends in %4.3f sec&#39;%time_diff)</span>
+    <span class="n">surface_common</span><span class="o">=</span><span class="n">generator_surface_1</span><span class="p">(</span><span class="n">common</span><span class="p">,</span><span class="n">verbose</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1">#vertx_common=remove_doubling_in_perp_space(surface_common)</span>
+    
+    <span class="n">vol0</span><span class="o">=</span><span class="n">obj_volume_6d</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">)</span>
+    <span class="n">vol1</span><span class="o">=</span><span class="n">obj_volume_6d</span><span class="p">(</span><span class="n">common</span><span class="p">)</span>
+    <span class="n">vol2</span><span class="o">=</span><span class="n">sub</span><span class="p">(</span><span class="n">vol0</span><span class="p">,</span><span class="n">vol1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;        tetrahedron volume:&#39;</span><span class="p">,</span><span class="n">vol0</span><span class="p">,</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">vol0</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;        common volume:&#39;</span><span class="p">,</span><span class="n">vol1</span><span class="p">,</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">vol1</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;        tetrahedron NOT obj:&#39;</span><span class="p">,</span><span class="n">vol2</span><span class="p">,</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">vol2</span><span class="p">))</span>
+    
+    <span class="n">out</span><span class="o">=</span><span class="kc">None</span>
+    
+    <span class="c1"># get surface triangles of common part which are on the surface of obj</span>
+    <span class="c1">################################################</span>
+    <span class="c1"># 問題点</span>
+    <span class="c1"># ここではtetrahedron NOT objは以下の2点からなると想定している。</span>
+    <span class="c1"># (1) objに含まれないtetrahedron頂点と、</span>
+    <span class="c1"># (2) tetrahedron AND objの表面にある三角形のうち、objの表面にある三角形</span>
+    <span class="c1"># しかし、tetrahedron AND objがobj自身である場合など、tetrahedronとobjが</span>
+    <span class="c1"># ほとんど重なっている場合、必ずしも上記(2)が求めたい頂点のみを含むとは限らず、</span>
+    <span class="c1"># 余計なもまで作ってしまう。</span>
+    <span class="c1">################################################</span>
+    <span class="n">counter2</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">triangle2</span> <span class="ow">in</span> <span class="n">surface_common</span><span class="p">:</span>
+        <span class="n">counter1</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">vrtx2</span> <span class="ow">in</span> <span class="n">triangle2</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">triangle3</span> <span class="ow">in</span> <span class="n">surface_obj</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">on_out_surface</span><span class="p">(</span><span class="n">vrtx2</span><span class="p">,</span><span class="n">triangle3</span><span class="p">):</span> <span class="c1"># on</span>
+                    <span class="n">counter1</span><span class="o">+=</span><span class="mi">1</span>
+                    <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">pass</span>
+        <span class="k">if</span> <span class="n">counter1</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">counter2</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">tmp</span><span class="o">=</span><span class="n">triangle2</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tmp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">tmp</span><span class="p">,[</span><span class="n">triangle2</span><span class="p">]])</span>
+            <span class="n">counter2</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="n">triangle_common</span><span class="o">=</span><span class="n">tmp</span>
+    <span class="c1">#print(&#39;triangle_common.shape&#39;,triangle_common.shape)</span>
+    
+    
+    <span class="c1"># get vertices of tetrahedron which are NOT inside obj</span>
+    <span class="n">counter2</span><span class="o">=</span><span class="mi">0</span>
+    <span class="n">tetrahedron</span><span class="o">=</span><span class="n">tetrahedron</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">vrtx1</span> <span class="ow">in</span> <span class="n">tetrahedron</span><span class="p">:</span>
+        <span class="n">counter1</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">tet3</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+            <span class="c1">#print(&#39;vrtx1.shape&#39;,vrtx1.shape)</span>
+            <span class="c1">#print(&#39;tet3.shape&#39;,tet3.shape)</span>
+            <span class="k">if</span> <span class="n">inside_outside_tetrahedron_tau</span><span class="p">(</span><span class="n">vrtx1</span><span class="p">,</span><span class="n">tet3</span><span class="p">):</span> <span class="c1"># inside</span>
+                <span class="n">counter1</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">if</span> <span class="n">counter1</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">counter2</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">tmp</span><span class="o">=</span><span class="n">vrtx1</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tmp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">tmp1a</span><span class="p">,[</span><span class="n">vrtx1</span><span class="p">]])</span>
+            <span class="n">counter2</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="n">vrtx1_out</span><span class="o">=</span><span class="n">tmp</span>
+    <span class="c1">#print(&#39;vrtx1_out.shape&#39;,vrtx1_out.shape)</span>
+    
+    
+    
+    <span class="c1"># 四面体の4つの頂点のうちobjの外側にある頂点vrtx1_outの個数Nは、1,2,3,4。</span>
+    <span class="c1"># 以下、それぞれの場合について考える。</span>
+    <span class="c1">############################################################ </span>
+    <span class="c1">### N=1の場合は、triangle_commonにある各三角形と頂点を結んだものが求めたいものになる。</span>
+    <span class="c1">############################################################</span>
+    <span class="k">if</span> <span class="n">counter2</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;         case 1&#39;</span><span class="p">)</span>
+        <span class="n">counter3</span><span class="o">=</span><span class="mi">0</span>
+        
+        
+        <span class="c1">#---------------------------------------</span>
+        <span class="c1"># triangle_commonにある各三角形の重心を求め、</span>
+        <span class="c1"># vrtx1_outからの距離が近い順にソートする。</span>
+        <span class="c1">#---------------------------------------</span>
+        <span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">triangle_common</span><span class="p">)</span>
+        <span class="c1">#print(&#39;len(triangle_common)&#39;,num)</span>
+        <span class="n">dd</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float_</span><span class="p">)</span>
+        <span class="n">i1</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">triangle</span> <span class="ow">in</span> <span class="n">triangle_common</span><span class="p">:</span>
+            <span class="n">vt</span><span class="o">=</span><span class="n">centroid</span><span class="p">(</span><span class="n">triangle</span><span class="p">)</span>
+            <span class="c1">#print(&#39;vt.shape&#39;,vt.shape)</span>
+            <span class="c1">#print(&#39;vt&#39;,vt)</span>
+            <span class="n">vn</span><span class="o">=</span><span class="n">get_internal_component_numerical</span><span class="p">(</span><span class="n">vt</span><span class="p">)</span>
+            <span class="c1">#print(&#39;vrtx1_out.shape&#39;,vrtx1_out.shape)</span>
+            <span class="c1">#print(&#39;vrtx1_out&#39;,vrtx1_out)</span>
+            <span class="n">vn_out</span><span class="o">=</span><span class="n">get_internal_component_numerical</span><span class="p">(</span><span class="n">vrtx1_out</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+            <span class="n">vn</span><span class="o">=</span><span class="n">vn</span><span class="o">-</span><span class="n">vn_out</span>
+            <span class="c1">#print(&#39;vn&#39;,vn)</span>
+            <span class="n">dd</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">vn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">vn</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">vn</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">i1</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="c1">#print(&#39;dd&#39;,dd)</span>
+        <span class="n">indx_dd</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">dd</span><span class="p">)</span>
+        <span class="c1">#print(&#39;indx_dd&#39;,indx_dd)</span>
+        <span class="n">tmp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">indx_dd</span><span class="p">)):</span>
+            <span class="n">tmp</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">triangle_common</span><span class="p">[</span><span class="n">indx_dd</span><span class="p">[</span><span class="n">i1</span><span class="p">]]</span>
+        <span class="n">triangle_common</span><span class="o">=</span><span class="n">tmp</span>
+        
+        
+        
+        <span class="c1">#print(&#39;triangle_common.shape&#39;,triangle_common.shape)</span>
+        <span class="k">for</span> <span class="n">triangle</span> <span class="ow">in</span> <span class="n">triangle_common</span><span class="p">:</span>
+            <span class="c1">#print(&#39;triangle.shape&#39;,triangle.shape)</span>
+            <span class="n">tet</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">vrtx1_out</span><span class="p">,</span><span class="n">triangle</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+            <span class="c1">#print(&#39;tet.shape&#39;,tet.shape)</span>
+            <span class="k">if</span> <span class="n">counter3</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">tmp</span><span class="o">=</span><span class="n">tet</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tmp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">tmp</span><span class="p">,</span><span class="n">tet</span><span class="p">])</span>
+            <span class="n">counter3</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="c1">#print(&#39;tmp.shape&#39;,tmp.shape)</span>
+        <span class="n">vol</span><span class="o">=</span><span class="n">obj_volume_6d</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    obtained volume:&#39;</span><span class="p">,</span><span class="n">vol</span><span class="p">,</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">vol</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">vol</span><span class="o">==</span><span class="n">vol2</span><span class="p">):</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">tmp</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">################################################</span>
+            <span class="c1"># 上記の問題点があるため、不要なものを除く必要がある。</span>
+            <span class="c1"># 以下では、tmpにある四面体の集合について、可能な組み合わせ</span>
+            <span class="c1"># のうち正しい体積になるものを見つける。</span>
+            <span class="c1"># 体積が正しいからといって、求めたいものではないは可能性ある。</span>
+            <span class="c1">#</span>
+            <span class="c1"># triangle_commonの中のtrianglenをvrtx1_outと近い順に</span>
+            <span class="c1"># ソートておいた方が早く目的のtetrahedronが見つかるはず。</span>
+            <span class="c1"># 上でソートておいた。</span>
+            <span class="c1">################################################</span>
+            <span class="c1">#print(&#39;len(tmp)&#39;,len(tmp))</span>
+            <span class="n">vol</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">lst</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="p">)))</span>
+            <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">flag</span><span class="o">=</span><span class="mi">0</span>
+                <span class="k">for</span> <span class="n">comb</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span><span class="n">num</span><span class="p">)):</span>
+                    <span class="c1">#print(comb)</span>
+                    <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+                        <span class="n">v</span><span class="o">=</span><span class="n">tetrahedron_volume_6d</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="n">comb</span><span class="p">[</span><span class="n">i1</span><span class="p">]])</span>
+                        <span class="c1">#print(&#39;    &#39;,v)</span>
+                        <span class="n">vol</span><span class="o">=</span><span class="n">add</span><span class="p">(</span><span class="n">vol</span><span class="p">,</span><span class="n">v</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">vol</span><span class="o">==</span><span class="n">vol2</span><span class="p">):</span>
+                        <span class="n">flag</span><span class="o">=</span><span class="mi">1</span>
+                        <span class="k">break</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">pass</span>
+                <span class="k">if</span> <span class="n">flag</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">i1</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                            <span class="n">tmp1</span><span class="o">=</span><span class="n">tmp</span><span class="p">[</span><span class="n">comb</span><span class="p">[</span><span class="n">i1</span><span class="p">]]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">tmp1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">tmp1</span><span class="p">,[</span><span class="n">tmp</span><span class="p">[</span><span class="n">comb</span><span class="p">[</span><span class="n">i1</span><span class="p">]]]])</span>
+                    <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">pass</span>
+            <span class="k">if</span> <span class="n">flag</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">out</span><span class="o">=</span><span class="n">tmp1</span>
+                <span class="n">vol</span><span class="o">=</span><span class="n">obj_volume_6d</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;    obtained volume:&#39;</span><span class="p">,</span><span class="n">vol</span><span class="p">,</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">vol</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;      succeeded.&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;      unsucceeded.&#39;</span><span class="p">)</span>
+                <span class="n">out</span><span class="o">=</span><span class="kc">None</span>
+            <span class="c1">################################################</span>
+            <span class="c1">#                                              #</span>
+            <span class="c1">#                                              #</span>
+            <span class="c1">#                                              #</span>
+            <span class="c1">################################################</span>
+        <span class="k">return</span> <span class="n">out</span>
+    <span class="c1">############################################################</span>
+    <span class="c1">#### N=2の場合。triangle_commonに含まれる三角形の個数で場合分けする。</span>
+    <span class="c1">############################################################</span>
+    <span class="k">elif</span> <span class="n">counter2</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">triangle_common</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;         case 2-1&#39;</span><span class="p">)</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">tetrahedralization_points</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">vrtx1_out</span><span class="p">,</span><span class="n">triangle_common</span><span class="p">]))</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">triangle_common</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;         case 2-2&#39;</span><span class="p">)</span>
+            <span class="n">combination</span><span class="o">=</span><span class="p">[</span>\
+            <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>\
+            <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>\
+            <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="n">tr1</span><span class="o">=</span><span class="n">triangle_common</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">tr2</span><span class="o">=</span><span class="n">triangle_common</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">c1</span> <span class="ow">in</span> <span class="n">combination</span><span class="p">:</span>
+                <span class="n">counter</span><span class="o">=</span><span class="mi">0</span>
+                <span class="k">for</span> <span class="n">c2</span> <span class="ow">in</span> <span class="n">combination</span><span class="p">:</span>
+                    <span class="n">edge1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">tr1</span><span class="p">[</span><span class="n">c1</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span><span class="n">tr1</span><span class="p">[</span><span class="n">c1</span><span class="p">[</span><span class="mi">1</span><span class="p">]]])</span>
+                    <span class="n">edge2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">tr2</span><span class="p">[</span><span class="n">c1</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span><span class="n">tr2</span><span class="p">[</span><span class="n">c1</span><span class="p">[</span><span class="mi">1</span><span class="p">]]])</span>
+                    <span class="n">tmp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">edge1</span><span class="p">,</span><span class="n">edge2</span><span class="p">])</span>
+                    <span class="n">edge_common</span><span class="o">=</span><span class="n">remove_doubling_in_perp_space</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+                        <span class="n">counter</span><span class="o">+=</span><span class="mi">1</span>
+                        <span class="k">break</span>
+                <span class="k">if</span> <span class="n">counter</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="n">beak</span>
+            <span class="n">tet1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">vrtx1_out</span><span class="p">,</span><span class="n">edge_common</span><span class="p">])</span>
+            <span class="n">vola</span><span class="o">=</span><span class="n">obj_volume_6d</span><span class="p">(</span><span class="n">tet1</span><span class="p">)</span>
+            <span class="n">combination</span><span class="o">=</span><span class="p">[</span>\
+            <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>\
+            <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="k">for</span> <span class="n">c1</span> <span class="ow">in</span> <span class="n">combination</span><span class="p">:</span> 
+                <span class="n">tet2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">vrtx1_out</span><span class="p">[</span><span class="n">c1</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span><span class="n">tr1</span><span class="p">])</span>
+                <span class="n">tet3</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">vrtx1_out</span><span class="p">[</span><span class="n">c1</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span><span class="n">tr2</span><span class="p">])</span>
+                <span class="n">tet_tot</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">tet1</span><span class="p">,</span><span class="n">tet2</span><span class="p">,</span><span class="n">tet3</span><span class="p">])</span>
+                <span class="n">vol_tot</span><span class="o">=</span><span class="n">obj_volume_6d</span><span class="p">(</span><span class="n">tet_tot</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">vol_tot</span><span class="o">==</span><span class="n">vol2</span><span class="p">):</span>
+                    <span class="n">out</span><span class="o">=</span><span class="n">tet_tot</span>
+                    <span class="k">break</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">triangle_common</span><span class="p">)</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+           <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;         case 2-3&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">triangle_common</span><span class="p">)</span><span class="o">==</span><span class="mi">4</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;         case 2-4&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;         case 2-X&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span>
+    <span class="c1">############################################################</span>
+    <span class="c1">#### N=3の場合。triangle_commonに含まれる三角形の個数で場合分けする。</span>
+    <span class="c1">############################################################</span>
+    <span class="k">elif</span> <span class="n">counter2</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">triangle_common</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;         case 3-1&#39;</span><span class="p">)</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">tetrahedralization_points</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">vrtx1_out</span><span class="p">,</span><span class="n">triangle_common</span><span class="p">]))</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">triangle_common</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;         case 3-2&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">triangle_common</span><span class="p">)</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;         case 3-3&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">triangle_common</span><span class="p">)</span><span class="o">==</span><span class="mi">4</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;         case 3-4&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;         case 3-X&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span>
+    <span class="c1">############################################################</span>
+    <span class="c1">#### N=4の場合。triangle_commonに含まれる三角形の個数で場合分けする。</span>
+    <span class="c1">############################################################</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">triangle_common</span><span class="p">)</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;         case 4-3&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">triangle_common</span><span class="p">)</span><span class="o">==</span><span class="mi">4</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;         case 4-4&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;         case 4-X&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="tetrahedron_not_obj_2">
+<a class="viewcode-back" href="../../../pyqcstrc.ico2.html#pyqcstrc.ico2.intsct.tetrahedron_not_obj_2">[docs]</a>
+<span class="k">def</span> <span class="nf">tetrahedron_not_obj_2</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">],</span> <span class="n">obj</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Operate tetrahedron not object = tetrahedron not (tetrahedron and object).</span>
+<span class="sd">    </span>
+<span class="sd">    tetrahedronからobjを引いた物体の表面にある三角形を求める（本当は四面体を求めたいが難しい）</span>
+<span class="sd">    アルゴリズム</span>
+<span class="sd">    1. tetrahedronとobjの共通部分Aを求める。</span>
+<span class="sd">    2. A表面の三角形T1を求める</span>
+<span class="sd">    3. objの表面の三角形T2を求める。</span>
+<span class="sd">    4. T1のうち、T2上にあるものT1&#39;を得る。T1&#39;は求めたい差分tetrahedron NOT objの表面の一部になる。</span>
+<span class="sd">    5. T1のうち、T2の外側にあるものとT1&#39;を合わせる。</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tetrahedron: array, (1, 4, 6, 3)</span>
+<span class="sd">        Tetrahedron to be subtracted.</span>
+<span class="sd">    obj: array, (number of tetrahedra, 4, 6, 3)</span>
+<span class="sd">        Object that subtracts the tetrahedron.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    obj: array, (number of tetrahedra, 4, 6, 3)</span>
+<span class="sd">    </span>
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    Under development.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">vol0</span><span class="o">=</span><span class="n">obj_volume_6d</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;tetrahedron volume:&#39;</span><span class="p">,</span><span class="n">vol0</span><span class="p">,</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">vol0</span><span class="p">))</span>
+    
+    <span class="c1"># 1. tetrahedronとobjの共通部分Aを求める。</span>
+    <span class="c1"># intersection between tetrahedron and obj</span>
+    <span class="n">common</span><span class="o">=</span><span class="n">intersection_two_obj_1</span><span class="p">(</span><span class="n">tetrahedron</span><span class="p">,</span><span class="n">obj</span><span class="p">,</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;standard&#39;</span><span class="p">)</span>
+    <span class="n">vol1</span><span class="o">=</span><span class="n">obj_volume_6d</span><span class="p">(</span><span class="n">common</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;common volume:&#39;</span><span class="p">,</span><span class="n">vol1</span><span class="p">,</span><span class="n">numeric_value</span><span class="p">(</span><span class="n">vol1</span><span class="p">))</span>
+    
+    <span class="c1"># 2. A表面の三角形T1を求める</span>
+    <span class="n">surface_obj2</span><span class="o">=</span><span class="n">generator_surface_1</span><span class="p">(</span><span class="n">common</span><span class="p">)</span>
+    
+    <span class="c1"># 3. objの表面の三角形T2を求める。</span>
+    <span class="c1"># surface of obj</span>
+    <span class="n">surface_obj3</span><span class="o">=</span><span class="n">generator_surface_1</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    
+    <span class="c1"># 4. T1のうち、T2上にあるものT1&#39;を得る。T1&#39;は求めたい差分tetrahedron NOT objの表面の一部になる。</span>
+    <span class="c1"># get triangles of common part which are on the surface of obj3</span>
+    <span class="n">counter2</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">triangle2</span> <span class="ow">in</span> <span class="n">surface_obj2</span><span class="p">:</span>
+        <span class="n">counter1</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">vrtx2</span> <span class="ow">in</span> <span class="n">triangle2</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">triangle3</span> <span class="ow">in</span> <span class="n">surface_obj3</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">on_out_surface</span><span class="p">(</span><span class="n">vrtx2</span><span class="p">,</span><span class="n">triangle3</span><span class="p">):</span> <span class="c1"># on</span>
+                    <span class="n">counter1</span><span class="o">+=</span><span class="mi">1</span>
+                    <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">pass</span>
+        <span class="k">if</span> <span class="n">counter1</span><span class="o">==</span><span class="mi">4</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">counter2</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">tmp</span><span class="o">=</span><span class="n">triangle2</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tmp</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vappend</span><span class="p">([</span><span class="n">tmp</span><span class="p">,</span><span class="n">triangle2</span><span class="p">])</span>
+            <span class="n">counter2</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+    
+    <span class="c1"># 5. T1のうち、T2の外側にあるものとT1&#39;を合わせる。</span>
+    <span class="c1">###</span>
+    <span class="c1">### WIP</span>
+    <span class="c1">###</span>
+    <span class="k">return</span> </div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    
+    <span class="c1"># test</span>
+    
+    <span class="kn">import</span> <span class="nn">random</span>
+    
+    <span class="k">def</span> <span class="nf">generate_random_value</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; generate value in TAU-style</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nmax</span><span class="o">=</span><span class="mi">10</span>
+        <span class="n">v</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">v</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="o">-</span><span class="n">nmax</span><span class="p">,</span><span class="n">nmax</span><span class="p">)</span> <span class="c1"># a and b in (a+b*TAU)/c.</span>
+        <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">nmax</span><span class="p">)</span> <span class="c1"># c in (a+b*TAU)/c.</span>
+        <span class="k">return</span> <span class="n">v</span>
+        
+    <span class="k">def</span> <span class="nf">generate_random_vector</span><span class="p">(</span><span class="n">ndim</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; generate ndim vector in TAU-style</span>
+<span class="sd">        ndim: dimension of vectors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nmax</span><span class="o">=</span><span class="mi">10</span>
+        <span class="n">v</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">ndim</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="p">):</span>
+            <span class="n">v</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">generate_random_value</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">v</span>
+        
+    <span class="k">def</span> <span class="nf">generate_random_vectors</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">ndim</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        num: number of generated vectors.</span>
+<span class="sd">        ndim: dimension of vectors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">v</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="n">ndim</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i1</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">v</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">generate_random_vector</span><span class="p">(</span><span class="n">ndim</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span>
+    
+    <span class="k">def</span> <span class="nf">generate_random_tetrahedron</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">generate_random_vectors</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Tsunetomo Yamada.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
