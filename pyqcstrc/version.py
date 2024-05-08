@@ -8,6 +8,6 @@
 __authors__   = 'Tsunetomo Yamada'
 __license__   = 'MIT'
 __copyright__ = 'Tsunetomo Yamada'
-__date__      = "2023/02/24"
+__date__      = "2024/05/08"
 __docformat__ = 'restructuredtext'
-__version__   = '0.0.1a12'
+__version__   = '0.0.2a01'
