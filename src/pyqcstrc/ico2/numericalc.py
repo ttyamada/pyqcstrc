@@ -81,7 +81,6 @@ def coplanar_check_numeric(pns: NDArray[np.float_],num_iteration: int=5) -> bool
     else:
         return True
 
-
 def point_on_segment(point: NDArray[np.int64], line_segment: NDArray[np.int64]) -> bool:
     """judge whether a point is on a line segment, A-B, or not.
     
@@ -160,7 +159,6 @@ def on_out_surface(point: NDArray[np.int64], triangle: NDArray[np.int64]) -> boo
         return True
     else:
         return False
-
 
 def numeric_value(t: NDArray[np.int64]) -> float:
     """Numeric value of a TAU-style value, a.
