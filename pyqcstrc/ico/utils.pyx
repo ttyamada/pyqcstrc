@@ -888,11 +888,10 @@ cpdef np.ndarray remove_doubling_dim4(np.ndarray[DTYPE_int_t, ndim=4] obj):
     #tmp3b=remove_doubling_dim3(tmp3a)
     return remove_doubling_dim3(tmp3a)
 
-# New version, 20240429
+"""
 @cython.boundscheck(False)
 @cython.wraparound(False)
 cpdef np.ndarray remove_doubling_dim3(np.ndarray[DTYPE_int_t, ndim=3] obj):
-    """
     cdef int i,j,counter,num
     cdef np.ndarray[DTYPE_int_t,ndim=3] tmp3a
     tmp3a=np.array([obj[0]])
@@ -910,8 +909,12 @@ cpdef np.ndarray remove_doubling_dim3(np.ndarray[DTYPE_int_t, ndim=3] obj):
         else:
             pass
     return tmp3a
-    """
-    # New version, 20240429
+"""
+
+# New version, 20240429
+@cython.boundscheck(False)
+@cython.wraparound(False)
+cpdef np.ndarray remove_doubling_dim3(np.ndarray[DTYPE_int_t, ndim=3] obj):
     return np.unique(obj,axis=0)
 
 @cython.boundscheck(False)
@@ -925,12 +928,10 @@ cpdef np.ndarray remove_doubling_dim4_in_perp_space(np.ndarray[DTYPE_int_t, ndim
     tmp3b=remove_doubling_dim3_in_perp_space(tmp3a)
     return tmp3b
 
-
+"""
 @cython.boundscheck(False)
 @cython.wraparound(False)
 cpdef np.ndarray remove_doubling_dim3_in_perp_space(np.ndarray[DTYPE_int_t, ndim=3] obj):
-    # remove 6d coordinates which is doubled in perpendicular space
-    """
     cdef int i1,i2,counter1,num
     cdef np.ndarray[DTYPE_int_t,ndim=1] v4,v5,v6
     cdef np.ndarray[DTYPE_int_t,ndim=3] tmp3a,tmp3b
@@ -959,8 +960,14 @@ cpdef np.ndarray remove_doubling_dim3_in_perp_space(np.ndarray[DTYPE_int_t, ndim
         return tmp3b
     else:
         return obj
+"""
+
+# New version, 20240429
+@cython.boundscheck(False)
+@cython.wraparound(False)
+cpdef np.ndarray remove_doubling_dim3_in_perp_space(np.ndarray[DTYPE_int_t, ndim=3] obj):
+    """remove 6d coordinates which is doubled in perpendicular space
     """
-    # New version, 20240429
     cdef int i1,num
     cdef np.ndarray[DTYPE_int_t,ndim=1] v4,v5,v6
     cdef np.ndarray[DTYPE_int_t,ndim=2] tmp2
