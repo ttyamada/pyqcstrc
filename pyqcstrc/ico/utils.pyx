@@ -888,7 +888,6 @@ cpdef np.ndarray remove_doubling_dim4(np.ndarray[DTYPE_int_t, ndim=4] obj):
     #tmp3b=remove_doubling_dim3(tmp3a)
     return remove_doubling_dim3(tmp3a)
 
-"""
 @cython.boundscheck(False)
 @cython.wraparound(False)
 cpdef np.ndarray remove_doubling_dim3(np.ndarray[DTYPE_int_t, ndim=3] obj):
@@ -909,13 +908,14 @@ cpdef np.ndarray remove_doubling_dim3(np.ndarray[DTYPE_int_t, ndim=3] obj):
         else:
             pass
     return tmp3a
-"""
 
-# New version, 20240429
+"""
+# New version, 20240429, TO BE CHECKED
 @cython.boundscheck(False)
 @cython.wraparound(False)
 cpdef np.ndarray remove_doubling_dim3(np.ndarray[DTYPE_int_t, ndim=3] obj):
     return np.unique(obj,axis=0)
+"""
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -928,7 +928,6 @@ cpdef np.ndarray remove_doubling_dim4_in_perp_space(np.ndarray[DTYPE_int_t, ndim
     tmp3b=remove_doubling_dim3_in_perp_space(tmp3a)
     return tmp3b
 
-"""
 @cython.boundscheck(False)
 @cython.wraparound(False)
 cpdef np.ndarray remove_doubling_dim3_in_perp_space(np.ndarray[DTYPE_int_t, ndim=3] obj):
@@ -960,14 +959,14 @@ cpdef np.ndarray remove_doubling_dim3_in_perp_space(np.ndarray[DTYPE_int_t, ndim
         return tmp3b
     else:
         return obj
-"""
 
-# New version, 20240429
+# New version, 20240429, TO BE CHECKED
+"""
 @cython.boundscheck(False)
 @cython.wraparound(False)
 cpdef np.ndarray remove_doubling_dim3_in_perp_space(np.ndarray[DTYPE_int_t, ndim=3] obj):
-    """remove 6d coordinates which is doubled in perpendicular space
-    """
+    #remove 6d coordinates which is doubled in perpendicular space
+    
     cdef int i1,num
     cdef np.ndarray[DTYPE_int_t,ndim=1] v4,v5,v6
     cdef np.ndarray[DTYPE_int_t,ndim=2] tmp2
@@ -978,10 +977,10 @@ cpdef np.ndarray remove_doubling_dim3_in_perp_space(np.ndarray[DTYPE_int_t, ndim
     if num>1:
         tmp3=np.zeros((num,3,3))
         for i1 in range(num):
-            v4,v5,v6=projection3(obj[0][0],obj[0][1],obj[0][2],obj[0][3],obj[0][4],obj[0][5])
+            v4,v5,v6=projection3(obj[i1][0],obj[i1][1],obj[i1][2],obj[i1][3],obj[i1][4],obj[i1][5])
             tmp2=np.array([v4,v5,v6]) # perpendicular components
-            tmp3[i]=projection3(tmp2)
-        b=np.unique(a,return_index=True,axis=0)[1]
+            tmp3[i1]=projection3(tmp2[0],tmp2[1],tmp2[2],tmp2[3],tmp2[4],tmp2[5])
+        b=np.unique(tmp3,return_index=True,axis=0)[1]
         num=len(b)
         tmp3=np.zeros((num,6,3))
         for i in range(num):
@@ -989,6 +988,7 @@ cpdef np.ndarray remove_doubling_dim3_in_perp_space(np.ndarray[DTYPE_int_t, ndim
         return tmp3
     else:
         return obj
+"""
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
