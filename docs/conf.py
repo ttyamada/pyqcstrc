@@ -42,7 +42,7 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.githubpages',
     'sphinx.ext.todo',
-    'sphinx.ext.viewcode',
+    #'sphinx.ext.viewcode',
     #'sphinx.ext.graphviz',
     #'sphinx.ext.inheritance_diagram',
     'sphinx.ext.napoleon',
