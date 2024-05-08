@@ -92,7 +92,7 @@ if __name__ == "__main__":
     print('    object_subtraction starts')
     start=time.time()
     ###
-    a=tod.subtraction(strt_aysmmetric,common,verbose=0)
+    a=tod.subtraction(strt_aysmmetric,common,verbose=2)
     volume=utils.obj_volume_6d(a)
     print('     volume=',volume)
     #a=tod.object_subtraction(strt_aysmmetric[0].reshape(1,4,6,3),common_simple,flag=1)
