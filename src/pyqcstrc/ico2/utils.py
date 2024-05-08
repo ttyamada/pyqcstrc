@@ -198,7 +198,7 @@ def remove_doubling_in_perp_space(vts: NDArray[np.int64]) -> NDArray[np.int64]:
 #----------------------------
 # Surface, trianges, and edges
 #
-# コメント：整理する必要あり
+# Comment：Need to be reorganised.
 #----------------------------
 def generator_surface_1(obj: NDArray[np.int64], verbose: int=0) -> NDArray[np.int64]:
     """Generate triangles of the object's surface.
