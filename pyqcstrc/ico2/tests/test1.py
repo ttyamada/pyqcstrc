@@ -20,7 +20,7 @@ except ImportError:
 if __name__ == "__main__":
     
     opath='.'
-    xyzpath='../../../../pyqcstrc/xyz'
+    xyzpath='../../xyz'
     #--------------
     # Object A
     #--------------
