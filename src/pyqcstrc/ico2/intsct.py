@@ -917,9 +917,10 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
     triangle_common=tmp
     #print('triangle_common.shape',triangle_common.shape)
     
+    # 不要
     # vertices of common part which are on the surface of obj
-    vertx_common=remove_doubling_in_perp_space(triangle_common)
-    vertx_common=remove_doubling_in_perp_space(vertx_common)
+    #vertx_common=remove_doubling_in_perp_space(triangle_common)
+    #vertx_common=remove_doubling_in_perp_space(vertx_common)
     
     # get vertices of tetrahedron which are NOT inside obj
     counter2=0
@@ -956,6 +957,37 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
         if verbose>0:
             print('         case 1')
         counter3=0
+        
+        
+        
+        # triangle_commonにある各三角形の重心を求め、vrtx1_outからの距離が近い順にソートする。
+        num=len(triangle_common)
+        #print('len(triangle_common)',num)
+        dd=np.zeros(num,dtype=np.float_)
+        i1=0
+        for triangle in triangle_common:
+            vt=centroid(triangle)
+            #print('vt.shape',vt.shape)
+            #print('vt',vt)
+            vn=get_internal_component_numerical(vt)
+            #print('vrtx1_out.shape',vrtx1_out.shape)
+            #print('vrtx1_out',vrtx1_out)
+            vn_out=get_internal_component_numerical(vrtx1_out.reshape(6,3))
+            vn=vn-vn_out
+            #print('vn',vn)
+            dd[i1]=np.sqrt(vn[0]**2+vn[1]**2+vn[2]**2)
+            i1+=1
+        #print('dd',dd)
+        indx_dd=np.argsort(dd)
+        #print('indx_dd',indx_dd)
+        tmp=np.zeros((num,3,6,3),dtype=np.int64)
+        for i1 in range(len(indx_dd)):
+            tmp[i1]=triangle_common[indx_dd[i1]]
+        triangle_common=tmp
+        
+        
+        
+        print('triangle_common.shape',triangle_common.shape)
         for triangle in triangle_common:
             #print('triangle.shape',triangle.shape)
             tet=np.vstack([vrtx1_out,triangle]).reshape(1,4,6,3)
@@ -965,7 +997,7 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
             else:
                 tmp=np.vstack([tmp,tet])
             counter3+=1
-        #print('out.shape',out.shape)
+        print('tmp.shape',tmp.shape)
         vol=obj_volume_6d(tmp)
         if verbose>1:
             print('    obtained volume:',vol,numeric_value(vol))
@@ -977,7 +1009,12 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
             # 以下では、tmpにある四面体の集合について、可能な組み合わせ
             # のうち正しい体積になるものを見つける。
             # 体積が正しいからといって、求めたいものではないは可能性ある。
+            #
+            # 時間がかかる可能性あるので工夫が必要。
+            # triangle_commonの中のtrianglenをvrtx1_outと近い順に
+            # ソートておいた方が早く目的のtetrahedronが見つかるはず。
             ################################################
+            print('len(tmp)',len(tmp))
             vol=np.array([0,0,1])
             lst=list(range(0,len(tmp)))
             for num in range(1,len(tmp)-1):
