@@ -804,7 +804,7 @@ def subtraction_two_obj(obj1: NDArray[np.int64], obj2: NDArray[np.int64], verbos
         print('      generating surface_obj2')
         start=time.time()
     #
-    surface_obj2=generator_surface_1(obj2)
+    surface_obj2=generator_surface_1(obj2,verbose-1)
     #
     if verbose>0:
         end=time.time()
@@ -816,26 +816,29 @@ def subtraction_two_obj(obj1: NDArray[np.int64], obj2: NDArray[np.int64], verbos
         start=time.time()
     #
     
+    flag=0
     out=None
     counter1=0
     for tetrahedron in obj1:
         if verbose>0:
             print('       %d-th tetrahedron in obj1'%(counter1))
-        a=tetrahedron_not_obj_1(tetrahedron.reshape(1,4,6,3),obj2,surface_obj2,verbose-1)
+        a=tetrahedron_not_obj_1(tetrahedron.reshape(1,4,6,3),obj2,surface_obj2,verbose)
         if np.all(a==None):
-            pass
+            out=None
+            flag=1
+            break
         else:
             if counter1==0:
                 out=a
             else:
                 out=np.vstack([out,a])
         counter1+=1
-    #
-    if verbose>0:
-        end=time.time()
-        time_diff=end-start
-        print('         ends in %4.3f sec'%time_diff)
     
+    if flag==0:
+        if verbose>0:
+            end=time.time()
+            time_diff=end-start
+            print('         ends in %4.3f sec'%time_diff)
     return out
 
 def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64], surface_obj: NDArray[np.int64], verbose: int=0) -> NDArray[np.int64]:
@@ -873,7 +876,7 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
     #end=time.time()
     #time_diff=end-start
     #print('          ends in %4.3f sec'%time_diff)
-    surface_common=generator_surface_1(common)
+    surface_common=generator_surface_1(common,verbose-1)
     #vertx_common=remove_doubling_in_perp_space(surface_common)
     
     vol0=obj_volume_6d(tetrahedron)
@@ -917,10 +920,6 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
     triangle_common=tmp
     #print('triangle_common.shape',triangle_common.shape)
     
-    # 不要
-    # vertices of common part which are on the surface of obj
-    #vertx_common=remove_doubling_in_perp_space(triangle_common)
-    #vertx_common=remove_doubling_in_perp_space(vertx_common)
     
     # get vertices of tetrahedron which are NOT inside obj
     counter2=0
@@ -945,9 +944,9 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
             pass
     vrtx1_out=tmp
     #print('vrtx1_out.shape',vrtx1_out.shape)
-    #
-    #
-    #
+    
+    
+    
     # 四面体の4つの頂点のうちobjの外側にある頂点vrtx1_outの個数Nは、1,2,3,4。
     # 以下、それぞれの場合について考える。
     ############################################################ 
@@ -959,8 +958,10 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
         counter3=0
         
         
-        
-        # triangle_commonにある各三角形の重心を求め、vrtx1_outからの距離が近い順にソートする。
+        #---------------------------------------
+        # triangle_commonにある各三角形の重心を求め、
+        # vrtx1_outからの距離が近い順にソートする。
+        #---------------------------------------
         num=len(triangle_common)
         #print('len(triangle_common)',num)
         dd=np.zeros(num,dtype=np.float_)
@@ -987,7 +988,7 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
         
         
         
-        print('triangle_common.shape',triangle_common.shape)
+        #print('triangle_common.shape',triangle_common.shape)
         for triangle in triangle_common:
             #print('triangle.shape',triangle.shape)
             tet=np.vstack([vrtx1_out,triangle]).reshape(1,4,6,3)
@@ -997,7 +998,7 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
             else:
                 tmp=np.vstack([tmp,tet])
             counter3+=1
-        print('tmp.shape',tmp.shape)
+        #print('tmp.shape',tmp.shape)
         vol=obj_volume_6d(tmp)
         if verbose>1:
             print('    obtained volume:',vol,numeric_value(vol))
@@ -1010,11 +1011,11 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
             # のうち正しい体積になるものを見つける。
             # 体積が正しいからといって、求めたいものではないは可能性ある。
             #
-            # 時間がかかる可能性あるので工夫が必要。
             # triangle_commonの中のtrianglenをvrtx1_outと近い順に
             # ソートておいた方が早く目的のtetrahedronが見つかるはず。
+            # 上でソートておいた。
             ################################################
-            print('len(tmp)',len(tmp))
+            #print('len(tmp)',len(tmp))
             vol=np.array([0,0,1])
             lst=list(range(0,len(tmp)))
             for num in range(1,len(tmp)-1):
