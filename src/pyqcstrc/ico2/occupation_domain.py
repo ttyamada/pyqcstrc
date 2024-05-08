@@ -1111,7 +1111,7 @@ def read_xyz(path,basename,select='tetrahedron',verbose=0):
     elif select == 'vertex':
         return tmp.reshape(int(num),6,3)
 
-def simplification(obj):
+def simplification(obj,verbose=0):
     """
     Simplification of occupation domains.
     
@@ -1131,7 +1131,8 @@ def simplification(obj):
     
     """
     if np.all(obj==None):
-        print('    zero volume')
+        if verbose>0:
+            print('    zero volume')
         return 
     else:
         vol0=utils.obj_volume_6d(obj)
@@ -1139,11 +1140,13 @@ def simplification(obj):
         obj_tmp=intsct.intersection_two_obj_1(obj_convex_hull,obj)
         vol1=utils.obj_volume_6d(obj_tmp)
         if np.all(vol0==vol1):
-            print('      simplification succeed:')
-            print('      num of tetrahedra: %d --> %d'%(len(obj),len(obj_convex_hull)))
+            if verbose>0:
+                print('      simplification succeed:')
+                print('      num of tetrahedra: %d --> %d'%(len(obj),len(obj_convex_hull)))
             return obj_convex_hull
         else:
-            print('      simplification: fail')
+            if verbose>0:
+                print('      simplification: fail')
             return obj
 
 def generate_border_edges(obj):
