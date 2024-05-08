@@ -47,19 +47,19 @@ if __name__ == "__main__":
     #--------------
     # A AND B = C
     #--------------
-    print('    intersection starts')
+    print('Intersection starts')
     start=time.time()
     ###
     common=tod.intersection(strt_aysmmetric,strt_sym_pos1)
     ###
     end=time.time()
     time_diff=end-start
-    print('                 ends in %4.3f sec'%time_diff)
+    print('     ends in %4.3f sec'%time_diff)
     
     #--------------
     # Simplification
     #--------------
-    print('    simplification starts')
+    print('Simplification starts')
     start=time.time()
     ###
     common_simple=od.simplification(common)
@@ -67,12 +67,12 @@ if __name__ == "__main__":
     ###
     end=time.time()
     time_diff=end-start
-    print('                 ends in %4.3f sec'%time_diff)
+    print('     ends in %4.3f sec'%time_diff)
     
     #--------------
     # A NOT B
     #--------------
-    print('    subtraction starts')
+    print('Subtraction starts')
     start=time.time()
     ###
     a=tod.subtraction(strt_aysmmetric,strt_sym_pos1,verbose=0)
@@ -84,15 +84,15 @@ if __name__ == "__main__":
     ###
     end=time.time()
     time_diff=end-start
-    print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
+    print('     ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
     
     #---------------------------
     # A NOT B = A NOT C
     #---------------------------
-    print('    object_subtraction starts')
+    print('Subtraction starts')
     start=time.time()
     ###
-    a=tod.subtraction(strt_aysmmetric,common,verbose=4)
+    a=tod.subtraction(strt_aysmmetric,common,verbose=0)
     volume=utils.obj_volume_6d(a)
     print('     volume=',volume)
     #a=tod.object_subtraction(strt_aysmmetric[0].reshape(1,4,6,3),common_simple,flag=1)
@@ -101,7 +101,7 @@ if __name__ == "__main__":
     ###
     end=time.time()
     time_diff=end-start
-    print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
+    print('     ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
     
     
     
