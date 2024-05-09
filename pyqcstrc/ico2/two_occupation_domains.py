@@ -21,7 +21,7 @@ except ImportError:
 
 TAU=(1+np.sqrt(5))/2.0
 
-def intersection(obj1,obj2,kind=None):
+def intersection(obj1,obj2,kind=None,verbose=0):
     """
     Return an intersection between two objects: obj1 AND obj2.
     
@@ -52,15 +52,17 @@ def intersection(obj1,obj2,kind=None):
     if obj1.ndim==4 and obj2.ndim==4:
         common=intsct.intersection_two_obj_1(obj1,obj2,kind)
         if np.all(common==None):
-            print('no common part')
+            if verbose>0:
+                print('no common part')
             return 
         else:
             return common
     else:
-        print('incorrect ndim')
+        if verbose>0:
+            print('incorrect ndim')
         return 
 
-def intersection_convex(obj1,obj2):
+def intersection_convex(obj1,obj2,verbose=0):
     """
     Intersection of two occupation domains projected onto perp space: obj1 AND obj2.
     The common part forms convex hull.
@@ -81,12 +83,14 @@ def intersection_convex(obj1,obj2):
     if obj1.ndim==4 and obj2.ndim==4:
         common=intsct.intersection_two_obj_convex(obj1,obj2)
         if np.all(common==None):
-            print('no common part')
+            if verbose>0:
+                print('no common part')
             return 
         else:
             return common
     else:
-        print('incorrect ndim')
+        if verbose>0:
+            print('incorrect ndim')
         return
         
 def subtraction(obj1,obj2,verbose=0):
@@ -110,5 +114,6 @@ def subtraction(obj1,obj2,verbose=0):
     if obj1.ndim==4 and obj2.ndim==4:
         return intsct.subtraction_two_obj(obj1,obj2,verbose)
     else:
-        print('incorrect ndim')
+        if verbose>0:
+            print('incorrect ndim')
         return
