@@ -1,8 +1,5 @@
 # PyQCstrc: python library for quasi-crystal structure
 
-- Github: <https://github.com/ttyamada/pyqcstrc>
-- Document: <https://www.rs.tus.ac.jp/tsunetomo.yamada/pyqcstrc/index.html>
-- 
 ### Installation
 
 via PIP:
@@ -26,15 +23,17 @@ T. Yamada
 J. Appl. Crystallogr., 54(4) (2021)
 https://doi.org/10.1107/S1600576721005951
 
+
+## Documentation
+
+Documentation can be found on [ReadTheDocs](https://www.rs.tus.ac.jp/tsunetomo.yamada/pyqcstrc/index.html).
+
+
 ### Requirements
 
 - Cython>=0.29.21
 - numpy>=1.20.0
 - scipy>=1.6.0
-
-### Documents
-
-https://www.rs.tus.ac.jp/tsunetomo.yamada/pyqcstrc/index.html
 
 ### License
 PyQCstrc is released under a BSD 3-clause license.
