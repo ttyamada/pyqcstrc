@@ -1082,6 +1082,17 @@ def breps(tetrahedron):
     """
     return
 
+# MICS
+def middle_position(pos1,pos2):
+    for i1 in range(6):
+        v=add(pos1[i1],pos2[i1])
+        v=mul(v,np.array([1,0,2]))
+        if i1!=0:
+            out=np.vstack([tmp2,v])
+        else:
+            out=v.reshape(1,3)
+    return out
+
 if __name__ == '__main__':
     
     # test
