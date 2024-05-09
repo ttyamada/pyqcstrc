@@ -111,7 +111,7 @@ setup(
     url = "https://www.rs.tus.ac.jp/tsunetomo.yamada/pyqcstrc",
     #url = "https://github.com/ttyamada/PyQCstrc",
     #
-    # Comment-out when including ico and dode
+    # Comment out when including ico and dode
     #ext_modules = extensions,
     #
     #
@@ -119,7 +119,7 @@ setup(
     packages = [
         'pyqcstrc/ico2',
         #
-        # Comment-out when including ico and dode
+        # Comment out when including ico and dode
         #'pyqcstrc/ico',
         #'pyqcstrc/dode',
         #
