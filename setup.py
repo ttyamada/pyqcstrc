@@ -109,7 +109,7 @@ setup(
     author='Tsunetomo Yamada',
     author_email='tsunetomo.yamada@rs.tus.ac.jp',
     url = "https://www.rs.tus.ac.jp/tsunetomo.yamada/pyqcstrc",
-    #url = "https://github.com/ttyamada/PyQCstrc",
+    url = "https://github.com/ttyamada/PyQCstrc",
     ext_modules = extensions,
     #packages=find_packages(),
     packages = [
