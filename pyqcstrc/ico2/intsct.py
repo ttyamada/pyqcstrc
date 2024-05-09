@@ -508,7 +508,7 @@ def intersection_two_tetrahedron_4(tetrahedron_1: NDArray[np.int64], tetrahedron
     else:
         return 
 
-def intersection_two_obj_1(obj1,obj2,kind=None):
+def intersection_two_obj_1(obj1: NDArray[np.int64],obj2: NDArray[np.int64],kind=None,verbose: int=0) -> NDArray[np.int64]:
     """
     Return an intersection between two objects.
     
@@ -534,6 +534,9 @@ def intersection_two_obj_1(obj1,obj2,kind=None):
     Output from 'simple' intersection is simpler but may cause a problem when generating its surface triangles.
     
     """
+    
+    if verbose>0:
+        print("       start: intersection_two_obj_1()")
     
     cent2=centroid_obj(obj2)
     dd2=ball_radius_obj(obj2,cent2)
@@ -638,13 +641,30 @@ def intersection_two_obj_1(obj1,obj2,kind=None):
     else:
         return 
 
-def intersection_two_obj_convex(obj1: NDArray[np.int64], obj2: NDArray[np.int64], vervose: int) -> NDArray[np.int64]:
+def intersection_two_obj_convex(obj1: NDArray[np.int64], obj2: NDArray[np.int64], verbose: int=0) -> NDArray[np.int64]:
     """
-    # This is very simple but work correctly only when each subdivided 
-    # three ODs (i.e part part, ODA and ODB) are able to define as a
-    # set of tetrahedra.
+    Return an intersection between two objects.
+    
+    Parameters
+    ----------
+    obj1 : ndarray
+        a set of tetrahedra to be intersected with obj2.
+    obj2 : ndarray
+        a set of tetrahedra to be intersected with obj1.
+    kind : {'standard', 'simple'}, optional
+        The default is 'standard'. 
+    
+    Returns
+    -------
+    intersection between obj1 and obj2 : ndarray
+        Array of the same type and shape as `obj1` and `obj2`.
+    
+    Notes
+    -----
+    
+    Both obj1 and obj2 have to be convex hull.
     """
-    if vervose>0:
+    if verbose>0:
         print("       start: intersection_two_obj_convex()")
     
     obj1_surf=generator_surface_1(obj1)
@@ -652,7 +672,7 @@ def intersection_two_obj_convex(obj1: NDArray[np.int64], obj2: NDArray[np.int64]
     obj1_edge=generator_unique_edges(obj1_surf)
     obj2_edge=generator_unique_edges(obj2_surf)
     
-    if vervose>0:
+    if verbose>1:
         print("         num. of unique triangles in obj1:",len(obj1_surf))
         print("         num. of unique triangles in obj2:",len(obj2_surf))
         print("         num. of unique deges in obj1:",len(obj1_edge))
@@ -756,7 +776,8 @@ def intersection_two_obj_convex(obj1: NDArray[np.int64], obj2: NDArray[np.int64]
             points=remove_doubling_in_perp_space(points)
             common=tetrahedralization_points(points)
             if np.all(common==None):
-                print('no common part')
+                if verbose>0:
+                    print('no common part')
                 return 
             else:
                 return common
@@ -782,23 +803,6 @@ def subtraction_two_obj(obj1: NDArray[np.int64], obj2: NDArray[np.int64], verbos
     obj: array, (number of tetrahedra, 4, 6, 3)
     
     """
-    
-    #def simplification(obj):
-    #    obj1=generate_convex_hull(obj)
-    #    obj2=intersection_two_obj_1(obj1,obj)
-    #    v0=obj_volume_6d(obj)
-    #    v1=obj_volume_6d(obj2)
-    #    if np.all(v0==v1):
-    #        return obj1
-    #    else:
-    #        return obj
-    #
-    #if flag==0:
-    #    obj1=simplification(obj1)
-    #    obj2=simplification(obj2)
-    #else:
-    #    pass
-    
     
     if verbose>0:
         print('      generating surface_obj2')
