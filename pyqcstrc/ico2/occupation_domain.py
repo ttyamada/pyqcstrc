@@ -1552,7 +1552,37 @@ def write_podatm(obj, position, vlist, path='.', basename='tmp', shift=[0.0,0.0,
 
 
 
-
+def asymmetric(symmetric_obj, position, vecs):
+    """
+    Asymmetric part of occupation domain.
+    
+    Args:
+        symmetric_obj (numpy.ndarray):
+            Occupation domain of which the asymmetric part is calculated.
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+        position (numpy.ndarray):
+            6d coordinate of the site of which the occupation domain centres.
+            The shape is (6,3)
+        vecs (numpy.ndarray):
+            Three vectors that defines the asymmetric part.
+            The shape is (3,6,3)
+    
+    Returns:
+        Asymmetric part of the occupation domains (numpy.ndarray):
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+    """
+    v0 = np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
+    vecs = math1.mul_vectors(vecs,np.array([5,0,1]))
+    # vecs multiplied by [a,b,c], where [a,b,c]=(a+TAU*b)/c. 
+    # [a,b,c] has to be defined so that the tetrahedron whose vertices are defined 
+    # by v0, and vecs covers the asymmetric unit of the ocuppation domains.
+    # (default) [a,b,c]=[5,0,1].
+    aum = np.append(v0,vecs).reshape(1,4,6,3)
+    aum = shift(aum,position)
+    od_asym = intsct.intersection_two_obj_1(symmetric_obj,aum)
+    
+    return od_asym
+    
 if __name__ == "__main__":
     
     # import asymmetric part of STRT OD(occupation domain) located at origin,0,0,0,0,0,0.
