@@ -44,4 +44,4 @@ Documentation can be found on [Docs](https://www.rs.tus.ac.jp/tsunetomo.yamada/p
 - scipy>=1.6.0
 
 ### License
-PyQCstrc is released under a BSD 3-clause license.
+PyQCstrc is released under a [MIT license](https://opensource.org/licenses/mit-license.php).
