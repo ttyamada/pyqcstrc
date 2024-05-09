@@ -24,7 +24,7 @@ def add(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     
     Returns
     -------
-    float
+    array
     """
     c1=a[0]*b[2]+b[0]*a[2]
     c2=a[1]*b[2]+b[1]*a[2]
@@ -52,7 +52,7 @@ def mul(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     
     Returns
     -------
-    float
+    array
     """
     c1=a[0]*b[0]+a[1]*b[1]
     c2=a[0]*b[1]+a[1]*b[0]+a[1]*b[1]
@@ -80,7 +80,7 @@ def sub(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     
     Returns
     -------
-    float
+    array
     """
     c=np.array([-1,0,1],dtype=np.int64)
     b=mul(c,b)
@@ -99,7 +99,7 @@ def div(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     
     Returns
     -------
-    float
+    array
     """
     if np.all(b[:2]==0):
         print('ERROR_1:division error')
