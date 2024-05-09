@@ -115,13 +115,15 @@ setup(
     #ext_modules = extensions,
     #
     #
-    #
     #packages=find_packages(),
     packages = [
         'pyqcstrc/ico2',
+        #
         # Comment-out when including ico and dode
         #'pyqcstrc/ico',
         #'pyqcstrc/dode',
+        #
+        #
         #'pyqcstrc/deca',
         #'pyqcstrc/ico/examples',
         #'pyqcstrc/ico/xyz',
