@@ -9,7 +9,7 @@ pip install --upgrade pip
 pip install pyqcstrc
 ```
 
-Fro more information, see [DOCs](https://www.rs.tus.ac.jp/tsunetomo.yamada/pyqcstrc/).
+Fro more information, see [Docs](https://www.rs.tus.ac.jp/tsunetomo.yamada/pyqcstrc/).
 
 ### Supported versions
 
@@ -23,6 +23,19 @@ T. Yamada
 J. Appl. Crystallogr., 54(4) (2021)
 https://doi.org/10.1107/S1600576721005951
 
+If you use PyQCstrc in your research please cite the corresponding [paper](https://doi.org/10.1107/S1600576721005951):
+```BibTeX
+@article{yamada2021pyqcstrc,
+  title={PyQCstrc. ico: a computing package for structural modelling of icosahedral quasicrystals},
+  author={Yamada, Tsunetomo},
+  journal={Journal of Applied Crystallography},
+  volume={54},
+  number={4},
+  pages={1252--1255},
+  year={2021},
+  publisher={International Union of Crystallography}
+}
+```
 
 ## Documentation
 
