@@ -98,8 +98,8 @@ import timeit
 import os
 import sys
 import numpy as np
-import pyqcstrc.ico.occupation_domain as od
-import pyqcstrc.ico.two_occupation_domains as ods
+import pyqcstrc.ico2.occupation_domain as od
+import pyqcstrc.ico2.two_occupation_domains as ods
 
 # Vertices of tetrahedron, v0,v1,v2,v3, which
 # defines the asymmetric part.
@@ -124,7 +124,7 @@ od.write_vesta(od2, path=&#39;./example1&#39;, basename=&#39;rtod2&#39;, color=&
 od.write_xyz(od2, path=&#39;./example1&#39;, basename=&#39;rtod2&#39;)
 
 common_od = ods.intersection(od1, od2, verbose=0)
-od.writewrite_vesta(common_od, path=&#39;./example1&#39;, basename=&#39;common_od&#39;, color=&#39;b&#39;)
+od.write_vesta(common_od, path=&#39;./example1&#39;, basename=&#39;common_od&#39;, color=&#39;b&#39;)
 od.write_xyz(common_od, path=&#39;./example1&#39;, basename=&#39;common_od&#39;)
 </pre></div>
 </div>
@@ -142,9 +142,9 @@ import timeit
 import os
 import sys
 import numpy as np
-import pyqcstrc.ico.utils as utils
-import pyqcstrc.ico.occupation_domain as od
-import pyqcstrc.ico.two_occupation_domains as ods
+import pyqcstrc.ico2.utils as utils
+import pyqcstrc.ico2.occupation_domain as od
+import pyqcstrc.ico2.two_occupation_domains as ods
 
 # Vertices of tetrahedron, v0,v1,v2,v3, which
 # defines the asymmetric part.
@@ -169,10 +169,6 @@ od.write_vesta(od2, path=&#39;./example2&#39;, basename=&#39;rtod2&#39;, color=&
 od.write_xyz(od2, path=&#39;./example2&#39;, basename=&#39;rtod2&#39;)
 
 common_od = ods.intersection_convex(od1, od2, verbose=0)
-
-# intermediate position between v0 and pos1
-pos2 = utils.middle_position(v0,pos1)
-common_od = od.simpl_add_point(common_od, pos2, verbose=0)
 od.write_vesta(common_od, path=&#39;./example2&#39;, basename=&#39;common_od&#39;, color=&#39;b&#39;)
 od.write_xyz(common_od, path=&#39;./example2&#39;, basename=&#39;common_od&#39;)
 </pre></div>
@@ -191,8 +187,8 @@ import timeit
 import os
 import sys
 import numpy as np
-import pyqcstrc.ico.occupation_domain as od
-import pyqcstrc.ico.two_occupation_domains as ods
+import pyqcstrc.ico2.occupation_domain as od
+import pyqcstrc.ico2.two_occupation_domains as ods
 
 # Vertices of tetrahedron, v0,v1,v2,v3, which
 # defines the asymmetric part of OD

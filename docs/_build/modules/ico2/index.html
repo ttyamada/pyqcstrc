@@ -113,6 +113,30 @@
 <section id="module-pyqcstrc.ico2.occupation_domain">
 <span id="occupation-domain"></span><h3>Occupation domain<a class="headerlink" href="#module-pyqcstrc.ico2.occupation_domain" title="Link to this heading"></a></h3>
 <dl class="py function">
+<dt class="sig sig-object py" id="pyqcstrc.ico2.occupation_domain.asymmetric">
+<span class="sig-prename descclassname"><span class="pre">pyqcstrc.ico2.occupation_domain.</span></span><span class="sig-name descname"><span class="pre">asymmetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symmetric_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vecs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyqcstrc.ico2.occupation_domain.asymmetric" title="Link to this definition"></a></dt>
+<dd><p>Asymmetric part of occupation domain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>symmetric_obj</strong> (<em>numpy.ndarray</em>) – Occupation domain of which the asymmetric part is calculated.
+The shape is (num,4,6,3), where num=numbre_of_tetrahedron.</p></li>
+<li><p><strong>position</strong> (<em>numpy.ndarray</em>) – 6d coordinate of the site of which the occupation domain centres.
+The shape is (6,3)</p></li>
+<li><p><strong>vecs</strong> (<em>numpy.ndarray</em>) – Three vectors that defines the asymmetric part.
+The shape is (3,6,3)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The shape is (num,4,6,3), where num=numbre_of_tetrahedron.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Asymmetric part of the occupation domains (numpy.ndarray)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="pyqcstrc.ico2.occupation_domain.generate_border_edges">
 <span class="sig-prename descclassname"><span class="pre">pyqcstrc.ico2.occupation_domain.</span></span><span class="sig-name descname"><span class="pre">generate_border_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyqcstrc.ico2.occupation_domain.generate_border_edges" title="Link to this definition"></a></dt>
 <dd><p>Generate border edges of the occupation domain.</p>
@@ -441,7 +465,7 @@ The shape is (num,4,6,3), where num=numbre_of_tetrahedron.</p></li>
 <span id="two-occupation-domains"></span><h3>Two occupation domains<a class="headerlink" href="#module-pyqcstrc.ico2.two_occupation_domains" title="Link to this heading"></a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyqcstrc.ico2.two_occupation_domains.intersection">
-<span class="sig-prename descclassname"><span class="pre">pyqcstrc.ico2.two_occupation_domains.</span></span><span class="sig-name descname"><span class="pre">intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyqcstrc.ico2.two_occupation_domains.intersection" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyqcstrc.ico2.two_occupation_domains.</span></span><span class="sig-name descname"><span class="pre">intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyqcstrc.ico2.two_occupation_domains.intersection" title="Link to this definition"></a></dt>
 <dd><p>Return an intersection between two objects: obj1 AND obj2.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -465,7 +489,7 @@ The shape is (num,4,6,3), where num=numbre_of_tetrahedron.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyqcstrc.ico2.two_occupation_domains.intersection_convex">
-<span class="sig-prename descclassname"><span class="pre">pyqcstrc.ico2.two_occupation_domains.</span></span><span class="sig-name descname"><span class="pre">intersection_convex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyqcstrc.ico2.two_occupation_domains.intersection_convex" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyqcstrc.ico2.two_occupation_domains.</span></span><span class="sig-name descname"><span class="pre">intersection_convex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyqcstrc.ico2.two_occupation_domains.intersection_convex" title="Link to this definition"></a></dt>
 <dd><p>Intersection of two occupation domains projected onto perp space: obj1 AND obj2.
 The common part forms convex hull.</p>
 <dl class="field-list simple">
