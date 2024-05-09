@@ -1,0 +1,603 @@
+480
+./example3/rtod2.xyz
+Xx 1.618034 -1.000000 0.000000 #   0-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 4.236068 -2.618034 0.000000 #   0-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 4.236068 -1.000000 1.000000 #   0-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 4.236068 -1.000000 0.000000 #   0-the tetrahedron 3-th vertex # 3 0 2 -1 0 2 -1 0 2 0 0 1 -1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #   1-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 4.236068 -2.618034 0.000000 #   1-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 3.236068 -2.618034 -1.618034 #   1-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 2.927051 -3.118034 -0.809017 #   1-the tetrahedron 3-th vertex # 3 0 2 -1 0 2 0 0 1 -1 0 2 0 0 1 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #   2-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 4.236068 -2.618034 0.000000 #   2-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 3.236068 -2.618034 1.618034 #   2-the tetrahedron 2-th vertex # 3 0 2 1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 3.736068 -1.809017 1.309017 #   2-the tetrahedron 3-th vertex # 3 0 2 0 0 1 -1 0 2 0 0 1 -1 0 2 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #   3-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 4.236068 -2.618034 0.000000 #   3-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 4.236068 -1.000000 -1.000000 #   3-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2 1 0 2
+Xx 3.736068 -1.809017 -1.309017 #   3-the tetrahedron 3-th vertex # 3 0 2 -1 0 2 0 0 1 -1 0 2 -1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #   4-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 4.236068 -2.618034 0.000000 #   4-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 2.618034 -3.618034 0.000000 #   4-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 2.927051 -3.118034 0.809017 #   4-the tetrahedron 3-th vertex # 3 0 2 0 0 1 -1 0 2 -1 0 2 0 0 1 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #   5-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 0.618034 0.000000 #   5-the tetrahedron 1-th vertex # 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2
+Xx 0.618034 1.618034 0.000000 #   5-the tetrahedron 2-th vertex # 1 0 2 1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 0.309017 1.118034 0.809017 #   5-the tetrahedron 3-th vertex # 1 0 2 1 0 2 0 0 1 1 0 2 0 0 1 1 0 2
+Xx 1.618034 -1.000000 0.000000 #   6-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 0.618034 0.000000 #   6-the tetrahedron 1-th vertex # 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2
+Xx -1.000000 -1.000000 1.000000 #   6-the tetrahedron 2-th vertex # 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2 -1 0 2
+Xx -1.000000 -1.000000 0.000000 #   6-the tetrahedron 3-th vertex # 1 0 2 1 0 2 1 0 2 0 0 1 1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #   7-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 0.618034 0.000000 #   7-the tetrahedron 1-th vertex # 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2
+Xx 0.000000 0.618034 -1.618034 #   7-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 1 0 2 1 0 2 1 0 2 1 0 2
+Xx 0.309017 1.118034 -0.809017 #   7-the tetrahedron 3-th vertex # 1 0 2 0 0 1 1 0 2 1 0 2 0 0 1 1 0 2
+Xx 1.618034 -1.000000 0.000000 #   8-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 0.618034 0.000000 #   8-the tetrahedron 1-th vertex # 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2
+Xx 0.000000 0.618034 1.618034 #   8-the tetrahedron 2-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2 1 0 2
+Xx -0.500000 -0.190983 1.309017 #   8-the tetrahedron 3-th vertex # 1 0 2 1 0 2 0 0 1 1 0 2 1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #   9-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 0.618034 0.000000 #   9-the tetrahedron 1-th vertex # 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2
+Xx -1.000000 -1.000000 -1.000000 #   9-the tetrahedron 2-th vertex # 1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2
+Xx -0.500000 -0.190983 -1.309017 #   9-the tetrahedron 3-th vertex # 1 0 2 0 0 1 1 0 2 0 0 1 1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  10-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 -3.618034 1.618034 #  10-the tetrahedron 1-th vertex # 3 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.618034 -3.618034 0.000000 #  10-the tetrahedron 2-th vertex # 3 0 2 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.309017 -3.118034 0.809017 #  10-the tetrahedron 3-th vertex # 1 0 1 1 0 2 0 0 1 -1 0 2 1 0 2 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  11-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 -3.618034 1.618034 #  11-the tetrahedron 1-th vertex # 3 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 1.618034 -2.000000 2.618034 #  11-the tetrahedron 2-th vertex # 3 0 2 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2
+Xx 2.427051 -2.309017 2.118034 #  11-the tetrahedron 3-th vertex # 3 0 2 1 0 2 -1 0 2 0 0 1 0 0 1 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  12-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 -3.618034 1.618034 #  12-the tetrahedron 1-th vertex # 3 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 2.618034 -3.618034 0.000000 #  12-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 1.618034 -3.618034 0.000000 #  12-the tetrahedron 3-th vertex # 3 0 2 0 0 1 0 0 1 -1 0 2 1 0 2 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  13-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 -3.618034 1.618034 #  13-the tetrahedron 1-th vertex # 3 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.000000 -2.618034 1.618034 #  13-the tetrahedron 2-th vertex # 1 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.809017 -2.309017 2.118034 #  13-the tetrahedron 3-th vertex # 1 0 1 1 0 2 -1 0 2 0 0 1 1 0 2 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  14-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 -3.618034 1.618034 #  14-the tetrahedron 1-th vertex # 3 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 3.236068 -2.618034 1.618034 #  14-the tetrahedron 2-th vertex # 3 0 2 1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 2.927051 -3.118034 0.809017 #  14-the tetrahedron 3-th vertex # 3 0 2 0 0 1 -1 0 2 -1 0 2 0 0 1 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  15-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 1.618034 -1.618034 #  15-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 0.000000 0.618034 -1.618034 #  15-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 1 0 2 1 0 2 1 0 2 1 0 2
+Xx 0.809017 0.309017 -2.118034 #  15-the tetrahedron 3-th vertex # 1 0 2 -1 0 2 1 0 2 0 0 1 0 0 1 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  16-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 1.618034 -1.618034 #  16-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 3.236068 0.618034 -1.618034 #  16-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 2.927051 1.118034 -0.809017 #  16-the tetrahedron 3-th vertex # 1 0 1 -1 0 2 0 0 1 1 0 2 -1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  17-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 1.618034 -1.618034 #  17-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 0.618034 1.618034 0.000000 #  17-the tetrahedron 2-th vertex # 1 0 2 1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 0.309017 1.118034 -0.809017 #  17-the tetrahedron 3-th vertex # 1 0 2 0 0 1 1 0 2 1 0 2 0 0 1 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  18-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 1.618034 -1.618034 #  18-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 1.618034 0.000000 -2.618034 #  18-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2
+Xx 2.427051 0.309017 -2.118034 #  18-the tetrahedron 3-th vertex # 1 0 1 -1 0 2 1 0 2 0 0 1 -1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  19-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 1.618034 -1.618034 #  19-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 2.618034 1.618034 0.000000 #  19-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 1.618034 1.618034 0.000000 #  19-the tetrahedron 3-th vertex # 1 0 2 0 0 1 0 0 1 1 0 2 -1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  20-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.000000 -1.000000 -2.618034 #  20-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2
+Xx 1.618034 0.000000 -2.618034 #  20-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2
+Xx 0.809017 0.309017 -2.118034 #  20-the tetrahedron 3-th vertex # 1 0 2 -1 0 2 1 0 2 0 0 1 0 0 1 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  21-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.000000 -1.000000 -2.618034 #  21-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2
+Xx -1.000000 -1.000000 -1.000000 #  21-the tetrahedron 2-th vertex # 1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2
+Xx -0.500000 -1.809017 -1.309017 #  21-the tetrahedron 3-th vertex # 1 0 2 0 0 1 1 0 2 -1 0 2 1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  22-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.000000 -1.000000 -2.618034 #  22-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2
+Xx 1.618034 -2.000000 -2.618034 #  22-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2
+Xx 1.618034 -1.000000 -2.618034 #  22-the tetrahedron 3-th vertex # 1 0 1 -1 0 2 1 0 2 -1 0 2 0 0 1 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  23-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.000000 -1.000000 -2.618034 #  23-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2
+Xx 0.000000 0.618034 -1.618034 #  23-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 1 0 2 1 0 2 1 0 2 1 0 2
+Xx -0.500000 -0.190983 -1.309017 #  23-the tetrahedron 3-th vertex # 1 0 2 0 0 1 1 0 2 0 0 1 1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  24-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.000000 -1.000000 -2.618034 #  24-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2
+Xx 0.000000 -2.618034 -1.618034 #  24-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.809017 -2.309017 -2.118034 #  24-the tetrahedron 3-th vertex # 1 0 1 -1 0 2 1 0 2 -1 0 2 1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  25-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 3.236068 -1.000000 2.618034 #  25-the tetrahedron 1-th vertex # 3 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 3.236068 0.618034 1.618034 #  25-the tetrahedron 2-th vertex # 3 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 3.736068 -0.190983 1.309017 #  25-the tetrahedron 3-th vertex # 3 0 2 0 0 1 -1 0 2 1 0 2 -1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  26-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 3.236068 -1.000000 2.618034 #  26-the tetrahedron 1-th vertex # 3 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 3.236068 -2.618034 1.618034 #  26-the tetrahedron 2-th vertex # 3 0 2 1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 2.427051 -2.309017 2.118034 #  26-the tetrahedron 3-th vertex # 3 0 2 1 0 2 -1 0 2 0 0 1 0 0 1 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  27-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 3.236068 -1.000000 2.618034 #  27-the tetrahedron 1-th vertex # 3 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 1.618034 0.000000 2.618034 #  27-the tetrahedron 2-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 2.427051 0.309017 2.118034 #  27-the tetrahedron 3-th vertex # 1 0 1 1 0 2 -1 0 2 1 0 2 -1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  28-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 3.236068 -1.000000 2.618034 #  28-the tetrahedron 1-th vertex # 3 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 4.236068 -1.000000 1.000000 #  28-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 3.736068 -1.809017 1.309017 #  28-the tetrahedron 3-th vertex # 3 0 2 0 0 1 -1 0 2 0 0 1 -1 0 2 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  29-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 3.236068 -1.000000 2.618034 #  29-the tetrahedron 1-th vertex # 3 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 1.618034 -2.000000 2.618034 #  29-the tetrahedron 2-th vertex # 3 0 2 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2
+Xx 1.618034 -1.000000 2.618034 #  29-the tetrahedron 3-th vertex # 1 0 1 1 0 2 -1 0 2 1 0 2 0 0 1 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  30-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 -3.618034 -1.618034 #  30-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.618034 -3.618034 0.000000 #  30-the tetrahedron 2-th vertex # 3 0 2 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 1.618034 -3.618034 0.000000 #  30-the tetrahedron 3-th vertex # 3 0 2 0 0 1 0 0 1 -1 0 2 1 0 2 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  31-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 -3.618034 -1.618034 #  31-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 3.236068 -2.618034 -1.618034 #  31-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 2.427051 -2.309017 -2.118034 #  31-the tetrahedron 3-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 0 0 1 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  32-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 -3.618034 -1.618034 #  32-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.000000 -2.618034 -1.618034 #  32-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.309017 -3.118034 -0.809017 #  32-the tetrahedron 3-th vertex # 1 0 1 0 0 1 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  33-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 -3.618034 -1.618034 #  33-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 2.618034 -3.618034 0.000000 #  33-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 2.927051 -3.118034 -0.809017 #  33-the tetrahedron 3-th vertex # 3 0 2 -1 0 2 0 0 1 -1 0 2 0 0 1 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  34-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 -3.618034 -1.618034 #  34-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 1.618034 -2.000000 -2.618034 #  34-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2
+Xx 0.809017 -2.309017 -2.118034 #  34-the tetrahedron 3-th vertex # 1 0 1 -1 0 2 1 0 2 -1 0 2 1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  35-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 1.618034 1.618034 #  35-the tetrahedron 1-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 1.618034 0.000000 2.618034 #  35-the tetrahedron 2-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 0.809017 0.309017 2.118034 #  35-the tetrahedron 3-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 0 0 1 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  36-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 1.618034 1.618034 #  36-the tetrahedron 1-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 0.618034 1.618034 0.000000 #  36-the tetrahedron 2-th vertex # 1 0 2 1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 1.618034 1.618034 0.000000 #  36-the tetrahedron 3-th vertex # 1 0 2 0 0 1 0 0 1 1 0 2 -1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  37-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 1.618034 1.618034 #  37-the tetrahedron 1-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 3.236068 0.618034 1.618034 #  37-the tetrahedron 2-th vertex # 3 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 2.427051 0.309017 2.118034 #  37-the tetrahedron 3-th vertex # 1 0 1 1 0 2 -1 0 2 1 0 2 -1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  38-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 1.618034 1.618034 #  38-the tetrahedron 1-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 0.000000 0.618034 1.618034 #  38-the tetrahedron 2-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2 1 0 2
+Xx 0.309017 1.118034 0.809017 #  38-the tetrahedron 3-th vertex # 1 0 2 1 0 2 0 0 1 1 0 2 0 0 1 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  39-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 1.618034 1.618034 #  39-the tetrahedron 1-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 2.618034 1.618034 0.000000 #  39-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 2.927051 1.118034 0.809017 #  39-the tetrahedron 3-th vertex # 1 0 1 0 0 1 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  40-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.000000 -1.000000 2.618034 #  40-the tetrahedron 1-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2
+Xx 0.000000 0.618034 1.618034 #  40-the tetrahedron 2-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2 1 0 2
+Xx 0.809017 0.309017 2.118034 #  40-the tetrahedron 3-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 0 0 1 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  41-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.000000 -1.000000 2.618034 #  41-the tetrahedron 1-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2
+Xx 1.618034 -2.000000 2.618034 #  41-the tetrahedron 2-th vertex # 3 0 2 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2
+Xx 0.809017 -2.309017 2.118034 #  41-the tetrahedron 3-th vertex # 1 0 1 1 0 2 -1 0 2 0 0 1 1 0 2 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  42-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.000000 -1.000000 2.618034 #  42-the tetrahedron 1-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2
+Xx -1.000000 -1.000000 1.000000 #  42-the tetrahedron 2-th vertex # 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2 -1 0 2
+Xx -0.500000 -0.190983 1.309017 #  42-the tetrahedron 3-th vertex # 1 0 2 1 0 2 0 0 1 1 0 2 1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  43-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.000000 -1.000000 2.618034 #  43-the tetrahedron 1-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2
+Xx 1.618034 0.000000 2.618034 #  43-the tetrahedron 2-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 1.618034 -1.000000 2.618034 #  43-the tetrahedron 3-th vertex # 1 0 1 1 0 2 -1 0 2 1 0 2 0 0 1 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  44-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.000000 -1.000000 2.618034 #  44-the tetrahedron 1-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2
+Xx 0.000000 -2.618034 1.618034 #  44-the tetrahedron 2-th vertex # 1 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx -0.500000 -1.809017 1.309017 #  44-the tetrahedron 3-th vertex # 1 0 2 1 0 2 0 0 1 0 0 1 1 0 2 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  45-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 3.236068 -1.000000 -2.618034 #  45-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2
+Xx 3.236068 0.618034 -1.618034 #  45-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 2.427051 0.309017 -2.118034 #  45-the tetrahedron 3-th vertex # 1 0 1 -1 0 2 1 0 2 0 0 1 -1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  46-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 3.236068 -1.000000 -2.618034 #  46-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2
+Xx 1.618034 -2.000000 -2.618034 #  46-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2
+Xx 2.427051 -2.309017 -2.118034 #  46-the tetrahedron 3-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 0 0 1 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  47-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 3.236068 -1.000000 -2.618034 #  47-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2
+Xx 4.236068 -1.000000 -1.000000 #  47-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2 1 0 2
+Xx 3.736068 -0.190983 -1.309017 #  47-the tetrahedron 3-th vertex # 3 0 2 -1 0 2 0 0 1 0 0 1 -1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  48-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 3.236068 -1.000000 -2.618034 #  48-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2
+Xx 1.618034 0.000000 -2.618034 #  48-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2
+Xx 1.618034 -1.000000 -2.618034 #  48-the tetrahedron 3-th vertex # 1 0 1 -1 0 2 1 0 2 -1 0 2 0 0 1 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  49-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 3.236068 -1.000000 -2.618034 #  49-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2
+Xx 3.236068 -2.618034 -1.618034 #  49-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 3.736068 -1.809017 -1.309017 #  49-the tetrahedron 3-th vertex # 3 0 2 -1 0 2 0 0 1 -1 0 2 -1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  50-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 -2.618034 0.000000 #  50-the tetrahedron 1-th vertex # 1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.618034 -3.618034 0.000000 #  50-the tetrahedron 2-th vertex # 3 0 2 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.309017 -3.118034 -0.809017 #  50-the tetrahedron 3-th vertex # 1 0 1 0 0 1 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  51-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 -2.618034 0.000000 #  51-the tetrahedron 1-th vertex # 1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx -1.000000 -1.000000 -1.000000 #  51-the tetrahedron 2-th vertex # 1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2
+Xx -1.000000 -1.000000 0.000000 #  51-the tetrahedron 3-th vertex # 1 0 2 1 0 2 1 0 2 0 0 1 1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  52-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 -2.618034 0.000000 #  52-the tetrahedron 1-th vertex # 1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.000000 -2.618034 1.618034 #  52-the tetrahedron 2-th vertex # 1 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.309017 -3.118034 0.809017 #  52-the tetrahedron 3-th vertex # 1 0 1 1 0 2 0 0 1 -1 0 2 1 0 2 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  53-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 -2.618034 0.000000 #  53-the tetrahedron 1-th vertex # 1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.000000 -2.618034 -1.618034 #  53-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx -0.500000 -1.809017 -1.309017 #  53-the tetrahedron 3-th vertex # 1 0 2 0 0 1 1 0 2 -1 0 2 1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  54-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 -2.618034 0.000000 #  54-the tetrahedron 1-th vertex # 1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx -1.000000 -1.000000 1.000000 #  54-the tetrahedron 2-th vertex # 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2 -1 0 2
+Xx -0.500000 -1.809017 1.309017 #  54-the tetrahedron 3-th vertex # 1 0 2 1 0 2 0 0 1 0 0 1 1 0 2 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  55-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 4.236068 0.618034 0.000000 #  55-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 4.236068 -1.000000 -1.000000 #  55-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2 1 0 2
+Xx 4.236068 -1.000000 0.000000 #  55-the tetrahedron 3-th vertex # 3 0 2 -1 0 2 -1 0 2 0 0 1 -1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  56-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 4.236068 0.618034 0.000000 #  56-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 3.236068 0.618034 1.618034 #  56-the tetrahedron 2-th vertex # 3 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 2.927051 1.118034 0.809017 #  56-the tetrahedron 3-th vertex # 1 0 1 0 0 1 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  57-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 4.236068 0.618034 0.000000 #  57-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 3.236068 0.618034 -1.618034 #  57-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 3.736068 -0.190983 -1.309017 #  57-the tetrahedron 3-th vertex # 3 0 2 -1 0 2 0 0 1 0 0 1 -1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  58-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 4.236068 0.618034 0.000000 #  58-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 4.236068 -1.000000 1.000000 #  58-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 3.736068 -0.190983 1.309017 #  58-the tetrahedron 3-th vertex # 3 0 2 0 0 1 -1 0 2 1 0 2 -1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  59-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 4.236068 0.618034 0.000000 #  59-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 2.618034 1.618034 0.000000 #  59-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 2.927051 1.118034 -0.809017 #  59-the tetrahedron 3-th vertex # 1 0 1 -1 0 2 0 0 1 1 0 2 -1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  60-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 0.618034 0.000000 #  60-the tetrahedron 1-th vertex # 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2
+Xx -1.000000 -1.000000 -1.000000 #  60-the tetrahedron 2-th vertex # 1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2
+Xx -1.000000 -1.000000 0.000000 #  60-the tetrahedron 3-th vertex # 1 0 2 1 0 2 1 0 2 0 0 1 1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  61-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 0.618034 0.000000 #  61-the tetrahedron 1-th vertex # 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2
+Xx 0.000000 0.618034 1.618034 #  61-the tetrahedron 2-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2 1 0 2
+Xx 0.309017 1.118034 0.809017 #  61-the tetrahedron 3-th vertex # 1 0 2 1 0 2 0 0 1 1 0 2 0 0 1 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  62-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 0.618034 0.000000 #  62-the tetrahedron 1-th vertex # 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2
+Xx 0.000000 0.618034 -1.618034 #  62-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 1 0 2 1 0 2 1 0 2 1 0 2
+Xx -0.500000 -0.190983 -1.309017 #  62-the tetrahedron 3-th vertex # 1 0 2 0 0 1 1 0 2 0 0 1 1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  63-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 0.618034 0.000000 #  63-the tetrahedron 1-th vertex # 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2
+Xx -1.000000 -1.000000 1.000000 #  63-the tetrahedron 2-th vertex # 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2 -1 0 2
+Xx -0.500000 -0.190983 1.309017 #  63-the tetrahedron 3-th vertex # 1 0 2 1 0 2 0 0 1 1 0 2 1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  64-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 0.618034 0.000000 #  64-the tetrahedron 1-th vertex # 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2
+Xx 0.618034 1.618034 0.000000 #  64-the tetrahedron 2-th vertex # 1 0 2 1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 0.309017 1.118034 -0.809017 #  64-the tetrahedron 3-th vertex # 1 0 2 0 0 1 1 0 2 1 0 2 0 0 1 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  65-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 4.236068 -2.618034 0.000000 #  65-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 2.618034 -3.618034 0.000000 #  65-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 2.927051 -3.118034 -0.809017 #  65-the tetrahedron 3-th vertex # 3 0 2 -1 0 2 0 0 1 -1 0 2 0 0 1 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  66-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 4.236068 -2.618034 0.000000 #  66-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 4.236068 -1.000000 -1.000000 #  66-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2 1 0 2
+Xx 4.236068 -1.000000 0.000000 #  66-the tetrahedron 3-th vertex # 3 0 2 -1 0 2 -1 0 2 0 0 1 -1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  67-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 4.236068 -2.618034 0.000000 #  67-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 3.236068 -2.618034 1.618034 #  67-the tetrahedron 2-th vertex # 3 0 2 1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 2.927051 -3.118034 0.809017 #  67-the tetrahedron 3-th vertex # 3 0 2 0 0 1 -1 0 2 -1 0 2 0 0 1 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  68-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 4.236068 -2.618034 0.000000 #  68-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 3.236068 -2.618034 -1.618034 #  68-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 3.736068 -1.809017 -1.309017 #  68-the tetrahedron 3-th vertex # 3 0 2 -1 0 2 0 0 1 -1 0 2 -1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  69-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 4.236068 -2.618034 0.000000 #  69-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 4.236068 -1.000000 1.000000 #  69-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 3.736068 -1.809017 1.309017 #  69-the tetrahedron 3-th vertex # 3 0 2 0 0 1 -1 0 2 0 0 1 -1 0 2 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  70-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 1.618034 -1.618034 #  70-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 2.618034 1.618034 0.000000 #  70-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 2.927051 1.118034 -0.809017 #  70-the tetrahedron 3-th vertex # 1 0 1 -1 0 2 0 0 1 1 0 2 -1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  71-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 1.618034 -1.618034 #  71-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 1.618034 0.000000 -2.618034 #  71-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2
+Xx 0.809017 0.309017 -2.118034 #  71-the tetrahedron 3-th vertex # 1 0 2 -1 0 2 1 0 2 0 0 1 0 0 1 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  72-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 1.618034 -1.618034 #  72-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 0.618034 1.618034 0.000000 #  72-the tetrahedron 2-th vertex # 1 0 2 1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 1.618034 1.618034 0.000000 #  72-the tetrahedron 3-th vertex # 1 0 2 0 0 1 0 0 1 1 0 2 -1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  73-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 1.618034 -1.618034 #  73-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 3.236068 0.618034 -1.618034 #  73-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 2.427051 0.309017 -2.118034 #  73-the tetrahedron 3-th vertex # 1 0 1 -1 0 2 1 0 2 0 0 1 -1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  74-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 1.618034 -1.618034 #  74-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 0.000000 0.618034 -1.618034 #  74-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 1 0 2 1 0 2 1 0 2 1 0 2
+Xx 0.309017 1.118034 -0.809017 #  74-the tetrahedron 3-th vertex # 1 0 2 0 0 1 1 0 2 1 0 2 0 0 1 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  75-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 -3.618034 1.618034 #  75-the tetrahedron 1-th vertex # 3 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 3.236068 -2.618034 1.618034 #  75-the tetrahedron 2-th vertex # 3 0 2 1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 2.427051 -2.309017 2.118034 #  75-the tetrahedron 3-th vertex # 3 0 2 1 0 2 -1 0 2 0 0 1 0 0 1 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  76-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 -3.618034 1.618034 #  76-the tetrahedron 1-th vertex # 3 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.000000 -2.618034 1.618034 #  76-the tetrahedron 2-th vertex # 1 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.309017 -3.118034 0.809017 #  76-the tetrahedron 3-th vertex # 1 0 1 1 0 2 0 0 1 -1 0 2 1 0 2 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  77-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 -3.618034 1.618034 #  77-the tetrahedron 1-th vertex # 3 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 2.618034 -3.618034 0.000000 #  77-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 2.927051 -3.118034 0.809017 #  77-the tetrahedron 3-th vertex # 3 0 2 0 0 1 -1 0 2 -1 0 2 0 0 1 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  78-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 -3.618034 1.618034 #  78-the tetrahedron 1-th vertex # 3 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 1.618034 -2.000000 2.618034 #  78-the tetrahedron 2-th vertex # 3 0 2 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2
+Xx 0.809017 -2.309017 2.118034 #  78-the tetrahedron 3-th vertex # 1 0 1 1 0 2 -1 0 2 0 0 1 1 0 2 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  79-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 -3.618034 1.618034 #  79-the tetrahedron 1-th vertex # 3 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.618034 -3.618034 0.000000 #  79-the tetrahedron 2-th vertex # 3 0 2 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 1.618034 -3.618034 0.000000 #  79-the tetrahedron 3-th vertex # 3 0 2 0 0 1 0 0 1 -1 0 2 1 0 2 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  80-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 3.236068 -1.000000 2.618034 #  80-the tetrahedron 1-th vertex # 3 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 1.618034 -2.000000 2.618034 #  80-the tetrahedron 2-th vertex # 3 0 2 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2
+Xx 2.427051 -2.309017 2.118034 #  80-the tetrahedron 3-th vertex # 3 0 2 1 0 2 -1 0 2 0 0 1 0 0 1 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  81-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 3.236068 -1.000000 2.618034 #  81-the tetrahedron 1-th vertex # 3 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 4.236068 -1.000000 1.000000 #  81-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 3.736068 -0.190983 1.309017 #  81-the tetrahedron 3-th vertex # 3 0 2 0 0 1 -1 0 2 1 0 2 -1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  82-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 3.236068 -1.000000 2.618034 #  82-the tetrahedron 1-th vertex # 3 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 1.618034 0.000000 2.618034 #  82-the tetrahedron 2-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 1.618034 -1.000000 2.618034 #  82-the tetrahedron 3-th vertex # 1 0 1 1 0 2 -1 0 2 1 0 2 0 0 1 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  83-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 3.236068 -1.000000 2.618034 #  83-the tetrahedron 1-th vertex # 3 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 3.236068 -2.618034 1.618034 #  83-the tetrahedron 2-th vertex # 3 0 2 1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 3.736068 -1.809017 1.309017 #  83-the tetrahedron 3-th vertex # 3 0 2 0 0 1 -1 0 2 0 0 1 -1 0 2 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  84-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 3.236068 -1.000000 2.618034 #  84-the tetrahedron 1-th vertex # 3 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 3.236068 0.618034 1.618034 #  84-the tetrahedron 2-th vertex # 3 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 2.427051 0.309017 2.118034 #  84-the tetrahedron 3-th vertex # 1 0 1 1 0 2 -1 0 2 1 0 2 -1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  85-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.000000 -1.000000 -2.618034 #  85-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2
+Xx 0.000000 -2.618034 -1.618034 #  85-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx -0.500000 -1.809017 -1.309017 #  85-the tetrahedron 3-th vertex # 1 0 2 0 0 1 1 0 2 -1 0 2 1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  86-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.000000 -1.000000 -2.618034 #  86-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2
+Xx 0.000000 0.618034 -1.618034 #  86-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 1 0 2 1 0 2 1 0 2 1 0 2
+Xx 0.809017 0.309017 -2.118034 #  86-the tetrahedron 3-th vertex # 1 0 2 -1 0 2 1 0 2 0 0 1 0 0 1 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  87-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.000000 -1.000000 -2.618034 #  87-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2
+Xx 1.618034 -2.000000 -2.618034 #  87-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2
+Xx 0.809017 -2.309017 -2.118034 #  87-the tetrahedron 3-th vertex # 1 0 1 -1 0 2 1 0 2 -1 0 2 1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  88-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.000000 -1.000000 -2.618034 #  88-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2
+Xx -1.000000 -1.000000 -1.000000 #  88-the tetrahedron 2-th vertex # 1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2
+Xx -0.500000 -0.190983 -1.309017 #  88-the tetrahedron 3-th vertex # 1 0 2 0 0 1 1 0 2 0 0 1 1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  89-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.000000 -1.000000 -2.618034 #  89-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2
+Xx 1.618034 0.000000 -2.618034 #  89-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2
+Xx 1.618034 -1.000000 -2.618034 #  89-the tetrahedron 3-th vertex # 1 0 1 -1 0 2 1 0 2 -1 0 2 0 0 1 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  90-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 1.618034 1.618034 #  90-the tetrahedron 1-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 2.618034 1.618034 0.000000 #  90-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 1.618034 1.618034 0.000000 #  90-the tetrahedron 3-th vertex # 1 0 2 0 0 1 0 0 1 1 0 2 -1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  91-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 1.618034 1.618034 #  91-the tetrahedron 1-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 0.000000 0.618034 1.618034 #  91-the tetrahedron 2-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2 1 0 2
+Xx 0.809017 0.309017 2.118034 #  91-the tetrahedron 3-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 0 0 1 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  92-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 1.618034 1.618034 #  92-the tetrahedron 1-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 3.236068 0.618034 1.618034 #  92-the tetrahedron 2-th vertex # 3 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 2.927051 1.118034 0.809017 #  92-the tetrahedron 3-th vertex # 1 0 1 0 0 1 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  93-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 1.618034 1.618034 #  93-the tetrahedron 1-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 0.618034 1.618034 0.000000 #  93-the tetrahedron 2-th vertex # 1 0 2 1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 0.309017 1.118034 0.809017 #  93-the tetrahedron 3-th vertex # 1 0 2 1 0 2 0 0 1 1 0 2 0 0 1 1 0 2
+Xx 1.618034 -1.000000 0.000000 #  94-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 1.618034 1.618034 #  94-the tetrahedron 1-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 1.618034 0.000000 2.618034 #  94-the tetrahedron 2-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 2.427051 0.309017 2.118034 #  94-the tetrahedron 3-th vertex # 1 0 1 1 0 2 -1 0 2 1 0 2 -1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  95-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 -3.618034 -1.618034 #  95-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 1.618034 -2.000000 -2.618034 #  95-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2
+Xx 2.427051 -2.309017 -2.118034 #  95-the tetrahedron 3-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 0 0 1 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  96-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 -3.618034 -1.618034 #  96-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 2.618034 -3.618034 0.000000 #  96-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 1.618034 -3.618034 0.000000 #  96-the tetrahedron 3-th vertex # 3 0 2 0 0 1 0 0 1 -1 0 2 1 0 2 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  97-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 -3.618034 -1.618034 #  97-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.000000 -2.618034 -1.618034 #  97-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.809017 -2.309017 -2.118034 #  97-the tetrahedron 3-th vertex # 1 0 1 -1 0 2 1 0 2 -1 0 2 1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 #  98-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 -3.618034 -1.618034 #  98-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 3.236068 -2.618034 -1.618034 #  98-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 2.927051 -3.118034 -0.809017 #  98-the tetrahedron 3-th vertex # 3 0 2 -1 0 2 0 0 1 -1 0 2 0 0 1 -1 0 2
+Xx 1.618034 -1.000000 0.000000 #  99-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.618034 -3.618034 -1.618034 #  99-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.618034 -3.618034 0.000000 #  99-the tetrahedron 2-th vertex # 3 0 2 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.309017 -3.118034 -0.809017 #  99-the tetrahedron 3-th vertex # 1 0 1 0 0 1 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 1.618034 -1.000000 0.000000 # 100-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 3.236068 -1.000000 -2.618034 # 100-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2
+Xx 3.236068 -2.618034 -1.618034 # 100-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 2.427051 -2.309017 -2.118034 # 100-the tetrahedron 3-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 0 0 1 0 0 1
+Xx 1.618034 -1.000000 0.000000 # 101-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 3.236068 -1.000000 -2.618034 # 101-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2
+Xx 1.618034 0.000000 -2.618034 # 101-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2
+Xx 2.427051 0.309017 -2.118034 # 101-the tetrahedron 3-th vertex # 1 0 1 -1 0 2 1 0 2 0 0 1 -1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 # 102-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 3.236068 -1.000000 -2.618034 # 102-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2
+Xx 4.236068 -1.000000 -1.000000 # 102-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2 1 0 2
+Xx 3.736068 -1.809017 -1.309017 # 102-the tetrahedron 3-th vertex # 3 0 2 -1 0 2 0 0 1 -1 0 2 -1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 # 103-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 3.236068 -1.000000 -2.618034 # 103-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2
+Xx 1.618034 -2.000000 -2.618034 # 103-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2
+Xx 1.618034 -1.000000 -2.618034 # 103-the tetrahedron 3-th vertex # 1 0 1 -1 0 2 1 0 2 -1 0 2 0 0 1 1 0 2
+Xx 1.618034 -1.000000 0.000000 # 104-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 3.236068 -1.000000 -2.618034 # 104-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2
+Xx 3.236068 0.618034 -1.618034 # 104-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 3.736068 -0.190983 -1.309017 # 104-the tetrahedron 3-th vertex # 3 0 2 -1 0 2 0 0 1 0 0 1 -1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 # 105-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.000000 -1.000000 2.618034 # 105-the tetrahedron 1-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2
+Xx 0.000000 -2.618034 1.618034 # 105-the tetrahedron 2-th vertex # 1 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.809017 -2.309017 2.118034 # 105-the tetrahedron 3-th vertex # 1 0 1 1 0 2 -1 0 2 0 0 1 1 0 2 -1 0 2
+Xx 1.618034 -1.000000 0.000000 # 106-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.000000 -1.000000 2.618034 # 106-the tetrahedron 1-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2
+Xx 1.618034 0.000000 2.618034 # 106-the tetrahedron 2-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 0.809017 0.309017 2.118034 # 106-the tetrahedron 3-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 0 0 1 0 0 1
+Xx 1.618034 -1.000000 0.000000 # 107-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.000000 -1.000000 2.618034 # 107-the tetrahedron 1-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2
+Xx -1.000000 -1.000000 1.000000 # 107-the tetrahedron 2-th vertex # 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2 -1 0 2
+Xx -0.500000 -1.809017 1.309017 # 107-the tetrahedron 3-th vertex # 1 0 2 1 0 2 0 0 1 0 0 1 1 0 2 -1 0 2
+Xx 1.618034 -1.000000 0.000000 # 108-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.000000 -1.000000 2.618034 # 108-the tetrahedron 1-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2
+Xx 1.618034 -2.000000 2.618034 # 108-the tetrahedron 2-th vertex # 3 0 2 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2
+Xx 1.618034 -1.000000 2.618034 # 108-the tetrahedron 3-th vertex # 1 0 1 1 0 2 -1 0 2 1 0 2 0 0 1 -1 0 2
+Xx 1.618034 -1.000000 0.000000 # 109-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.000000 -1.000000 2.618034 # 109-the tetrahedron 1-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2
+Xx 0.000000 0.618034 1.618034 # 109-the tetrahedron 2-th vertex # 1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2 1 0 2
+Xx -0.500000 -0.190983 1.309017 # 109-the tetrahedron 3-th vertex # 1 0 2 1 0 2 0 0 1 1 0 2 1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 # 110-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 4.236068 0.618034 0.000000 # 110-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 2.618034 1.618034 0.000000 # 110-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 2.927051 1.118034 0.809017 # 110-the tetrahedron 3-th vertex # 1 0 1 0 0 1 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 # 111-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 4.236068 0.618034 0.000000 # 111-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 4.236068 -1.000000 1.000000 # 111-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 4.236068 -1.000000 0.000000 # 111-the tetrahedron 3-th vertex # 3 0 2 -1 0 2 -1 0 2 0 0 1 -1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 # 112-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 4.236068 0.618034 0.000000 # 112-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 3.236068 0.618034 -1.618034 # 112-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 2.927051 1.118034 -0.809017 # 112-the tetrahedron 3-th vertex # 1 0 1 -1 0 2 0 0 1 1 0 2 -1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 # 113-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 4.236068 0.618034 0.000000 # 113-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 3.236068 0.618034 1.618034 # 113-the tetrahedron 2-th vertex # 3 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 3.736068 -0.190983 1.309017 # 113-the tetrahedron 3-th vertex # 3 0 2 0 0 1 -1 0 2 1 0 2 -1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 # 114-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 4.236068 0.618034 0.000000 # 114-the tetrahedron 1-th vertex # 3 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 4.236068 -1.000000 -1.000000 # 114-the tetrahedron 2-th vertex # 3 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2 1 0 2
+Xx 3.736068 -0.190983 -1.309017 # 114-the tetrahedron 3-th vertex # 3 0 2 -1 0 2 0 0 1 0 0 1 -1 0 2 1 0 2
+Xx 1.618034 -1.000000 0.000000 # 115-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 -2.618034 0.000000 # 115-the tetrahedron 1-th vertex # 1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx -1.000000 -1.000000 1.000000 # 115-the tetrahedron 2-th vertex # 1 0 2 1 0 2 1 0 2 1 0 2 1 0 2 -1 0 2
+Xx -1.000000 -1.000000 0.000000 # 115-the tetrahedron 3-th vertex # 1 0 2 1 0 2 1 0 2 0 0 1 1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 # 116-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 -2.618034 0.000000 # 116-the tetrahedron 1-th vertex # 1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.000000 -2.618034 -1.618034 # 116-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.309017 -3.118034 -0.809017 # 116-the tetrahedron 3-th vertex # 1 0 1 0 0 1 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 1.618034 -1.000000 0.000000 # 117-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 -2.618034 0.000000 # 117-the tetrahedron 1-th vertex # 1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.000000 -2.618034 1.618034 # 117-the tetrahedron 2-th vertex # 1 0 2 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx -0.500000 -1.809017 1.309017 # 117-the tetrahedron 3-th vertex # 1 0 2 1 0 2 0 0 1 0 0 1 1 0 2 -1 0 2
+Xx 1.618034 -1.000000 0.000000 # 118-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 -2.618034 0.000000 # 118-the tetrahedron 1-th vertex # 1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx -1.000000 -1.000000 -1.000000 # 118-the tetrahedron 2-th vertex # 1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2 1 0 2
+Xx -0.500000 -1.809017 -1.309017 # 118-the tetrahedron 3-th vertex # 1 0 2 0 0 1 1 0 2 -1 0 2 1 0 2 0 0 1
+Xx 1.618034 -1.000000 0.000000 # 119-the tetrahedron 0-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 -2.618034 0.000000 # 119-the tetrahedron 1-th vertex # 1 0 2 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.618034 -3.618034 0.000000 # 119-the tetrahedron 2-th vertex # 3 0 2 1 0 2 1 0 2 -1 0 2 1 0 2 -1 0 2
+Xx 0.309017 -3.118034 0.809017 # 119-the tetrahedron 3-th vertex # 1 0 1 1 0 2 0 0 1 -1 0 2 1 0 2 -1 0 2
+volume = 20 40 1 (84.721360)
+  0-the tetrahedron, 1 2 6 (0.706011)
+  1-the tetrahedron, 1 2 6 (0.706011)
+  2-the tetrahedron, 1 2 6 (0.706011)
+  3-the tetrahedron, 1 2 6 (0.706011)
+  4-the tetrahedron, 1 2 6 (0.706011)
+  5-the tetrahedron, 1 2 6 (0.706011)
+  6-the tetrahedron, 1 2 6 (0.706011)
+  7-the tetrahedron, 1 2 6 (0.706011)
+  8-the tetrahedron, 1 2 6 (0.706011)
+  9-the tetrahedron, 1 2 6 (0.706011)
+ 10-the tetrahedron, 1 2 6 (0.706011)
+ 11-the tetrahedron, 1 2 6 (0.706011)
+ 12-the tetrahedron, 1 2 6 (0.706011)
+ 13-the tetrahedron, 1 2 6 (0.706011)
+ 14-the tetrahedron, 1 2 6 (0.706011)
+ 15-the tetrahedron, 1 2 6 (0.706011)
+ 16-the tetrahedron, 1 2 6 (0.706011)
+ 17-the tetrahedron, 1 2 6 (0.706011)
+ 18-the tetrahedron, 1 2 6 (0.706011)
+ 19-the tetrahedron, 1 2 6 (0.706011)
+ 20-the tetrahedron, 1 2 6 (0.706011)
+ 21-the tetrahedron, 1 2 6 (0.706011)
+ 22-the tetrahedron, 1 2 6 (0.706011)
+ 23-the tetrahedron, 1 2 6 (0.706011)
+ 24-the tetrahedron, 1 2 6 (0.706011)
+ 25-the tetrahedron, 1 2 6 (0.706011)
+ 26-the tetrahedron, 1 2 6 (0.706011)
+ 27-the tetrahedron, 1 2 6 (0.706011)
+ 28-the tetrahedron, 1 2 6 (0.706011)
+ 29-the tetrahedron, 1 2 6 (0.706011)
+ 30-the tetrahedron, 1 2 6 (0.706011)
+ 31-the tetrahedron, 1 2 6 (0.706011)
+ 32-the tetrahedron, 1 2 6 (0.706011)
+ 33-the tetrahedron, 1 2 6 (0.706011)
+ 34-the tetrahedron, 1 2 6 (0.706011)
+ 35-the tetrahedron, 1 2 6 (0.706011)
+ 36-the tetrahedron, 1 2 6 (0.706011)
+ 37-the tetrahedron, 1 2 6 (0.706011)
+ 38-the tetrahedron, 1 2 6 (0.706011)
+ 39-the tetrahedron, 1 2 6 (0.706011)
+ 40-the tetrahedron, 1 2 6 (0.706011)
+ 41-the tetrahedron, 1 2 6 (0.706011)
+ 42-the tetrahedron, 1 2 6 (0.706011)
+ 43-the tetrahedron, 1 2 6 (0.706011)
+ 44-the tetrahedron, 1 2 6 (0.706011)
+ 45-the tetrahedron, 1 2 6 (0.706011)
+ 46-the tetrahedron, 1 2 6 (0.706011)
+ 47-the tetrahedron, 1 2 6 (0.706011)
+ 48-the tetrahedron, 1 2 6 (0.706011)
+ 49-the tetrahedron, 1 2 6 (0.706011)
+ 50-the tetrahedron, 1 2 6 (0.706011)
+ 51-the tetrahedron, 1 2 6 (0.706011)
+ 52-the tetrahedron, 1 2 6 (0.706011)
+ 53-the tetrahedron, 1 2 6 (0.706011)
+ 54-the tetrahedron, 1 2 6 (0.706011)
+ 55-the tetrahedron, 1 2 6 (0.706011)
+ 56-the tetrahedron, 1 2 6 (0.706011)
+ 57-the tetrahedron, 1 2 6 (0.706011)
+ 58-the tetrahedron, 1 2 6 (0.706011)
+ 59-the tetrahedron, 1 2 6 (0.706011)
+ 60-the tetrahedron, 1 2 6 (0.706011)
+ 61-the tetrahedron, 1 2 6 (0.706011)
+ 62-the tetrahedron, 1 2 6 (0.706011)
+ 63-the tetrahedron, 1 2 6 (0.706011)
+ 64-the tetrahedron, 1 2 6 (0.706011)
+ 65-the tetrahedron, 1 2 6 (0.706011)
+ 66-the tetrahedron, 1 2 6 (0.706011)
+ 67-the tetrahedron, 1 2 6 (0.706011)
+ 68-the tetrahedron, 1 2 6 (0.706011)
+ 69-the tetrahedron, 1 2 6 (0.706011)
+ 70-the tetrahedron, 1 2 6 (0.706011)
+ 71-the tetrahedron, 1 2 6 (0.706011)
+ 72-the tetrahedron, 1 2 6 (0.706011)
+ 73-the tetrahedron, 1 2 6 (0.706011)
+ 74-the tetrahedron, 1 2 6 (0.706011)
+ 75-the tetrahedron, 1 2 6 (0.706011)
+ 76-the tetrahedron, 1 2 6 (0.706011)
+ 77-the tetrahedron, 1 2 6 (0.706011)
+ 78-the tetrahedron, 1 2 6 (0.706011)
+ 79-the tetrahedron, 1 2 6 (0.706011)
+ 80-the tetrahedron, 1 2 6 (0.706011)
+ 81-the tetrahedron, 1 2 6 (0.706011)
+ 82-the tetrahedron, 1 2 6 (0.706011)
+ 83-the tetrahedron, 1 2 6 (0.706011)
+ 84-the tetrahedron, 1 2 6 (0.706011)
+ 85-the tetrahedron, 1 2 6 (0.706011)
+ 86-the tetrahedron, 1 2 6 (0.706011)
+ 87-the tetrahedron, 1 2 6 (0.706011)
+ 88-the tetrahedron, 1 2 6 (0.706011)
+ 89-the tetrahedron, 1 2 6 (0.706011)
+ 90-the tetrahedron, 1 2 6 (0.706011)
+ 91-the tetrahedron, 1 2 6 (0.706011)
+ 92-the tetrahedron, 1 2 6 (0.706011)
+ 93-the tetrahedron, 1 2 6 (0.706011)
+ 94-the tetrahedron, 1 2 6 (0.706011)
+ 95-the tetrahedron, 1 2 6 (0.706011)
+ 96-the tetrahedron, 1 2 6 (0.706011)
+ 97-the tetrahedron, 1 2 6 (0.706011)
+ 98-the tetrahedron, 1 2 6 (0.706011)
+ 99-the tetrahedron, 1 2 6 (0.706011)
+100-the tetrahedron, 1 2 6 (0.706011)
+101-the tetrahedron, 1 2 6 (0.706011)
+102-the tetrahedron, 1 2 6 (0.706011)
+103-the tetrahedron, 1 2 6 (0.706011)
+104-the tetrahedron, 1 2 6 (0.706011)
+105-the tetrahedron, 1 2 6 (0.706011)
+106-the tetrahedron, 1 2 6 (0.706011)
+107-the tetrahedron, 1 2 6 (0.706011)
+108-the tetrahedron, 1 2 6 (0.706011)
+109-the tetrahedron, 1 2 6 (0.706011)
+110-the tetrahedron, 1 2 6 (0.706011)
+111-the tetrahedron, 1 2 6 (0.706011)
+112-the tetrahedron, 1 2 6 (0.706011)
+113-the tetrahedron, 1 2 6 (0.706011)
+114-the tetrahedron, 1 2 6 (0.706011)
+115-the tetrahedron, 1 2 6 (0.706011)
+116-the tetrahedron, 1 2 6 (0.706011)
+117-the tetrahedron, 1 2 6 (0.706011)
+118-the tetrahedron, 1 2 6 (0.706011)
+119-the tetrahedron, 1 2 6 (0.706011)
