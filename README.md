@@ -42,7 +42,7 @@ If you use PyQCstrc in your research please cite the corresponding [paper](https
 }
 ```
 
-## Documentation
+### Documentation
 
 Documentation can be found on [Docs](https://www.rs.tus.ac.jp/tsunetomo.yamada/pyqcstrc/index.html).
 
