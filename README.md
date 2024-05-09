@@ -18,11 +18,6 @@ Fro more information, see [Docs](https://www.rs.tus.ac.jp/tsunetomo.yamada/pyqcs
 
 ### Publications
 
-PyQCstrc.ico: A computing package for structural modeling of icosahedral quasicrystals,
-T. Yamada
-J. Appl. Crystallogr., 54(4) (2021)
-https://doi.org/10.1107/S1600576721005951
-
 If you use PyQCstrc in your research please cite the corresponding [paper](https://doi.org/10.1107/S1600576721005951):
 ```BibTeX
 @article{yamada2021pyqcstrc,
