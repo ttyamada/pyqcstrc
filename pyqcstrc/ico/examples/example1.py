@@ -34,5 +34,5 @@ od.write_vesta(od2, path='./example1', basename='rtod2', color='p')
 od.write_xyz(od2, path='./example1', basename='rtod2')
 
 common_od = ods.intersection(od1, od2, verbose=0)
-od.writewrite_vesta(common_od, path='./example1', basename='common_od', color='b')
+od.write_vesta(common_od, path='./example1', basename='common_od', color='b')
 od.write_xyz(common_od, path='./example1', basename='common_od')
