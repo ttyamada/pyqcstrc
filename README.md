@@ -9,7 +9,7 @@ pip install --upgrade pip
 pip install pyqcstrc
 ```
 
-Fro more information, see the web site https://www.rs.tus.ac.jp/tsunetomo.yamada/pyqcstrc/
+Fro more information, see [DOCs](https://www.rs.tus.ac.jp/tsunetomo.yamada/pyqcstrc/).
 
 ### Supported versions
 
@@ -26,7 +26,7 @@ https://doi.org/10.1107/S1600576721005951
 
 ## Documentation
 
-Documentation can be found on [ReadTheDocs](https://www.rs.tus.ac.jp/tsunetomo.yamada/pyqcstrc/index.html).
+Documentation can be found on [Docs](https://www.rs.tus.ac.jp/tsunetomo.yamada/pyqcstrc/index.html).
 
 
 ### Requirements
