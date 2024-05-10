@@ -1,6 +1,10 @@
 Changelog
 =========
 
+Versions  0.0.2a2 (2024.05.10)
+------------------------------
+add obj2podatm() in ico2.occupation_domain
+
 Versions  0.0.2a01 (2024.05.08)
 ------------------------------
 a major update: ico2
