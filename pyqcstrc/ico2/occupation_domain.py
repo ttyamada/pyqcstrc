@@ -1618,44 +1618,62 @@ def find_common_vertex(obj):
     else:
         return 
 
-def obj2podatm(obj):
+def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
     
     # common vertex
     vrtx0=find_common_vertex(obj)
-    #
-    # atm
-    vn=numericalc.numerical_vector(vrtx0)
-    print('x=  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f\n'%(\
-    vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
     
-    # generate a list of verices and remove the common vertex from it.
-    vtxs=utils.remove_doubling_in_perp_space(obj)
-    vtxs=utils.remove_vector(vtxs,vrtx0)
-    
-    # pod
-    for vtx in vtxs:
-        vn=numericalc.numerical_vector(vtx)
-        print('ej=  %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f\n'%(\
+    if np.all(vrtx0!=None):
+        
+        if os.path.exists(path) == False:
+            os.makedirs(path)
+        else:
+            pass
+        fatm=open('%s/%s.atm'%(path,basename),'w', encoding="utf-8", errors="ignore")
+        fpod=open('%s/%s.pod'%(path,basename),'w', encoding="utf-8", errors="ignore")
+        
+        #--------
+        #  atm
+        #--------
+        fatm.write('%d \'Em\' 1 %d 1 2.0 0. 0. 1.0 0. 0. 0.\n'%(serial_number,serial_number))
+        
+        vn=numericalc.numerical_vector(vrtx0)
+        fatm.write('x=  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f\n'%(\
         vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
+        
+        # generate a list of verices and remove the common vertex from it.
+        vtxs=utils.remove_doubling_in_perp_space(obj)
+        vtxs=utils.remove_vector(vtxs,vrtx0)
+        
+        #--------
+        #  pod
+        #--------
+        fpod.write('%d %d %d \'comment\'\n'%(serial_number,len(vtxs),2))
+        for vtx in vtxs:
+            vn=numericalc.numerical_vector(vtx)
+            fpod.write('ej=  %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f\n'%(\
+            vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
+        #
+        lst_indx=[]
+        for tetrahedron in obj:
+            for vrtx1 in tetrahedron:
+                for i1 in range(len(vtxs)):
+                    if np.all(vrtx1==vtxs[i1]):
+                        lst_indx.append(i1+1) # add 1 to avoide index 0.
+                        break
+                    else:
+                        pass
+        fpod.write('nth= %d'%(len(vtxs)))
+        for indx in lst_indx:
+            fpod.write(' %d'%(indx))
+        fpod.write('\n')
+        
+        return 0
     
-    lst_indx=[]
-    for tetrahedron in obj:
-        for vrtx1 in tetrahedron:
-            for i1 in range(len(vtxs)):
-                if np.all(vrtx1==vtxs[i1]):
-                    lst_indx.append(i1+1) # add 1 to avoide index 0.
-                    break
-                else:
-                    pass
-    
-    
-    print('nth= %d'%(len(vtxs)))
-    for i in lst_indx:
-        fpod.write(' %d'%(i))
-    print('\n')
-    
-    return 0
-
+    else:
+        print('No common vertex found in the object. pod and atm cannot be created.')
+        return 1
+        
 if __name__ == "__main__":
     
     # import asymmetric part of STRT OD(occupation domain) located at origin,0,0,0,0,0,0.
