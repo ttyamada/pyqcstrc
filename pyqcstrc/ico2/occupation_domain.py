@@ -1166,7 +1166,7 @@ def generate_border_edges(obj):
     triangle_surface=utils.generator_surface_1(obj)
     return utils.surface_cleaner(triangle_surface)
 
-# new in Version 0.0.2a2
+# new in ver0.0.2a2
 def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
     
     def find_common_vertex(obj):
