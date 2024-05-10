@@ -1582,7 +1582,80 @@ def asymmetric(symmetric_obj, position, vecs):
     od_asym = intsct.intersection_two_obj_1(symmetric_obj,aum)
     
     return od_asym
+
+
+
+
+
+def find_common_vertex(obj):
+    """Find common vertex of tetrahedra in obj).
     
+    
+    """
+    counter1=0
+    for i1 in [0,1,2,3]:
+        vtx1=obj[0][i1]
+        xyz1=math1.projection3(vtx1)
+        counter2=0
+        for i2 in range(1,len(obj)):
+            counter3=0
+            for i3 in [0,1,2,3]:
+                xyz2=math1.projection3(obj[i2][i3])
+                if np.all(xyz1==xyz2):
+                    counter3=1
+                    break
+            if counter3==1:
+                counter2+=1
+            else:
+                break
+        if counter2==len(obj)-1:
+            counter1=1
+            break
+        else:
+            pass
+    if counter1!=0:
+        return vtx1
+    else:
+        return 
+
+def obj2podatm(obj):
+    
+    # common vertex
+    vrtx0=find_common_vertex(obj)
+    #
+    # atm
+    vn=numericalc.numerical_vector(vrtx0)
+    print('x=  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f\n'%(\
+    vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
+    
+    # generate a list of verices and remove the common vertex from it.
+    vtxs=utils.remove_doubling_in_perp_space(obj)
+    vtxs=utils.remove_vector(vtxs,vrtx0)
+    
+    # pod
+    for vtx in vtxs:
+        vn=numericalc.numerical_vector(vtx)
+        print('ej=  %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f\n'%(\
+        vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
+    
+    lst_indx=[]
+    for tetrahedron in obj:
+        for vrtx1 in tetrahedron:
+            for i1 in range(len(vtxs)):
+                if np.all(vrtx1==vtxs[i1]):
+                    lst_indx.append(i1+1) # add 1 to avoide index 0.
+                    break
+                else:
+                    pass
+    
+    
+    print('nth= %d'%(len(vtxs)))
+    for i in lst_indx:
+        fpod.write(' %d'%(i))
+    print('\n')
+    
+    return 0
+
 if __name__ == "__main__":
     
     # import asymmetric part of STRT OD(occupation domain) located at origin,0,0,0,0,0,0.

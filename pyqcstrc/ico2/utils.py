@@ -916,10 +916,10 @@ def remove_vector(vts: NDArray[np.int64], vt: NDArray[np.int64]) -> NDArray[np.i
     if num!=0:
         out=np.zeros((len(lst),6,3),dtype=np.int64)
         for i1 in range(len(lst)):
-            out[i1]=vts1[lst[i1]]
+            out[i1]=vts[lst[i1]]
         return out
     else:
-        return vlst1
+        return vts
 
 #################################
 ####
