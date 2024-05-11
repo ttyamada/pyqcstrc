@@ -19,55 +19,55 @@ __package_name__ = 'pyqcstrc'
 
 extensions = [
     Extension('pyqcstrc.ico.math1', 
-    sources=['pyqcstrc/ico/math1.pyx'],
+    sources=['src/pyqcstrc/ico/math1.pyx'],
     include_dirs=['.', get_include()]
     ),
     Extension('pyqcstrc.ico.numericalc', 
-    sources=['pyqcstrc/ico/numericalc.pyx'],
+    sources=['src/pyqcstrc/ico/numericalc.pyx'],
     include_dirs=['.', get_include()]
     ),
     Extension('pyqcstrc.ico.symmetry', 
-    sources=['pyqcstrc/ico/symmetry.pyx'],
+    sources=['src/pyqcstrc/ico/symmetry.pyx'],
     include_dirs=['.', get_include()]
     ),
     Extension('pyqcstrc.ico.utils', 
-    sources=['pyqcstrc/ico/utils.pyx'],
+    sources=['src/pyqcstrc/ico/utils.pyx'],
     include_dirs=['.', get_include()]
     ),
     Extension('pyqcstrc.ico.intsct', 
-    sources=['pyqcstrc/ico/intsct.pyx'],
+    sources=['src/pyqcstrc/ico/intsct.pyx'],
     include_dirs=['.', get_include()]
     ),
     Extension('pyqcstrc.ico.mics', 
-    sources=['pyqcstrc/ico/mics.pyx'],
+    sources=['src/pyqcstrc/ico/mics.pyx'],
     include_dirs=['.', get_include()]
     ),
     #Extension('pyqcstrc.ico.reciprocal', 
-    #sources=['pyqcstrc/ico/reciprocal.pyx'],
+    #sources=['src/pyqcstrc/ico/reciprocal.pyx'],
     #include_dirs=['.', get_include()]
     #),
     Extension('pyqcstrc.dode.symmetry12',
-    sources=['pyqcstrc/dode/symmetry12.pyx'],
+    sources=['src/pyqcstrc/dode/symmetry12.pyx'],
     include_dirs=['.', get_include()]
     ),
     Extension('pyqcstrc.dode.utils12',
-    sources=['pyqcstrc/dode/utils12.pyx'],
+    sources=['src/pyqcstrc/dode/utils12.pyx'],
     include_dirs=['.', get_include()]
     ),
     Extension('pyqcstrc.dode.math12',
-    sources=['pyqcstrc/dode/math12.pyx'],
+    sources=['src/pyqcstrc/dode/math12.pyx'],
     include_dirs=['.', get_include()]
     ),
     Extension('pyqcstrc.dode.numericalc12',
-    sources=['pyqcstrc/dode/numericalc12.pyx'],
+    sources=['src/pyqcstrc/dode/numericalc12.pyx'],
     include_dirs=['.', get_include()]
     ),
     Extension('pyqcstrc.dode.strc12',
-    sources=['pyqcstrc/dode/strc12.pyx'],
+    sources=['src/pyqcstrc/dode/strc12.pyx'],
     include_dirs=['.', get_include()]
     ),
     Extension('pyqcstrc.dode.intsct12',
-    sources=['pyqcstrc/dode/intsct12.pyx'],
+    sources=['src/pyqcstrc/dode/intsct12.pyx'],
     include_dirs=['.', get_include()]
     ),
 ]
@@ -117,17 +117,17 @@ setup(
     #
     #packages=find_packages(),
     packages = [
-        'pyqcstrc/ico2',
+        'src/pyqcstrc/ico2',
         #
         # Comment out when including ico and dode
-        #'pyqcstrc/ico',
-        #'pyqcstrc/dode',
+        #'src/pyqcstrc/ico',
+        #'src/pyqcstrc/dode',
         #
         #
-        #'pyqcstrc/deca',
-        #'pyqcstrc/ico/examples',
-        #'pyqcstrc/ico/xyz',
-        #'pyqcstrc/ico/tests',
+        #'src/pyqcstrc/deca',
+        #'src/pyqcstrc/ico/examples',
+        #'src/pyqcstrc/ico/xyz',
+        #'src/pyqcstrc/ico/tests',
     ],
     include_package_data=True,
     python_requires='>=3.7',
