@@ -4,6 +4,7 @@ Changelog
 Version  0.0.2a2 (2024.05.10)
 ------------------------------
 add obj2podatm() in ico2.occupation_domain
+move sources into src/pyqcstrc directory.
 
 Version  0.0.2a01 (2024.05.08)
 ------------------------------
