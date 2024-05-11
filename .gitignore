@@ -31,3 +31,5 @@ __pycache__/
 *.key
 *.pdf
 *.vesta
+*.atm
+*.pod
