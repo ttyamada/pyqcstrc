@@ -10,7 +10,7 @@ import platform
 from setuptools import setup, find_packages, Extension
 from numpy import get_include
 
-from pyqcstrc.version import __version__, __authors__, __copyright__, __license__, __date__, __docformat__
+from src.pyqcstrc.version import __version__, __authors__, __copyright__, __license__, __date__, __docformat__
 
 from Cython.Distutils import build_ext
 from Cython.Build import cythonize
