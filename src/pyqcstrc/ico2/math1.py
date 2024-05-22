@@ -221,8 +221,8 @@ def mul_vectors(vts: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.i
         return a
     elif vts.ndim==4:
         a=np.zeros(vts.shape,dtype=np.int64)
-        for i1 in range(len(vts[i1])):
-            for i2 in range(len(vts[i1][i2])):
+        for i1 in range(len(vts)):
+            for i2 in range(len(vts[i1])):
                 a[i1][i2]=mul_vector(vts[i1][i2],coeff)
     else:
         print('incorrect shape')
