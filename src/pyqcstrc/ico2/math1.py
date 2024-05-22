@@ -193,9 +193,7 @@ def mul_vector(vt: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.int
     """
     if vt.ndim==2:
         a=np.zeros(vt.shape,dtype=np.int64)
-        #for i in range(len(vt)):
-        #    a[i]=mul(vt[i],coeff)
-        for i, v in enumerate(vt):
+        for i,v in enumerate(vt):
             a[i]=mul(v,coeff)
         return a
     else:
@@ -216,22 +214,16 @@ def mul_vectors(vts: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.i
     -------
     Multiplied vectors: array in TAU-style
     """
-    #if vts.ndim==3:
-    #    a=np.zeros(vts.shape,dtype=np.int64)
-    #    for i in range(len(vts)):
-    #        a[i]=mul_vector(vts[i],coeff)
-    #    return a
-    
     if vts.ndim==3:
         a=np.zeros(vts.shape,dtype=np.int64)
-        for i, vt in enumerate(vts):
+        for i,vt in enumerate(vts):
             a[i]=mul_vector(vt,coeff)
         return a
     elif vts.ndim==4:
         a=np.zeros(vts.shape,dtype=np.int64)
-        for i1, vt in enumerate(vts):
-            for i2, vt1 in enumerate(vt):
-                a[i1][i2]=mul_vector(vt1,coeff)
+        for i1,vt in enumerate(vts):
+            for i2,v in enumerate(vt):
+                a[i1][i2]=mul_vector(v,coeff)
     else:
         print('incorrect shape')
         return
