@@ -28,7 +28,7 @@ def coplanar_check_numeric_tau(pts: NDArray[np.int64], num_iteration: int=5) -> 
     p=get_internal_component_sets_numerical(pts)
     return coplanar_check_numeric(p,num_iteration)
 
-def coplanar_check_numeric(pns: NDArray[np.float_],num_iteration: int=5) -> bool:
+def coplanar_check_numeric(pns: NDArray[np.float64],num_iteration: int=5) -> bool:
     """check the points (pns) are in coplanar or not
     メモ：xyz1とxyz2の選び方次第で、outer_product(v1,v2)が小さくなりcoplanarと間違って判定する場合がある。
     これを避けるために適切なxyz1とxyz2の選び方が必要。以下では、ランダムにxyz1とxyz2の選ぶ。
@@ -136,7 +136,7 @@ def on_out_surface(point: NDArray[np.int64], triangle: NDArray[np.int64]) -> boo
     """
     
     def func(p_xyz,tr_xyz,indx):
-        out=np.zeros((3,3),dtype=np.float64)
+        out=np.zeros((3,3),dtype=np.float6464)
         for i in range(3):
             if i==indx:
                 out[i]=p_xyz
@@ -187,7 +187,7 @@ def numerical_vector(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     array
     """
     n=len(vt)
-    w=np.zeros(n,dtype=np.float64)
+    w=np.zeros(n,dtype=np.float6464)
     for i in range(n):
         w[i]=numeric_value(vt[i])
     return w
@@ -205,7 +205,7 @@ def numerical_vectors(vts: NDArray[np.int64]) -> NDArray[np.int64]:
     array
     """
     n1,n2,_=vts.shape
-    w=np.zeros((n1,n2),dtype=np.float64)
+    w=np.zeros((n1,n2),dtype=np.float6464)
     for i1 in range(n1):
         w[i1]=numerical_vector(vts[i1])
     return w
@@ -246,7 +246,7 @@ def check_intersection_segment_surface_numerical_6d_tau(line_segment: NDArray[np
     tr=get_internal_component_sets_numerical(triangle)
     return check_intersection_segment_surface_numerical(ln,tr)
     
-def check_intersection_segment_surface_numerical(ln: NDArray[np.float_], tr: NDArray[np.float_]) -> bool:
+def check_intersection_segment_surface_numerical(ln: NDArray[np.float64], tr: NDArray[np.float64]) -> bool:
     """check intersection between a line segment and a triangle.
     
     Möller–Trumbore intersection algorithm
@@ -319,7 +319,7 @@ def check_intersection_two_segment_numerical_6d_tau(segment_1: NDArray[np.int64]
     ln2=get_internal_component_sets_numerical(segment_2)
     return check_intersection_two_segment_numerical(ln1,ln2)
 
-def check_intersection_two_segment_numerical(ln1: NDArray[np.float_], ln2: NDArray[np.float_]) -> bool:
+def check_intersection_two_segment_numerical(ln1: NDArray[np.float64], ln2: NDArray[np.float64]) -> bool:
     """check intersection between two line segments.
     
     Parameters
@@ -393,7 +393,7 @@ def triangle_area(a: NDArray[np.int64]) -> float:
     v3=np.cross(v2,v1) # cross product
     return np.sqrt(np.sum(np.abs(v3**2)))/2.0
 
-def triangle_area_numerical(a: NDArray[np.float_]) -> float:
+def triangle_area_numerical(a: NDArray[np.float64]) -> float:
     """Numerial calcuration of area of given triangle, a.
     The coordinates of the tree vertecies of the triangle are given.
     
@@ -430,7 +430,7 @@ def inside_outside_obj_tau(point: NDArray[np.int64], obj: NDArray[np.int64]) -> 
     obj=get_internal_component_sets_numerical(obj)
     return inside_outside_obj(point,obj)
     
-def inside_outside_obj(point: NDArray[np.float_], obj: NDArray[np.float_]) -> bool:
+def inside_outside_obj(point: NDArray[np.float64], obj: NDArray[np.float64]) -> bool:
     """this function judges whether the point is inside an object (set of tetrahedra) or not
         
     Parameters
@@ -467,7 +467,7 @@ def inside_outside_tetrahedron_tau(point: NDArray[np.int64], tetrahedron: NDArra
     tetrahedron=get_internal_component_sets_numerical(tetrahedron)
     return inside_outside_tetrahedron(point,tetrahedron)
 
-def inside_outside_tetrahedron(point: NDArray[np.float_], tetrahedron: NDArray[np.float_]) -> bool:
+def inside_outside_tetrahedron(point: NDArray[np.float64], tetrahedron: NDArray[np.float64]) -> bool:
     """this function judges whether the point is inside a tetrahedron or not
         
     Parameters
@@ -480,7 +480,7 @@ def inside_outside_tetrahedron(point: NDArray[np.float_], tetrahedron: NDArray[n
     vol0=tetrahedron_volume_numerical(tetrahedron)
     
     def small_tetrahedron(indx,p,tetrahedron0):
-        tet=np.zeros((4,3),dtype=np.float64)
+        tet=np.zeros((4,3),dtype=np.float6464)
         for i in range(4):
             if i==indx:
                 tet[i]=p
@@ -534,7 +534,7 @@ def tetrahedron_volume_6d_numerical(tetrahedron: NDArray[np.int64]) -> float:
     a=get_internal_component_sets_numerical(tetrahedron)
     return tetrahedron_volume_numerical(a)
 
-def obj_volume_numerical(obj: NDArray[np.float_]) -> float:
+def obj_volume_numerical(obj: NDArray[np.float64]) -> float:
     """This function returns volume of an object (set of tetrahedra).
         
     Parameters
@@ -547,7 +547,7 @@ def obj_volume_numerical(obj: NDArray[np.float_]) -> float:
         vol+=tetrahedron_volume_numerical(tetrahedron)
     return vol
 
-def tetrahedron_volume_numerical(tetrahedron: NDArray[np.float_]) -> float:
+def tetrahedron_volume_numerical(tetrahedron: NDArray[np.float64]) -> float:
     """This function returns volume of a tetrahedron
         
     Parameters
@@ -555,7 +555,7 @@ def tetrahedron_volume_numerical(tetrahedron: NDArray[np.float_]) -> float:
     tetrahedron: array
         vertex coordinates of the tetrahedron, xyz0,xyz1,xyz2,xyz3
     """
-    xyz=np.zeros((3,3),dtype=np.float64)
+    xyz=np.zeros((3,3),dtype=np.float6464)
     for i in range(3):
         xyz[i]=tetrahedron[i+1]-tetrahedron[0]
     detm = np.linalg.det(xyz)
@@ -570,7 +570,7 @@ def tetrahedron_volume_numerical(tetrahedron: NDArray[np.float_]) -> float:
 
 
 
-def get_internal_component_numerical(vt: NDArray[np.int64]) -> NDArray[np.float_]:
+def get_internal_component_numerical(vt: NDArray[np.int64]) -> NDArray[np.float64]:
     """
     Parameters
     ----------
@@ -580,7 +580,7 @@ def get_internal_component_numerical(vt: NDArray[np.int64]) -> NDArray[np.float_
     vn=numerical_vector(vt)
     return projection3_numerical(vn)
 
-def get_internal_component_sets_numerical(vts: NDArray[np.int64]) -> NDArray[np.float_]:
+def get_internal_component_sets_numerical(vts: NDArray[np.int64]) -> NDArray[np.float64]:
     """parallel and perpendicular components of a 6D lattice vector in direct space.
     
     Parameters
@@ -591,7 +591,7 @@ def get_internal_component_sets_numerical(vts: NDArray[np.int64]) -> NDArray[np.
     vns=numerical_vectors(vts)
     return projection3_sets_numerical(vns)
 
-def projection_numerical(vn: NDArray[np.float_]) -> NDArray[np.float_]:
+def projection_numerical(vn: NDArray[np.float64]) -> NDArray[np.float64]:
     """parallel and perpendicular components of a 6D lattice vector in direct space.
     
     Parameters
@@ -605,9 +605,9 @@ def projection_numerical(vn: NDArray[np.float_]) -> NDArray[np.float_]:
     v4 = -(vn[1]+vn[2]) + TAU*(vn[0]-vn[4]) # x in Eperp
     v5 = -(vn[0]+vn[4]) + TAU*(vn[3]+vn[5]) # y in Eperp
     v6 =  (vn[3]-vn[5]) + TAU*(vn[1]-vn[2]) # z in Eperp
-    return np.array([v1,v2,v3,v4,v5,v6],dtype=np.float64)
+    return np.array([v1,v2,v3,v4,v5,v6],dtype=np.float6464)
 
-def projection_sets_numerical(vns: NDArray[np.float_]) -> NDArray[np.float_]:
+def projection_sets_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
     """parallel and perpendicular components of a 6D lattice vector in direct space.
     
     Parameters
@@ -616,12 +616,12 @@ def projection_sets_numerical(vns: NDArray[np.float_]) -> NDArray[np.float_]:
         set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
     """
     num=len(vns)
-    m=np.zeros((num,6),dtype=np.float64)
+    m=np.zeros((num,6),dtype=np.float6464)
     for i in range(num):
         m[i]=projection_numerical(vns[i])
     return m
     
-def projection3_numerical(vn: NDArray[np.float_]) -> NDArray[np.float_]:
+def projection3_numerical(vn: NDArray[np.float64]) -> NDArray[np.float64]:
     """perpendicular component of a 6D lattice vector in direct space.
     
     Parameters
@@ -632,9 +632,9 @@ def projection3_numerical(vn: NDArray[np.float_]) -> NDArray[np.float_]:
     v4 = -(vn[1]+vn[2]) + TAU*(vn[0]-vn[4]) # x in Eperp
     v5 = -(vn[0]+vn[4]) + TAU*(vn[3]+vn[5]) # y in Eperp
     v6 =  (vn[3]-vn[5]) + TAU*(vn[1]-vn[2]) # z in Eperp
-    return np.array([v4,v5,v6],dtype=np.float64)
+    return np.array([v4,v5,v6],dtype=np.float6464)
 
-def projection3_sets_numerical(vns: NDArray[np.float_]) -> NDArray[np.float_]:
+def projection3_sets_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
     """perpendicular component of a 6D lattice vector in direct space.
     
     Parameters
@@ -643,7 +643,7 @@ def projection3_sets_numerical(vns: NDArray[np.float_]) -> NDArray[np.float_]:
         set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
     """
     num=len(vns)
-    m=np.zeros((num,3),dtype=np.float64)
+    m=np.zeros((num,3),dtype=np.float6464)
     for i in range(num):
         m[i]=projection3_numerical(vns[i])
     return m
