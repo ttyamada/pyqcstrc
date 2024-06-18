@@ -10,4 +10,4 @@ __license__   = 'MIT'
 __copyright__ = 'Tsunetomo Yamada'
 __date__      = "2024/05/10"
 __docformat__ = 'restructuredtext'
-__version__   = '0.0.2a02'
+__version__   = '0.0.2a03'
