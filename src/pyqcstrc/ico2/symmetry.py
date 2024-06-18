@@ -32,6 +32,8 @@ def symop_obj(symop,obj,centre):
             obj1[i]=symop_vecs(symop,vts,centre)
             i+=1
         return obj1
+    elif ndim==2:
+        return symop_vec(symop,obj,centre)
     else:
         print('object has an incorrect shape!')
         return 

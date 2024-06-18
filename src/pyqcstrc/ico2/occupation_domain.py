@@ -140,12 +140,13 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
         path (str): Path of the output XYZ file
         basename (str): Basename of the output XYZ file
         color (str)
-            one of the characters {'k','r','b','p'}, which are short-hand notations 
-            for shades of black, red, blue, and pink, in case where 'vesta' format is
+            one of the characters {'k','r','b','p','l','y','c','s'}, which are short-hand notations 
+            for shades of black, red, blue, pink, lime, yellow, cyan, and silver in case where 'vesta' format is
             selected (default, color = 'k').
         select (str):'simple' or 'normal'
             'simple': Merging tetrahedra into one single objecte
             'normal': Each tetrahedron is set as single objecte (large file)
+            'egdes':  Select this option when the obj is a set of edges.
             'podatm': same as 'simple' but return "vertices" necessary to input 
             (default, select = 'normal')
     Returns:
@@ -187,7 +188,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
     #dmax=5.0
     dmax=10.0
     
-    if select=='simple':
+    if select=='simple' or 'egdes':
         
         if np.all(obj==None):
             print('no volume obj')
@@ -195,10 +196,13 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
         
         else:
             # get independent edges
-            edges = utils.generator_obj_edge(obj, verbose)
+            if select=='simple'
+                edges = utils.generator_obj_edge(obj, verbose)
+            else:
+                edges = obj
             # get independent vertices of the edges
             vertices = utils.remove_doubling_in_perp_space(edges)
-        
+                
             # get bond pairs, [[distance, XXX, YYY],...]
             pairs = []
             for i1 in range(len(edges)):
@@ -1166,7 +1170,7 @@ def generate_border_edges(obj):
     triangle_surface=utils.generator_surface_1(obj)
     return utils.surface_cleaner(triangle_surface)
 
-# new in ver0.0.2a2
+# new in version 0.0.2a2
 def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
     
     def find_common_vertex(obj):

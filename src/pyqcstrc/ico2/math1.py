@@ -193,8 +193,8 @@ def mul_vector(vt: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.int
     """
     if vt.ndim==2:
         a=np.zeros(vt.shape,dtype=np.int64)
-        for i in range(len(vt)):
-            a[i]=mul(vt[i],coeff)
+        for i,v in enumerate(vt):
+            a[i]=mul(v,coeff)
         return a
     else:
         print('incorrect shape')
@@ -216,14 +216,14 @@ def mul_vectors(vts: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.i
     """
     if vts.ndim==3:
         a=np.zeros(vts.shape,dtype=np.int64)
-        for i in range(len(vts)):
-            a[i]=mul_vector(vts[i],coeff)
+        for i,vt in enumerate(vts):
+            a[i]=mul_vector(vt,coeff)
         return a
     elif vts.ndim==4:
         a=np.zeros(vts.shape,dtype=np.int64)
-        for i1 in range(len(vts[i1])):
-            for i2 in range(len(vts[i1][i2])):
-                a[i1][i2]=mul_vector(vts[i1][i2],coeff)
+        for i1,vt in enumerate(vts):
+            for i2,v in enumerate(vt):
+                a[i1][i2]=mul_vector(v,coeff)
     else:
         print('incorrect shape')
         return
@@ -701,13 +701,14 @@ if __name__ == '__main__':
     # test
     
     import random
-    from numericalc import (numeric_value,
-                            numerical_vector,
-                            numerical_vectors,
-                            get_internal_component_numerical,
-                            get_internal_component_sets_numerical,
-                            point_on_segment,
-                            coplanar_check_numeric_tau)
+    from pyqcstrc.ico2.numericalc import (numeric_value,
+                                        numerical_vector,
+                                        numerical_vectors,
+                                        get_internal_component_numerical,
+                                        get_internal_component_sets_numerical,
+                                        point_on_segment,
+                                        coplanar_check_numeric_tau,
+                                        )
     
     ncycle=20
     eps=1e-3
