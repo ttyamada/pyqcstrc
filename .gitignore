@@ -1,6 +1,8 @@
 # Python cache
 __pycache__/
 
+pyqcstrc.egg-info/
+
 .DS_Store
 
 /memo
@@ -13,7 +15,7 @@ __pycache__/
 /MANIFEST.in
 /README.txt
 /README.rst
-/src/pyqcstrc/pyqcstrc.egg-info/
+/src/pyqcstrc/pyqcstrc.egg-info
 /src/pyqcstrc/__pycache__
 /src/pyqcstrc/deca/__pycache__
 /src/pyqcstrc/dode/__pycache__
