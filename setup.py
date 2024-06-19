@@ -16,7 +16,7 @@ from Cython.Distutils import build_ext
 from Cython.Build import cythonize
 
 
-VERSION="0.0.2a05"
+VERSION="0.0.2a08"
 
 # Package meta-data.
 NAME = "pyqcstrc"
