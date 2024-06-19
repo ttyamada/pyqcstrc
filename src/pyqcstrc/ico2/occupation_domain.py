@@ -196,7 +196,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
         
         else:
             # get independent edges
-            if select=='simple'
+            if select=='simple':
                 edges = utils.generator_obj_edge(obj, verbose)
             else:
                 edges = obj
