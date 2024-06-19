@@ -13,7 +13,7 @@ __pycache__/
 /MANIFEST.in
 /README.txt
 /README.rst
-/src/pyqcstrc/pyqcstrc.egg-info
+/src/pyqcstrc/pyqcstrc.egg-info/
 /src/pyqcstrc/__pycache__
 /src/pyqcstrc/deca/__pycache__
 /src/pyqcstrc/dode/__pycache__
