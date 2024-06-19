@@ -13,10 +13,16 @@ __pycache__/
 /MANIFEST.in
 /README.txt
 /README.rst
-/pyqcstrc/__pycache__
-/pyqcstrc/deca/__pycache__
-/pyqcstrc/dode/__pycache__
-/pyqcstrc/ico/__pycache__
+/src/pyqcstrc/pyqcstrc.egg-info
+/src/pyqcstrc/__pycache__
+/src/pyqcstrc/deca/__pycache__
+/src/pyqcstrc/dode/__pycache__
+/src/pyqcstrc/ico/__pycache__
+
+/old_cython
+/scripts
+/tests
+/xyz
 
 *.zip
 # Log files etc
