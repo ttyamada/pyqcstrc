@@ -1,8 +1,0 @@
-4
-./example3/rtod0.xyz
-Xx 0.000000 0.000000 0.000000 #   0-the tetrahedron 0-th vertex # 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
-Xx 2.618034 -1.618034 0.000000 #   0-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2
-Xx 2.618034 0.000000 1.000000 #   0-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
-Xx 2.618034 0.000000 0.000000 #   0-the tetrahedron 3-th vertex # 1 0 2 -1 0 2 -1 0 2 0 0 2 -1 0 2 0 0 2
-volume = 1 2 6 (0.706011)
-  0-the tetrahedron, 1 2 6 (0.706011)

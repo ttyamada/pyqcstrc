@@ -1,7 +1,0 @@
-3
-./test3/obj1.xyz
-Xx 0.000000 0.000000 0.000000 #   0-the triangle 0-th vertex # 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
-Xx 0.500000 1.866025 0.000000 #   0-the triangle 1-th vertex # 0 0 1 0 0 1 1 0 1 -1 0 1 0 0 1 0 0 1
-Xx 0.000000 1.732051 0.000000 #   0-the triangle 2-th vertex # 2 -2 1 -2 2 1 1 0 1 -1 0 1 0 0 1 0 0 1
-area = 3 0 8 (0.375000)
-  0-the triangle, 3 0 8 (0.375000)
