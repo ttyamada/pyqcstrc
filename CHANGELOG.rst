@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version  0.0.2a3 (2024.06.18)
+------------------------------
+minor update for numpy2
+set np.float64
+
 Version  0.0.2a2 (2024.05.10)
 ------------------------------
 add obj2podatm() in ico2.occupation_domain
