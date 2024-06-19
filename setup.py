@@ -12,8 +12,8 @@ from numpy import get_include
 
 #from src.pyqcstrc.version import __version__, __authors__, __email__, __url__, __copyright__, __license__, __date__, __docformat__
 
-from Cython.Distutils import build_ext
-from Cython.Build import cythonize
+#from Cython.Distutils import build_ext
+#from Cython.Build import cythonize
 
 
 VERSION="0.0.2a08"
