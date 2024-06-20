@@ -605,7 +605,7 @@ def projection_numerical(vn: NDArray[np.float64]) -> NDArray[np.float64]:
     v4 = -(vn[1]+vn[2]) + TAU*(vn[0]-vn[4]) # x in Eperp
     v5 = -(vn[0]+vn[4]) + TAU*(vn[3]+vn[5]) # y in Eperp
     v6 =  (vn[3]-vn[5]) + TAU*(vn[1]-vn[2]) # z in Eperp
-    return np.array([v1,v2,v3,v4,v5,v6],dtype=np.float6464)
+    return np.array([v1,v2,v3,v4,v5,v6],dtype=np.float64)
 
 def projection_sets_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
     """parallel and perpendicular components of a 6D lattice vector in direct space.
