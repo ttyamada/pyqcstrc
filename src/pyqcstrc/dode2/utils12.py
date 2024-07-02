@@ -4,11 +4,18 @@
 #
 import sys
 import numpy as np
-
-
-from pyqcstrc.dode2.math12 import dot_product, outer_product, projection, projection3, add, sub, mul, div
-from pyqcstrc.dode2.numericalc12 import point_on_segment, inout_occupation_domain_numerical
-
+from pyqcstrc.dode2.math12 import (dot_product, 
+                                    outer_product, 
+                                    projection, 
+                                    projection3, 
+                                    add, 
+                                    sub, 
+                                    mul, 
+                                    div,
+                                    )
+from pyqcstrc.dode2.numericalc12 import (point_on_segment, 
+                                        inout_occupation_domain_numerical,
+                                        )
 DTYPE_double = np.float64
 DTYPE_int = np.int64
 
@@ -468,60 +475,76 @@ def equivalent_edge(edge1,edge2):
     else:
         return 0 # two edges are equivalent
 
-def np.ndarray remove_doubling_dim4_in_perp_space(obj):
-    # remove 6d coordinates which is doubled in perpendicular space
-    num=len(obj[0])
-    tmp3a=obj.reshape(len(obj)*num,6,3)
-    tmp3b=remove_doubling_dim3_in_perp_space(tmp3a)
-    return tmp3b
-
-def remove_doubling_dim3_in_perp_space(obj):
-    # remove 6d coordinates which is doubled in perpendicular space
-    num=len(obj)
-    if num>1:
-        v4,v5,v6=projection3(obj[0][0],obj[0][1],obj[0][2],obj[0][3],obj[0][4],obj[0][5])
-        tmp3a=np.array([[v4,v5,v6]]) # perpendicular components
-        tmp3b=np.array([obj[0]]) # 6d
-        for i1 in range(1,num):
-            v4,v5,v6=projection3(obj[i1][0],obj[i1][1],obj[i1][2],obj[i1][3],obj[i1][4],obj[i1][5])
-            counter1=0
-            for i2 in range(len(tmp3a)):
-                if np.all(v4==tmp3a[i2][0]) and np.all(v5==tmp3a[i2][1]) and np.all(v6==tmp3a[i2][2]):
-                    counter1+=1
-                    break
-                else:
-                    pass
-            if counter1==0:
-                tmp3a=np.vstack([tmp3a,[[v4,v5,v6]]])
-                tmp3b=np.vstack([tmp3b,[obj[i1]]])
-            else:
-                pass
-        return tmp3b
+#----------------------------
+# Remove doubling
+#----------------------------
+def remove_doubling(vts: NDArray[np.int64]) -> NDArray[np.int64]:
+    """Remove doubling 6d coordinates
+    
+    Parameters
+    ----------
+    obj: array
+        set of 6-dimensional vectors in TAU-style
+    
+    Returns
+    -------
+    obj: array
+        set of 6-dimensional vectors in TAU-style
+    """
+    ndim=vts.ndim
+    if ndim==4:
+        n1,n2,_,_=vts.shape
+        num=n1*n2
+        vts=vts.reshape(num,6,3)
+        return np.unique(vts,axis=0)
+    elif ndim==3:
+        return np.unique(vts,axis=0)
     else:
-        return obj
+        print('ndim should be 3 or 4.')
+        return 
 
-def remove_doubling_dim4(obj):
-    num=len(obj[0])
-    tmp3a=obj.reshape(len(obj)*num,6,3)
-    #tmp3b=remove_doubling_dim3(tmp3a)
-    return remove_doubling_dim3(tmp3a)
+def remove_doubling_in_perp_space(vts: NDArray[np.int64]) -> NDArray[np.int64]:
+    """Remove 6d coordinates which is doubled in Eperp.
+    
+    Parameters
+    ----------
+    vts: array
+        set of 6-dimensional vectors in TAU-style
+    
+    Returns
+    -------
+    vts: array
+        set of 6-dimensional vectors in TAU-style
+    """
+    ndim=vts.ndim
+    if ndim==4:
+        n1,n2,_,_=vts.shape
+        num=n1*n2
+        vst=vts.reshape(num,6,3)
+    elif ndim==3:
+        #num,_,_=vts.shape
+        pass
+    
+    # first run remove_doubling()
+    vts=remove_doubling(vts)
+    num=len(vts)
+    
+    # then, remove doubling in perp space.
+    a=np.zeros((num,3,3),dtype=np.int64)
+    for i in range(num):
+        a[i]=projection3(vts[i])
+    b=np.unique(a,return_index=True,axis=0)[1]
+    num=len(b)
+    a=np.zeros((num,6,3),dtype=np.int64)
+    for i in range(num):
+        a[i]=vts[b[i]]
+    return a
 
-def remove_doubling_dim3(obj):
-    tmp3a=np.array([obj[0]])
-    for i in range(1,len(obj)):
-        #num=len(tmp3a)
-        counter=0
-        for j in range(0,len(tmp3a)):
-            if np.all(obj[i]==tmp3a[j]):
-                counter+=1
-                break
-            else:
-                pass
-        if counter==0:
-            tmp3a=np.vstack([tmp3a,[obj[i]]])
-        else:
-            pass
-    return tmp3a
+
+
+
+
+
 
 def obj_area_6d(obj):
     w1,w2,w3=0,0,1

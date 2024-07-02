@@ -388,3 +388,25 @@ def det_matrix(mtx: NDArray[np.int64]) -> NDArray[np.int64]:
     t1=sub(t1,t2)
     #
     return t1
+
+def matrixpow(ma: NDArray[np.int64], n: int) -> NDArray[np.int64]:
+    """
+    """
+    (mx,my)=ma.shape
+    if mx==my:
+        if n==0:
+            return np.identity(mx)
+        elif n<0:
+            tmp=np.identity(mx)
+            inva = np.linalg.inv(ma)
+            for i in range(-n):
+                tmp=np.dot(tmp,inva)
+            return tmp
+        else:
+            tmp=np.identity(mx)
+            for i in range(n):
+                tmp=np.dot(tmp,ma)
+            return tmp
+    else:
+        print('matrix has not regular shape')
+        return 
