@@ -64,23 +64,23 @@ def sub(a,b):
     b=mul(c,b)
     return add(a,b)
     
-def div(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
+def div(a,b):
     """
-    # division (a/b) in TAU-style
+    # division (a/b) in SIN-style
     
     Parameters
     ----------
     a: array
-        value in TAU-style
+        value in SIN-style
     b: array
-        value in TAU-style
+        value in SIN-style
     
     Returns
     -------
     array
     """
     if b[0]==0 and b[1]==0:
-        print('ERROR_1:division error')
+        print('ERROR 1:division error')
         return 
     else:
         if a[0]==0 and a[1]==0:
@@ -112,22 +112,22 @@ def div(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
                 else:
                     return np.array([int(c1),int(c2),int(c3)],dtype=np.int64)
             else:
-                print('ERROR_2:division error',c1,c2,c3,p1,p2,p3,q1,q2,q3)
+                print('ERROR 2:division error')
                 return 
     
 def mul_vector(vt: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.int64]:
-    """Multiplying a vector by a scalar in TAU-style.
+    """Multiplying a vector by a scalar in SIN-style.
     
     Parameters
     ----------
     vt: array
-        a vector in TAU-style
+        a vector in SIN-style
     coeff: array,
-        a scalar in TAU-style
+        a scalar in SIN-style
     
     Returns
     -------
-    Multiplied vector: array in TAU-style
+    Multiplied vector: array in SIN-style
     """
     if vt.ndim==2:
         a=np.zeros(vt.shape,dtype=np.int64)
@@ -136,21 +136,21 @@ def mul_vector(vt: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.int
         return a
     else:
         print('incorrect shape')
-        return
+        return 
     
 def mul_vectors(vts: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.int64]:
-    """multiplying a set of vectors by a scalar in TAU-style.
+    """multiplying a set of vectors by a scalar in SIN-style.
     
     Parameters
     ----------
     vts: array
-        a set of vectors in TAU-style
+        a set of vectors in SIN-style
     coeff: array,
-        a scalar in TAU-style
+        a scalar in SIN-style
     
     Returns
     -------
-    Multiplied vectors: array in TAU-style
+    Multiplied vectors: array in SIN-style
     """
     if vts.ndim==3:
         a=np.zeros(vts.shape,dtype=np.int64)
@@ -172,13 +172,13 @@ def add_vectors(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int
     Parameters
     ----------
     vt1: array
-        a vector in TAU-style
+        a vector in SIN-style
     vt2: array,
-        a scalar in TAU-style
+        a scalar in SIN-style
     
     Returns
     -------
-    Composition of two vectors: array in TAU-style
+    Composition of two vectors: array in SIN-style
     
     """
     a=np.zeros(vt1.shape,dtype=np.int64)
@@ -192,13 +192,13 @@ def sub_vectors(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int
     Parameters
     ----------
     vt1: array
-        a vector in TAU-style
+        a vector in SIN-style
     vt2: array,
-        a scalar in TAU-style
+        a scalar in SIN-style
     
     Returns
     -------
-    Subtraction of two vectors: array in TAU-style
+    Subtraction of two vectors: array in SIN-style
     """
     if vt1.ndim==2 and vt2.ndim==2:
         const=np.array([-1,0,1],dtype=np.int64)
@@ -243,11 +243,11 @@ def mtrixcal(m1,m2,m3,m4,m5,m6,v):
     ----------
     m1,m2,m3,m4,m5,m6:array for projection materix
     v: array
-        6-dimensional vector in TAU-style
+        6-dimensional vector in SIN-style
 
     Returns
     -------
-    6d vectors projected onto Eperp in TAU-style.
+    6d vectors projected onto Eperp in SIN-style.
     """
     a1=mul(m1,v[0])
     a2=mul(m2,v[1])
@@ -268,13 +268,13 @@ def dot_product(mat1: NDArray[np.int64], mat2:NDArray[np.int64]) -> NDArray[np.i
     Parameters
     ----------
     mat1: ndarray
-        (s,t) in TAU-style
+        (s,t) in SIN-style
     mat2: ndarray
-        (t,u) in TAU-style
+        (t,u) in SIN-style
 
     Returns
     -------
-    Inner product: array in TAU-style
+    Inner product: array in SIN-style
     """
     ndim1=mat1.ndim
     ndim2=mat2.ndim
@@ -319,18 +319,18 @@ def dot_product(mat1: NDArray[np.int64], mat2:NDArray[np.int64]) -> NDArray[np.i
         return 
 
 def outer_product(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int64]:
-    """Outer product of two 3d vectors, v1 and v2 in TAU-style.
+    """Outer product of two 3d vectors, v1 and v2 in SIN-style.
 
     Parameters
     ----------
     v1: array
-        3-dimensional vector in TAU-style
+        3-dimensional vector in SIN-style
     v2: array,
-        3-dimensional vector in TAU-style
+        3-dimensional vector in SIN-style
 
     Returns
     -------
-    Outer product: array in TAU-style
+    Outer product: array in SIN-style
     """
     a=mul(vt1[1],vt2[2])
     b=mul(vt1[2],vt2[1])
@@ -352,11 +352,11 @@ def det_matrix(mtx: NDArray[np.int64]) -> NDArray[np.int64]:
     Parameters
     ----------
     mtx: array
-        3x3 matrix in TAU-style
+        3x3 matrix in SIN-style
 
     Returns
     -------
-    6d vectors projected onto Eperp in TAU-style.
+    6d vectors projected onto Eperp in SIN-style.
     """
     
     t3=mul(mtx[0][0],mtx[1][1])

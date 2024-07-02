@@ -5,31 +5,27 @@
 import sys
 import numpy as np
 
-from pyqcstrc.dode.math12 cimport dot_product, outer_product, projection, projection3, add, sub, mul, div
-from pyqcstrc.dode.numericalc12 cimport point_on_segment, inout_occupation_domain_numerical
+
+from pyqcstrc.dode2.math12 import dot_product, outer_product, projection, projection3, add, sub, mul, div
+from pyqcstrc.dode2.numericalc12 import point_on_segment, inout_occupation_domain_numerical
 
 DTYPE_double = np.float64
 DTYPE_int = np.int64
 
-cdef np.float64_t SIN=np.sqrt(3)/2.0
-cdef np.float64_t TOL=1e-6 # tolerance
+SIN=np.sqrt(3)/2.0
+TOL=1e-6 # tolerance
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-cdef int check_two_vertices(np.ndarray[DTYPE_int_t, ndim=2] vertex1,
-                            np.ndarray[DTYPE_int_t, ndim=2] vertex2,
-                            int verbose):
-    #"""
-    cdef np.ndarray[DTYPE_int_t,ndim=1] a1,a2,a3,b1,b2,b3
-    a1,a2,a3=projection3(vertex1[0],vertex1[1],vertex1[2],vertex1[3],vertex1[4],vertex1[5])
-    b1,b2,b3=projection3(vertex2[0],vertex2[1],vertex2[2],vertex2[3],vertex2[4],vertex2[5])
+def check_two_vertices(vt1,vt2,):
+    
+    a=projection3(vt1)
+    b=projection3(vt2)
     
     if verbose>0:
         print('          check_two_vertices()')
     else:
         pass
-
-    if (np.all(a1==b1) and np.all(a2==b2) and np.all(a3==b3)):
+        
+    if np.all(a==b):
         if verbose>1:
             print('           equivalent')
         else:
@@ -41,27 +37,18 @@ cdef int check_two_vertices(np.ndarray[DTYPE_int_t, ndim=2] vertex1,
         else:
             pass
         return 0
-
-@cython.boundscheck(False)
-@cython.wraparound(False)
-cdef np.ndarray two_segment_into_one(np.ndarray[DTYPE_int_t, ndim=3] line_segment_1,
-                                    np.ndarray[DTYPE_int_t, ndim=3] line_segment_2,
-                                    int verbose):
-    cdef int i,counter
-    cdef list comb
-    cdef np.ndarray[DTYPE_int_t, ndim=1] tmp1
-    cdef np.ndarray[DTYPE_int_t, ndim=1] edge1,removed_vtrx
-    cdef np.ndarray[DTYPE_int_t, ndim=2] edge1a,edge1b,edge2a,edge2b
+        
+def two_segment_into_one(line_segment_1,line_segment_2,verbose):
     
     if verbose>0:
         print('            two_segment_into_one()')
     else:
         pass
-
+        
     comb=[[0,1,0,1],[0,1,1,0],[1,0,0,1]]
     #comb=[[0,1,0,1],[0,1,1,0],[1,0,0,1],[1,0,1,0]]
     counter=0
-
+    
     for i1 in range(len(comb)):
         edge1a=line_segment_1[comb[i1][0]]
         edge1b=line_segment_1[comb[i1][1]]
@@ -80,15 +67,9 @@ cdef np.ndarray two_segment_into_one(np.ndarray[DTYPE_int_t, ndim=3] line_segmen
     if counter!=0:
         return tmp1.reshape(3,6,3)
     else:
-        return np.array([[[0]]])
+        return 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-cdef int check_two_edges(np.ndarray[DTYPE_int_t, ndim=3] edge1,
-                        np.ndarray[DTYPE_int_t, ndim=3] edge2,
-                        int verbose):
-    cdef int flag1,flag2
-    cdef np.ndarray[DTYPE_int_t,ndim=1] tmp1a
+def check_two_edges(edge1,edge2,verbose):
     
     if verbose>0:
         print('         check_two_edges()')
@@ -171,16 +152,9 @@ cdef int check_two_edges(np.ndarray[DTYPE_int_t, ndim=3] edge1,
                 else:
                     return 2
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-cdef np.ndarray triangles_to_edges(np.ndarray[DTYPE_int_t, ndim=4] triangles,int verbose):
+def triangles_to_edges(triangles, verbose):
     # parameter, set of triangles
     # returns, set of edges
-    cdef int i1,i2,ji,j2
-    cdef list combination
-    cdef np.ndarray[DTYPE_int_t,ndim=1] tmp1a,tmp1b
-    cdef np.ndarray[DTYPE_int_t,ndim=3] tmp3a
-    
     if verbose>0:
         print('       triangles_to_edges()')
     else:
@@ -199,8 +173,6 @@ cdef np.ndarray triangles_to_edges(np.ndarray[DTYPE_int_t, ndim=4] triangles,int
                 tmp1b=np.append(tmp1b,tmp1a)
     return tmp1b.reshape(int(len(tmp1b)/36),2,6,3)
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
 cpdef np.ndarray surface_cleaner(np.ndarray[DTYPE_int_t, ndim=4] surface,
                             int num_cycle,
                             int verbose):
@@ -209,13 +181,6 @@ cpdef np.ndarray surface_cleaner(np.ndarray[DTYPE_int_t, ndim=4] surface,
     # 各グループにおいて、三角形の３辺が、他のどの三角形とも共有していない辺を求める
     # そして、２つの辺が１つの辺にまとめられるのであれば、まとめる
     # 辺の集合をアウトプット
-    
-    cdef int flag,counter1,counter2,counter3
-    cdef int i0,i1,i2,i3,i4,i5
-    cdef list list_0,list_1,list_2,skip_list,combination,skip
-    cdef np.ndarray[DTYPE_int_t,ndim=1] tmp1a,tmp1b,tmp1c,tmp1d,tmp1e
-    cdef np.ndarray[DTYPE_int_t,ndim=3] tmp3a,tmp3b,tmp3c
-    cdef np.ndarray[DTYPE_int_t,ndim=4] tmp4a,tmp4b,tmp4c
     
     if verbose>0:
         print('       surface_cleaner()')
@@ -369,17 +334,7 @@ cpdef np.ndarray surface_cleaner(np.ndarray[DTYPE_int_t, ndim=4] surface,
 
     return tmp1c.reshape(int(len(tmp1c)/36), 2,6,3)
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-cpdef np.ndarray shift_object(np.ndarray[DTYPE_int_t, ndim=4] obj,
-                            np.ndarray[DTYPE_int_t, ndim=2] shift,
-                            int vorbose):
-    cdef int i1,i2,i3
-    cdef long n1,n2,n3
-    cdef long v0,v1,v2,v3,v4,v5
-    cdef double vol1,vol2
-    cdef list a
-    cdef np.ndarray[DTYPE_int_t, ndim=4] obj_new
+def shift_object(obj, shift, vorbose):
     
     a=[]
     v0,v1,v2=obj_area_6d(obj)
@@ -414,24 +369,12 @@ cpdef np.ndarray shift_object(np.ndarray[DTYPE_int_t, ndim=4] obj,
         return obj_new
     else:
         print(' fail')
-        return np.array([[[[0]]]])
+        return 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-cpdef np.ndarray generator_obj_outline(np.ndarray[DTYPE_int_t, ndim=4] obj,
-                                    int verbose):
+def generator_obj_outline(obj,verbose):
     #
     # remove doubling segment in a set of triangle in the OD (dim4)
-    #
-    cdef int i,j,k,val,counter1,counter2,counter3
-    #cdef int num1
-    cdef list edge,comb
-    cdef np.ndarray[DTYPE_int_t,ndim=1] tmp1a,tmp1k,tmp1j
-    #cdef np.ndarray[DTYPE_int_t,ndim=1] tmp1
-    cdef np.ndarray[DTYPE_int_t,ndim=2] tmp2
-    cdef np.ndarray[DTYPE_int_t,ndim=3] tmp3
-    cdef np.ndarray[DTYPE_int_t,ndim=4] tmp4a
-    
+    #    
     if verbose>0:
         print('      generator_obj_outline()')
     else:
@@ -485,15 +428,7 @@ cpdef np.ndarray generator_obj_outline(np.ndarray[DTYPE_int_t, ndim=4] obj,
             pass
         return tmp4a
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-cdef np.ndarray find_unique_segments(np.ndarray[DTYPE_int_t, ndim=4] obj):
-    cdef int i,j,k,val,counter1,counter2,counter3
-    cdef list edge,comb
-    cdef np.ndarray[DTYPE_int_t,ndim=1] tmp1a,tmp1k,tmp1j
-    cdef np.ndarray[DTYPE_int_t,ndim=2] tmp2
-    cdef np.ndarray[DTYPE_int_t,ndim=3] tmp3
-    
+def find_unique_segments(obj):
     # initialization of tmp2 by 1st triangle
     #  edge: 0-1,0-2,1-2
     comb=[[0,1],[0,2],[1,2]]
@@ -525,12 +460,7 @@ cdef np.ndarray find_unique_segments(np.ndarray[DTYPE_int_t, ndim=4] obj):
                 pass
     return tmp3
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-cdef int equivalent_edge(np.ndarray[DTYPE_int_t, ndim=1] edge1,\
-                        np.ndarray[DTYPE_int_t, ndim=1] edge2):
-    cdef np.ndarray[DTYPE_int_t,ndim=1] tmp1
-    cdef np.ndarray[DTYPE_int_t,ndim=3] tmp3
+def equivalent_edge(edge1,edge2):
     tmp1=np.append(edge1,edge2)
     tmp3=remove_doubling_dim3_in_perp_space(tmp1.reshape(4,6,3))
     if len(tmp3)!=2:
@@ -538,24 +468,15 @@ cdef int equivalent_edge(np.ndarray[DTYPE_int_t, ndim=1] edge1,\
     else:
         return 0 # two edges are equivalent
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-cpdef np.ndarray remove_doubling_dim4_in_perp_space(np.ndarray[DTYPE_int_t, ndim=4] obj):
+def np.ndarray remove_doubling_dim4_in_perp_space(obj):
     # remove 6d coordinates which is doubled in perpendicular space
-    cdef int num
-    cdef np.ndarray[DTYPE_int_t,ndim=3] tmp3a,tmp3b
     num=len(obj[0])
     tmp3a=obj.reshape(len(obj)*num,6,3)
     tmp3b=remove_doubling_dim3_in_perp_space(tmp3a)
     return tmp3b
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-cpdef np.ndarray remove_doubling_dim3_in_perp_space(np.ndarray[DTYPE_int_t, ndim=3] obj):
+def remove_doubling_dim3_in_perp_space(obj):
     # remove 6d coordinates which is doubled in perpendicular space
-    cdef int i1,i2,counter1,num
-    cdef np.ndarray[DTYPE_int_t,ndim=1] v4,v5,v6
-    cdef np.ndarray[DTYPE_int_t,ndim=3] tmp3a,tmp3b
     num=len(obj)
     if num>1:
         v4,v5,v6=projection3(obj[0][0],obj[0][1],obj[0][2],obj[0][3],obj[0][4],obj[0][5])
@@ -579,21 +500,13 @@ cpdef np.ndarray remove_doubling_dim3_in_perp_space(np.ndarray[DTYPE_int_t, ndim
     else:
         return obj
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-cpdef np.ndarray remove_doubling_dim4(np.ndarray[DTYPE_int_t, ndim=4] obj):
-    cdef int num
-    cdef np.ndarray[DTYPE_int_t,ndim=3] tmp3a
+def remove_doubling_dim4(obj):
     num=len(obj[0])
     tmp3a=obj.reshape(len(obj)*num,6,3)
     #tmp3b=remove_doubling_dim3(tmp3a)
     return remove_doubling_dim3(tmp3a)
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-cpdef np.ndarray remove_doubling_dim3(np.ndarray[DTYPE_int_t, ndim=3] obj):
-    cdef int i,j,counter,num
-    cdef np.ndarray[DTYPE_int_t,ndim=3] tmp3a
+def remove_doubling_dim3(obj):
     tmp3a=np.array([obj[0]])
     for i in range(1,len(obj)):
         #num=len(tmp3a)
@@ -610,35 +523,20 @@ cpdef np.ndarray remove_doubling_dim3(np.ndarray[DTYPE_int_t, ndim=3] obj):
             pass
     return tmp3a
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-cpdef list obj_area_6d(np.ndarray[DTYPE_int_t, ndim=4] obj):
-    cdef int i
-    cdef long v1,v2,v3,w1,w2,w3
+def obj_area_6d(obj):
     w1,w2,w3=0,0,1
     for i in range(len(obj)):
         [v1,v2,v3]=triangle_area_6d(obj[i])
         w1,w2,w3=add(w1,w2,w3,v1,v2,v3)
     return [w1,w2,w3]
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-cpdef list triangle_area_6d(np.ndarray[DTYPE_int_t, ndim=3] triangle):
-    #cdef long v1,v2,v3
-    cdef np.ndarray[DTYPE_int_t,ndim=1] x1i,y1i,z1i,x2i,y2i,z2i,x3i,y3i,z3i,x4i,y4i,z4i
-    x1i,y1i,z1i=projection3(triangle[0][0],triangle[0][1],triangle[0][2],triangle[0][3],triangle[0][4],triangle[0][5])
-    x2i,y2i,z2i=projection3(triangle[1][0],triangle[1][1],triangle[1][2],triangle[1][3],triangle[1][4],triangle[1][5])
-    x3i,y3i,z3i=projection3(triangle[2][0],triangle[2][1],triangle[2][2],triangle[2][3],triangle[2][4],triangle[2][5])
+def triangle_area_6d(triangle):
+    x1i,y1i,z1i=projection3(triangle[0])
+    x2i,y2i,z2i=projection3(triangle[1])
+    x3i,y3i,z3i=projection3(triangle[2])
     return triangle_area(np.array([x1i,y1i,z1i]),np.array([x2i,y2i,z2i]),np.array([x3i,y3i,z3i]))
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-cdef list triangle_area(np.ndarray[DTYPE_int_t, ndim=2] v0,
-                        np.ndarray[DTYPE_int_t, ndim=2] v1,
-                        np.ndarray[DTYPE_int_t, ndim=2] v2):
-    cdef long a1,a2,a3,b1,b2,b3,c1,c2,c3
-    cdef np.ndarray[DTYPE_int_t, ndim=2] a,b,c
-
+def  triangle_area(v0,v1,v2):
     [a1,a2,a3]=sub(v1[0][0],v1[0][1],v1[0][2],v0[0][0],v0[0][1],v0[0][2])
     [b1,b2,b3]=sub(v1[1][0],v1[1][1],v1[1][2],v0[1][0],v0[1][1],v0[1][2])
     [c1,c2,c3]=sub(v1[2][0],v1[2][1],v1[2][2],v0[2][0],v0[2][1],v0[2][2])
@@ -664,13 +562,7 @@ cdef list triangle_area(np.ndarray[DTYPE_int_t, ndim=2] v0,
         [a1,a2,a3]=mul(a1,a2,a3,1,0,2)
     return [a1,a2,a3]
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-cpdef list get_points_inside_obj(np.ndarray[DTYPE_int_t, ndim=4] obj, list step, list nstep):
-    cdef int i1,i2,i3,verbose
-    cdef double x,y,z
-    cdef np.ndarray[DTYPE_double_t, ndim=1] point
-    cdef list xyz
+def get_points_inside_obj(obj, step, nstep):
     xyz=[]
     verbose=0
     for i1 in range(0,nstep[0]+1):

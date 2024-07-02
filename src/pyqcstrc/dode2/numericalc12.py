@@ -15,7 +15,7 @@ def numerical_value(vt):
     """"
     numerical value of a value in SIN-style
     """
-    return vt[0]+SIN*vt[1])(vt[2]
+    return (vt[0]+SIN*vt[1])/vt[2]
     
 def numerical_value_vector(vt):
     """"
@@ -28,13 +28,14 @@ def numerical_value_vector(vt):
     
 def inner_product_numerical(v1, v2):
     return v1[0]*v2[0]+v1[1]*v2[1]+v1[2]*v2[2]
-
+    
 def length_numerical(v):
     return np.sqrt(v[0]**2+v[1]**2+v[2]**2)
-
+    
 def point_on_segment(point,lineA, lineB):
     # judge whether a point is on a line segment, A-B, or not.
     # http://marupeke296.com/COL_2D_No2_PointToLine.html
+    
     p=numerical_value_vector(point)
     xyz0=projection3_numerical(p)
     
@@ -58,152 +59,107 @@ def point_on_segment(point,lineA, lineB):
             return -1 #    P A==B
     else:
         return 2
-
+        
 def get_internal_component_numerical(vt):
     a=numerical_value_vector(vt)
     return projection3_numerical(a)
     
-def get_internal_component_phason_numerical(vec6d,pmatrx):
-    n1=(vec6d[0][0]+SIN*vec6d[0][1])/vec6d[0][2]
-    n2=(vec6d[1][0]+SIN*vec6d[1][1])/vec6d[1][2]
-    n3=(vec6d[2][0]+SIN*vec6d[2][1])/vec6d[2][2]
-    n4=(vec6d[3][0]+SIN*vec6d[3][1])/vec6d[3][2]
-    n5=(vec6d[4][0]+SIN*vec6d[4][1])/vec6d[4][2]
-    n6=(vec6d[5][0]+SIN*vec6d[5][1])/vec6d[5][2]
-    a11=pmatrx[0][0]
-    a12=pmatrx[0][1]
-    a21=pmatrx[1][0]
-    a22=pmatrx[1][1]
-    return projection3_phason_numerical(n1,n2,n3,n4,n5,n6,a11,a12,a21,a22)
-    
-cpdef list projection_numerical(np.ndarray[DTYPE_int_t, ndim=2] vec6d):
-    cdef double n1,n2,n3,n4,n5,n6
-    #cdef double v1,v2,v3,v4,v5,v6
-    cdef double a11,a12,a13,a21,a22,a23,a31,a32,a33
-    n1=(vec6d[0][0]+SIN*vec6d[0][1])/vec6d[0][2]
-    n2=(vec6d[1][0]+SIN*vec6d[1][1])/vec6d[1][2]
-    n3=(vec6d[2][0]+SIN*vec6d[2][1])/vec6d[2][2]
-    n4=(vec6d[3][0]+SIN*vec6d[3][1])/vec6d[3][2]
-    n5=(vec6d[4][0]+SIN*vec6d[4][1])/vec6d[4][2]
-    n6=(vec6d[5][0]+SIN*vec6d[5][1])/vec6d[5][2]
-    #v1,v2,v3,v4,v5,v6=projection_1_numerical(n1,n2,n3,n4,n5,n6)
-    #return [v1,v2,v3,v4,v5,v6]
-    return projection_1_numerical(n1,n2,n3,n4,n5,n6)
-    
-cpdef list projection_1_numerical(double h1,double h2,double h3,double h4,double h5,double h6):
+def projection_1_numerical(vt):
     # projection of a 6d vector onto Eperp, using "SIN-style"
     #
     # NOTE: coefficient (alpha) of the projection matrix is set to be 1.
     # alpha = 2*a/np.sqrt(6)
     # see Yamamoto ActaCrystal (1997)
-    cdef double v1e,v2e,v3e
-    cdef double v1i,v2i,v3i
-    
-    v1e= SIN*h1+h2-0.5*h4
-    v2e=-0.5*h1+h3+SIN*h4
-    v3e=h5 # dummy
-    v1i=-SIN*h1+h2-0.5*h4
-    v2i=-0.5*h1+h3-SIN*h4
-    v3i=h6 # dummy
-    
+    h1=numerical_value(vt[0])
+    h2=numerical_value(vt[1])
+    h3=numerical_value(vt[2])
+    h4=numerical_value(vt[3])
+    h5=numerical_value(vt[4])
+    h6=numerical_value(vt[5])
+    v1e =  SIN*h1+h2-0.5*h4
+    v2e = -0.5*h1+h3+SIN*h4
+    v3e = h5 # dummy
+    v1i = -SIN*h1+h2-0.5*h4
+    v2i = -0.5*h1+h3-SIN*h4
+    v3i = h6 # dummy
     return [v1e,v2e,v3e,v1i,v2i,v3i]
-
-cpdef list projection_2_numerical(double h1,double h2,double h3,double h4,double h5,double h6,
-                                double u11,double u12,
-                                double u21,double u22):
-    # projection of a 6d vector onto Eperp, using "SIN-style"
-    #
-    # NOTE: coefficient (alpha) of the projection matrix is set to be 1.
-    # alpha = 2*a/np.sqrt(6)
-    # see Yamamoto ActaCrystal (1997)
-    cdef double v1e,v2e,v3e
-    cdef double v1i,v2i,v3i
-    v1e=SIN*h1+h2-0.5*h4
-    v2e=-0.5*h1+h3+SIN*h4
-    v3e=h5 # dummy
-    v1i=(-SIN+u11*SIN-0.5*u21)*h1 + (1+u11)*h2 + u21*h3 + (-0.5-0.5*u11+SIN*u21)*h4
-    v2i=(-0.5+SIN*u12-0.5*u22)*h1 + u12*h2 + (1+u22)*h3 + (-SIN-0.5*u12+SIN*u22)*h4
-    v3i=h6 # dummy
-    return [v1e,v2e,v3e,v1i,v2i,v3i]
-
-"""
-cpdef list projection_numerical_phason(np.ndarray[DTYPE_int_t, ndim=2] vec6d,
-                                    np.ndarray[DTYPE_int_t, ndim=3] pmatrx):
-    #
-    # phason matrix being defined using "SIN-style"
-    #
-    cdef double n1,n2,n3,n4,n5,n6
-    cdef double a11,a12,a21,a22
-    n1=(vec6d[0][0]+SIN*vec6d[0][1])/vec6d[0][2]
-    n2=(vec6d[1][0]+SIN*vec6d[1][1])/vec6d[1][2]
-    n3=(vec6d[2][0]+SIN*vec6d[2][1])/vec6d[2][2]
-    n4=(vec6d[3][0]+SIN*vec6d[3][1])/vec6d[3][2]
-    n5=(vec6d[4][0]+SIN*vec6d[4][1])/vec6d[4][2]
-    n6=(vec6d[5][0]+SIN*vec6d[5][1])/vec6d[5][2]
-    a11=(pmatrx[0][0][0]+pmatrx[0][0][1]*SIN)/pmatrx[0][0][2]
-    a12=(pmatrx[0][1][0]+pmatrx[0][1][1]*SIN)/pmatrx[0][1][2]
-    a21=(pmatrx[1][0][0]+pmatrx[1][0][1]*SIN)/pmatrx[1][0][2]
-    a22=(pmatrx[1][1][0]+pmatrx[1][1][1]*SIN)/pmatrx[1][1][2]
-    return projection_2_numerical(n1,n2,n3,n4,n5,n6,a11,a12,a21,a22)
-"""
-
-cpdef list projection_numerical_phason_1(np.ndarray[DTYPE_int_t, ndim=2] vec6d,
-                                    np.ndarray[double, ndim=2] pmatrx):
-    #
-    cdef double n1,n2,n3,n4,n5,n6
-    cdef double a11,a12,a21,a22
-    n1=(vec6d[0][0]+SIN*vec6d[0][1])/vec6d[0][2]
-    n2=(vec6d[1][0]+SIN*vec6d[1][1])/vec6d[1][2]
-    n3=(vec6d[2][0]+SIN*vec6d[2][1])/vec6d[2][2]
-    n4=(vec6d[3][0]+SIN*vec6d[3][1])/vec6d[3][2]
-    n5=(vec6d[4][0]+SIN*vec6d[4][1])/vec6d[4][2]
-    n6=(vec6d[5][0]+SIN*vec6d[5][1])/vec6d[5][2]
-    a11=pmatrx[0][0]
-    a12=pmatrx[0][1]
-    a21=pmatrx[1][0]
-    a22=pmatrx[1][1]
-    return projection_2_numerical(n1,n2,n3,n4,n5,n6,a11,a12,a21,a22)
-
-cdef list projection3_numerical(double h1,
-                                double h2,
-                                double h3,
-                                double h4,
-                                double h5,
-                                double h6):
-    # projection of a 6d vector onto Eperp, using "SIN-style"
-    #
-    # NOTE: coefficient (alpha) of the projection matrix is set to be 1.
-    # alpha = 2*a/np.sqrt(6)
-    # see Yamamoto ActaCrystal (1997)
     
-    cdef double v1i,v2i,v3i
-    v1i=-SIN*h1+h2-0.5*h4
-    v2i=-0.5*h1+h3-SIN*h4
-    v3i=h6 # dummy
+def projection_numerical_phason_1(vt,pmatrx):
+    # projection of a 6d vector onto Eperp, using "SIN-style"
+    #
+    # NOTE: coefficient (alpha) of the projection matrix is set to be 1.
+    # alpha = 2*a/np.sqrt(6)
+    # see Yamamoto ActaCrystal (1997)
+    n1=numerical_value(vt[0])
+    n2=numerical_value(vt[1])
+    n3=numerical_value(vt[2])
+    n4=numerical_value(vt[3])
+    n5=numerical_value(vt[4])
+    n6=numerical_value(vt[5])
+    u11=pmatrx[0][0]
+    u12=pmatrx[0][1]
+    u21=pmatrx[1][0]
+    u22=pmatrx[1][1]
+    v1e = SIN*h1+h2-0.5*h4
+    v2e = -0.5*h1+h3+SIN*h4
+    v3e = h5 # dummy
+    v1i = (-SIN+u11*SIN-0.5*u21)*h1 + (1+u11)*h2 + u21*h3 + (-0.5-0.5*u11+SIN*u21)*h4
+    v2i = (-0.5+SIN*u12-0.5*u22)*h1 + u12*h2 + (1+u22)*h3 + (-SIN-0.5*u12+SIN*u22)*h4
+    v3i = h6 # dummy
+    return [v1e,v2e,v3e,v1i,v2i,v3i]
+    
+def projection3_numerical(vt):
+    # projection of a 6d vector onto Eperp, using "SIN-style"
+    #
+    # NOTE: coefficient (alpha) of the projection matrix is set to be 1.
+    # alpha = 2*a/np.sqrt(6)
+    # see Yamamoto ActaCrystal (1997)
+    h1=numerical_value(vt[0])
+    h2=numerical_value(vt[1])
+    h3=numerical_value(vt[2])
+    h4=numerical_value(vt[3])
+    h5=numerical_value(vt[4])
+    h6=numerical_value(vt[5])
+    v1i = -SIN*h1+h2-0.5*h4
+    v2i = -0.5*h1+h3-SIN*h4
+    v3i = h6 # dummy
     return [v1i,v2i,v3i]
 
-cdef list projection3_phason_numerical(double h1,double h2,double h3,double h4,double h5,double h6,
-                                double u11,double u12,
-                                double u21,double u22):
+def projection3_phason_numerical(vt,pmatrx):
     # projection of a 6d vector onto Eperp, using "SIN-style"
     #
     # NOTE: coefficient (alpha) of the projection matrix is set to be 1.
     # alpha = 2*a/np.sqrt(6)
     # see Yamamoto ActaCrystal (1997)
-    
-    cdef double v1i,v2i,v3i
-    v1i=(-SIN+u11*SIN-0.5*u21)*h1 + (1+u11)*h2 + u21*h3 + (-0.5-0.5*u11+SIN*u21)*h4
-    v2i=(-0.5+SIN*u12-0.5*u22)*h1 + u12*h2 + (1+u22)*h3 + (-SIN-0.5*u12+SIN*u22)*h4
-    v3i=h6 # dummy
+    h1=numerical_value(vt[0])
+    h2=numerical_value(vt[1])
+    h3=numerical_value(vt[2])
+    h4=numerical_value(vt[3])
+    h5=numerical_value(vt[4])
+    h6=numerical_value(vt[5])
+    u11=pmatrx[0][0]
+    u12=pmatrx[0][1]
+    u21=pmatrx[1][0]
+    u22=pmatrx[1][1]
+    v1i = (-SIN+u11*SIN-0.5*u21)*h1 + (1+u11)*h2 + u21*h3 + (-0.5-0.5*u11+SIN*u21)*h4
+    v2i = (-0.5+SIN*u12-0.5*u22)*h1 + u12*h2 + (1+u22)*h3 + (-SIN-0.5*u12+SIN*u22)*h4
+    v3i = h6 # dummy
     return [v1i,v2i,v3i]
 
-cpdef int inout_occupation_domain_numerical(np.ndarray[DTYPE_int_t, ndim=4] obj, 
-                                    np.ndarray[DTYPE_double_t, ndim=1] point,
-                                    int verbose):
-    cdef int i1,i2,counter,num
-    cdef list lst,vec
-    cdef np.ndarray[DTYPE_double_t, ndim=3] triangles
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+def inout_occupation_domain_numerical(obj, point, verbose):
     counter=0
     num=len(obj)
     lst=[]
@@ -224,20 +180,13 @@ cpdef int inout_occupation_domain_numerical(np.ndarray[DTYPE_int_t, ndim=4] obj,
     else:
         return 1
 
-cpdef int inout_occupation_domain_phason_numerical(np.ndarray[DTYPE_int_t, ndim=4] obj, 
-                                    np.ndarray[DTYPE_double_t, ndim=1] point,
-                                    np.ndarray[double, ndim=2] pmatrx,
-                                    int verbose):
-    cdef int i1,i2,counter,num
-    cdef list lst,vec
-    cdef np.ndarray[DTYPE_double_t, ndim=3] triangles
-    
+def inout_occupation_domain_phason_numerical(obj, point, pmatrx, verbose):
     counter=0
     num=len(obj)
     lst=[]
     for i1 in range(num):
         for i2 in range(3):
-            vec=get_internal_component_phason_numerical(obj[i1][i2],pmatrx)
+            vec=projection3_phason_numerical(obj[i1][i2],pmatrx)
             lst.append(vec)
     triangles=np.array(lst).reshape(num,3,3)
     
@@ -252,15 +201,14 @@ cpdef int inout_occupation_domain_phason_numerical(np.ndarray[DTYPE_int_t, ndim=
     else:
         return 1
 
+
+
+
+
+
+
 # numerical version
-cdef int inside_outside_triangle_numerical(np.ndarray[DTYPE_double_t, ndim=1] point,\
-                                            np.ndarray[DTYPE_double_t, ndim=2] triangle,\
-                                            int verbose):
-    cdef np.ndarray[DTYPE_double_t, ndim=1] tmp1
-    cdef np.ndarray[DTYPE_double_t, ndim=2] tmp2
-    cdef double area0,area1,area2,area3
-    cdef list lst
-    
+def inside_outside_triangle_numerical(point,triangle,verbose):
     if verbose>0:
         print('            inside_outside_triangle_numerical()')
     else:
@@ -298,13 +246,7 @@ cdef int inside_outside_triangle_numerical(np.ndarray[DTYPE_double_t, ndim=1] po
     else:
         return 1 # outside
 
-cpdef int inside_outside_triangle(np.ndarray[DTYPE_int_t, ndim=2] point,\
-                                np.ndarray[DTYPE_int_t, ndim=3] triangle,\
-                                int verbose):
-    cdef np.ndarray[DTYPE_int_t, ndim=1] tmp1
-    cdef np.ndarray[DTYPE_int_t, ndim=3] tmp3
-    cdef double area0,area1,area2,area3
-    
+def inside_outside_triangle(point,triangle,verbose):
     if verbose>0:
         print('            inside_outside_triangle()')
     else:
@@ -341,63 +283,33 @@ cpdef int inside_outside_triangle(np.ndarray[DTYPE_int_t, ndim=2] point,\
     else:
         return 1 # outside
 
-cdef double obj_area_6d_numerical(np.ndarray[DTYPE_int_t, ndim=4] obj):
-    cdef int i
-    cdef double area,tmp
+def obj_area_6d_numerical(obj):
     area=0.0
     for i in range(len(obj)):
         area+=triangle_area_6d_numerical(obj[i])
     return area
 
-cdef double triangle_area_6d_numerical(np.ndarray[DTYPE_int_t, ndim=3] triangle):
-    cdef double x0,y0,z0,x1,y1,z1,x2,y2,z2
-    cdef np.ndarray[DTYPE_double_t,ndim=2] tmp2
+def triangle_area_6d_numerical(triangle):
     x0,y0,z0=get_internal_component_numerical(triangle[0])
     x1,y1,z1=get_internal_component_numerical(triangle[1])
     x2,y2,z2=get_internal_component_numerical(triangle[2])
     tmp2=np.array([[x0,y0,z0],[x1,y1,z1],[x2,y2,z2]])
     return triangle_area(tmp2)
 
-cdef double triangle_area(np.ndarray[DTYPE_double_t, ndim=2] triangle):
-    cdef double area
-    cdef np.ndarray[DTYPE_double_t, ndim=1] vec1,vec2,vec3
-
+def triangle_area(triangle):
     vec1=np.array([triangle[1][0]-triangle[0][0],triangle[1][1]-triangle[0][1],triangle[1][2]-triangle[0][2]])
     vec2=np.array([triangle[2][0]-triangle[0][0],triangle[2][1]-triangle[0][1],triangle[2][2]-triangle[0][2]])
-    
     vec3=np.cross(vec2,vec1) # cross product
-    #print(vec3)
     area=np.sqrt(vec3[0]**2+vec3[1]**2+vec3[2]**2)/2.0
     return area
 
-cdef double det_matrix(np.ndarray[DTYPE_double_t,ndim=1] a, np.ndarray[DTYPE_double_t,ndim=1] b, np.ndarray[DTYPE_double_t,ndim=1] c):
+def det_matrix(a,b,c):
     return a[0]*b[1]*c[2]+a[2]*b[0]*c[1]+a[1]*b[2]*c[0]-a[2]*b[1]*c[0]-a[1]*b[0]*c[2]-a[0]*b[2]*c[1]
 
-cdef double dot_matrix(np.ndarray[DTYPE_double_t,ndim=1] a, np.ndarray[DTYPE_double_t,ndim=1] b):
+def dot_matrix(a,b):
     return a[0]*b[0]+a[1]*b[1]+a[2]*b[2]
 
-#@cython.boundscheck(False)
-#@cython.wraparound(False)
-#cdef double dot_matrix(double a1, double a2, double a3, double b1, double b2, double b3):
-#    return a1*b1+a2*b2+a3*b3
-
-cdef double get_numerical(np.ndarray[DTYPE_int_t, ndim=1] a):
-    return (a[0]+a[1]*SIN)/a[2]
-
-cdef list get_vec_numerical(np.ndarray[DTYPE_int_t, ndim=2] b):
-    cdef int i
-    a=[]
-    for i in range(6):
-        a.append(get_numerical(b[i]))
-    return a
-
-cpdef int check_intersection_two_triangles(np.ndarray[DTYPE_int_t, ndim=3] triangle_1,
-                                                np.ndarray[DTYPE_int_t, ndim=3] triangle_2,
-                                                int verbose):
-    cdef int j,counter1,counter2,counter3
-    cdef np.ndarray[DTYPE_int_t,ndim=1] tmp1,tmp1a
-    cdef np.ndarray[DTYPE_int_t,ndim=3] tmp3
-    cdef list comb
+def check_intersection_two_triangles(triangle_1,triangle_2,verbose):
     
     if verbose>0:
         print('       check_intersection_two_triangles()')
@@ -466,11 +378,7 @@ cpdef int check_intersection_two_triangles(np.ndarray[DTYPE_int_t, ndim=3] trian
         pass
     return 1 # no intersecting
 
-cpdef int check_intersection_line_segment_triangle(np.ndarray[DTYPE_int_t, ndim=3] line_segment,
-                                                    np.ndarray[DTYPE_int_t, ndim=3] triangle,
-                                                    int verbose):
-    cdef int j,counter
-    cdef list comb
+def check_intersection_line_segment_triangle(line_segment,triangle,verbose):
     
     if verbose>0:
         print('        check_intersection_line_segment_triangle()')
@@ -498,44 +406,36 @@ cpdef int check_intersection_line_segment_triangle(np.ndarray[DTYPE_int_t, ndim=
             pass
         return 1
 
-cpdef int check_intersection_two_segment_numerical(np.ndarray[DTYPE_int_t, ndim=3] segment_1,
-                                                np.ndarray[DTYPE_int_t, ndim=3] segment_2,
-                                                int verbose):
-    cdef double s,t,
-    cdef double ddx,ddy,ddz
-    cdef double t1,t2,t3,t4,t5,t6
-    cdef double L1ax,L1ay,L1az
-    cdef double L1bx,L1by,L1bz
-    cdef double L2ax,L2ay,L2az
-    cdef double L2bx,L2by,L2bz
-    cdef np.ndarray[DTYPE_double_t,ndim=1] vec1,vecBA,vecCD,vecCE,vecCA
-    cdef np.ndarray[DTYPE_double_t,ndim=1] line1a,line1b,line2a,line2b
-    #cdef np.ndarray[DTYPE_double_t,ndim=1] intvl
-    
+
+
+
+
+
+
+
+
+
+def check_intersection_two_segment_numerical(segment1,segment2,verbose):
     if verbose>0:
         print('         check_intersection_two_segment_numerical()')
     else:
         pass
     
     # line1-A
-    t1,t2,t3,t4,t5,t6=get_vec_numerical(segment_1[0])
-    L1ax,L1ay,L1az=projection3_numerical(t1,t2,t3,t4,t5,t6)
-    line1a=np.array([t1,t2,t3,t4,t5,t6])
+    line1a=numerical_value_vector(segment1[0])
+    L1ax,L1ay,L1az=projection3_numerical(segment1[0])
     
     # line1-B
-    t1,t2,t3,t4,t5,t6=get_vec_numerical(segment_1[1])
-    L1bx,L1by,L1bz=projection3_numerical(t1,t2,t3,t4,t5,t6)
-    line1b=np.array([t1,t2,t3,t4,t5,t6])
+    line1b=numerical_value_vector(segment1[1])
+    L1bx,L1by,L1bz=projection3_numerical(segment1[1])
     
     # line2-A
-    t1,t2,t3,t4,t5,t6=get_vec_numerical(segment_2[0])
-    L2ax,L2ay,L2az=projection3_numerical(t1,t2,t3,t4,t5,t6)
-    line2a=np.array([t1,t2,t3,t4,t5,t6])
+    line2a=numerical_value_vector(segment2[0])
+    L2ax,L2ay,L2az=projection3_numerical(segment2[0])
     
     # line2-B
-    t1,t2,t3,t4,t5,t6=get_vec_numerical(segment_2[1])
-    L2bx,L2by,L2bz=projection3_numerical(t1,t2,t3,t4,t5,t6)
-    line2b=np.array([t1,t2,t3,t4,t5,t6])
+    line2b=numerical_value_vector(segment2[1])
+    L2bx,L2by,L2bz=projection3_numerical(segment2[1])
     
     vecAB=np.array([L1bx-L1ax,L1by-L1ay,L1bz-L1az])
     vecAC=np.array([L2ax-L1ax,L2ay-L1ay,L2az-L1az])
@@ -580,29 +480,21 @@ cpdef int check_intersection_two_segment_numerical(np.ndarray[DTYPE_int_t, ndim=
                     print('          intersection')
                 else:
                     pass
-                #intvl=line1a+s*(line1b-line1a)
-                #t1,t2,t3=projection3_numerical(intvl[0],intvl[1],intvl[2],intvl[3],intvl[4],intvl[5])
-                #return intvl[0],intvl[1],intvl[2],intvl[3],intvl[4],intvl[5],t1,t2,t3
                 return 0
             else:
                 if verbose>1:
                     print('          no intersection')
                 else:
                     pass
-                return 1
+                return 
         else:
             if verbose>1:
                 print('          no intersection')
             else:
                 pass
-            return 1
+            return 
 
-cdef int rough_check_intersection_two_triangles(np.ndarray[DTYPE_int_t, ndim=3] triangle_1,
-                                                np.ndarray[DTYPE_int_t, ndim=3] triangle_2,
-                                                int verbose):
-    cdef double r1,r2,dd
-    cdef np.ndarray[DTYPE_double_t,ndim=1] cen1,cen2
-
+def rough_check_intersection_two_triangles(triangle_1,triangle_2,verbose):
     if verbose>0:
         print('        rough_check_intersection_two_triangles()')
     else:
@@ -628,19 +520,20 @@ cdef int rough_check_intersection_two_triangles(np.ndarray[DTYPE_int_t, ndim=3] 
             pass
         return 1
 
-cdef np.ndarray centroid_obj(np.ndarray[DTYPE_int_t, ndim=3] triangle):
+
+
+
+
+
+
+
+
+def centroid_obj(triangle):
     #  geometric center, centroid of triangle
-    cdef int i1,i2
-    cdef double t1,t2,t3,t4,t5,t6
-    cdef double val
-    cdef np.ndarray[DTYPE_double_t,ndim=2] tmp2a
-    cdef list lsta
-    
     lsta=[]
     for i1 in range(3):
-        t1,t2,t3,t4,t5,t6=get_vec_numerical(triangle[i1])
-        t1,t2,t3=projection3_numerical(t1,t2,t3,t4,t5,t6)
-        lsta.append([t1,t2,t3])
+        tmp=projection3_numerical(triangle[i1])
+        lsta.append(tmp)
     tmp2a=np.array(lsta)
     
     lsta=[]
@@ -652,20 +545,13 @@ cdef np.ndarray centroid_obj(np.ndarray[DTYPE_int_t, ndim=3] triangle):
     
     return np.array(lsta)
 
-cdef double circle_radius(np.ndarray[DTYPE_int_t, ndim=3] triangle,
-                        np.ndarray[DTYPE_double_t, ndim=1] centroid):
+def circle_radius(triangle,centroid):
     #  this transforms a triangle to a circle which covers the triangle
     #  the centre of the circle is the centroid of the triangle.
-    cdef int i1,counter
-    cdef double dd,radius
-    cdef np.ndarray[DTYPE_double_t,ndim=2] tmp2a
-    cdef list lsta
-    
     lsta=[]
     for i1 in range(3):
-        t1,t2,t3,t4,t5,t6=get_vec_numerical(triangle[i1])
-        t1,t2,t3=projection3_numerical(t1,t2,t3,t4,t5,t6)
-        lsta.append([t1,t2,t3])
+        tmp=projection3_numerical(triangle[i1])
+        lsta.append(tmp)
     tmp2a=np.array(lsta)
     
     counter=0
@@ -679,6 +565,13 @@ cdef double circle_radius(np.ndarray[DTYPE_int_t, ndim=3] triangle,
             pass
     return radius
 
-cdef double distance(np.ndarray[DTYPE_double_t, ndim=1] p1,
-                                np.ndarray[DTYPE_double_t, ndim=1] p2):
+
+
+
+
+
+
+
+
+def distance(p1,p2):
     return np.sqrt((p1[0]-p2[0])**2+(p1[1]-p2[1])**2+(p1[2]-p2[2])**2)
