@@ -205,7 +205,7 @@ def numerical_vectors(vts: NDArray[np.int64]) -> NDArray[np.int64]:
     array
     """
     n1,n2,_=vts.shape
-    w=np.zeros((n1,n2),dtype=np.float6464)
+    w=np.zeros((n1,n2),dtype=np.float64)
     for i1 in range(n1):
         w[i1]=numerical_vector(vts[i1])
     return w
@@ -480,7 +480,7 @@ def inside_outside_tetrahedron(point: NDArray[np.float64], tetrahedron: NDArray[
     vol0=tetrahedron_volume_numerical(tetrahedron)
     
     def small_tetrahedron(indx,p,tetrahedron0):
-        tet=np.zeros((4,3),dtype=np.float6464)
+        tet=np.zeros((4,3),dtype=np.float64)
         for i in range(4):
             if i==indx:
                 tet[i]=p
@@ -555,7 +555,7 @@ def tetrahedron_volume_numerical(tetrahedron: NDArray[np.float64]) -> float:
     tetrahedron: array
         vertex coordinates of the tetrahedron, xyz0,xyz1,xyz2,xyz3
     """
-    xyz=np.zeros((3,3),dtype=np.float6464)
+    xyz=np.zeros((3,3),dtype=np.float64)
     for i in range(3):
         xyz[i]=tetrahedron[i+1]-tetrahedron[0]
     detm = np.linalg.det(xyz)
@@ -616,7 +616,7 @@ def projection_sets_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
         set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
     """
     num=len(vns)
-    m=np.zeros((num,6),dtype=np.float6464)
+    m=np.zeros((num,6),dtype=np.float64)
     for i in range(num):
         m[i]=projection_numerical(vns[i])
     return m
@@ -632,7 +632,7 @@ def projection3_numerical(vn: NDArray[np.float64]) -> NDArray[np.float64]:
     v4 = -(vn[1]+vn[2]) + TAU*(vn[0]-vn[4]) # x in Eperp
     v5 = -(vn[0]+vn[4]) + TAU*(vn[3]+vn[5]) # y in Eperp
     v6 =  (vn[3]-vn[5]) + TAU*(vn[1]-vn[2]) # z in Eperp
-    return np.array([v4,v5,v6],dtype=np.float6464)
+    return np.array([v4,v5,v6],dtype=np.float64)
 
 def projection3_sets_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
     """perpendicular component of a 6D lattice vector in direct space.
@@ -643,7 +643,7 @@ def projection3_sets_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
         set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
     """
     num=len(vns)
-    m=np.zeros((num,3),dtype=np.float6464)
+    m=np.zeros((num,3),dtype=np.float64)
     for i in range(num):
         m[i]=projection3_numerical(vns[i])
     return m
