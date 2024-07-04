@@ -4,7 +4,18 @@
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 #
 import sys
-#sys.path.append('.')
+sys.path.append('.')
+from math1 import (add, 
+                                matrixpow, 
+                                dot_product, 
+                                dot_product_1, 
+                                sub_vectors, 
+                                add_vectors,
+                                )
+from dode2.utils import (remove_doubling_in_perp_space, 
+                                remove_doubling,
+                                )
+"""
 from pyqcstrc.dode2.math1 import (add, 
                                 matrixpow, 
                                 dot_product, 
@@ -15,6 +26,7 @@ from pyqcstrc.dode2.math1 import (add,
 from pyqcstrc.dode2.utils import (remove_doubling_in_perp_space, 
                                 remove_doubling,
                                 )
+"""
 import numpy as np
 
 def symop_obj(symop,obj,centre):
@@ -81,13 +93,13 @@ def generator_obj_symmetric_obj(obj,centre):
         print('object has an incorrect shape!')
         return
 
-def generator_obj_symmetric_surface(obj,centre):
+def generator_obj_symmetric_triangle(obj,centre):
     return generator_obj_symmetric_obj(obj,centre)
     
-def generator_obj_symmetric_tetrahedron(obj,centre):
-    return generator_obj_symmetric_obj(obj,centre)
+#def generator_obj_symmetric_tetrahedron(obj,centre):
+#    return generator_obj_symmetric_obj(obj,centre)
 
-def generator_obj_symmetric_tetrahedron_specific_symop(obj,centre,list_of_symmetry_operation_index):
+def generator_obj_symmetric_triangle_specific_symop(obj,centre,list_of_symmetry_operation_index):
     # using specific symmetry operations
     if obj.ndim==3 or obj.ndim==4:
         mop=dodesymop()
@@ -102,7 +114,7 @@ def generator_obj_symmetric_tetrahedron_specific_symop(obj,centre,list_of_symmet
         print('object has an incorrect shape!')
         return
     
-def generator_obj_symmetric_tetrahedron_0(obj,centre,symmetry_operation_index):
+def generator_obj_symmetric_triangle_0(obj,centre,symmetry_operation_index):
     mop=dodesymop()
     return symop_obj(mop[symmetry_operation_index],obj,centre)
 
