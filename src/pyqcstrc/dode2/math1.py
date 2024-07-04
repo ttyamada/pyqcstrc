@@ -460,9 +460,9 @@ def projection3(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     M6=np.array([ 0,-1, 1])
     #v1e=mtrixcal(M5,M1,M0,M4,M0,M0,vt) # sin,1,0,-0.5,0,0
     #v2e=mtrixcal(M4,M0,M1,M5,M0,M0,vt) # -0.5,0,1,sin,0,0
-    #v1i=mtrixcal(M6,M1,M0,M4,M0,M0,vt) # -sin,1,0,-0.5,0,0
+    v1i=mtrixcal(M6,M1,M0,M4,M0,M0,vt) # -sin,1,0,-0.5,0,0
     v2i=mtrixcal(M4,M0,M1,M6,M0,M0,vt) # -0.5,0,1,-sin,0,0
-    v3e=mtrixcal(M0,M0,M0,M0,M1,M0,vt) # 0,0,0,0,1,0
+    #v3e=mtrixcal(M0,M0,M0,M0,M1,M0,vt) # 0,0,0,0,1,0
     v3i=mtrixcal(M0,M0,M0,M0,M0,M1,vt) # 0,0,0,0,0,1
     return np.array([v1i,v2i,v3i],dtype=np.int64)
 
