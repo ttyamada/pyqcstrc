@@ -794,8 +794,8 @@ def sort_vctors(vts: NDArray[np.int64]) -> NDArray[np.int64]:
     out=np.zeros(vts.shape,dtype=np.int64)
     vns=get_internal_component_sets_numerical(vts)
     
-    #tmp=np.argsort(vns,axis=0)
-    tmp=vns[np.argsort(vns[:,0])]
+    tmp=np.argsort(vns,axis=0)
+    #tmp=vns[np.argsort(vns[:,0])]
     for i1 in range(n1):
         out[i1]=vts[tmp[i1][0]]
     return out
