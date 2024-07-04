@@ -12,7 +12,7 @@ from math1 import (add,
                                 sub_vectors, 
                                 add_vectors,
                                 )
-from dode2.utils import (remove_doubling_in_perp_space, 
+from utils import (remove_doubling_in_perp_space, 
                                 remove_doubling,
                                 )
 """
@@ -137,14 +137,14 @@ def dodesymop():
                 [ 0, 0, 0, 1, 0, 0],\
                 [-1, 0, 1, 0, 0, 0],\
                 [ 0, 0, 0, 0, 1, 0],\
-                [ 0, 0, 0, 0, 0, 1]],dtype=DTYPE_int)
+                [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
     # mirror
     m2=np.array([[ 0, 0, 0, 1, 0, 0],\
                 [ 0, 0, 1, 0, 0, 0],\
                 [ 0, 1, 0, 0, 0, 0],\
                 [ 1, 0, 0, 0, 0, 0],\
                 [ 0, 0, 0, 0, 1, 0],\
-                [ 0, 0, 0, 0, 0, 1]],dtype=DTYPE_int)
+                [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
     symop=[]
     for i1 in range(2):
         for i2 in range(12):
@@ -157,8 +157,8 @@ def dodesymop():
 def site_symmetry(site):
     
     vec1=[]
-    centre=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
-    dev=np.array([[-3,4,1],[2,-4,1],[-4,3,1],[3,1,1],[0,0,1],[0,0,1]])
+    centre=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+    dev=np.array([[-3,4,1],[2,-4,1],[-4,3,1],[3,1,1],[0,0,1],[0,0,1]],dtype=np.int64)
     
     # translation
     v1=np.array([[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]]) # (1,0,0,0)
@@ -241,14 +241,14 @@ if __name__ == '__main__':
             v[i1]=generate_random_vector(ndim)
         return v
     
-    def generate_random_tetrahedron():
-        return generate_random_vectors(4)
+    def generate_random_triangle():
+        return generate_random_vectors(3)
     
     cen0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
     
     
     print("TEST: symop_vec()")
-    symop=icosasymop()
+    symop=dodesymop()
     vt=generate_random_vector()
     counter=0
     for sop in symop:
