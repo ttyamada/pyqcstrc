@@ -1,59 +1,105 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+#
 # PyQCstrc - Python library for Quasi-Crystal structure
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
-
+#
 import timeit
 import os
 import sys
-import numpy as np
 #sys.path.append('.')
-
-EPS=1e-6
+import numpy as np
 
 try:
-    import pyqcstrc.dode.math12 as math12
-    #import pyqcstrc.dode.symmetry12 as symmetry12
-    #import pyqcstrc.dode.intsct12 as intsct12
-    #import pyqcstrc.dode.utils12 as utils12
-    #import pyqcstrc.dode.strc12 as strc12
-    #import pyqcstrc.dode.numericalc12 as numericalc12
+    import pyqcstrc.dode2.math1 as math1
+    import pyqcstrc.dode2.utils as utils
+    import pyqcstrc.dode2.numericalc as numericalc
+    import pyqcstrc.dode2.symmetry as symmetry
+    import pyqcstrc.dode2.intsct as intsct
 except ImportError:
     print('import error\n')
 
+TAU=np.sqrt(3)/2.0
 
-SIN=np.sqrt(3)/2.0
-V0=np.array([[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]])
-
-def as_it_is(obj):
+def volume(obj):
+    return utils.obj_area_6d(obj)
+    
+def symmetric(obj,centre):
     """
-    Returns an object as it is,
+    Generate symmterical occupation domain by symmetric elements on the asymmetric unit.
     
     Args:
-        obj (numpy.ndarray): the shape is (num,3,6,3) or (num*3,6,3), where num=numbre_of_triangle.
+        obj (numpy.ndarray):
+            Asymmetric unit of the occupation domain
+            The shape is (num,3,6,3), where num=numbre_of_tetrahedron.
+        centre (numpy.ndarray):
+            6d coordinate of the symmetric centre.
+            The shape is (6,3)
     
     Returns:
-        Occupation domains (numpy.ndarray): the shape is (num,3,6,3), where num=numbre_of_triangle.
+        Symmetric occupation domains (numpy.ndarray):
+            The shape is (num,3,6,3), where num=numbre_of_tetrahedron.
+    
     """
-    
-    if obj.ndim == 3:
-        return obj.reshape(int(len(obj)/3),3,6,3)
-    elif obj.ndim == 4:
-        return obj
+    if obj.ndim==3 or obj.ndim==4:
+        #return symmetry.generator_obj_symmetric_tetrahedron(obj,centre)
+        return symmetry.generator_obj_symmetric_surface(obj,centre)
     else:
-        return 1
-
-def get_perp_component(vt):
-    return math12.projection3(vt)
+        print('object has an incorrect shape!')
+        return 
     
-def write(obj, path = '.', basename = 'tmp', format = 'xyz', color = 'k', dmax = 5.0):
+def symmetric_0(obj,centre,indx_symop):
+    """
+    Generate symmtericic occupation domain by applying symmetric elements on the asymmetric unit.
+    
+    Args:
+        obj (numpy.ndarray):
+            Asymmetric unit of the occupation domain
+            The shape is (num,3,6,3), where num=numbre_of_triangles.
+        centre (numpy.ndarray):
+            6d coordinate of the symmetric centre.
+            The shape is (6,3)
+    
+    Returns:
+        Symmetric occupation domains (numpy.ndarray):
+            The shape is (num,3,6,3), where num=numbre_of_tetrahedron.
+    
+    """
+    if obj.ndim==3 or obj.ndim==4:
+        return symmetry.generator_obj_symmetric_tetrahedron_0(obj,centre,indx_symop)
+    else:
+        print('object has an incorrect shape!')
+        return 
+
+def shift(obj,shift):
+    """
+    Shift the occupation domain.
+    
+    Args:
+        obj (numpy.ndarray):
+            The occupation domain
+            The shape is (num,3,6,3), where num=numbre_of_triangles.
+        shift (numpy.ndarray):
+            6d coordinate to which the occupation domain is shifted.
+            The shape is (6,3)
+        verbose (int):
+            verbose = 0 (silent, default)
+            verbose = 1 (normal)
+    
+    Returns:
+        Shifted occupation domains (numpy.ndarray):
+            The shape is (num,3,6,3), where num=numbre_of_tetrahedron.
+    
+    """
+    return utils.shift_object(obj, shift)
+
+def write(obj, path='.',basename='tmp',format='xyz',color='k',verbose=0,select='tetrahedron'):
     """
     Export occupation domains.
     
     Args:
         obj (numpy.ndarray): the occupation domain
-            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+            The shape is (num,3,6,3), where num=numbre_of_triangles.
         path (str): Path of the output XYZ file
         basename (str): Basename of the output XYZ file
         format (str): format of output file
@@ -63,274 +109,766 @@ def write(obj, path = '.', basename = 'tmp', format = 'xyz', color = 'k', dmax =
             one of the characters {'k','r','b','p'}, which are short-hand notations 
             for shades of black, red, blue, and pink, in case where 'vesta' format is
             selected (default, color = 'k').
-        dmax (float)
-            Distance for bonds in case where 'vesta' format is selected.
-            (default, dmax = 5.0)
     Returns:
         int: 0 (succeed), 1 (fail)
     
     """
     
-    if os.path.exists(path) == False:
+    if os.path.exists(path)==False:
         os.makedirs(path)
     else:
         pass
         
-    if obj.tolist()==[[[[0]]]]:
+    if np.all(obj==None):
         print('    Empty OD')
         return 1
     else:
-        if format == 'vesta' or format == 'v' or format == 'VESTA':
-            write_vesta(obj,path,basename,color,dmax)
+        if format=='vesta' or format=='v' or format=='VESTA':
+            write_vesta(obj, path, basename, color, select='normal', verbose=0)
         elif format == 'xyz':
-            write_xyz(obj,path,basename)
+            write_xyz(obj, path, basename, select, verbose)
         else:
             pass
         return 0
-
-def write_vesta(obj, path, basename, color = 'k', dmax = 5.0, select = 'normal'):
+    
+def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0):
     """
     Export occupation domains in VESTA format.
     
     Args:
         obj (numpy.ndarray): the occupation domain
-            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+            The shape is (num,3,6,3), where num=numbre_of_triangles.
         path (str): Path of the output XYZ file
         basename (str): Basename of the output XYZ file
         color (str)
-            one of the characters {'k','r','b','p'}, which are short-hand notations 
-            for shades of black, red, blue, and pink, in case where 'vesta' format is
+            one of the characters {'k','r','b','p','l','y','c','s'}, which are short-hand notations 
+            for shades of black, red, blue, pink, lime, yellow, cyan, and silver in case where 'vesta' format is
             selected (default, color = 'k').
-        dmax (float)
-            Distance for bonds in case where 'vesta' format is selected.
-            (default, dmax = 5.0)
-        select (str):
+        select (str):'simple' or 'normal'
+            'simple': Merging tetrahedra into one single objecte
+            'normal': Each tetrahedron is set as single objecte (large file)
+            'egdes':  Select this option when the obj is a set of edges.
+            'podatm': same as 'simple' but return "vertices" necessary to input 
             (default, select = 'normal')
     Returns:
-        int: 0 (succeed), 1 (fail)
-    
+        int: 0 (succeed), 1 (fail) when select = 'simple' or 'normal'.
+        ndarray: vertices, when select = 'podatm'.
     """
-    file_name = '%s/%s.vesta'%(path,basename)
-    f = open('%s'%(file_name),'w')
-
-    print('#VESTA_FORMAT_VERSION 3.5.0\n', file=f)
-    for i1 in range(len(obj)):
-        print('MOLECULE\
-        \nTITLE',file=f)
-        print('%s/%s_%d\n'%(path,basename,i1), file=f)
-        print('GROUP\
-        \n1 1 Custom\
-        \nSYMOP\
-        \n 0.000000  0.000000  0.000000  1  0  0    0  1  0    0  0  1    1\
-        \n -1.0 -1.0 -1.0  0 0 0  0 0 0  0 0 0\
-        \nTRANM 0\
-        \n 0.000000  0.000000  0.000000  1  0  0    0  1  0    0  0  1\
-        \nLTRANSL\
-        \n -1\
-        \n 0.000000  0.000000  0.000000  0.000000  0.000000  0.000000\
-        \nLORIENT\
-        \n -1    0    0    0    0\
-        \n 1.000000  0.000000  0.000000  1.000000  0.000000  0.000000\
-        \n 0.000000  0.000000  1.000000  0.000000  0.000000  1.000000\
-        \nLMATRIX\
-        \n 1.000000  0.000000  0.000000  0.000000\
-        \n 0.000000  1.000000  0.000000  0.000000\
-        \n 0.000000  0.000000  1.000000  0.000000\
-        \n 0.000000  0.000000  0.000000  1.000000\
-        \n 0.000000  0.000000  0.000000\
-        \nCELLP\
-        \n  1.000000    1.000000    1.000000  90.000000  90.000000  90.000000\
-        \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
-        \nSTRUC', file=f)
-        for i2 in range(len(obj[i1])):
-            a4,a5,a6 = math12.projection3(obj[i1][i2][0],obj[i1][i2][1],obj[i1][i2][2],obj[i1][i2][3],obj[i1][i2][4],obj[i1][i2][5])
-            #print(a4,a5,a6)
-            print('%4d Xx        Xx%d  1.0000    %8.6f %8.6f %8.6f        1'%\
-            (i2+1,i2+1,(a4[0]+a4[1]*SIN)/a4[2],(a5[0]+a5[1]*SIN)/a5[2],(a6[0]+a6[1]*SIN)/a6[2]), file=f)
-            print('                             0.000000    0.000000    0.000000  0.00', file=f)
-        print('  0 0 0 0 0 0 0\
-        \nTHERI 0', file = f)
-        for i2 in range(len(obj[i1])):
-            print('  %d        Xx%d  1.000000'%(i2+1,i2+1), file=f)
-        print('  0 0 0\
-        \nSHAPE\
-        \n  0         0         0         0    0.000000  0    192    192    192    192\
-        \nBOUND\
-        \n         0          1        0          1        0          1\
-        \n  0    0    0    0  0\
-        \nSBOND', file = f)
-        if color == 'r':
-            print('  1     Xx     Xx     0.00000     %3.2f  0  1  1  0  2  0.250  2.000 255 0 0'%(dmax), file=f)
-        elif color == 'b':
-            print('  1     Xx     Xx     0.00000     %3.2f  0  1  1  0  2  0.250  2.000 0 0 255'%(dmax), file=f)
-        elif color == 'k':
-            print('  1     Xx     Xx     0.00000     %3.2f  0  1  1  0  2  0.250  2.000 127 127 127'%(dmax), file=f)
-        elif color == 'p':
-            print('  1     Xx     Xx     0.00000     %3.2f  0  1  1  0  2  0.250  2.000 255 0 255'%(dmax), file=f)
+    
+    if os.path.exists(path)==False:
+        os.makedirs(path)
+    else:
+        pass
+    
+    def colors(code):
+        if code=='red' or code=='r':
+            a = [255,0,0]
+        elif code=='blue' or code=='b':
+            a = [0,0,255]
+        elif code=='black' or code=='k':
+            a = [127,127,127]
+        elif code=='pink' or code=='p':
+            a = [255,0,255]
+        elif code=='lime' or code=='l':
+            a = [0,255,0]
+        elif code=='yellow' or code=='y':
+            a = [255,255,0]
+        elif code=='cyan' or code=='c':
+            a = [0,255,255]
+        elif code=='silver' or code=='s':
+            a = [192,192,192]
+        elif len(code)==3:
+            a = code
         else:
-            print('  1     Xx     Xx     0.00000     %3.2f  0  1  1  0  2  0.250  2.000 127 127 127'%(dmax), file=f)
-        print('  0 0 0 0\
-        \nSITET', file = f)
-        for i2 in range(len(obj[i1])):
-            print('    %d        Xx%d  0.0100  76  76  76  76  76  76 204  0'%(i2+1,i2+1), file=f)
-        print('  0 0 0 0 0 0\
-        \nVECTR\
-        \n 0 0 0 0 0\
-        \nVECTT\
-        \n 0 0 0 0 0\
-        \nSPLAN\
-        \n  0    0    0    0\
-        \nLBLAT\
-        \n -1\
-        \nLBLSP\
-        \n -1\
-        \nDLATM\
-        \n -1\
-        \nDLBND\
-        \n -1\
-        \nDLPLY\
-        \n -1\
-        \nPLN2D\
-        \n  0    0    0    0', file = f)
-    print('ATOMT\
-    \n  1        Xx  0.0100  76  76  76  76  76  76 204\
-    \n  0 0 0 0 0 0\
-    \nSCENE\
-    \n-0.538344 -0.838391  0.085359  0.000000\
-    \n-0.362057  0.138632 -0.921789  0.000000\
-    \n 0.760986 -0.527145 -0.378177  0.000000\
-    \n 0.000000  0.000000  0.000000  1.000000\
-    \n  0.000    0.000\
-    \n  0.000\
-    \n  1.320\
-    \nHBOND 0 2\
-    \n\
-    \nSTYLE\
-    \nDISPF 37753794\
-    \nMODEL    0  1  0\
-    \nSURFS    0  1  1\
-    \nSECTS  32  1\
-    \nFORMS    0  1\
-    \nATOMS    0  0  1\
-    \nBONDS    2\
-    \nPOLYS    1\
-    \nVECTS 1.000000\
-    \nFORMP\
-    \n  1  1.0    0    0    0\
-    \nATOMP\
-    \n 24  24    0  50  2.0    0\
-    \nBONDP\
-    \n  1  16  0.250  2.000 127 127 127\
-    \nPOLYP\
-    \n 204 1  1.000 180 180 180\
-    \nISURF\
-    \n  0    0    0    0\
-    \nTEX3P\
-    \n  1  0.00000E+00  1.00000E+00\
-    \nSECTP\
-    \n  1  5.00000E-01  5.00000E-01  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00\
-    \nCONTR\
-    \n 0.1 -1 1 1 10 -1 2 5\
-    \n 2 1 2 1\
-    \n    0    0    0\
-    \n    0    0    0\
-    \n    0    0    0\
-    \n    0    0    0\
-    \nHKLPP\
-    \n 192 1  1.000 255    0 255\
-    \nUCOLP\
-    \n    0    1  1.000    0    0    0\
-    \nCOMPS 0\
-    \nLABEL 1     12  1.000 0\
-    \nPROJT 0  0.962\
-    \nBKGRC\
-    \n 255 255 255\
-    \nDPTHQ 1 -0.5000  3.5000\
-    \nLIGHT0 1\
-    \n 1.000000  0.000000  0.000000  0.000000\
-    \n 0.000000  1.000000  0.000000  0.000000\
-    \n 0.000000  0.000000  1.000000  0.000000\
-    \n 0.000000  0.000000  0.000000  1.000000\
-    \n 0.000000  0.000000 20.000000  0.000000\
-    \n 0.000000  0.000000 -1.000000\
-    \n  26  26  26 255\
-    \n 179 179 179 255\
-    \n 255 255 255 255\
-    \nLIGHT1\
-    \n 1.000000  0.000000  0.000000  0.000000\
-    \n 0.000000  1.000000  0.000000  0.000000\
-    \n 0.000000  0.000000  1.000000  0.000000\
-    \n 0.000000  0.000000  0.000000  1.000000\
-    \n 0.000000  0.000000 20.000000  0.000000\
-    \n 0.000000  0.000000 -1.000000\
-    \n    0    0    0    0\
-    \n    0    0    0    0\
-    \n    0    0    0    0\
-    \nLIGHT2\
-    \n 1.000000  0.000000  0.000000  0.000000\
-    \n 0.000000  1.000000  0.000000  0.000000\
-    \n 0.000000  0.000000  1.000000  0.000000\
-    \n 0.000000  0.000000  0.000000  1.000000\
-    \n 0.000000  0.000000 20.000000  0.000000\
-    \n 0.000000  0.000000 -1.000000\
-    \n    0    0    0    0\
-    \n    0    0    0    0\
-    \n    0    0    0    0\
-    \nLIGHT3\
-    \n 1.000000  0.000000  0.000000  0.000000\
-    \n 0.000000  1.000000  0.000000  0.000000\
-    \n 0.000000  0.000000  1.000000  0.000000\
-    \n 0.000000  0.000000  0.000000  1.000000\
-    \n 0.000000  0.000000 20.000000  0.000000\
-    \n 0.000000  0.000000 -1.000000\
-    \n    0    0    0    0\
-    \n    0    0    0    0\
-    \n    0    0    0    0\
-    \nATOMM\
-    \n 204 204 204 255\
-    \n  25.600\
-    \nBONDM\
-    \n 255 255 255 255\
-    \n 128.000\
-    \nPOLYM\
-    \n 255 255 255 255\
-    \n 128.000\
-    \nSURFM\
-    \n    0    0    0 255\
-    \n 128.000\
-    \nFORMM\
-    \n 255 255 255 255\
-    \n 128.000\
-    \nHKLPM\
-    \n 255 255 255 255\
-    \n 128.000',file = f)
-
-    f.close()
-    #write_vesta_separate(obj, path, basename, color, dmax)
-    print('    written in %s'%(file_name))
-
-    return 0
-
-def write_xyz(obj, path, basename):
+            a = [127,127,127]
+        return a
+    
+    file_name='%s/%s.vesta'%(path,basename)
+    f=open('%s'%(file_name),'w')
+    
+    #dmax=5.0
+    dmax=10.0
+    
+    if select=='simple' or 'egdes':
+        
+        if np.all(obj==None):
+            print('no volume obj')
+            return 0
+        
+        else:
+            # get independent edges
+            if select=='simple':
+                edges = utils.generator_obj_edge(obj, verbose)
+            else:
+                edges = obj
+            # get independent vertices of the edges
+            vertices = utils.remove_doubling_in_perp_space(edges)
+                
+            # get bond pairs, [[distance, XXX, YYY],...]
+            pairs = []
+            for i1 in range(len(edges)):
+                dist=intsct.distance_in_perp_space(edges[i1][0],edges[i1][1])
+                a=[dist]
+                for i2 in range(2):
+                    for i3 in range(len(vertices)):
+                        tmp=np.vstack([edges[i1][i2],vertices[i3]])
+                        tmp=utils.remove_doubling_in_perp_space(tmp.reshape(2,6,3))
+                        if len(tmp)==1:
+                            a.append(i3)
+                            break
+                        else:
+                            pass
+                pairs.append(a)
+        
+            print('#VESTA_FORMAT_VERSION 3.5.0\n', file=f)
+            print('MOLECULE\
+            \nTITLE',file=f)
+            print('%s/%s\n'%(path,basename), file=f)
+            print('GROUP\
+            \n1 1 Custom\
+            \nSYMOP\
+            \n 0.000000  0.000000  0.000000  1  0  0    0  1  0    0  0  1    1\
+            \n -1.0 -1.0 -1.0  0 0 0  0 0 0  0 0 0\
+            \nTRANM 0\
+            \n 0.000000  0.000000  0.000000  1  0  0    0  1  0    0  0  1\
+            \nLTRANSL\
+            \n -1\
+            \n 0.000000  0.000000  0.000000  0.000000  0.000000  0.000000\
+            \nLORIENT\
+            \n -1    0    0    0    0\
+            \n 1.000000  0.000000  0.000000  1.000000  0.000000  0.000000\
+            \n 0.000000  0.000000  1.000000  0.000000  0.000000  1.000000\
+            \nLMATRIX\
+            \n 1.000000  0.000000  0.000000  0.000000\
+            \n 0.000000  1.000000  0.000000  0.000000\
+            \n 0.000000  0.000000  1.000000  0.000000\
+            \n 0.000000  0.000000  0.000000  1.000000\
+            \n 0.000000  0.000000  0.000000\
+            \nCELLP\
+            \n  1.000000    1.000000    1.000000  90.000000  90.000000  90.000000\
+            \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
+            \nSTRUC', file=f)
+            i2=0
+            for vrtx in vertices:
+                xyz = math1.projection3(vrtx)
+                xyz=numericalc.numerical_vector(xyz)
+                print('%4d A        A%d  1.0000    %8.6f %8.6f %8.6f        1'%\
+                (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
+                i2+=1
+                print('                             0.000000    0.000000    0.000000  0.00', file=f)
+            print('  0 0 0 0 0 0 0\
+            \nTHERI 0', file = f)
+            i2=0
+            for __ in vertices:
+                print('  %d        A%d  1.000000'%(i2+1,i2+1), file=f)
+                i2+=1
+            print('  0 0 0\
+            \nSHAPE\
+            \n  0         0         0         0    0.000000  0    192    192    192    192\
+            \nBOUND\
+            \n         0          1        0          1        0          1\
+            \n  0    0    0    0  0\
+            \nSBOND', file = f)
+            clr=colors(color)
+            i2=0
+            for pair in pairs:
+                print('  %d   A%d   A%d   %8.6f   %8.6f  0  1  1  1  2  0.250  2.000 %3d %3d %3d'%(\
+                i2+1, pair[1]+1, pair[2]+1, pair[0]-0.01, pair[0]+0.01, clr[0], clr[1], clr[2]), file=f)
+                i2+=1
+            print('  0 0 0 0\
+            \nSITET', file = f)
+            i2=0
+            for __ in vertices:
+                print('    %d        A%d  0.100  76  76  76  76  76  76 204  0'%(i2+1,i2+1), file=f)
+                i2+=1
+            print('  0 0 0 0 0 0\
+            \nVECTR\
+            \n 0 0 0 0 0\
+            \nVECTT\
+            \n 0 0 0 0 0\
+            \nSPLAN\
+            \n  0    0    0    0\
+            \nLBLAT\
+            \n -1\
+            \nLBLSP\
+            \n -1\
+            \nDLATM\
+            \n -1\
+            \nDLBND\
+            \n -1\
+            \nDLPLY\
+            \n -1\
+            \nPLN2D\
+            \n  0    0    0    0', file = f)
+        
+            print('ATOMT\
+            \n  1        A  0.0100  76  76  76  76  76  76 204\
+            \n  0 0 0 0 0 0\
+            \nSCENE\
+            \n-0.538344 -0.838391  0.085359  0.000000\
+            \n-0.362057  0.138632 -0.921789  0.000000\
+            \n 0.760986 -0.527145 -0.378177  0.000000\
+            \n 0.000000  0.000000  0.000000  1.000000\
+            \n  0.000    0.000\
+            \n  0.000\
+            \n  1.320\
+            \nHBOND 0 2\
+            \n\
+            \nSTYLE\
+            \nDISPF 37753794\
+            \nMODEL    0  1  0\
+            \nSURFS    0  1  1\
+            \nSECTS  32  1\
+            \nFORMS    0  1\
+            \nATOMS    0  0  1\
+            \nBONDS    2\
+            \nPOLYS    1\
+            \nVECTS 1.000000\
+            \nFORMP\
+            \n  1  1.0    0    0    0\
+            \nATOMP\
+            \n 24  24    0  50  2.0    0\
+            \nBONDP\
+            \n  1  16  0.250  2.000 127 127 127\
+            \nPOLYP\
+            \n 204 1  1.000 180 180 180\
+            \nISURF\
+            \n  0    0    0    0\
+            \nTEX3P\
+            \n  1  0.00000E+00  1.00000E+00\
+            \nSECTP\
+            \n  1  5.00000E-01  5.00000E-01  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00\
+            \nCONTR\
+            \n 0.1 -1 1 1 10 -1 2 5\
+            \n 2 1 2 1\
+            \n    0    0    0\
+            \n    0    0    0\
+            \n    0    0    0\
+            \n    0    0    0\
+            \nHKLPP\
+            \n 192 1  1.000 255    0 255\
+            \nUCOLP\
+            \n    0    1  1.000    0    0    0\
+            \nCOMPS 0\
+            \nLABEL 1     12  1.000 0\
+            \nPROJT 0  0.962\
+            \nBKGRC\
+            \n 255 255 255\
+            \nDPTHQ 1 -0.5000  3.5000\
+            \nLIGHT0 1\
+            \n 1.000000  0.000000  0.000000  0.000000\
+            \n 0.000000  1.000000  0.000000  0.000000\
+            \n 0.000000  0.000000  1.000000  0.000000\
+            \n 0.000000  0.000000  0.000000  1.000000\
+            \n 0.000000  0.000000 20.000000  0.000000\
+            \n 0.000000  0.000000 -1.000000\
+            \n  26  26  26 255\
+            \n 179 179 179 255\
+            \n 255 255 255 255\
+            \nLIGHT1\
+            \n 1.000000  0.000000  0.000000  0.000000\
+            \n 0.000000  1.000000  0.000000  0.000000\
+            \n 0.000000  0.000000  1.000000  0.000000\
+            \n 0.000000  0.000000  0.000000  1.000000\
+            \n 0.000000  0.000000 20.000000  0.000000\
+            \n 0.000000  0.000000 -1.000000\
+            \n    0    0    0    0\
+            \n    0    0    0    0\
+            \n    0    0    0    0\
+            \nLIGHT2\
+            \n 1.000000  0.000000  0.000000  0.000000\
+            \n 0.000000  1.000000  0.000000  0.000000\
+            \n 0.000000  0.000000  1.000000  0.000000\
+            \n 0.000000  0.000000  0.000000  1.000000\
+            \n 0.000000  0.000000 20.000000  0.000000\
+            \n 0.000000  0.000000 -1.000000\
+            \n    0    0    0    0\
+            \n    0    0    0    0\
+            \n    0    0    0    0\
+            \nLIGHT3\
+            \n 1.000000  0.000000  0.000000  0.000000\
+            \n 0.000000  1.000000  0.000000  0.000000\
+            \n 0.000000  0.000000  1.000000  0.000000\
+            \n 0.000000  0.000000  0.000000  1.000000\
+            \n 0.000000  0.000000 20.000000  0.000000\
+            \n 0.000000  0.000000 -1.000000\
+            \n    0    0    0    0\
+            \n    0    0    0    0\
+            \n    0    0    0    0\
+            \nATOMM\
+            \n 204 204 204 255\
+            \n  25.600\
+            \nBONDM\
+            \n 255 255 255 255\
+            \n 128.000\
+            \nPOLYM\
+            \n 255 255 255 255\
+            \n 128.000\
+            \nSURFM\
+            \n    0    0    0 255\
+            \n 128.000\
+            \nFORMM\
+            \n 255 255 255 255\
+            \n 128.000\
+            \nHKLPM\
+            \n 255 255 255 255\
+            \n 128.000',file = f)
+        
+            f.close()
+            if verbose>0:
+                print('    written in %s'%(file_name))
+            return 0
+        
+    elif select=='normal':
+        
+        if np.all(obj==None):
+            print('no volume obj')
+            return 1
+        else:
+            print('#VESTA_FORMAT_VERSION 3.5.0\n', file=f)
+            i1=0
+            for obj1 in obj:
+                print('MOLECULE\
+                \nTITLE',file=f)
+                print('%s/%s_%d\n'%(path,basename,i1), file=f)
+                print('GROUP\
+                \n1 1 Custom\
+                \nSYMOP\
+                \n 0.000000  0.000000  0.000000  1  0  0    0  1  0    0  0  1    1\
+                \n -1.0 -1.0 -1.0  0 0 0  0 0 0  0 0 0\
+                \nTRANM 0\
+                \n 0.000000  0.000000  0.000000  1  0  0    0  1  0    0  0  1\
+                \nLTRANSL\
+                \n -1\
+                \n 0.000000  0.000000  0.000000  0.000000  0.000000  0.000000\
+                \nLORIENT\
+                \n -1    0    0    0    0\
+                \n 1.000000  0.000000  0.000000  1.000000  0.000000  0.000000\
+                \n 0.000000  0.000000  1.000000  0.000000  0.000000  1.000000\
+                \nLMATRIX\
+                \n 1.000000  0.000000  0.000000  0.000000\
+                \n 0.000000  1.000000  0.000000  0.000000\
+                \n 0.000000  0.000000  1.000000  0.000000\
+                \n 0.000000  0.000000  0.000000  1.000000\
+                \n 0.000000  0.000000  0.000000\
+                \nCELLP\
+                \n  1.000000    1.000000    1.000000  90.000000  90.000000  90.000000\
+                \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
+                \nSTRUC', file=f)
+                i2=0
+                for vertx in obj1:
+                    xyz=math1.projection3(vertx)
+                    xyz=numericalc.numerical_vector(xyz)
+                    print('%4d Xx        Xx%d  1.0000    %8.6f %8.6f %8.6f        1'%\
+                    (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
+                    i2+=1
+                    print('                             0.000000    0.000000    0.000000  0.00', file=f)
+                print('  0 0 0 0 0 0 0\
+                \nTHERI 0', file = f)
+                i2=0
+                for _ in obj1:
+                    print('  %d        Xx%d  1.000000'%(i2+1,i2+1), file=f)
+                    i2+=1
+                print('  0 0 0\
+                \nSHAPE\
+                \n  0         0         0         0    0.000000  0    192    192    192    192\
+                \nBOUND\
+                \n         0          1        0          1        0          1\
+                \n  0    0    0    0  0\
+                \nSBOND', file = f)
+                clr=colors(color)
+                print('  1     Xx     Xx     0.00000     %3.2f  0  1  1  0  2  0.250  2.000 %3d %3d %3d'%(dmax,clr[0],clr[1],clr[2]), file=f)
+                print('  0 0 0 0\
+                \nSITET', file = f)
+                i2=0
+                for _ in obj1:
+                    print('    %d        Xx%d  0.0100  76  76  76  76  76  76 204  0'%(i2+1,i2+1), file=f)
+                    i2+=1
+                print('  0 0 0 0 0 0\
+                \nVECTR\
+                \n 0 0 0 0 0\
+                \nVECTT\
+                \n 0 0 0 0 0\
+                \nSPLAN\
+                \n  0    0    0    0\
+                \nLBLAT\
+                \n -1\
+                \nLBLSP\
+                \n -1\
+                \nDLATM\
+                \n -1\
+                \nDLBND\
+                \n -1\
+                \nDLPLY\
+                \n -1\
+                \nPLN2D\
+                \n  0    0    0    0', file = f)
+                i1+=1
+            print('ATOMT\
+            \n  1        Xx  0.0100  76  76  76  76  76  76 204\
+            \n  0 0 0 0 0 0\
+            \nSCENE\
+            \n-0.538344 -0.838391  0.085359  0.000000\
+            \n-0.362057  0.138632 -0.921789  0.000000\
+            \n 0.760986 -0.527145 -0.378177  0.000000\
+            \n 0.000000  0.000000  0.000000  1.000000\
+            \n  0.000    0.000\
+            \n  0.000\
+            \n  1.320\
+            \nHBOND 0 2\
+            \n\
+            \nSTYLE\
+            \nDISPF 37753794\
+            \nMODEL    0  1  0\
+            \nSURFS    0  1  1\
+            \nSECTS  32  1\
+            \nFORMS    0  1\
+            \nATOMS    0  0  1\
+            \nBONDS    2\
+            \nPOLYS    1\
+            \nVECTS 1.000000\
+            \nFORMP\
+            \n  1  1.0    0    0    0\
+            \nATOMP\
+            \n 24  24    0  50  2.0    0\
+            \nBONDP\
+            \n  1  16  0.250  2.000 127 127 127\
+            \nPOLYP\
+            \n 204 1  1.000 180 180 180\
+            \nISURF\
+            \n  0    0    0    0\
+            \nTEX3P\
+            \n  1  0.00000E+00  1.00000E+00\
+            \nSECTP\
+            \n  1  5.00000E-01  5.00000E-01  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00\
+            \nCONTR\
+            \n 0.1 -1 1 1 10 -1 2 5\
+            \n 2 1 2 1\
+            \n    0    0    0\
+            \n    0    0    0\
+            \n    0    0    0\
+            \n    0    0    0\
+            \nHKLPP\
+            \n 192 1  1.000 255    0 255\
+            \nUCOLP\
+            \n    0    1  1.000    0    0    0\
+            \nCOMPS 0\
+            \nLABEL 1     12  1.000 0\
+            \nPROJT 0  0.962\
+            \nBKGRC\
+            \n 255 255 255\
+            \nDPTHQ 1 -0.5000  3.5000\
+            \nLIGHT0 1\
+            \n 1.000000  0.000000  0.000000  0.000000\
+            \n 0.000000  1.000000  0.000000  0.000000\
+            \n 0.000000  0.000000  1.000000  0.000000\
+            \n 0.000000  0.000000  0.000000  1.000000\
+            \n 0.000000  0.000000 20.000000  0.000000\
+            \n 0.000000  0.000000 -1.000000\
+            \n  26  26  26 255\
+            \n 179 179 179 255\
+            \n 255 255 255 255\
+            \nLIGHT1\
+            \n 1.000000  0.000000  0.000000  0.000000\
+            \n 0.000000  1.000000  0.000000  0.000000\
+            \n 0.000000  0.000000  1.000000  0.000000\
+            \n 0.000000  0.000000  0.000000  1.000000\
+            \n 0.000000  0.000000 20.000000  0.000000\
+            \n 0.000000  0.000000 -1.000000\
+            \n    0    0    0    0\
+            \n    0    0    0    0\
+            \n    0    0    0    0\
+            \nLIGHT2\
+            \n 1.000000  0.000000  0.000000  0.000000\
+            \n 0.000000  1.000000  0.000000  0.000000\
+            \n 0.000000  0.000000  1.000000  0.000000\
+            \n 0.000000  0.000000  0.000000  1.000000\
+            \n 0.000000  0.000000 20.000000  0.000000\
+            \n 0.000000  0.000000 -1.000000\
+            \n    0    0    0    0\
+            \n    0    0    0    0\
+            \n    0    0    0    0\
+            \nLIGHT3\
+            \n 1.000000  0.000000  0.000000  0.000000\
+            \n 0.000000  1.000000  0.000000  0.000000\
+            \n 0.000000  0.000000  1.000000  0.000000\
+            \n 0.000000  0.000000  0.000000  1.000000\
+            \n 0.000000  0.000000 20.000000  0.000000\
+            \n 0.000000  0.000000 -1.000000\
+            \n    0    0    0    0\
+            \n    0    0    0    0\
+            \n    0    0    0    0\
+            \nATOMM\
+            \n 204 204 204 255\
+            \n  25.600\
+            \nBONDM\
+            \n 255 255 255 255\
+            \n 128.000\
+            \nPOLYM\
+            \n 255 255 255 255\
+            \n 128.000\
+            \nSURFM\
+            \n    0    0    0 255\
+            \n 128.000\
+            \nFORMM\
+            \n 255 255 255 255\
+            \n 128.000\
+            \nHKLPM\
+            \n 255 255 255 255\
+            \n 128.000',file = f)
+            f.close()
+            if verbose>0:
+                print('    written in %s'%(file_name))
+            return 0
+    
+    if select == 'podatm':
+        
+        if np.all(obj==None):
+            print('no volume obj')
+            return 0
+        else:
+            # get independent edges
+            edges = utils.generator_obj_edge(obj, verbose)
+            # get independent vertices of the edges
+            vertices = utils.remove_doubling_in_perp_space(edges)
+            # get bond pairs, [[distance, XXX, YYY],...]
+            pairs = []
+            for edge in edges:
+                dist=intsct.distance_in_perp_space(edge[0],edge[1])
+                a=[dist]
+                for i2 in range(2):
+                    i3=0
+                    for vrtx in vertices:
+                        tmp=np.vstack([edge[i2],vrtx])
+                        tmp=utils.remove_doubling_in_perp_space(tmp.reshape(2,6,3))
+                        i3+=1
+                        if len(tmp)==1:
+                            a.append(i3)
+                            break
+                        else:
+                            pass
+                pairs.append(a)
+                
+            print('#VESTA_FORMAT_VERSION 3.5.0\n', file=f)
+            print('MOLECULE\
+            \nTITLE',file=f)
+            print('%s/%s\n'%(path,basename), file=f)
+            print('GROUP\
+            \n1 1 Custom\
+            \nSYMOP\
+            \n 0.000000  0.000000  0.000000  1  0  0    0  1  0    0  0  1    1\
+            \n -1.0 -1.0 -1.0  0 0 0  0 0 0  0 0 0\
+            \nTRANM 0\
+            \n 0.000000  0.000000  0.000000  1  0  0    0  1  0    0  0  1\
+            \nLTRANSL\
+            \n -1\
+            \n 0.000000  0.000000  0.000000  0.000000  0.000000  0.000000\
+            \nLORIENT\
+            \n -1    0    0    0    0\
+            \n 1.000000  0.000000  0.000000  1.000000  0.000000  0.000000\
+            \n 0.000000  0.000000  1.000000  0.000000  0.000000  1.000000\
+            \nLMATRIX\
+            \n 1.000000  0.000000  0.000000  0.000000\
+            \n 0.000000  1.000000  0.000000  0.000000\
+            \n 0.000000  0.000000  1.000000  0.000000\
+            \n 0.000000  0.000000  0.000000  1.000000\
+            \n 0.000000  0.000000  0.000000\
+            \nCELLP\
+            \n  1.000000    1.000000    1.000000  90.000000  90.000000  90.000000\
+            \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
+            \nSTRUC', file=f)
+            i2=0
+            for vrtx in vertices:
+                xyz = math1.projection3(vrtx)
+                print('%4d A        A%d  1.0000    %8.6f %8.6f %8.6f        1'%\
+                (i2+1,i2+1,numericalc.numeric_value(xyz[0]),numericalc.numeric_value(xyz[1]),numericalc.numeric_value(xyz[2])), file=f)
+                i2+=1
+                print('                             0.000000    0.000000    0.000000  0.00', file=f)
+            print('  0 0 0 0 0 0 0\
+            \nTHERI 0', file = f)
+            for i2 in range(len(vertices)):
+                print('  %d        A%d  1.000000'%(i2+1,i2+1), file=f)
+            print('  0 0 0\
+            \nSHAPE\
+            \n  0         0         0         0    0.000000  0    192    192    192    192\
+            \nBOUND\
+            \n         0          1        0          1        0          1\
+            \n  0    0    0    0  0\
+            \nSBOND', file = f)
+            clr=colors(color)
+            for pair in range(len(pairs)):
+                print('  %d   A%d   A%d   %6.3f   %6.3f  0  1  1  1  2  0.250  2.000 %3d %3d %3d'%(\
+                i2+1, pair[1]+1, pair[2]+1, pair[0]-0.01, pair[0]+0.01, clr[0], clr[1], clr[2]), file=f)
+                i2+=1
+            print('  0 0 0 0\
+            \nSITET', file = f)
+            for i2 in range(len(vertices)):
+                print('    %d        A%d  0.100  76  76  76  76  76  76 204  0'%(i2+1,i2+1), file=f)
+            print('  0 0 0 0 0 0\
+            \nVECTR\
+            \n 0 0 0 0 0\
+            \nVECTT\
+            \n 0 0 0 0 0\
+            \nSPLAN\
+            \n  0    0    0    0\
+            \nLBLAT\
+            \n -1\
+            \nLBLSP\
+            \n -1\
+            \nDLATM\
+            \n -1\
+            \nDLBND\
+            \n -1\
+            \nDLPLY\
+            \n -1\
+            \nPLN2D\
+            \n  0    0    0    0', file = f)
+        
+            print('ATOMT\
+            \n  1        A  0.0100  76  76  76  76  76  76 204\
+            \n  0 0 0 0 0 0\
+            \nSCENE\
+            \n-0.538344 -0.838391  0.085359  0.000000\
+            \n-0.362057  0.138632 -0.921789  0.000000\
+            \n 0.760986 -0.527145 -0.378177  0.000000\
+            \n 0.000000  0.000000  0.000000  1.000000\
+            \n  0.000    0.000\
+            \n  0.000\
+            \n  1.320\
+            \nHBOND 0 2\
+            \n\
+            \nSTYLE\
+            \nDISPF 37753794\
+            \nMODEL    0  1  0\
+            \nSURFS    0  1  1\
+            \nSECTS  32  1\
+            \nFORMS    0  1\
+            \nATOMS    0  0  1\
+            \nBONDS    2\
+            \nPOLYS    1\
+            \nVECTS 1.000000\
+            \nFORMP\
+            \n  1  1.0    0    0    0\
+            \nATOMP\
+            \n 24  24    0  50  2.0    0\
+            \nBONDP\
+            \n  1  16  0.250  2.000 127 127 127\
+            \nPOLYP\
+            \n 204 1  1.000 180 180 180\
+            \nISURF\
+            \n  0    0    0    0\
+            \nTEX3P\
+            \n  1  0.00000E+00  1.00000E+00\
+            \nSECTP\
+            \n  1  5.00000E-01  5.00000E-01  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00\
+            \nCONTR\
+            \n 0.1 -1 1 1 10 -1 2 5\
+            \n 2 1 2 1\
+            \n    0    0    0\
+            \n    0    0    0\
+            \n    0    0    0\
+            \n    0    0    0\
+            \nHKLPP\
+            \n 192 1  1.000 255    0 255\
+            \nUCOLP\
+            \n    0    1  1.000    0    0    0\
+            \nCOMPS 0\
+            \nLABEL 1     12  1.000 0\
+            \nPROJT 0  0.962\
+            \nBKGRC\
+            \n 255 255 255\
+            \nDPTHQ 1 -0.5000  3.5000\
+            \nLIGHT0 1\
+            \n 1.000000  0.000000  0.000000  0.000000\
+            \n 0.000000  1.000000  0.000000  0.000000\
+            \n 0.000000  0.000000  1.000000  0.000000\
+            \n 0.000000  0.000000  0.000000  1.000000\
+            \n 0.000000  0.000000 20.000000  0.000000\
+            \n 0.000000  0.000000 -1.000000\
+            \n  26  26  26 255\
+            \n 179 179 179 255\
+            \n 255 255 255 255\
+            \nLIGHT1\
+            \n 1.000000  0.000000  0.000000  0.000000\
+            \n 0.000000  1.000000  0.000000  0.000000\
+            \n 0.000000  0.000000  1.000000  0.000000\
+            \n 0.000000  0.000000  0.000000  1.000000\
+            \n 0.000000  0.000000 20.000000  0.000000\
+            \n 0.000000  0.000000 -1.000000\
+            \n    0    0    0    0\
+            \n    0    0    0    0\
+            \n    0    0    0    0\
+            \nLIGHT2\
+            \n 1.000000  0.000000  0.000000  0.000000\
+            \n 0.000000  1.000000  0.000000  0.000000\
+            \n 0.000000  0.000000  1.000000  0.000000\
+            \n 0.000000  0.000000  0.000000  1.000000\
+            \n 0.000000  0.000000 20.000000  0.000000\
+            \n 0.000000  0.000000 -1.000000\
+            \n    0    0    0    0\
+            \n    0    0    0    0\
+            \n    0    0    0    0\
+            \nLIGHT3\
+            \n 1.000000  0.000000  0.000000  0.000000\
+            \n 0.000000  1.000000  0.000000  0.000000\
+            \n 0.000000  0.000000  1.000000  0.000000\
+            \n 0.000000  0.000000  0.000000  1.000000\
+            \n 0.000000  0.000000 20.000000  0.000000\
+            \n 0.000000  0.000000 -1.000000\
+            \n    0    0    0    0\
+            \n    0    0    0    0\
+            \n    0    0    0    0\
+            \nATOMM\
+            \n 204 204 204 255\
+            \n  25.600\
+            \nBONDM\
+            \n 255 255 255 255\
+            \n 128.000\
+            \nPOLYM\
+            \n 255 255 255 255\
+            \n 128.000\
+            \nSURFM\
+            \n    0    0    0 255\
+            \n 128.000\
+            \nFORMM\
+            \n 255 255 255 255\
+            \n 128.000\
+            \nHKLPM\
+            \n 255 255 255 255\
+            \n 128.000',file = f)
+        
+            f.close()
+            #write_vesta_separate(obj, path, basename, color, dmax)
+            if verbose>0:
+                print('    written in %s'%(file_name))
+            return vertices
+    else:
+        return 1
+    
+def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
     """
     Export occupation domains in XYZ format.
     
     Args:
         obj (numpy.ndarray): the occupation domain
-            The shape is (num,3,6,3), where num=numbre_of_triangle.
+            The shape is (num,3,6,3), where num=numbre_of_triangles.
         path (str): Path of the output XYZ file
         basename (str): Basename of the output XYZ file
         select (str)
-            'triangle': set of triangle (default)
+            'triangle'   : set of triangles (default)
+            'edge'       : set of edges
+            'vertex'      : set of vertices
+            (default, select = 'triangle')
+    
     Returns:
         int: 0 (succeed), 1 (fail)
     """
     
-    def generator_xyz(obj,filename,num):
+    def generator_xyz_dim4_triangle(obj,filename):
         """
-        Generate object (set of triangle) object in XYZ format.
+        Generate object (set of triangles) object in XYZ format.
     
-         Args:
+        Args:
             obj (numpy.ndarray): the occupation domain
                 The shape is (num,3,6,3), where num=numbre_of_triangle.
             filename (str): filename of the output XYZ file
@@ -340,96 +878,146 @@ def write_xyz(obj, path, basename):
         
         """
         f=open('%s'%(filename),'w', encoding="utf-8", errors="ignore")
-        f.write('%d\n'%(len(obj)*num))
+        f.write('%d\n'%(len(obj)*3))
         f.write('%s\n'%(filename))
-        for i1 in range(len(obj)):
-            for i2 in range(num):
-                a4,a5,a6=math12.projection3(obj[i1][i2])
+        i1=0
+        for triangle in obj:
+            for i2 in range(3):
+                v=math1.projection3(triangle[i2])
                 f.write('Xx %8.6f %8.6f %8.6f # %3d-the triangle %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-                ((a4[0]+a4[1]*SIN)/(a4[2]),\
-                (a5[0]+a5[1]*SIN)/(a5[2]),\
-                (a6[0]+a6[1]*SIN)/(a6[2]),\
+                (numericalc.numeric_value(v[0]),\
+                numericalc.numeric_value(v[1]),\
+                numericalc.numeric_value(v[2]),\
                 i1,i2,\
-                obj[i1][i2][0][0],obj[i1][i2][0][1],obj[i1][i2][0][2],\
-                obj[i1][i2][1][0],obj[i1][i2][1][1],obj[i1][i2][1][2],\
-                obj[i1][i2][2][0],obj[i1][i2][2][1],obj[i1][i2][2][2],\
-                obj[i1][i2][3][0],obj[i1][i2][3][1],obj[i1][i2][3][2],\
-                obj[i1][i2][4][0],obj[i1][i2][4][1],obj[i1][i2][4][2],\
-                obj[i1][i2][5][0],obj[i1][i2][5][1],obj[i1][i2][5][2]))
-        if num>2:
-            w1,w2,w3=utils12.obj_area_6d(obj)
-            f.write('area = %d %d %d (%8.6f)\n'%(w1,w2,w3,(w1+SIN*w2)/(w3)))
-            for i1 in range(len(obj)):
-                [v1,v2,v3]=utils12.triangle_area_6d(obj[i1])
-                f.write('%3d-the triangle, %d %d %d (%8.6f)\n'\
-                        %(i1,v1,v2,v3,(v1+SIN*v2)/v3))
-        else:
-            pass
+                triangle[i2][0][0],triangle[i2][0][1],triangle[i2][0][2],\
+                triangle[i2][1][0],triangle[i2][1][1],triangle[i2][1][2],\
+                triangle[i2][2][0],triangle[i2][2][1],triangle[i2][2][2],\
+                triangle[i2][3][0],triangle[i2][3][1],triangle[i2][3][2],\
+                triangle[i2][4][0],triangle[i2][4][1],triangle[i2][4][2],\
+                triangle[i2][5][0],triangle[i2][5][1],triangle[i2][5][2]))
+            i1+=1
         f.closed
         return 0
     
-    def generator_xyz_vertex(obj, filename):
+    def generator_xyz_dim4_edge(obj,filename):
         """
-        Generate object (set of triangle) object in XYZ format.
+        Generate object (set of edges) object in XYZ format.
     
-         Args:
+        Args:
             obj (numpy.ndarray): the occupation domain
-                The shape is (num,6,3), where num=numbre_of_vertex.
+                The shape is (num,2,6,3), where num=numbre_of_e.
             filename (str): filename of the output XYZ file
         
         Returns:
             int: 0 (succeed), 1 (fail)
-    
-        """
         
+        """
         f=open('%s'%(filename),'w', encoding="utf-8", errors="ignore")
-        f.write('%d\n'%(len(obj)))
+        f.write('%d\n'%(len(obj)*2))
         f.write('%s\n'%(filename))
-        for i1 in range(len(obj)):
-            a4,a5,a6=math12.projection3(obj[i1][0],\
-                                        obj[i1][1],\
-                                        obj[i1][2],\
-                                        obj[i1][3],\
-                                        obj[i1][4],\
-                                        obj[i1][5])
-            f.write('Xx %8.6f %8.6f %8.6f # %3d-the vertex # # # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-            ((a4[0]+a4[1]*SIN)/(a4[2]),\
-            (a5[0]+a5[1]*SIN)/(a5[2]),\
-            (a6[0]+a6[1]*SIN)/(a6[2]),\
-            i1,\
-            obj[i1][0][0],obj[i1][0][1],obj[i1][0][2],\
-            obj[i1][1][0],obj[i1][1][1],obj[i1][1][2],\
-            obj[i1][2][0],obj[i1][2][1],obj[i1][2][2],\
-            obj[i1][3][0],obj[i1][3][1],obj[i1][3][2],\
-            obj[i1][4][0],obj[i1][4][1],obj[i1][4][2],\
-            obj[i1][5][0],obj[i1][5][1],obj[i1][5][2]))
+        i1=0
+        for edge in obj:
+            for i2 in range(2):
+                v=math1.projection3(edge[i2])
+                f.write('Xx %8.6f %8.6f %8.6f # %3d-the edge %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
+                (numericalc.numeric_value(v[0]),\
+                numericalc.numeric_value(v[1]),\
+                numericalc.numeric_value(v[2]),\
+                i1,i2,\
+                edge[i2][0][0],edge[i2][0][1],edge[i2][0][2],\
+                edge[i2][1][0],edge[i2][1][1],edge[i2][1][2],\
+                edge[i2][2][0],edge[i2][2][1],edge[i2][2][2],\
+                edge[i2][3][0],edge[i2][3][1],edge[i2][3][2],\
+                edge[i2][4][0],edge[i2][4][1],edge[i2][4][2],\
+                edge[i2][5][0],edge[i2][5][1],edge[i2][5][2]))
+            i1+=1
         f.closed
         return 0
     
-    file_name='%s/%s.xyz'%(path,basename)
+    def generator_xyz_dim4_vertex(obj, filename):
+        """
+        Generate object (set of vertexs) object in XYZ format.
     
-    if obj.ndim>3:
-        generator_xyz(obj, file_name, obj.shape[1])
-    elif obj.ndim==3:
-        generator_xyz_vertex(obj, file_name)
+        Args:
+            obj (numpy.ndarray): the occupation domain
+                The shape is (num,3,6,3), where num=numbre_of_tetrahedron.
+            filename (str): filename of the output XYZ file
+        
+        Returns:
+            int: 0 (succeed), 1 (fail)
+        
+        """
+        f=open('%s'%(filename),'w', encoding="utf-8", errors="ignore")
+        f.write('%d\n'%(len(obj)))
+        f.write('%s\n'%(filename))
+        i1=0
+        for point in obj:
+            v=math1.projection3(point)
+            f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # # # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
+            (numericalc.numeric_value(v[0]),\
+            numericalc.numeric_value(v[1]),\
+            numericalc.numeric_value(v[2]),\
+            i1,\
+            point[0][0],point[0][1],point[0][2],\
+            point[1][0],point[1][1],point[1][2],\
+            point[2][0],point[2][1],point[2][2],\
+            point[3][0],point[3][1],point[3][2],\
+            point[4][0],point[4][1],point[4][2],\
+            point[5][0],point[5][1],point[5][2]))
+            i1=0
+        f.closed
+        return 0
+    
+    if np.all(obj==None):
+        print('empty obj')
+        return 
+    elif obj.ndim!=4:
+        print('object has an incorrect shape!')
+        return 
     else:
-        pass
-    print('    written in %s/%s.xyz'%(path,basename))
-    return 0
+        file_name='%s/%s.xyz'%(path,basename)
+        #if select == 'tetrahedron':
+        #    generator_xyz_dim4_tetrahedron(obj, file_name)
+        #    if verbose>0:
+        #        print('    written in %s/%s.xyz'%(path,basename))
+        #    return 0
+        #elif select == 'triangle':
+        if select == 'triangle':
+            generator_xyz_dim4_triangle(obj, file_name)
+            if verbose>0:
+                print('    written in %s/%s.xyz'%(path,basename))
+            return 0
+        elif select == 'edge':
+            generator_xyz_dim4_edge(obj, file_name)
+            if verbose>0:
+                print('    written in %s/%s.xyz'%(path,basename))
+            return 0
+        elif select == 'vertex':
+            generator_xyz_dim4_vertex(obj, file_name)
+            if verbose>0:
+                print('    written in %s/%s.xyz'%(path,basename))
+            return 0
+        else:
+            if verbose>0:
+                print('    error')
+            return 
 
-def read_xyz(path, basename, select='triangle'):
+def read_xyz(path,basename,select='triangle',verbose=0):
     """
     Load new occupation domain on input XYZ file.
     
     Args:
         path (str): Path of the input XYZ file
         basename (str): Basename of the input XYZ file
-    
+        select (str)
+            'vertex'      : set of vertices (default)
+            (default, select = 'triangle')
+        verbose (int): verbose option
     Returns:
         Occupation domains (numpy.ndarray):
             Loaded occupation domains.
-            The shape is (num,3,6,3), where num=numbre_of_triangle.
-    
+            The shape is (num,3,6,3), where num=numbre_of_triangles (select = 'triangle').
+            The shape is (num,6,3), where num=numbre_of_vertices (select = 'vertex').
     """
     
     def read_file(file):
@@ -453,585 +1041,281 @@ def read_xyz(path, basename, select='triangle'):
     num=int(f0[0])
     
     for i in range(2,num+2):
-         fi=f1[i]
-         fi=fi.split()
-         a1=int(fi[10])
-         b1=int(fi[11])
-         c1=int(fi[12])
-         a2=int(fi[13])
-         b2=int(fi[14])
-         c2=int(fi[15])
-         a3=int(fi[16])
-         b3=int(fi[17])
-         c3=int(fi[18])
-         a4=int(fi[19])
-         b4=int(fi[20])
-         c4=int(fi[21])
-         a5=int(fi[22])
-         b5=int(fi[23])
-         c5=int(fi[24])
-         a6=int(fi[25])
-         b6=int(fi[26])
-         c6=int(fi[27])
-         if i==2:
-             tmp=np.array([a1,b1,c1,a2,b2,c2,a3,b3,c3,a4,b4,c4,a5,b5,c5,a6,b6,c6])
-         else:
-             tmp=np.append(tmp,[a1,b1,c1,a2,b2,c2,a3,b3,c3,a4,b4,c4,a5,b5,c5,a6,b6,c6])
-    print('    read %s/%s.xyz'%(path,basename))
+        fi=f1[i]
+        fi=fi.split()
+        a1=int(fi[10])
+        b1=int(fi[11])
+        c1=int(fi[12])
+        a2=int(fi[13])
+        b2=int(fi[14])
+        c2=int(fi[15])
+        a3=int(fi[16])
+        b3=int(fi[17])
+        c3=int(fi[18])
+        a4=int(fi[19])
+        b4=int(fi[20])
+        c4=int(fi[21])
+        a5=int(fi[22])
+        b5=int(fi[23])
+        c5=int(fi[24])
+        a6=int(fi[25])
+        b6=int(fi[26])
+        c6=int(fi[27])
+        if i==2:
+            tmp=np.array([a1,b1,c1,a2,b2,c2,a3,b3,c3,a4,b4,c4,a5,b5,c5,a6,b6,c6])
+        else:
+            tmp=np.append(tmp,[a1,b1,c1,a2,b2,c2,a3,b3,c3,a4,b4,c4,a5,b5,c5,a6,b6,c6])
+    if verbose>0:
+        print('    read %s/%s.xyz'%(path,basename))
     
-    if select=='triangle':
-        num1=3
-        return tmp.reshape(int(num/num1),num1,6,3)
-    elif select=='egde':
-        num1=2
-        return tmp.reshape(int(num/num1),num1,6,3)
-    else:
-        num1=1
-        return tmp.reshape(num1,int(num/num1),6,3)
+    if select == 'triangles':
+        return tmp.reshape(int(num/3),3,6,3)
+    elif select == 'vertex':
+        return tmp.reshape(int(num),6,3)
 
-def intersection_two_segments(segment1, segment2, verbose = 0):
+def simplification(obj,verbose=0):
     """
-    Returns an intersecting point of two line segments.
+    Simplification of occupation domains.
     
     Args:
-        segment1 (numpy.ndarray): the shape is (2,6,3).
-        segment2 (numpy.ndarray): the shape is (2,6,3).
-        verbose (int): 0 (defalt)
-    Returns:
-        intersecting point (numpy.ndarray): the shape is (6,3).
-    """
-    p=intsct12.intersection_two_segment(segment1[0],segment1[1],segment2[0],segment2[1],verbose)
-    return p.reshape(6,3)
-
-def symmetric_12(obj):
-    """
-    Generate symmteric occupation domain by symmetric elements of 12m on the input.
-    
-    Args:
-        obj (numpy.ndarray):
-            occupation domain
-            The shape is (num,3,6,3), where num=numbre_of_triangle.
-    
-    Returns:
-        Symmetric occupation domains (numpy.ndarray):
-            The shape is (num,3,6,3), where num=numbre_of_triangle.
-    
-    """
-    
-    if asymmetric_part_obj.ndim == 3:
-        return symmetry12.generator_obj_symmetric_triangle(asymmetric_part_obj, V0)
-    elif asymmetric_part_obj.ndim == 4:
-        asymmetric_part_obj=asymmetric_part_obj.reshape(len(asymmetric_part_obj)*3,6,3)
-        return symmetry12.generator_obj_symmetric_triangle(asymmetric_part_obj, V0)
-
-def site_symmetry(wyckoff_position, verbose=0):
-    """
-    Symmetry operators in the site symmetry group G and its left coset decomposition.
-    
-    Args:
-        Wyckoff position (numpy.ndarray):
-            4D coordinate.
-            The shape is (6,3).
+        obj (numpy.ndarray): the occupation domain
+            The shape is (num,3,6,3), where num=numbre_of_trianges.
+        num_cycle (int): numbre of cycles
         verbose (int)
+            verbose = 0 (silent, default)
+            verbose = 1 (normal)
+            verbose > 2 (detail)
     
     Returns:
-        List of index of symmetry operators of the site symmetry group G (list):
-            The symmetry operators leaves xyz identical.
-        
-        List of index of symmetry operators in the left coset representatives of the poibt group G (list):
-            The symmetry operators generates equivalent positions of the site xyz.
+    
+        Simplified occupation domains (numpy.ndarray)
+            The shape is (num,3,6,3), where num=numbre_of_tetrahedron.
+    
     """
-    def translation():
-        """
-        translational symmetry
-        primitive type lattice is assumed
-        """
-        symop=[]
-        tmp=np.array([0,0,0,0,0,0])
-        symop.append(tmp)
-        for i1 in [-1,0,1]:
-            for i2 in [-1,0,1]:
-                for i3 in [-1,0,1]:
-                    for i4 in [-1,0,1]:
-                        tmp=np.array([i1,i2,i3,i4,0,0])
-                        symop.append(tmp)
-        return symop
-    
-    def remove_overlaps_in_a_list(l1):
-        """
-        Remove overlap elements in list with set method.
-        
-        Args:
-            l1 (list):
-        
-        Returns:
-            l2 (list)
-        """
-        tmp=set(l1)
-        l2=list(tmp)
-        l2.sort()
-        return l2
-    
-    def find_overlaps(l1,l2):
-        """
-        find overlap or not btween list1 and list2.
-        
-        Args:
-            l1 (list):
-            l2 (list):
-        
-        Returns:
-            0 (int): no intersection
-            1 (int): intersection
-        """
-        l3=remove_overlaps_in_a_list(l1+l2)
-        if len(l1)+len(l2)==len(l3): # no overlap
-            return 0
-        else:
-            return 1
-    
-    symop=symmetry12.dodesymop()
-    traop=translation()
-    
-     # List of index of symmetry operators of the site symmetry group G.
-     # The symmetry operators leaves xyz identical.
-    list1=[]
-    
-    # List of index of symmetry operators which are not in the G.
-    list2=[]
-    
-    pos=wyckoff_position
-    a1=(pos[0][0]+SIN*pos[0][1])/pos[0][2]
-    a2=(pos[1][0]+SIN*pos[1][1])/pos[1][2]
-    a3=(pos[2][0]+SIN*pos[2][1])/pos[2][2]
-    a4=(pos[3][0]+SIN*pos[3][1])/pos[3][2]
-    xyz=np.array([a1,a2,a3,a4,0,0])
-    
-    xyi=numericalc12.projection_1_numerical(xyz[0],xyz[1],xyz[2],xyz[3],xyz[4],xyz[5])
-    xi=xyi[3]
-    yi=xyi[4]
-    if verbose>0:
-        print(' site coordinates: %3.2f %3.2f %3.2f %3.2f'%(xyz[0],xyz[1],xyz[2],xyz[3]))
-        print('         in Epar : %5.3f %5.3f'%(xyi[0],xyi[1]))
-        print('         in Eperp: %5.3f %5.3f'%(xyi[3],xyi[4]))
-    else:
-        pass
-    
-    for i2 in range(len(symop)):
-        flag=0
-        for i1 in range(len(traop)):
-            xyz1=np.dot(symop[i2],xyz)
-            xyz2=xyz1+traop[i1]
-            a=numericalc12.projection_1_numerical(xyz2[0],xyz2[1],xyz2[2],xyz2[3],xyz2[4],xyz2[5])
-            if abs(a[3]-xi)<EPS and abs(a[4]-yi)<EPS:
-                list1.append(i2)
-                flag+=1
-                break
-            else:
-                pass
-        if flag==0:
-            list2.append(i2)
-    
-    list1_new=remove_overlaps_in_a_list(list1)
-    list2_new=remove_overlaps_in_a_list(list2)
-    
-    if verbose>0:
-        print('     multiplicity:',len(list1_new))
-        print('    site symmetry:',list1_new)
-    else:
-        pass
-    
-    if int(len(symop)/len(list1_new))==1:
-        list5=[0]
+    if np.all(obj==None):
         if verbose>0:
-            print('       left coset:',list5)
-        else:
-            pass
-    
+            print('    zero volume')
+        return 
     else:
-        # left coset decomposition:
-        list4=[]
-        for i2 in list2_new:
-            list3=[]
-            for i1 in list1_new:
-                op1=np.dot(symop[i2],symop[i1])
-                for i3 in range(len(symop)):
-                    if np.all(op1==symop[i3]):
-                        list3.append(i3)
-                        break
-                    else:
-                        pass
-            list4.append(list3)
-        
-        #print('----------------')
-        #for i2 in range(len(list4)):
-        #    print(list4[i2])
-        #print('----------------')
-        
-        for i2 in range(len(list4)-1):
-            a=list4[i2]
-            b=[]
-            d=[]
-            list5=[0] # symmetry element of identity, symop[0]
-            list5.append(list2_new[i2])
-            i3=i2+1
-            while i3<len(list4):
-                b=list4[i3]
-                if len(d)==0:
-                    if find_overlaps(a,b)==0:
-                        d=a+b
-                        list5.append(list2_new[i3])
-                    else:
-                        pass
-                else:
-                    if find_overlaps(d,b)==0:
-                        d=d+b
-                        list5.append(list2_new[i3])
-                    else:
-                        pass
-                i3+=1
-            b=remove_overlaps_in_a_list(d)
-            if int(len(symop)/len(list1_new))==len(list5):
-                if verbose>0:
-                    print('       left coset:',list5)
-                else:
-                    pass
-                break
-            else:
-                pass
-    
-    return list1_new, list5
-
-def symmetric(asymmetric_unit, site, verbose = 0):
-    """
-    Generate symmterical occupation domain from its asymmetric unit by applying site simmetry.
-    
-    Args:
-        asymmetric_unit (numpy.ndarray):
-            Asymmetric unit of the occupation domain
-            The shape is (num,3,6,3), where num=numbre_of_triangle.
-        site (numpy.ndarray):
-            6d coordinate of the site of which the occupation domain centres.
-            The symmetric centre.
-            The shape is (6,3)
-    
-    Returns:
-        Symmetric occupation domains (numpy.ndarray):
-            The shape is (num,3,6,3), where num=numbre_of_triangle.
-    
-    """
-    
-    # get site symmetry
-    #a1=(site[0][0]+SIN*site[0][1])/site[0][2]
-    #a2=(site[1][0]+SIN*site[1][1])/site[1][2]
-    #a3=(site[2][0]+SIN*site[2][1])/site[2][2]
-    #a4=(site[3][0]+SIN*site[3][1])/site[3][2]
-    #xyz=np.array([a1,a2,a3,a4,0,0])
-    num_symop,num_coset=site_symmetry(site,verbose)
-    
-    if asymmetric_unit.ndim == 3:
-        asym_obj=asymmetric_unit.reshape(int(len(asymmetric_unit)/3),3,6,3)
-    else:# asymmetric_unit.ndim == 4:
-        asym_obj=asymmetric_unit
-   
-    for i in range(len(num_symop)):
-        obj1=symmetry12.generator_symmetric_obj_0(obj=asym_obj,centre=site,numop=num_symop[i])
-        if i==0:
-            objs=obj1
+        vol0=utils.obj_area_6d(obj)
+        obj_convex_hull=utils.generate_convex_hull(obj)
+        obj_tmp=intsct.intersection_two_obj_1(obj_convex_hull,obj)
+        vol1=utils.obj_area_6d(obj_tmp)
+        if np.all(vol0==vol1):
+            if verbose>0:
+                print('      simplification succeed:')
+                print('      num of tetrahedra: %d --> %d'%(len(obj),len(obj_convex_hull)))
+            return obj_convex_hull
         else:
-            objs=np.append(objs,obj1)
-    objs=objs.reshape(int(len(objs)/54),3,6,3)
-    
-    return objs
+            if verbose>0:
+                print('      simplification: fail')
+            return obj
 
-# dev, currently this does not work...
-def asymmetric(symmetric_obj, position, vecs):
+def generate_border_edges(obj):
     """
-    Asymmetric part of occupation domain.
-    
-    Args:
-        symmetric_obj (numpy.ndarray):
-            Occupation domain of which the asymmetric part is calculated.
-            The shape is (num,2,6,3), where num=numbre_of_triangle.
-        position (numpy.ndarray):
-            6d coordinate of the site of which the occupation domain centres.
-            The shape is (6,3)
-        vecs (numpy.ndarray):
-            Three vectors that defines the asymmetric part.
-            The shape is (2,6,3)
-    
-    Returns:
-        Asymmetric part of the occupation domains (numpy.ndarray):
-            The shape is (num,3,6,3), where num=numbre_of_triangle.
-    """
-    v0 = np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
-    vecs = math12.mul_vectors(vecs,[10,0,1])
-    # vecs multiplied by [a,b,c], where [a,b,c]=(a+TAU*b)/c. 
-    # [a,b,c] has to be defined so that the tetrahedron whose vertices are defined 
-    # by v0, and vecs covers the asymmetric unit of the ocuppation domains.
-    # (default) [a,b,c]=[5,0,1].
-    tmp = np.append(v0,vecs).reshape(3,6,3)
-    aum = as_it_is(tmp)
-    aum = shift(aum,position)
-    print(aum.ndim)
-    print(aum)
-    od_asym = intersection(symmetric_obj,aum,0)
-    od_asym_1=outline1(od_asym)
-    return od_asym_1
-
-def outline(obj,verbose = 0):
-    """
-    Generate outline of the occupation domain.
-    
-    Args:
-        obj (numpy.ndarray): the shape is (num,3,6,3), where num=numbre_of_triangle.
-        verbose (int): 0 (defalt)
-    
-    Returns:
-        Outline of the occupation domain (numpy.ndarray):
-            The shape is (num,2,6,3), where num=number of the outlines.
-    
-    """
-    return utils12.generator_obj_outline(obj,verbose)
-
-def outline1(obj, num_cycle = 20, verbose = 0):
-    """
-    Generate outline of the occupation domain.
-    
-    Args:
-        obj (numpy.ndarray): the shape is (num,3,6,3), where num=numbre_of_triangle.
-        num_cycle (int): 10 (defalt)
-        verbose (int): 0 (defalt)
-    
-    Returns:
-        Outline of the occupation domain (numpy.ndarray):
-            The shape is (num,2,6,3), where num=number of the outlines.
-    
-    """
-    return utils12.surface_cleaner(obj,num_cycle,verbose)
-
-def triangulation(obj, position, num_cycle = 20, verbose = 0):
-    """
-    Triangulation of the occupation domain.
-    
-    Args:
-        obj (numpy.ndarray): the shape is (num,3,6,3), where num=numbre_of_triangle.
-        position (numpy.ndarray): 6d vector. the shape is (6,3)
-        num_cycle (int): 10 (defalt)
-        verbose (int): 0 (defalt)
-    
-    Returns:
-        Outline of the occupation domain (numpy.ndarray):
-            The shape is (num,3,6,3), where num=number of triangles.
-    
-    """
-    a=utils12.surface_cleaner(obj,num_cycle,verbose)
-    num=len(a)
-    for i in range(0,num):
-        b=np.append(position,a[i])
-        if i==0:
-            c=b
-        else:
-            c=np.append(c,b)
-    return c.reshape(num,3,6,3)
-
-def shift(obj, shift, verbose = 0):
-    """
-    Shift the occupation domain.
+    Generate border edges of the occupation domain.
     
     Args:
         obj (numpy.ndarray):
             The occupation domain
-            The shape is (num,3,6,3), where num=numbre_of_triangle.
-        shift (numpy.ndarray):
-            6d coordinate to which the occupation domain is shifted.
-            The shape is (6,3)
-        verbose (int):
-            verbose = 0 (silent, default)
-            verbose = 1 (normal)
+            The shape is (num,3,6,3), where num=numbre_of_tetrahedron.
     
     Returns:
-        Shifted occupation domains (numpy.ndarray):
-            The shape is (num,3,6,3), where num=numbre_of_triangle.
+        Border edges of the occupation domains (numpy.ndarray):
+            The shape is (num,2,6,3), where num=numbre_of_edge.
     
     """
-    return utils12.shift_object(obj, shift, verbose)
+    triangle_surface=utils.generator_surface_1(obj)
+    return utils.surface_cleaner(triangle_surface)
 
-def intersection(obj1,obj2,verbose = 0):
+# new in version 0.0.2a2
+def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
     
-    tmp=intsct12.intersection_two_obj(obj1,obj2,verbose)
-    
-    if tmp.tolist()!=[[[[0]]]]:
-        pass
-    else:
-        if verbose>0:
-            print('empty')
-        else:
-            pass
-    
-    return tmp
-
-def similarity(obj,order):
-    if obj.ndim == 3:
-        return symmetry12.similarity_obj(obj,order)
-    elif obj.ndim == 4:
-        obj=obj.reshape(len(obj)*3,6,3)
-        return symmetry12.similarity_obj(obj,order)
-    else:
-        return 1
-    
-def qcstrc(obj, positions, path, basename, atm, phason_matrix, nmax, shift, origin_shift, verbose = 1, option = 0):
-    
-    #if phason_matrix == 0 or phason_matrix==[[[0]]] or phason_matrix==[[0]] or phason_matrix==[0]:
-    if np.all(phason_matrix)==0:
-        phason_matrix = np.array([[0.0]])
-    else:
-        pass
-    
-    if len(obj)==len(atm) and len(obj)==len(positions):
-        #ishift=[0.00178250, 0.00137613, 0.003987675, 0.2387783, 0, 0]
-        
-        lst=[]
-        a=strc12.strc(obj,positions,phason_matrix,nmax,shift,origin_shift,verbose)
-        f=open('%s/%s.xyz'%(path,basename),'w', encoding="utf-8", errors="ignore")
-        f.write('%d\n'%(len(a)))
-        f.write('%s.xyz\n'%(basename))
-        for i1 in range(len(a)):
-            #print(a[i1][3])
-            if option == 0:
-                f.write('%s %8.6f %8.6f %8.6f\n'%(atm[int(a[i1][3])],a[i1][0],a[i1][1],a[i1][2]))
-            elif option == 1: # Eperp, x, y
-                #f.write('%s %8.6f %8.6f %8.6f # %8.6f %8.6f %8.6f\n'%(atm[int(a[i1][3])],a[i1][0],a[i1][1],a[i1][2],a[i1][4],a[i1][5],a[i1][6]))
-                f.write('%s %8.6f %8.6f %8.6f # %3d %3d %3d %3d\n'%(atm[int(a[i1][3])],a[i1][0],a[i1][1],a[i1][2],a[i1][4],a[i1][5],a[i1][6],a[i1][7]))
+    def find_common_vertex(obj):
+        #Find common vertex of tetrahedra in obj).
+        counter1=0
+        for i1 in [0,1,2]:
+            vtx1=obj[0][i1]
+            xyz1=math1.projection3(vtx1)
+            counter2=0
+            for i2 in range(1,len(obj)):
+                counter3=0
+                for i3 in [0,1,2]:
+                    xyz2=math1.projection3(obj[i2][i3])
+                    if np.all(xyz1==xyz2):
+                        counter3=1
+                        break
+                if counter3==1:
+                    counter2+=1
+                else:
+                    break
+            if counter2==len(obj)-1:
+                counter1=1
+                break
             else:
                 pass
-        f.closed
-        print('    written in %s/%s'%(path,basename))
-    else:
-        pass
-    return 0
-
-# dev.
-def genstrc(l1):
-    """
-    Generate atomic structure of DD QC.
-    
-    Args:
-        l1 (list):
-            List contains structural dataThe occupation domain, which contains following:
-            
-            (1) The shape is (num,3,6,3), where num=numbre_of_triangle.
-            
-    Returns:
-        0 (int):
-    
-    """
-    return 0
-
-def genobjv(obj, vlist = [0], path = '.', basename = 'tmp', verbose = 0):
-    """
-    Generate objs from vlist.
-    
-    Args:
-        obj (numpy.ndarray): ndarray contains vertices
-            The shape is (num,4,6,3), where num=numbre_of_vertices.
-        vlist (list): 
-        path (str): Path of the output files
-        basename (str): Basename of the output files
-        verbose (int):
-            verbose = 0 (silent, default)
-            verbose = 1 (normal)
-    
-    Returns:
-        int: 0 (succeed), 1 (fail)
-    
-    """
-    if os.path.exists(path) == False:
-        os.makedirs(path)
-    else:
-        pass
-    for i1 in range(len(vlist)):
-        a=0
-        for i2 in range(len(vlist[i1])):
-            for i3 in range(3):
-                if i2==0 and i3==0:
-                    a=obj[vlist[i1][i2][0]-1]
-                else:
-                    a=np.append(a,obj[vlist[i1][i2][i3]-1])
-        a=a.reshape(int(len(a)/54),3,6,3)
-        if len(vlist)==1:
-            basename1='%s'%(basename)
+        if counter1!=0:
+            return vtx1
         else:
-            basename1='%s_part%d'%(basename,i1)
-        write_xyz(obj=a, path=path, basename=basename1)
-        write_vesta(obj=a, path=path, basename=basename1, color='p')
-    return 0
+            return 
+    
+    # common vertex
+    vrtx0=find_common_vertex(obj)
+    
+    if np.all(vrtx0!=None):
+        
+        if os.path.exists(path) == False:
+            os.makedirs(path)
+        else:
+            pass
+        fatm=open('%s/%s.atm'%(path,basename),'w', encoding="utf-8", errors="ignore")
+        fpod=open('%s/%s.pod'%(path,basename),'w', encoding="utf-8", errors="ignore")
+        
+        #--------
+        #  atm
+        #--------
+        fatm.write('%d \'Em\' 1 %d 1 2.0 0. 0. 1.0 0. 0. 0.\n'%(serial_number,serial_number))
+        
+        vn=numericalc.numerical_vector(vrtx0)
+        fatm.write('x=  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f\n'%(\
+        vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
+        
+        # generate a list of verices and remove the common vertex from it.
+        vtxs=utils.remove_doubling_in_perp_space(obj)
+        vtxs=utils.remove_vector(vtxs,vrtx0)
+        
+        #--------
+        #  pod
+        #--------
+        fpod.write('%d %d %d \'comment\'\n'%(serial_number,len(vtxs),2))
+        for vtx in vtxs:
+            vn=numericalc.numerical_vector(vtx)
+            fpod.write('ej=  %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f\n'%(\
+            vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
+        #
+        lst_indx=[]
+        for triangle in obj:
+            for vrtx1 in triangle:
+                for i1 in range(len(vtxs)):
+                    if np.all(vrtx1==vtxs[i1]):
+                        lst_indx.append(i1+1) # add 1 to avoide index 0.
+                        break
+                    else:
+                        pass
+        fpod.write('nth= %d'%(len(vtxs)))
+        for indx in lst_indx:
+            fpod.write(' %d'%(indx))
+        fpod.write('\n')
+        
+        return 0
+    
+    else:
+        print('No common vertex found in the object. pod and atm cannot be created.')
+        return 1
+
+#########################
+#          WIP          #
+#########################
+def simple_hand_step1(obj, path, basename_tmp):
+    """
+    Simplification of occupation domains by hand (step1).
+    
+    Args:
+        obj (numpy.ndarray): the occupation domain
+            The shape is (num,3,6,3), where num=numbre_of_triangles.
+        path (str): path of the tmporal file
+        basename_tmp (str): name for tmporal file.
+    
+    Returns:
+    
+        Tmporal occupation domains (numpy.ndarray):
+            The shape is (num,3,6,3), where num=numbre_of_triangles.
+    
+    """
+    def write_xyz_smpl(a, path, basename):
+        f=open('%s'%(path)+'/%s.xyz'%(basename),'w', encoding="utf-8", errors="ignore")
+        f.write('%d\n'%(len(a)))
+        f.write('%s\n'%(basename))
+        for i1 in range(len(a)):
+            xyz=math1.projection3(a[i1])
+            f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
+            (numericalc.numeric_value(xyz),\
+            numericalc.numeric_value(xyz),\
+            numericalc.numeric_value(xyz),\
+            i1,\
+            a[i1][0][0],a[i1][0][1],a[i1][0][2],\
+            a[i1][1][0],a[i1][1][1],a[i1][1][2],\
+            a[i1][2][0],a[i1][2][1],a[i1][2][2],\
+            a[i1][3][0],a[i1][3][1],a[i1][3][2],\
+            a[i1][4][0],a[i1][4][1],a[i1][4][2],\
+            a[i1][5][0],a[i1][5][1],a[i1][5][2]))
+        f.closed
+        return 0
+        
+    od1a=utils.remove_doubling_in_perp_space(obj)
+    write_xyz_smpl(od1a, path, basename_tmp)
+    print('written in %s'%(path)+'/%s.xyz'%(basename_tmp))
+    print('open above XYZ file in vesta and make merge_list, and run simple_hand_step2()')
+    return od1a
+
+def simple_hand_step2(obj, merge_list):
+    """
+    Simplification of occupation domains by hand (step2).
+    
+    Args:
+        obj (numpy.ndarray): the occupation domain
+            The shape is (num,3,6,3), where num=numbre_of_triangles.
+        merge_list (list[[int,int,int,int,],[],...,[]])
+            A list containing lists of indices of vertices of triangle.
+            The indices of vertices of triangle in temporal file obtaind
+            by 'simple_hand_step1()'.
+    
+    Returns:
+        Simplified occupation domains (numpy.ndarray):
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+    
+    """
+    
+    def merge(obj,mylist):
+        tmp1=np.array([obj[mylist[0]-1]])
+        for i in range(1,len(mylist)):
+            tmp2=obj[mylist[i]-1]
+            tmp1=np.append(tmp1,tmp2)
+        return tmp1.reshape(len(mylist),6,3)
+    
+    for i in range(len(merge_list)):
+        tmp1=merge(obj,merge_list[i])
+        od2=intsct.tetrahedralization_points(tmp1)
+        if i==0:
+            od1=np.array(od2)
+        else:
+            od1=np.vstack([od1,od2])
+    return od1
 
 if __name__ == "__main__":
     
-    # Three 6D vectors which define the asymmetric part of the occupation domain for Nizeki-Gahler dodecagonal tiling
-    # Note that 5-th and 6-th components of each 6D vectors are dummy, and they correspond to Z coordinate in Epar and Eperp, respectively.
-    v0=np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]]) # (0,0,0,0)
-    v1=np.array([[ 0,-2, 3],[ 0, 2, 3],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]]) #
-    v2=np.array([[ 0,-2, 3],[ 0, 2, 3],[ 3,-4, 3],[-3, 4, 3],[ 0, 0, 1],[ 0, 0, 1]]) #
-    asym_obj=np.vstack([v0,v1,v2]).reshape(3,6,3)
+    # import asymmetric part of STRT OD(occupation domain) located at origin,0,0,0,0,0,0.
+    strt_asym = read_xyz(path='../xyz',basename='strt_aysmmetric')
+    write(obj=strt_asym, path='.', basename = 'obj_seed', format='vesta', color = 'k')
     
-    # OBJ_1
-    obj1=symmetric(asym_obj,v0)
-    # Shift vector for OBJ_2
-    pos=np.array([[ 0, 0, 1],[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]]) # ( 0,1,0,0)
-
-    # OBJ_1
-    #obj1=asym_obj.reshape(1,3,6,3)
-    # Shift vector for OBJ_2
-    #pos=np.array([[ 0, 0, 1],[ 1, 0, 4],[ 1, 0, 4],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]]) # ( 0,1/4,1/4,0)
+    # generat STRT OD located at 0,0,0,0,0,0 by symmetric operations (m-3-5).
+    pos0=np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+    strt = symmetric(asymmetric_part_obj = strt_asym, position = pos0)
     
-    print('symmetric obj:')
-    for i in range(len(obj1)):
-        vi=obj1[i]
-        for j in range(len(vi)):
-            vj=vi[j]
-            v1i,v2i,v3i=math12.projection3(vj[0],vj[1],vj[2],vj[3],vj[4],vj[5])
-            print('%8.6f %8.6f %8.6f'%(((v1i[0]+v1i[1]*SIN)/v1i[2],(v2i[0]+v2i[1]*SIN)/v2i[2],(v3i[0]+v3i[1]*SIN)/v3i[2])))
+    # move STRT OD to a position 1 1 1 0 -1 0.
+    pos_b1=np.array([[ 1, 0, 1],[ 1, 0, 1],[ 1, 0, 1],[ 0, 0, 1],[-1, 0, 1],[ 0, 0, 1]]) # b_1
+    strt_pos1=shift(obj = strt_sym, shift = pos_b1)
+    write(pod=strt_pos1, path='.', basename='obj_strt', format='xyz')
+    write(obj=strt_pos1, path='.', basename='obj_strt', format='vesta', color='b')
     
-    print('\noutline of obj:')
-    a=outline(obj1)
-    print('number of line segments = %d'%(len(a)))
-    for i in range(len(a)):
-        ai=a[i].reshape(2,6,3)
-        for j in range(2):
-            v1i,v2i,v3i=math12.projection3(ai[j][0],ai[j][1],ai[j][2],ai[j][3],ai[j][4],ai[j][5])
-            print('%8.6f %8.6f %8.6f'%(((v1i[0]+v1i[1]*SIN)/v1i[2],(v2i[0]+v2i[1]*SIN)/v2i[2],(v3i[0]+v3i[1]*SIN)/v3i[2])))
+    # intersection of "asymmetric part of strt" and "strt at position pos_b1"
+    #    flag = 0,    with rough intersection chacking (faster)
+    #    flag = 1, without rough intersection chacking
+    #twoODs=TWO_ODs(pod1=strt_asym, pod2=strt_pos1, path='.',filename='common.xyz',flag=0,verbose=0)
+    #intersection=Intersection(pod1=tmp1.reshape(1,4,6,3), pod2=tmp2.reshape(1,4,6,3), path='.',filename='common.xyz',flag=0,verbose=0)
+    #common_part=twoODs.intersection()
     
-    print('Shift obj:')
-    obj2=shift(obj1,pos)
-    #
-    print('\noutline of shifted obj:')
-    a=outline(obj2)
-    print('number of line segments = %d'%(len(a)))
-    for i in range(len(a)):
-        ai=a[i].reshape(2,6,3)
-        for j in range(2):
-            v1i,v2i,v3i=math12.projection3(ai[j][0],ai[j][1],ai[j][2],ai[j][3],ai[j][4],ai[j][5])
-            print('%8.6f %8.6f %8.6f'%(((v1i[0]+v1i[1]*SIN)/v1i[2],(v2i[0]+v2i[1]*SIN)/v2i[2],(v3i[0]+v3i[1]*SIN)/v3i[2])))
+    # export common_part in VESTA formated file.
+    #write(obj=common_part, path='.', basename='common', format='vesta', color='r')
     
-    print('\nIntersection of two objs:')
-    obj3=intersection(obj1,obj2,verbose=0)
-    if obj3.tolist()!=[[[[0]]]]:
-        print('number of common triangles = %d'%(len(obj3)))
-        for i in range(len(obj3)):
-            for j in range(3):
-                v1i,v2i,v3i=math12.projection3(obj3[i][j][0],obj3[i][j][1],obj3[i][j][2],obj3[i][j][3],obj3[i][j][4],obj3[i][j][5])
-                print('%8.6f %8.6f %8.6f'%(((v1i[0]+v1i[1]*SIN)/v1i[2],(v2i[0]+v2i[1]*SIN)/v2i[2],(v3i[0]+v3i[1]*SIN)/v3i[2])))
-    else:
-        print(' no common part found')
     
-    """
-    vj=np.array([[-1,0,2],[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
-    v1i,v2i,v3i=math12.projection3(vj[0],vj[1],vj[2],vj[3],vj[4],vj[5])
-    print('%8.6f %8.6f %8.6f'%(((v1i[0]+v1i[1]*SIN)/v1i[2],(v2i[0]+v2i[1]*SIN)/v2i[2],(v3i[0]+v3i[1]*SIN)/v3i[2])))
-    
-    vj=np.array([[-1,0,1],[1,0,1],[-1,1,1],[1,-1,1],[0,0,1],[0,0,1]])
-    v1i,v2i,v3i=math12.projection3(vj[0],vj[1],vj[2],vj[3],vj[4],vj[5])
-    print('%8.6f %8.6f %8.6f'%(((v1i[0]+v1i[1]*SIN)/v1i[2],(v2i[0]+v2i[1]*SIN)/v2i[2],(v3i[0]+v3i[1]*SIN)/v3i[2])))
-    """
