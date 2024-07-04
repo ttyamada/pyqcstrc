@@ -596,12 +596,12 @@ def projection_numerical(vn: NDArray[np.float64]) -> NDArray[np.float64]:
     vn: array
         6-dimensional vector, xyzuvw.
     """
-    v1 =  SIN*h1+h2-0.5*h4 # x in Epar
-    v2 = -0.5*h1+h3+SIN*h4 # y in Epar
-    v3 = h5                # z in Epar, dummy
-    v4 = -SIN*h1+h2-0.5*h4 # x in Eperp
-    v5 = -0.5*h1+h3-SIN*h4 # y in Eperp
-    v6 = h6                # z in Epperp, dummy
+    v1 =  TAU*vn[0]+vn[1]-0.5*vn[3] # x in Epar
+    v2 = -0.5*vn[0]+vn[2]+TAU*vn[3] # y in Epar
+    v3 = vn[4]                      # z in Epar
+    v4 = -TAU*vn[0]+vn[1]-0.5*vn[3] # x in Eperp
+    v5 = -0.5*vn[0]+vn[2]-TAU*vn[3] # y in Eperp
+    v6 = vn[5]                      # z in Epperp, dummy
     return np.array([v1,v2,v3,v4,v5,v6],dtype=np.float64)
 
 def projection_sets_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
@@ -626,9 +626,12 @@ def projection3_numerical(vn: NDArray[np.float64]) -> NDArray[np.float64]:
     vn: array
         6-dimensional vector, xyzuvw.
     """
-    v4 = -SIN*h1+h2-0.5*h4 # x in Eperp
-    v5 = -0.5*h1+h3-SIN*h4 # y in Eperp
-    v6 = h6                # z in Epperp, dummy
+    #v1 =  TAU*vn[0]+vn[1]-0.5*vn[3] # x in Epar
+    #v2 = -0.5*vn[0]+vn[2]+TAU*vn[3] # y in Epar
+    #v3 = vn[4]                      # z in Epar
+    v4 = -TAU*vn[0]+vn[1]-0.5*vn[3] # x in Eperp
+    v5 = -0.5*vn[0]+vn[2]-TAU*vn[3] # y in Eperp
+    v6 = vn[5]                      # z in Epperp, dummy
     return np.array([v4,v5,v6],dtype=np.float64)
 
 def projection3_sets_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
@@ -693,8 +696,8 @@ if __name__ == '__main__':
             v[i1]=generate_random_vector(ndim)
         return v
     
-    def generate_random_tetrahedron():
-        return generate_random_vectors(4)
+    def generate_random_triangle():
+        return generate_random_vectors(3)
     
     """
     print('check projection')
@@ -718,11 +721,11 @@ if __name__ == '__main__':
     
     """
     print('check tetrahedron')
-    tetrahedron=generate_random_tetrahedron() # in TAU-style
-    tetrahedron_num=numerical_vectors(tetrahedron) # in float
-    #print(tetrahedron_num)
-    vol=tetrahedron_volume_6d_numerical(tetrahedron_num)
-    print(vol)
+    triangle=generate_random_triangle() # in TAU-style
+    triangle_num=numerical_vectors(triangle) # in float
+    #print(triangle_num)
+    area=triangle_area_6d_numerical(triangle_num)
+    print(area)
     """
     
     ln=np.array([\
