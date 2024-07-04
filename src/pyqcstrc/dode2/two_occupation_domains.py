@@ -8,17 +8,6 @@ import timeit
 import os
 import sys
 import numpy as np
-sys.path.append('.')
-try:
-    import math1 as math1
-    import utils as utils
-    import umericalc as numericalc
-    import symmetry as symmetry
-    import intsct as intsct
-    import occupation_domain as od
-"""
-except ImportError:
-    print('import error\n')
 try:
     import pyqcstrc.dode2.math1 as math1
     import pyqcstrc.dode2.intsct as intsct
@@ -28,7 +17,7 @@ try:
     import pyqcstrc.dode2.occupation_domain as od
 except ImportError:
     print('import error\n')
-"""
+
 TAU=np.sqrt(3)/2.0
 
 def intersection(obj1,obj2,kind=None,verbose=0):

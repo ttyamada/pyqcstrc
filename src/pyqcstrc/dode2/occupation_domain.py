@@ -7,19 +7,7 @@
 import timeit
 import os
 import sys
-sys.path.append('.')
-try:
-    import math1 as math1
-    import utils as utils
-    import umericalc as numericalc
-    import symmetry as symmetry
-    import intsct as intsct
-except ImportError:
-    print('import error\n')
-
 import numpy as np
-
-"""
 try:
     import pyqcstrc.dode2.math1 as math1
     import pyqcstrc.dode2.utils as utils
@@ -28,7 +16,7 @@ try:
     import pyqcstrc.dode2.intsct as intsct
 except ImportError:
     print('import error\n')
-"""
+
 TAU=np.sqrt(3)/2.0
 
 def volume(obj):
@@ -1304,19 +1292,22 @@ def simple_hand_step2(obj, merge_list):
 
 if __name__ == "__main__":
     
-    # import asymmetric part of STRT OD(occupation domain) located at origin,0,0,0,0,0,0.
-    strt_asym = read_xyz(path='../xyz',basename='strt_aysmmetric')
-    write(obj=strt_asym, path='.', basename = 'obj_seed', format='vesta', color = 'k')
+    test_dir='../../tests/dode/test'
+    xyz_dir='../../../xyz/dode'
+    # import asymmetric part of OD(occupation domain) located at origin,0,0,0,0,0,0.
+    od_asym = read_xyz(path=xyz_dir,basename='od_vertex_asymmetric')
+    print(od_asym)
     
-    # generat STRT OD located at 0,0,0,0,0,0 by symmetric operations (m-3-5).
-    pos0=np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
-    strt = symmetric(asymmetric_part_obj = strt_asym, position = pos0)
+    pos0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+    od_sym = symmetric(obj = od_asym, centre = pos0)
+    write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
+    write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
     
     # move STRT OD to a position 1 1 1 0 -1 0.
-    pos_b1=np.array([[ 1, 0, 1],[ 1, 0, 1],[ 1, 0, 1],[ 0, 0, 1],[-1, 0, 1],[ 0, 0, 1]]) # b_1
-    strt_pos1=shift(obj = strt_sym, shift = pos_b1)
-    write(pod=strt_pos1, path='.', basename='obj_strt', format='xyz')
-    write(obj=strt_pos1, path='.', basename='obj_strt', format='vesta', color='b')
+    #pos_b1=np.array([[ 1, 0, 1],[ 1, 0, 1],[ 1, 0, 1],[ 0, 0, 1],[-1, 0, 1],[ 0, 0, 1]]) # b_1
+    #strt_pos1=shift(obj = strt_sym, shift = pos_b1)
+    #write(pod=strt_pos1, path='.', basename='obj_strt', format='xyz')
+    #write(obj=strt_pos1, path='.', basename='obj_strt', format='vesta', color='b')
     
     # intersection of "asymmetric part of strt" and "strt at position pos_b1"
     #    flag = 0,    with rough intersection chacking (faster)

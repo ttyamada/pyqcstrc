@@ -6,9 +6,9 @@
 import sys
 import numpy as np
 from numpy.typing import NDArray
-sys.path.append('.')
-from numericalc import coplanar_check_numeric_tau
-#from pyqcstrc.dode2.numericalc import coplanar_check_numeric_tau
+#sys.path.append('.')
+#from numericalc import coplanar_check_numeric_tau
+from pyqcstrc.dode2.numericalc import coplanar_check_numeric_tau
 
 SIN=np.sqrt(3)/2
 
