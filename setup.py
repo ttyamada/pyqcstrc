@@ -16,7 +16,7 @@ from numpy import get_include
 #from Cython.Build import cythonize
 
 
-VERSION="0.0.2a09"
+VERSION="0.0.2a10"
 
 # Package meta-data.
 NAME = "pyqcstrc"
