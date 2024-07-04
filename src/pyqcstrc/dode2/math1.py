@@ -6,8 +6,9 @@
 import sys
 import numpy as np
 from numpy.typing import NDArray
-#sys.path.append('.')
-from pyqcstrc.dode2.numericalc import coplanar_check_numeric_tau
+sys.path.append('.')
+from numericalc import coplanar_check_numeric_tau
+#from pyqcstrc.dode2.numericalc import coplanar_check_numeric_tau
 
 SIN=np.sqrt(3)/2
 
@@ -479,15 +480,7 @@ def projection_perp(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     return 
 
-def mtrixcal(
-    m1: NDArray[np.int64],
-    m2: NDArray[np.int64],
-    m3: NDArray[np.int64],
-    m4: NDArray[np.int64],
-    m5: NDArray[np.int64],
-    m6: NDArray[np.int64],
-    v: NDArray[np.int64],
-    ) -> NDArray[np.int64]:
+def mtrixcal(m1: NDArray[np.int64],m2: NDArray[np.int64],m3: NDArray[np.int64],m4: NDArray[np.int64],m5: NDArray[np.int64],m6: NDArray[np.int64],v: NDArray[np.int64]) -> NDArray[np.int64]:
     """function used in projection()
                         projection3()
                         projection_perp()
@@ -692,7 +685,8 @@ if __name__ == '__main__':
     # test
     
     import random
-    from pyqcstrc.ico2.numericalc import (numeric_value,
+    sys.path.append('.')
+    from numericalc import (numeric_value,
                                         numerical_vector,
                                         numerical_vectors,
                                         get_internal_component_numerical,
