@@ -5,7 +5,7 @@
 #
 import sys
 #sys.path.append('.')
-from pyqcstrc.ico2.math1 import (projection3,
+from pyqcstrc.dode2.math1 import (projection3,
                                 add,
                                 sub,
                                 mul,
@@ -17,7 +17,7 @@ from pyqcstrc.ico2.math1 import (projection3,
                                 centroid,
                                 coplanar_check,
                                 )
-from pyqcstrc.ico2.numericalc import (numeric_value,
+from pyqcstrc.dode2.numericalc import (numeric_value,
                                     numerical_vector,
                                     numerical_vectors,
                                     point_on_segment,
