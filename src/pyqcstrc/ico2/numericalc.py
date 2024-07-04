@@ -136,7 +136,7 @@ def on_out_surface(point: NDArray[np.int64], triangle: NDArray[np.int64]) -> boo
     """
     
     def func(p_xyz,tr_xyz,indx):
-        out=np.zeros((3,3),dtype=np.float6464)
+        out=np.zeros((3,3),dtype=np.float64)
         for i in range(3):
             if i==indx:
                 out[i]=p_xyz
@@ -187,7 +187,7 @@ def numerical_vector(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     array
     """
     n=len(vt)
-    w=np.zeros(n,dtype=np.float6464)
+    w=np.zeros(n,dtype=np.float64)
     for i in range(n):
         w[i]=numeric_value(vt[i])
     return w
