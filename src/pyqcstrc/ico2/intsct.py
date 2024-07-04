@@ -219,7 +219,7 @@ def check_intersection_two_tetrahedron_4(tetrahedron_1: NDArray[np.int64], tetra
             surface=np.stack([tetrahedron_2[c[2]],tetrahedron_2[c[3]],tetrahedron_2[c[4]]])
             #print(segment.shape)
             #print(surface.shape)
-            if check_intersection_segment_surface_numerical_6d_tau(segment,surface)==0: # intersectiing
+            if check_intersection_segment_surface_numerical_6d_tau(segment,surface): # intersectiing
                 counter1+=1
                 break
             else:
