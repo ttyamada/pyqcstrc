@@ -529,8 +529,8 @@ def sort_vctors(vts: NDArray[np.int64]) -> NDArray[np.int64]:
     out=np.zeros(vts.shape,dtype=np.int64)
     vns=get_internal_component_sets_numerical(vts)
     
-    #tmp=np.argsort(vns,axis=0)
-    tmp=vns[np.argsort(vns[:,0])]
+    tmp=np.argsort(vns,axis=0)
+    #tmp=vns[np.argsort(vns[:,0])]
     for i1 in range(n1):
         out[i1]=vts[tmp[i1][0]]
     return out
@@ -825,8 +825,8 @@ if __name__ == '__main__':
             v[i1]=generate_random_vector(ndim)
         return v
     
-    def generate_random_tetrahedron():
-        return generate_random_vectors(4)
+    def generate_random_triangle():
+        return generate_random_vectors(3)
     
     
     
@@ -836,9 +836,11 @@ if __name__ == '__main__':
     nset=10
     vts=generate_random_vectors(nset)
     vns=get_internal_component_sets_numerical(vts)
+    print(vns.shape)
     for vn in vns:
         print(vn)
     print('\n')
+    print(vts.shape)
     vts1=sort_vctors(vts)
     vns1=get_internal_component_sets_numerical(vts1)
     for vn in vns1:
@@ -867,16 +869,18 @@ if __name__ == '__main__':
     #================
     # 面と辺のテスト
     #================
-    tetrahedron=generate_random_tetrahedron()
+    triangle=generate_random_triangle()
     
     # doubled tetrahedon
-    obj=np.stack([tetrahedron,tetrahedron]) # doubled tetrahedon
-    generator_surface_1(obj)
+    obj=np.stack([triangle,triangle]) # doubled tetrahedon
+    #generator_surface_1(obj)
     
     # a tetrahedon
-    obj=tetrahedron
-    surface=generator_surface_1(obj.reshape(1,4,6,3))
-    generator_edge(surface)
+    obj=triangle
+    #surface=generator_surface_1(obj.reshape(1,3,6,3))
+    surface=obj.reshape(1,3,6,3)
+    #generator_edge(surface)
+    generator_all_edges(surface)
     
     
     
