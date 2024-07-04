@@ -7,9 +7,19 @@
 import timeit
 import os
 import sys
-#sys.path.append('.')
+sys.path.append('.')
+try:
+    import math1 as math1
+    import utils as utils
+    import umericalc as numericalc
+    import symmetry as symmetry
+    import intsct as intsct
+except ImportError:
+    print('import error\n')
+
 import numpy as np
 
+"""
 try:
     import pyqcstrc.dode2.math1 as math1
     import pyqcstrc.dode2.utils as utils
@@ -18,7 +28,7 @@ try:
     import pyqcstrc.dode2.intsct as intsct
 except ImportError:
     print('import error\n')
-
+"""
 TAU=np.sqrt(3)/2.0
 
 def volume(obj):
@@ -43,7 +53,7 @@ def symmetric(obj,centre):
     """
     if obj.ndim==3 or obj.ndim==4:
         #return symmetry.generator_obj_symmetric_tetrahedron(obj,centre)
-        return symmetry.generator_obj_symmetric_surface(obj,centre)
+        return symmetry.generator_obj_symmetric_triangle(obj,centre)
     else:
         print('object has an incorrect shape!')
         return 
@@ -66,7 +76,7 @@ def symmetric_0(obj,centre,indx_symop):
     
     """
     if obj.ndim==3 or obj.ndim==4:
-        return symmetry.generator_obj_symmetric_tetrahedron_0(obj,centre,indx_symop)
+        return symmetry.generator_obj_symmetric_triangle_0(obj,centre,indx_symop)
     else:
         print('object has an incorrect shape!')
         return 
