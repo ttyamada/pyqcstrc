@@ -63,7 +63,7 @@ def symop_vec(symop,vt,centre):
 def generator_obj_symmetric_obj(obj,centre):
     
     if obj.ndim==3 or obj.ndim==4:
-        mop=icosasymop()
+        mop=dodesymop()
         num=len(mop)
         shape=tuple([num])
         a=np.zeros(shape+obj.shape,dtype=np.int64)
