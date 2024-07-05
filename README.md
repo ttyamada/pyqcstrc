@@ -49,7 +49,6 @@ Documentation can be found on [Docs](https://www.rs.tus.ac.jp/tsunetomo.yamada/p
 
 ### Requirements
 
-- Cython>=0.29.21
 - numpy>=1.20.0
 - scipy>=1.6.0
 
