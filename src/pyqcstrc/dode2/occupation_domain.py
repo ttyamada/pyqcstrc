@@ -21,7 +21,7 @@ TAU=np.sqrt(3)/2.0
 
 def volume(obj):
     return utils.obj_area_6d(obj)
-    
+
 def symmetric(obj,centre):
     """
     Generate symmterical occupation domain by symmetric elements on the asymmetric unit.
@@ -45,7 +45,7 @@ def symmetric(obj,centre):
     else:
         print('object has an incorrect shape!')
         return 
-    
+
 def symmetric_0(obj,centre,indx_symop):
     """
     Generate symmtericic occupation domain by applying symmetric elements on the asymmetric unit.
@@ -91,7 +91,7 @@ def shift(obj,shift):
     """
     return utils.shift_object(obj, shift)
 
-def write(obj, path='.',basename='tmp',format='xyz',color='k',verbose=0,select='tetrahedron'):
+def write(obj, path='.',basename='tmp',format='xyz',color='k',verbose=0,select='triangle'):
     """
     Export occupation domains.
     
@@ -128,7 +128,7 @@ def write(obj, path='.',basename='tmp',format='xyz',color='k',verbose=0,select='
         else:
             pass
         return 0
-    
+
 def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0):
     """
     Export occupation domains in VESTA format.
@@ -204,12 +204,26 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
                 
             # get bond pairs, [[distance, XXX, YYY],...]
             pairs = []
-            for i1 in range(len(edges)):
-                dist=intsct.distance_in_perp_space(edges[i1][0],edges[i1][1])
+            
+            #for i1 in range(len(edges)):
+            #    dist=intsct.distance_in_perp_space(edges[i1][0],edges[i1][1])
+            #    a=[dist]
+            #    for i2 in range(2):
+            #        for i3 in range(len(vertices)):
+            #            tmp=np.vstack([edges[i1][i2],vertices[i3]])
+            #            tmp=utils.remove_doubling_in_perp_space(tmp.reshape(2,6,3))
+            #            if len(tmp)==1:
+            #                a.append(i3)
+            #                break
+            #            else:
+            #                pass
+            #    pairs.append(a)
+            for edge in edges:
+                dist=intsct.distance_in_perp_space(edge[0],edge[1])
                 a=[dist]
                 for i2 in range(2):
-                    for i3 in range(len(vertices)):
-                        tmp=np.vstack([edges[i1][i2],vertices[i3]])
+                    for i3,vt in enumerate(vertices):
+                        tmp=np.vstack([edge[i2],vt])
                         tmp=utils.remove_doubling_in_perp_space(tmp.reshape(2,6,3))
                         if len(tmp)==1:
                             a.append(i3)
@@ -217,7 +231,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
                         else:
                             pass
                 pairs.append(a)
-        
+                
             print('#VESTA_FORMAT_VERSION 3.5.0\n', file=f)
             print('MOLECULE\
             \nTITLE',file=f)
@@ -246,13 +260,13 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \n  1.000000    1.000000    1.000000  90.000000  90.000000  90.000000\
             \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
             \nSTRUC', file=f)
-            i2=0
-            for vrtx in vertices:
+            #i2=0
+            for i2,vrtx in enumerate(vertices):
                 xyz = math1.projection3(vrtx)
                 xyz=numericalc.numerical_vector(xyz)
                 print('%4d A        A%d  1.0000    %8.6f %8.6f %8.6f        1'%\
                 (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
-                i2+=1
+                #i2+=1
                 print('                             0.000000    0.000000    0.000000  0.00', file=f)
             print('  0 0 0 0 0 0 0\
             \nTHERI 0', file = f)
@@ -268,17 +282,17 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \n  0    0    0    0  0\
             \nSBOND', file = f)
             clr=colors(color)
-            i2=0
-            for pair in pairs:
+            #i2=0
+            for i2,pair in enumerate(pairs):
                 print('  %d   A%d   A%d   %8.6f   %8.6f  0  1  1  1  2  0.250  2.000 %3d %3d %3d'%(\
                 i2+1, pair[1]+1, pair[2]+1, pair[0]-0.01, pair[0]+0.01, clr[0], clr[1], clr[2]), file=f)
-                i2+=1
+                #i2+=1
             print('  0 0 0 0\
             \nSITET', file = f)
-            i2=0
-            for __ in vertices:
+            #i2=0
+            for i2 in range(len(vertices)):
                 print('    %d        A%d  0.100  76  76  76  76  76  76 204  0'%(i2+1,i2+1), file=f)
-                i2+=1
+                #i2+=1
             print('  0 0 0 0 0 0\
             \nVECTR\
             \n 0 0 0 0 0\
@@ -842,7 +856,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             return vertices
     else:
         return 1
-    
+
 def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
     """
     Export occupation domains in XYZ format.
@@ -879,21 +893,20 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f.write('%d\n'%(len(obj)*3))
         f.write('%s\n'%(filename))
         i1=0
-        for triangle in obj:
-            for i2 in range(3):
-                v=math1.projection3(triangle[i2])
+        for i1,triangle in enumerate(obj):
+            for i2,vt in enumerate(triangle):
+                v=math1.projection3(vt)
                 f.write('Xx %8.6f %8.6f %8.6f # %3d-the triangle %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
                 (numericalc.numeric_value(v[0]),\
                 numericalc.numeric_value(v[1]),\
                 numericalc.numeric_value(v[2]),\
                 i1,i2,\
-                triangle[i2][0][0],triangle[i2][0][1],triangle[i2][0][2],\
-                triangle[i2][1][0],triangle[i2][1][1],triangle[i2][1][2],\
-                triangle[i2][2][0],triangle[i2][2][1],triangle[i2][2][2],\
-                triangle[i2][3][0],triangle[i2][3][1],triangle[i2][3][2],\
-                triangle[i2][4][0],triangle[i2][4][1],triangle[i2][4][2],\
-                triangle[i2][5][0],triangle[i2][5][1],triangle[i2][5][2]))
-            i1+=1
+                vt[0][0],vt[0][1],vt[0][2],\
+                vt[1][0],vt[1][1],vt[1][2],\
+                vt[2][0],vt[2][1],vt[2][2],\
+                vt[3][0],vt[3][1],vt[3][2],\
+                vt[4][0],vt[4][1],vt[4][2],\
+                vt[5][0],vt[5][1],vt[5][2]))
         f.closed
         return 0
     
@@ -913,22 +926,20 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f=open('%s'%(filename),'w', encoding="utf-8", errors="ignore")
         f.write('%d\n'%(len(obj)*2))
         f.write('%s\n'%(filename))
-        i1=0
-        for edge in obj:
-            for i2 in range(2):
-                v=math1.projection3(edge[i2])
+        for i1,edge in enumerate(obj):
+            for i2,vt in enumerate(edge):
+                v=math1.projection3(vt)
                 f.write('Xx %8.6f %8.6f %8.6f # %3d-the edge %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
                 (numericalc.numeric_value(v[0]),\
                 numericalc.numeric_value(v[1]),\
                 numericalc.numeric_value(v[2]),\
                 i1,i2,\
-                edge[i2][0][0],edge[i2][0][1],edge[i2][0][2],\
-                edge[i2][1][0],edge[i2][1][1],edge[i2][1][2],\
-                edge[i2][2][0],edge[i2][2][1],edge[i2][2][2],\
-                edge[i2][3][0],edge[i2][3][1],edge[i2][3][2],\
-                edge[i2][4][0],edge[i2][4][1],edge[i2][4][2],\
-                edge[i2][5][0],edge[i2][5][1],edge[i2][5][2]))
-            i1+=1
+                vt[0][0],vt[0][1],vt[0][2],\
+                vt[1][0],vt[1][1],vt[1][2],\
+                vt[2][0],vt[2][1],vt[2][2],\
+                vt[3][0],vt[3][1],vt[3][2],\
+                vt[4][0],vt[4][1],vt[4][2],\
+                vt[5][0],vt[5][1],vt[5][2]))
         f.closed
         return 0
     
@@ -948,8 +959,7 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f=open('%s'%(filename),'w', encoding="utf-8", errors="ignore")
         f.write('%d\n'%(len(obj)))
         f.write('%s\n'%(filename))
-        i1=0
-        for point in obj:
+        for i1,point in enumerate(obj):
             v=math1.projection3(point)
             f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # # # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
             (numericalc.numeric_value(v[0]),\
@@ -962,7 +972,6 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
             point[3][0],point[3][1],point[3][2],\
             point[4][0],point[4][1],point[4][2],\
             point[5][0],point[5][1],point[5][2]))
-            i1=0
         f.closed
         return 0
     
@@ -979,18 +988,17 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         #    if verbose>0:
         #        print('    written in %s/%s.xyz'%(path,basename))
         #    return 0
-        #elif select == 'triangle':
-        if select == 'triangle':
+        if select == 'triangle' or 't':
             generator_xyz_dim4_triangle(obj, file_name)
             if verbose>0:
                 print('    written in %s/%s.xyz'%(path,basename))
             return 0
-        elif select == 'edge':
+        elif select == 'edge' or 'e':
             generator_xyz_dim4_edge(obj, file_name)
             if verbose>0:
                 print('    written in %s/%s.xyz'%(path,basename))
             return 0
-        elif select == 'vertex':
+        elif select == 'vertex' or 'v':
             generator_xyz_dim4_vertex(obj, file_name)
             if verbose>0:
                 print('    written in %s/%s.xyz'%(path,basename))
@@ -1066,7 +1074,7 @@ def read_xyz(path,basename,select='triangle',verbose=0):
     if verbose>0:
         print('    read %s/%s.xyz'%(path,basename))
     
-    if select == 'triangles':
+    if select == 'triangle':
         return tmp.reshape(int(num/3),3,6,3)
     elif select == 'vertex':
         return tmp.reshape(int(num),6,3)
