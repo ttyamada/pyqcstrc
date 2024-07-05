@@ -1,39 +1,92 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-#
+
 # PyQCstrc - Python library for Quasi-Crystal structure
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
-#
+
 import timeit
 import os
 import sys
-#sys.path.append('.')
 import numpy as np
 
 try:
-    import pyqcstrc.ico2.math1 as math1
-    import pyqcstrc.ico2.utils as utils
-    import pyqcstrc.ico2.numericalc as numericalc
-    import pyqcstrc.ico2.symmetry as symmetry
-    import pyqcstrc.ico2.intsct as intsct
+    import pyqcstrc.ico.math1 as math1
+    import pyqcstrc.ico.intsct as intsct
+    import pyqcstrc.ico.mics as mics
+    import pyqcstrc.ico.numericalc as numericalc
+    import pyqcstrc.ico.symmetry as symmetry
+    import pyqcstrc.ico.utils as utils
+    
 except ImportError:
     print('import error\n')
 
 TAU=(1+np.sqrt(5))/2.0
 
 def volume(obj):
-    return utils.obj_volume_6d(obj)
+    w1,w2,w3=utils.obj_volume_6d(obj)
+    return [w1,w2,w3]
     
-def symmetric(obj,centre):
+def as_it_is(obj):
+    """
+    Returns an object as it is,
+    
+    Args:
+        obj (numpy.ndarray): the shape is (num,4,6,3) or (num*4,6,3), where num=numbre_of_tetrahedron.
+    
+    Returns:
+        Occupation domains (numpy.ndarray): the shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+    """
+    
+    if obj.ndim == 3:
+        return obj.reshape(int(len(obj)/4),4,6,3)
+    elif obj.ndim == 4:
+        return obj
+    else:
+        return 1
+    
+def asymmetric(symmetric_obj, position, vecs):
+    """
+    Asymmetric part of occupation domain.
+    
+    Args:
+        symmetric_obj (numpy.ndarray):
+            Occupation domain of which the asymmetric part is calculated.
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+        position (numpy.ndarray):
+            6d coordinate of the site of which the occupation domain centres.
+            The shape is (6,3)
+        vecs (numpy.ndarray):
+            Three vectors that defines the asymmetric part.
+            The shape is (3,6,3)
+    
+    Returns:
+        Asymmetric part of the occupation domains (numpy.ndarray):
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+    """
+    v0 = np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
+    vecs = math1.mul_vectors(vecs,[5,0,1])
+    # vecs multiplied by [a,b,c], where [a,b,c]=(a+TAU*b)/c. 
+    # [a,b,c] has to be defined so that the tetrahedron whose vertices are defined 
+    # by v0, and vecs covers the asymmetric unit of the ocuppation domains.
+    # (default) [a,b,c]=[5,0,1].
+    tmp = np.append(v0,vecs).reshape(4,6,3)
+    aum = as_it_is(tmp)
+    aum = shift(aum,position)
+    #od_asym = ods.intersection(symmetric_obj, aum)
+    od_asym = intsct.intersection_two_obj_1(symmetric_obj, aum, 0, 0)
+    
+    return od_asym
+    
+def symmetric(asymmetric_part_obj, position):
     """
     Generate symmterical occupation domain by symmetric elements of m-3-5 on the asymmetric unit.
     
     Args:
-        obj (numpy.ndarray):
+        asymmetric_part_obj (numpy.ndarray):
             Asymmetric unit of the occupation domain
             The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
-        centre (numpy.ndarray):
-            6d coordinate of the symmetric centre.
+        position (numpy.ndarray):
+            6d coordinate of the site of which the occupation domain centres.
             The shape is (6,3)
     
     Returns:
@@ -41,36 +94,19 @@ def symmetric(obj,centre):
             The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
     
     """
-    if obj.ndim==3 or obj.ndim==4:
-        return symmetry.generator_obj_symmetric_tetrahedron(obj,centre)
+    if asymmetric_part_obj.ndim == 3:
+        return symmetry.generator_obj_symmetric_tetrahedron(asymmetric_part_obj, position)
+    elif asymmetric_part_obj.ndim == 4:
+        asymmetric_part_obj=asymmetric_part_obj.reshape(len(asymmetric_part_obj)*4,6,3)
+        return symmetry.generator_obj_symmetric_tetrahedron(asymmetric_part_obj, position)
+    elif asymmetric_part_obj.ndim == 2:
+        asymmetric_part_obj=asymmetric_part_obj.reshape(1,6,3)
+        a=symmetry.generator_obj_symmetric_tetrahedron(asymmetric_part_obj, position)
+        return a.reshape(4*len(a),6,3)
     else:
-        print('object has an incorrect shape!')
-        return 
+        return 1
     
-def symmetric_0(obj,centre,indx_symop):
-    """
-    Generate symmterical occupation domain by symmetric elements of m-3-5 on the asymmetric unit.
-    
-    Args:
-        obj (numpy.ndarray):
-            Asymmetric unit of the occupation domain
-            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
-        centre (numpy.ndarray):
-            6d coordinate of the symmetric centre.
-            The shape is (6,3)
-    
-    Returns:
-        Symmetric occupation domains (numpy.ndarray):
-            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
-    
-    """
-    if obj.ndim==3 or obj.ndim==4:
-        return symmetry.generator_obj_symmetric_tetrahedron_0(obj,centre,indx_symop)
-    else:
-        print('object has an incorrect shape!')
-        return 
-
-def shift(obj,shift):
+def shift(obj, shift, verbose = 0):
     """
     Shift the occupation domain.
     
@@ -90,9 +126,51 @@ def shift(obj,shift):
             The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
     
     """
-    return utils.shift_object(obj, shift)
+    return utils.shift_object(obj, shift, verbose)
 
-def write(obj, path='.',basename='tmp',format='xyz',color='k',verbose=0,select='tetrahedron'):
+def generate_edges(obj, verbose = 0):
+    """
+    Generate edges of the occupation domain.
+    
+    Args:
+        obj (numpy.ndarray):
+            The occupation domain
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+        shift (numpy.ndarray):
+            6d coordinate to which the occupation domain is shifted.
+            The shape is (6,3)
+        verbose (int):
+            verbose = 0 (silent, default)
+            verbose = 1 (normal)
+    
+    Returns:
+        Edges of the occupation domains (numpy.ndarray):
+            The shape is (num,2,6,3), where num=numbre_of_edge.
+    
+    """
+    obj_surface = utils.generator_surface_1(obj,verbose)
+    #obj_surface = mics.generator_surface(obj)
+    #return utils.generator_edge(obj_surface,verbose)
+    return utils.generator_edge_1(obj_surface,verbose)
+    
+def gen_surface(obj,verbose = 0):
+    """
+    Generate triangles on the surface of the occupation domain.
+    
+    Args:
+        obj (numpy.ndarray): the occupation domain
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+        verbose (int):
+            verbose = 0 (silent, default)
+            verbose = 1 (normal)
+    Returns:
+        Triangles of the occupation domains (numpy.ndarray):
+            The shape is (num,3,6,3), where num=numbre_of_triangles.
+    
+    """
+    return utils.generator_surface_1(obj,verbose)
+    
+def write(obj, path = '.', basename = 'tmp', format = 'xyz', color = 'k', verbose = 0, select = 'tetrahedron'):
     """
     Export occupation domains.
     
@@ -113,24 +191,24 @@ def write(obj, path='.',basename='tmp',format='xyz',color='k',verbose=0,select='
     
     """
     
-    if os.path.exists(path)==False:
+    if os.path.exists(path) == False:
         os.makedirs(path)
     else:
         pass
         
-    if np.all(obj==None):
+    if obj.tolist()==[[[[0]]]]:
         print('    Empty OD')
         return 1
     else:
-        if format=='vesta' or format=='v' or format=='VESTA':
-            write_vesta(obj, path, basename, color, select='normal', verbose=0)
+        if format == 'vesta' or format == 'v' or format == 'VESTA':
+            write_vesta(obj, path, basename, color, select = 'normal', verbose = 0)
         elif format == 'xyz':
             write_xyz(obj, path, basename, select, verbose)
         else:
             pass
         return 0
     
-def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0):
+def write_vesta(obj, path = '.', basename = 'tmp', color = 'k', select = 'normal', verbose = 0):
     """
     Export occupation domains in VESTA format.
     
@@ -140,13 +218,12 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
         path (str): Path of the output XYZ file
         basename (str): Basename of the output XYZ file
         color (str)
-            one of the characters {'k','r','b','p','l','y','c','s'}, which are short-hand notations 
-            for shades of black, red, blue, pink, lime, yellow, cyan, and silver in case where 'vesta' format is
+            one of the characters {'k','r','b','p'}, which are short-hand notations 
+            for shades of black, red, blue, and pink, in case where 'vesta' format is
             selected (default, color = 'k').
         select (str):'simple' or 'normal'
             'simple': Merging tetrahedra into one single objecte
             'normal': Each tetrahedron is set as single objecte (large file)
-            'egdes':  Select this option when the obj is a set of edges.
             'podatm': same as 'simple' but return "vertices" necessary to input 
             (default, select = 'normal')
     Returns:
@@ -154,7 +231,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
         ndarray: vertices, when select = 'podatm'.
     """
     
-    if os.path.exists(path)==False:
+    if os.path.exists(path) == False:
         os.makedirs(path)
     else:
         pass
@@ -182,42 +259,42 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             a = [127,127,127]
         return a
     
-    file_name='%s/%s.vesta'%(path,basename)
-    f=open('%s'%(file_name),'w')
+    file_name = '%s/%s.vesta'%(path,basename)
+    f = open('%s'%(file_name),'w')
     
-    #dmax=5.0
-    dmax=10.0
+    dmax = 5.0
     
-    if select=='simple' or 'egdes':
+    if select == 'simple':
         
-        if np.all(obj==None):
+        if obj.tolist()==[[[[0]]]] or obj.tolist()==[[[0]]]:
             print('no volume obj')
             return 0
         
         else:
             # get independent edges
-            if select=='simple':
-                edges = utils.generator_obj_edge(obj, verbose)
-            else:
-                edges = obj
+            edges = utils.generator_obj_edge(obj, verbose)
             # get independent vertices of the edges
-            vertices = utils.remove_doubling_in_perp_space(edges)
-                
+            vertices = utils.remove_doubling_dim4_in_perp_space(edges)
+        
             # get bond pairs, [[distance, XXX, YYY],...]
             pairs = []
+            #print(len(edges))
             for i1 in range(len(edges)):
                 dist=intsct.distance_in_perp_space(edges[i1][0],edges[i1][1])
                 a=[dist]
                 for i2 in range(2):
                     for i3 in range(len(vertices)):
                         tmp=np.vstack([edges[i1][i2],vertices[i3]])
-                        tmp=utils.remove_doubling_in_perp_space(tmp.reshape(2,6,3))
+                        tmp=utils.remove_doubling_dim3_in_perp_space(tmp.reshape(2,6,3))
+                        #tmp=utils.remove_doubling_dim3_in_perp_space(tmp)
                         if len(tmp)==1:
                             a.append(i3)
                             break
                         else:
                             pass
                 pairs.append(a)
+                #print(i1)
+            #print(pairs)
         
             print('#VESTA_FORMAT_VERSION 3.5.0\n', file=f)
             print('MOLECULE\
@@ -247,20 +324,16 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \n  1.000000    1.000000    1.000000  90.000000  90.000000  90.000000\
             \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
             \nSTRUC', file=f)
-            i2=0
-            for vrtx in vertices:
-                xyz = math1.projection3(vrtx)
-                xyz=numericalc.numerical_vector(xyz)
+        
+            for i2 in range(len(vertices)):
+                a4,a5,a6 = math1.projection3(vertices[i2][0],vertices[i2][1],vertices[i2][2],vertices[i2][3],vertices[i2][4],vertices[i2][5])
                 print('%4d A        A%d  1.0000    %8.6f %8.6f %8.6f        1'%\
-                (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
-                i2+=1
+                (i2+1,i2+1,(a4[0]+a4[1]*TAU)/a4[2],(a5[0]+a5[1]*TAU)/a5[2],(a6[0]+a6[1]*TAU)/a6[2]), file=f)
                 print('                             0.000000    0.000000    0.000000  0.00', file=f)
             print('  0 0 0 0 0 0 0\
             \nTHERI 0', file = f)
-            i2=0
-            for __ in vertices:
+            for i2 in range(len(vertices)):
                 print('  %d        A%d  1.000000'%(i2+1,i2+1), file=f)
-                i2+=1
             print('  0 0 0\
             \nSHAPE\
             \n  0         0         0         0    0.000000  0    192    192    192    192\
@@ -269,17 +342,13 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \n  0    0    0    0  0\
             \nSBOND', file = f)
             clr=colors(color)
-            i2=0
-            for pair in pairs:
+            for i2 in range(len(pairs)):
                 print('  %d   A%d   A%d   %8.6f   %8.6f  0  1  1  1  2  0.250  2.000 %3d %3d %3d'%(\
-                i2+1, pair[1]+1, pair[2]+1, pair[0]-0.01, pair[0]+0.01, clr[0], clr[1], clr[2]), file=f)
-                i2+=1
+                i2+1, pairs[i2][1]+1, pairs[i2][2]+1, pairs[i2][0]-0.01, pairs[i2][0]+0.01, clr[0], clr[1], clr[2]), file=f)
             print('  0 0 0 0\
             \nSITET', file = f)
-            i2=0
-            for __ in vertices:
+            for i2 in range(len(vertices)):
                 print('    %d        A%d  0.100  76  76  76  76  76  76 204  0'%(i2+1,i2+1), file=f)
-                i2+=1
             print('  0 0 0 0 0 0\
             \nVECTR\
             \n 0 0 0 0 0\
@@ -414,19 +483,19 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \n 128.000',file = f)
         
             f.close()
+            #write_vesta_separate(obj, path, basename, color, dmax)
             if verbose>0:
                 print('    written in %s'%(file_name))
             return 0
         
-    elif select=='normal':
+    elif select == 'normal':
         
-        if np.all(obj==None):
+        if obj.tolist()==[[[[0]]]] or obj.tolist()==[[[0]]]:
             print('no volume obj')
             return 1
         else:
             print('#VESTA_FORMAT_VERSION 3.5.0\n', file=f)
-            i1=0
-            for obj1 in obj:
+            for i1 in range(len(obj)):
                 print('MOLECULE\
                 \nTITLE',file=f)
                 print('%s/%s_%d\n'%(path,basename,i1), file=f)
@@ -454,20 +523,15 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
                 \n  1.000000    1.000000    1.000000  90.000000  90.000000  90.000000\
                 \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
                 \nSTRUC', file=f)
-                i2=0
-                for vertx in obj1:
-                    xyz=math1.projection3(vertx)
-                    xyz=numericalc.numerical_vector(xyz)
+                for i2 in range(len(obj[i1])):
+                    a4,a5,a6 = math1.projection3(obj[i1][i2][0],obj[i1][i2][1],obj[i1][i2][2],obj[i1][i2][3],obj[i1][i2][4],obj[i1][i2][5])
                     print('%4d Xx        Xx%d  1.0000    %8.6f %8.6f %8.6f        1'%\
-                    (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
-                    i2+=1
+                    (i2+1,i2+1,(a4[0]+a4[1]*TAU)/a4[2],(a5[0]+a5[1]*TAU)/a5[2],(a6[0]+a6[1]*TAU)/a6[2]), file=f)
                     print('                             0.000000    0.000000    0.000000  0.00', file=f)
                 print('  0 0 0 0 0 0 0\
                 \nTHERI 0', file = f)
-                i2=0
-                for _ in obj1:
+                for i2 in range(len(obj[i1])):
                     print('  %d        Xx%d  1.000000'%(i2+1,i2+1), file=f)
-                    i2+=1
                 print('  0 0 0\
                 \nSHAPE\
                 \n  0         0         0         0    0.000000  0    192    192    192    192\
@@ -479,10 +543,8 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
                 print('  1     Xx     Xx     0.00000     %3.2f  0  1  1  0  2  0.250  2.000 %3d %3d %3d'%(dmax,clr[0],clr[1],clr[2]), file=f)
                 print('  0 0 0 0\
                 \nSITET', file = f)
-                i2=0
-                for _ in obj1:
+                for i2 in range(len(obj[i1])):
                     print('    %d        Xx%d  0.0100  76  76  76  76  76  76 204  0'%(i2+1,i2+1), file=f)
-                    i2+=1
                 print('  0 0 0 0 0 0\
                 \nVECTR\
                 \n 0 0 0 0 0\
@@ -502,7 +564,6 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
                 \n -1\
                 \nPLN2D\
                 \n  0    0    0    0', file = f)
-                i1+=1
             print('ATOMT\
             \n  1        Xx  0.0100  76  76  76  76  76  76 204\
             \n  0 0 0 0 0 0\
@@ -615,39 +676,45 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \nHKLPM\
             \n 255 255 255 255\
             \n 128.000',file = f)
+        
             f.close()
+            #write_vesta_separate(obj, path, basename, color, dmax)
             if verbose>0:
                 print('    written in %s'%(file_name))
             return 0
     
     if select == 'podatm':
         
-        if np.all(obj==None):
+        if obj.tolist()==[[[[0]]]] or obj.tolist()==[[[0]]]:
             print('no volume obj')
             return 0
         else:
+            #"""
             # get independent edges
             edges = utils.generator_obj_edge(obj, verbose)
             # get independent vertices of the edges
-            vertices = utils.remove_doubling_in_perp_space(edges)
+            vertices = utils.remove_doubling_dim4_in_perp_space(edges)
+            #"""
             # get bond pairs, [[distance, XXX, YYY],...]
             pairs = []
-            for edge in edges:
-                dist=intsct.distance_in_perp_space(edge[0],edge[1])
+            #print(len(edges))
+            for i1 in range(len(edges)):
+                dist=intsct.distance_in_perp_space(edges[i1][0],edges[i1][1])
                 a=[dist]
                 for i2 in range(2):
-                    i3=0
-                    for vrtx in vertices:
-                        tmp=np.vstack([edge[i2],vrtx])
-                        tmp=utils.remove_doubling_in_perp_space(tmp.reshape(2,6,3))
-                        i3+=1
+                    for i3 in range(len(vertices)):
+                        tmp=np.vstack([edges[i1][i2],vertices[i3]])
+                        tmp=utils.remove_doubling_dim3_in_perp_space(tmp.reshape(2,6,3))
+                        #tmp=utils.remove_doubling_dim3_in_perp_space(tmp)
                         if len(tmp)==1:
                             a.append(i3)
                             break
                         else:
                             pass
                 pairs.append(a)
-                
+                #print(i1)
+            #print(pairs)
+        
             print('#VESTA_FORMAT_VERSION 3.5.0\n', file=f)
             print('MOLECULE\
             \nTITLE',file=f)
@@ -676,12 +743,11 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \n  1.000000    1.000000    1.000000  90.000000  90.000000  90.000000\
             \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
             \nSTRUC', file=f)
-            i2=0
-            for vrtx in vertices:
-                xyz = math1.projection3(vrtx)
+        
+            for i2 in range(len(vertices)):
+                a4,a5,a6 = math1.projection3(vertices[i2][0],vertices[i2][1],vertices[i2][2],vertices[i2][3],vertices[i2][4],vertices[i2][5])
                 print('%4d A        A%d  1.0000    %8.6f %8.6f %8.6f        1'%\
-                (i2+1,i2+1,numericalc.numeric_value(xyz[0]),numericalc.numeric_value(xyz[1]),numericalc.numeric_value(xyz[2])), file=f)
-                i2+=1
+                (i2+1,i2+1,(a4[0]+a4[1]*TAU)/a4[2],(a5[0]+a5[1]*TAU)/a5[2],(a6[0]+a6[1]*TAU)/a6[2]), file=f)
                 print('                             0.000000    0.000000    0.000000  0.00', file=f)
             print('  0 0 0 0 0 0 0\
             \nTHERI 0', file = f)
@@ -695,10 +761,9 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \n  0    0    0    0  0\
             \nSBOND', file = f)
             clr=colors(color)
-            for pair in range(len(pairs)):
+            for i2 in range(len(pairs)):
                 print('  %d   A%d   A%d   %6.3f   %6.3f  0  1  1  1  2  0.250  2.000 %3d %3d %3d'%(\
-                i2+1, pair[1]+1, pair[2]+1, pair[0]-0.01, pair[0]+0.01, clr[0], clr[1], clr[2]), file=f)
-                i2+=1
+                i2+1, pairs[i2][1]+1, pairs[i2][2]+1, pairs[i2][0]-0.01, pairs[i2][0]+0.01, clr[0], clr[1], clr[2]), file=f)
             print('  0 0 0 0\
             \nSITET', file = f)
             for i2 in range(len(vertices)):
@@ -841,10 +906,11 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             if verbose>0:
                 print('    written in %s'%(file_name))
             return vertices
+    
     else:
         return 1
     
-def write_xyz(obj,path='.',basename='tmp',select='tetrahedron',verbose=0):
+def write_xyz(obj, path = '.', basename = 'tmp', select = 'tetrahedron', verbose = 0):
     """
     Export occupation domains in XYZ format.
     
@@ -864,7 +930,7 @@ def write_xyz(obj,path='.',basename='tmp',select='tetrahedron',verbose=0):
         int: 0 (succeed), 1 (fail)
     """
     
-    def generator_xyz_dim4_tetrahedron(obj,filename):
+    def generator_xyz_dim4_tetrahedron(obj, filename):
         """
         Generate object (set of tetrahedra) object in XYZ format.
     
@@ -877,36 +943,39 @@ def write_xyz(obj,path='.',basename='tmp',select='tetrahedron',verbose=0):
             int: 0 (succeed), 1 (fail)
     
         """
-            
+        
         f=open('%s'%(filename),'w', encoding="utf-8", errors="ignore")
         f.write('%d\n'%(len(obj)*4))
         f.write('%s\n'%(filename))
-        i1=0
-        for tetrahedron in obj:
-            for i2 in range(4):
-                v=math1.projection3(tetrahedron[i2])
-                f.write('Xx %8.6f %8.6f %8.6f # %3d-the tetrahedron %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-                (numericalc.numeric_value(v[0]),\
-                numericalc.numeric_value(v[1]),\
-                numericalc.numeric_value(v[2]),\
-                i1,i2,\
-                tetrahedron[i2][0][0],tetrahedron[i2][0][1],tetrahedron[i2][0][2],\
-                tetrahedron[i2][1][0],tetrahedron[i2][1][1],tetrahedron[i2][1][2],\
-                tetrahedron[i2][2][0],tetrahedron[i2][2][1],tetrahedron[i2][2][2],\
-                tetrahedron[i2][3][0],tetrahedron[i2][3][1],tetrahedron[i2][3][2],\
-                tetrahedron[i2][4][0],tetrahedron[i2][4][1],tetrahedron[i2][4][2],\
-                tetrahedron[i2][5][0],tetrahedron[i2][5][1],tetrahedron[i2][5][2]))
-            i1+=1
-        vol=utils.obj_volume_6d(obj)
-        f.write('volume = %d %d %d (%8.6f)\n'%(vol[0],vol[1],vol[2],numericalc.numeric_value(vol)))
         for i1 in range(len(obj)):
-            v=utils.tetrahedron_volume_6d(tetrahedron)
+            for i2 in range(4):
+                a4,a5,a6=math1.projection3(obj[i1][i2][0],\
+                                            obj[i1][i2][1],\
+                                            obj[i1][i2][2],\
+                                            obj[i1][i2][3],\
+                                            obj[i1][i2][4],\
+                                            obj[i1][i2][5])
+                f.write('Xx %8.6f %8.6f %8.6f # %3d-the tetrahedron %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
+                ((a4[0]+a4[1]*TAU)/(a4[2]),\
+                (a5[0]+a5[1]*TAU)/(a5[2]),\
+                (a6[0]+a6[1]*TAU)/(a6[2]),\
+                i1,i2,\
+                obj[i1][i2][0][0],obj[i1][i2][0][1],obj[i1][i2][0][2],\
+                obj[i1][i2][1][0],obj[i1][i2][1][1],obj[i1][i2][1][2],\
+                obj[i1][i2][2][0],obj[i1][i2][2][1],obj[i1][i2][2][2],\
+                obj[i1][i2][3][0],obj[i1][i2][3][1],obj[i1][i2][3][2],\
+                obj[i1][i2][4][0],obj[i1][i2][4][1],obj[i1][i2][4][2],\
+                obj[i1][i2][5][0],obj[i1][i2][5][1],obj[i1][i2][5][2]))
+        w1,w2,w3=utils.obj_volume_6d(obj)
+        f.write('volume = %d %d %d (%8.6f)\n'%(w1,w2,w3,(w1+TAU*w2)/(w3)))
+        for i1 in range(len(obj)):
+            [v1,v2,v3]=utils.tetrahedron_volume_6d(obj[i1])
             f.write('%3d-the tetrahedron, %d %d %d (%8.6f)\n'\
-                    %(i1,v[0],v[1],v[2],numericalc.numeric_value(v)))
+                    %(i1,v1,v2,v3,(v1+TAU*v2)/(v3)))
         f.close()
         return 0
-    
-    def generator_xyz_dim4_triangle(obj,filename):
+
+    def generator_xyz_dim4_triangle(obj, filename):
         """
         Generate object (set of triangles) object in XYZ format.
     
@@ -919,29 +988,33 @@ def write_xyz(obj,path='.',basename='tmp',select='tetrahedron',verbose=0):
             int: 0 (succeed), 1 (fail)
         
         """
+        
         f=open('%s'%(filename),'w', encoding="utf-8", errors="ignore")
         f.write('%d\n'%(len(obj)*3))
         f.write('%s\n'%(filename))
-        i1=0
-        for triangle in obj:
+        for i1 in range(len(obj)):
             for i2 in range(3):
-                v=math1.projection3(triangle[i2])
+                a4,a5,a6=math1.projection3(obj[i1][i2][0],\
+                                            obj[i1][i2][1],\
+                                            obj[i1][i2][2],\
+                                            obj[i1][i2][3],\
+                                            obj[i1][i2][4],\
+                                            obj[i1][i2][5])
                 f.write('Xx %8.6f %8.6f %8.6f # %3d-the triangle %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-                (numericalc.numeric_value(v[0]),\
-                numericalc.numeric_value(v[1]),\
-                numericalc.numeric_value(v[2]),\
+                ((a4[0]+a4[1]*TAU)/(a4[2]),\
+                (a5[0]+a5[1]*TAU)/(a5[2]),\
+                (a6[0]+a6[1]*TAU)/(a6[2]),\
                 i1,i2,\
-                triangle[i2][0][0],triangle[i2][0][1],triangle[i2][0][2],\
-                triangle[i2][1][0],triangle[i2][1][1],triangle[i2][1][2],\
-                triangle[i2][2][0],triangle[i2][2][1],triangle[i2][2][2],\
-                triangle[i2][3][0],triangle[i2][3][1],triangle[i2][3][2],\
-                triangle[i2][4][0],triangle[i2][4][1],triangle[i2][4][2],\
-                triangle[i2][5][0],triangle[i2][5][1],triangle[i2][5][2]))
-            i1+=1
+                obj[i1][i2][0][0],obj[i1][i2][0][1],obj[i1][i2][0][2],\
+                obj[i1][i2][1][0],obj[i1][i2][1][1],obj[i1][i2][1][2],\
+                obj[i1][i2][2][0],obj[i1][i2][2][1],obj[i1][i2][2][2],\
+                obj[i1][i2][3][0],obj[i1][i2][3][1],obj[i1][i2][3][2],\
+                obj[i1][i2][4][0],obj[i1][i2][4][1],obj[i1][i2][4][2],\
+                obj[i1][i2][5][0],obj[i1][i2][5][1],obj[i1][i2][5][2]))
         f.closed
         return 0
     
-    def generator_xyz_dim4_edge(obj,filename):
+    def generator_xyz_dim4_edge(obj, filename):
         """
         Generate object (set of edges) object in XYZ format.
     
@@ -954,25 +1027,29 @@ def write_xyz(obj,path='.',basename='tmp',select='tetrahedron',verbose=0):
             int: 0 (succeed), 1 (fail)
         
         """
+        
         f=open('%s'%(filename),'w', encoding="utf-8", errors="ignore")
         f.write('%d\n'%(len(obj)*2))
         f.write('%s\n'%(filename))
-        i1=0
-        for edge in obj:
+        for i1 in range(len(obj)):
             for i2 in range(2):
-                v=math1.projection3(edge[i2])
+                a4,a5,a6=math1.projection3(obj[i1][i2][0],\
+                                            obj[i1][i2][1],\
+                                            obj[i1][i2][2],\
+                                            obj[i1][i2][3],\
+                                            obj[i1][i2][4],\
+                                            obj[i1][i2][5])
                 f.write('Xx %8.6f %8.6f %8.6f # %3d-the edge %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-                (numericalc.numeric_value(v[0]),\
-                numericalc.numeric_value(v[1]),\
-                numericalc.numeric_value(v[2]),\
+                ((a4[0]+a4[1]*TAU)/(a4[2]),\
+                (a5[0]+a5[1]*TAU)/(a5[2]),\
+                (a6[0]+a6[1]*TAU)/(a6[2]),\
                 i1,i2,\
-                edge[i2][0][0],edge[i2][0][1],edge[i2][0][2],\
-                edge[i2][1][0],edge[i2][1][1],edge[i2][1][2],\
-                edge[i2][2][0],edge[i2][2][1],edge[i2][2][2],\
-                edge[i2][3][0],edge[i2][3][1],edge[i2][3][2],\
-                edge[i2][4][0],edge[i2][4][1],edge[i2][4][2],\
-                edge[i2][5][0],edge[i2][5][1],edge[i2][5][2]))
-            i1+=1
+                obj[i1][i2][0][0],obj[i1][i2][0][1],obj[i1][i2][0][2],\
+                obj[i1][i2][1][0],obj[i1][i2][1][1],obj[i1][i2][1][2],\
+                obj[i1][i2][2][0],obj[i1][i2][2][1],obj[i1][i2][2][2],\
+                obj[i1][i2][3][0],obj[i1][i2][3][1],obj[i1][i2][3][2],\
+                obj[i1][i2][4][0],obj[i1][i2][4][1],obj[i1][i2][4][2],\
+                obj[i1][i2][5][0],obj[i1][i2][5][1],obj[i1][i2][5][2]))
         f.closed
         return 0
     
@@ -989,33 +1066,35 @@ def write_xyz(obj,path='.',basename='tmp',select='tetrahedron',verbose=0):
             int: 0 (succeed), 1 (fail)
         
         """
+        
         f=open('%s'%(filename),'w', encoding="utf-8", errors="ignore")
         f.write('%d\n'%(len(obj)))
         f.write('%s\n'%(filename))
-        i1=0
-        for point in obj:
-            v=math1.projection3(point)
+        for i1 in range(len(obj)):
+            a4,a5,a6=math1.projection3(obj[i1][0],\
+                                        obj[i1][1],\
+                                        obj[i1][2],\
+                                        obj[i1][3],\
+                                        obj[i1][4],\
+                                        obj[i1][5])
             f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # # # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-            (numericalc.numeric_value(v[0]),\
-            numericalc.numeric_value(v[1]),\
-            numericalc.numeric_value(v[2]),\
+            ((a4[0]+a4[1]*TAU)/(a4[2]),\
+            (a5[0]+a5[1]*TAU)/(a5[2]),\
+            (a6[0]+a6[1]*TAU)/(a6[2]),\
             i1,\
-            point[0][0],point[0][1],point[0][2],\
-            point[1][0],point[1][1],point[1][2],\
-            point[2][0],point[2][1],point[2][2],\
-            point[3][0],point[3][1],point[3][2],\
-            point[4][0],point[4][1],point[4][2],\
-            point[5][0],point[5][1],point[5][2]))
-            i1=0
+            obj[i1][0][0],obj[i1][0][1],obj[i1][0][2],\
+            obj[i1][1][0],obj[i1][1][1],obj[i1][1][2],\
+            obj[i1][2][0],obj[i1][2][1],obj[i1][2][2],\
+            obj[i1][3][0],obj[i1][3][1],obj[i1][3][2],\
+            obj[i1][4][0],obj[i1][4][1],obj[i1][4][2],\
+            obj[i1][5][0],obj[i1][5][1],obj[i1][5][2]))
         f.closed
         return 0
     
-    if np.all(obj==None):
-        print('empty obj')
-        return 
-    elif obj.ndim!=4:
-        print('object has an incorrect shape!')
-        return 
+    if obj.tolist()==[[[[0]]]] or obj.tolist()==[[[0]]]:
+        print('no volume obj')
+        return 0
+    
     else:
         file_name='%s/%s.xyz'%(path,basename)
         if select == 'tetrahedron':
@@ -1041,298 +1120,7 @@ def write_xyz(obj,path='.',basename='tmp',select='tetrahedron',verbose=0):
         else:
             if verbose>0:
                 print('    error')
-            return 
-
-def read_xyz(path,basename,select='tetrahedron',verbose=0):
-    """
-    Load new occupation domain on input XYZ file.
-    
-    Args:
-        path (str): Path of the input XYZ file
-        basename (str): Basename of the input XYZ file
-        select (str)
-            'tetrahedron': set of tetrahedra (default)
-            'vertex'      : set of vertices
-            (default, select = 'tetrahedron')
-        verbose (int): verbose option
-    Returns:
-        Occupation domains (numpy.ndarray):
-            Loaded occupation domains.
-            The shape is (num,4,6,3), where num=numbre_of_tetrahedra (select = 'tetrahedron').
-            The shape is (num,6,3), where num=numbre_of_vertices (select = 'vertex').
-    """
-    
-    def read_file(file):
-        try:
-            f=open(file,'r')
-        except IOError as e:
-            print(e)
-            sys.exit(0)
-        line=[]
-        while 1:
-            a=f.readline()
-            if not a:
-                break
-            line.append(a[:-1])
-        return line
-    
-    filename='%s/%s.xyz'%(path,basename)
-    
-    f1=read_file(filename)
-    f0=f1[0].split()
-    num=int(f0[0])
-    
-    for i in range(2,num+2):
-        fi=f1[i]
-        fi=fi.split()
-        a1=int(fi[10])
-        b1=int(fi[11])
-        c1=int(fi[12])
-        a2=int(fi[13])
-        b2=int(fi[14])
-        c2=int(fi[15])
-        a3=int(fi[16])
-        b3=int(fi[17])
-        c3=int(fi[18])
-        a4=int(fi[19])
-        b4=int(fi[20])
-        c4=int(fi[21])
-        a5=int(fi[22])
-        b5=int(fi[23])
-        c5=int(fi[24])
-        a6=int(fi[25])
-        b6=int(fi[26])
-        c6=int(fi[27])
-        if i==2:
-            tmp=np.array([a1,b1,c1,a2,b2,c2,a3,b3,c3,a4,b4,c4,a5,b5,c5,a6,b6,c6])
-        else:
-            tmp=np.append(tmp,[a1,b1,c1,a2,b2,c2,a3,b3,c3,a4,b4,c4,a5,b5,c5,a6,b6,c6])
-    if verbose>0:
-        print('    read %s/%s.xyz'%(path,basename))
-    
-    if select == 'tetrahedron':
-        return tmp.reshape(int(num/4),4,6,3)
-    elif select == 'vertex':
-        return tmp.reshape(int(num),6,3)
-
-def simplification(obj,verbose=0):
-    """
-    Simplification of occupation domains.
-    
-    Args:
-        obj (numpy.ndarray): the occupation domain
-            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
-        num_cycle (int): numbre of cycles
-        verbose (int)
-            verbose = 0 (silent, default)
-            verbose = 1 (normal)
-            verbose > 2 (detail)
-    
-    Returns:
-    
-        Simplified occupation domains (numpy.ndarray)
-            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
-    
-    """
-    if np.all(obj==None):
-        if verbose>0:
-            print('    zero volume')
-        return 
-    else:
-        vol0=utils.obj_volume_6d(obj)
-        obj_convex_hull=utils.generate_convex_hull(obj)
-        obj_tmp=intsct.intersection_two_obj_1(obj_convex_hull,obj)
-        vol1=utils.obj_volume_6d(obj_tmp)
-        if np.all(vol0==vol1):
-            if verbose>0:
-                print('      simplification succeed:')
-                print('      num of tetrahedra: %d --> %d'%(len(obj),len(obj_convex_hull)))
-            return obj_convex_hull
-        else:
-            if verbose>0:
-                print('      simplification: fail')
-            return obj
-
-def generate_border_edges(obj):
-    """
-    Generate border edges of the occupation domain.
-    
-    Args:
-        obj (numpy.ndarray):
-            The occupation domain
-            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
-    
-    Returns:
-        Border edges of the occupation domains (numpy.ndarray):
-            The shape is (num,2,6,3), where num=numbre_of_edge.
-    
-    """
-    triangle_surface=utils.generator_surface_1(obj)
-    return utils.surface_cleaner(triangle_surface)
-
-# new in version 0.0.2a2
-def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
-    
-    def find_common_vertex(obj):
-        #Find common vertex of tetrahedra in obj).
-        counter1=0
-        for i1 in [0,1,2,3]:
-            vtx1=obj[0][i1]
-            xyz1=math1.projection3(vtx1)
-            counter2=0
-            for i2 in range(1,len(obj)):
-                counter3=0
-                for i3 in [0,1,2,3]:
-                    xyz2=math1.projection3(obj[i2][i3])
-                    if np.all(xyz1==xyz2):
-                        counter3=1
-                        break
-                if counter3==1:
-                    counter2+=1
-                else:
-                    break
-            if counter2==len(obj)-1:
-                counter1=1
-                break
-            else:
-                pass
-        if counter1!=0:
-            return vtx1
-        else:
-            return 
-    
-    # common vertex
-    vrtx0=find_common_vertex(obj)
-    
-    if np.all(vrtx0!=None):
-        
-        if os.path.exists(path) == False:
-            os.makedirs(path)
-        else:
-            pass
-        fatm=open('%s/%s.atm'%(path,basename),'w', encoding="utf-8", errors="ignore")
-        fpod=open('%s/%s.pod'%(path,basename),'w', encoding="utf-8", errors="ignore")
-        
-        #--------
-        #  atm
-        #--------
-        fatm.write('%d \'Em\' 1 %d 1 2.0 0. 0. 1.0 0. 0. 0.\n'%(serial_number,serial_number))
-        
-        vn=numericalc.numerical_vector(vrtx0)
-        fatm.write('x=  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f\n'%(\
-        vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
-        
-        # generate a list of verices and remove the common vertex from it.
-        vtxs=utils.remove_doubling_in_perp_space(obj)
-        vtxs=utils.remove_vector(vtxs,vrtx0)
-        
-        #--------
-        #  pod
-        #--------
-        fpod.write('%d %d %d \'comment\'\n'%(serial_number,len(vtxs),2))
-        for vtx in vtxs:
-            vn=numericalc.numerical_vector(vtx)
-            fpod.write('ej=  %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f\n'%(\
-            vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
-        #
-        lst_indx=[]
-        for tetrahedron in obj:
-            for vrtx1 in tetrahedron:
-                for i1 in range(len(vtxs)):
-                    if np.all(vrtx1==vtxs[i1]):
-                        lst_indx.append(i1+1) # add 1 to avoide index 0.
-                        break
-                    else:
-                        pass
-        fpod.write('nth= %d'%(len(vtxs)))
-        for indx in lst_indx:
-            fpod.write(' %d'%(indx))
-        fpod.write('\n')
-        
-        return 0
-    
-    else:
-        print('No common vertex found in the object. pod and atm cannot be created.')
-        return 1
-
-#########################
-#          WIP          #
-#########################
-def simple_hand_step1(obj, path, basename_tmp):
-    """
-    Simplification of occupation domains by hand (step1).
-    
-    Args:
-        obj (numpy.ndarray): the occupation domain
-            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
-        path (str): path of the tmporal file
-        basename_tmp (str): name for tmporal file.
-    
-    Returns:
-    
-        Tmporal occupation domains (numpy.ndarray):
-            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
-    
-    """
-    def write_xyz_smpl(a, path, basename):
-        f=open('%s'%(path)+'/%s.xyz'%(basename),'w', encoding="utf-8", errors="ignore")
-        f.write('%d\n'%(len(a)))
-        f.write('%s\n'%(basename))
-        for i1 in range(len(a)):
-            xyz=math1.projection3(a[i1])
-            f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-            (numericalc.numeric_value(xyz),\
-            numericalc.numeric_value(xyz),\
-            numericalc.numeric_value(xyz),\
-            i1,\
-            a[i1][0][0],a[i1][0][1],a[i1][0][2],\
-            a[i1][1][0],a[i1][1][1],a[i1][1][2],\
-            a[i1][2][0],a[i1][2][1],a[i1][2][2],\
-            a[i1][3][0],a[i1][3][1],a[i1][3][2],\
-            a[i1][4][0],a[i1][4][1],a[i1][4][2],\
-            a[i1][5][0],a[i1][5][1],a[i1][5][2]))
-        f.closed
-        return 0
-        
-    od1a=utils.remove_doubling_in_perp_space(obj)
-    write_xyz_smpl(od1a, path, basename_tmp)
-    print('written in %s'%(path)+'/%s.xyz'%(basename_tmp))
-    print('open above XYZ file in vesta and make merge_list, and run simple_hand_step2()')
-    return od1a
-
-def simple_hand_step2(obj, merge_list):
-    """
-    Simplification of occupation domains by hand (step2).
-    
-    Args:
-        obj (numpy.ndarray): the occupation domain
-            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
-        merge_list (list[[int,int,int,int,],[],...,[]])
-            A list containing lists of indices of vertices of tetrahedron.
-            The indices of vertices of tetrahedron in temporal file obtaind
-            by 'simple_hand_step1()'.
-    
-    Returns:
-        Simplified occupation domains (numpy.ndarray):
-            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
-    
-    """
-    
-    def merge(obj,mylist):
-        tmp1=np.array([obj[mylist[0]-1]])
-        for i in range(1,len(mylist)):
-            tmp2=obj[mylist[i]-1]
-            tmp1=np.append(tmp1,tmp2)
-        return tmp1.reshape(len(mylist),6,3)
-    
-    for i in range(len(merge_list)):
-        tmp1=merge(obj,merge_list[i])
-        od2=intsct.tetrahedralization_points(tmp1)
-        if i==0:
-            od1=np.array(od2)
-        else:
-            od1=np.vstack([od1,od2])
-    return od1
+            return 1
 
 def site_symmetry(wyckoff_position, centering, verbose=0):
     """
@@ -1529,7 +1317,7 @@ def site_symmetry(wyckoff_position, centering, verbose=0):
     
     return list1_new, list5
 
-def write_podatm(obj, position, vlist, path='.', basename='tmp', shift=[0.0,0.0,0.0,0.0,0.0,0.0], verbose=0):
+def write_podatm(obj, position, vlist = [0], path = '.', basename = 'tmp', shift=[0.0,0.0,0.0,0.0,0.0,0.0], verbose = 0):
     """
     Generate pod and atom files.
     
@@ -1555,37 +1343,47 @@ def write_podatm(obj, position, vlist, path='.', basename='tmp', shift=[0.0,0.0,
     else:
         pass
     
-    if obj==None:
+    if obj.tolist()==[[[[0]]]] or obj.tolist()==[[[0]]]:
         print('no volume obj')
         return 0
     else:
         fatm=open('%s/%s.atm'%(path,basename),'w', encoding="utf-8", errors="ignore")
         fpod=open('%s/%s.pod'%(path,basename),'w', encoding="utf-8", errors="ignore")
-        
+    
+        """
+        # get independent edges
+        edges = utils.generator_obj_edge(obj, verbose-1)
+        # get independent vertices of the edges
+        v = utils.remove_doubling_dim4_in_perp_space(edges)
+        """
+        #v=vertices
         v=obj
-        
+    
+        # shift
+        #shft=[0.00001,0.00002,0.00000,-0.00001,0.00001,-0.00002]
+        #shft=[0.0,0.0,0.0,0.0,0.0,0.0]
         shft=shift
         # .atm file
         for i in range(len(vlist)):
             a=v[vlist[i][0]-1]
             fatm.write('%d \'Em\' 1 %d 1 2.0 0. 0. 1.0 0. 0. 0.\n'%(i+1,i+1))
             fatm.write('x=  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f\n'%(\
-            numericalc.numeric_value(position[0]),\
-            numericalc.numeric_value(position[1]),\
-            numericalc.numeric_value(position[2]),\
-            numericalc.numeric_value(position[3]),\
-            numericalc.numeric_value(position[4]),\
-            numericalc.numeric_value(position[5])))
+            (position[0][0]+position[0][1]*TAU)/(position[0][2]),\
+            (position[1][0]+position[1][1]*TAU)/(position[1][2]),\
+            (position[2][0]+position[2][1]*TAU)/(position[2][2]),\
+            (position[3][0]+position[3][1]*TAU)/(position[3][2]),\
+            (position[4][0]+position[4][1]*TAU)/(position[4][2]),\
+            (position[5][0]+position[5][1]*TAU)/(position[5][2])))
             fatm.write('xe1= 1. 0.  0. 0.  0. 0. u1=0.0            5f\n')
             fatm.write('xe2= 1. 0. -1. 0. -1. 0. u2=0.0            3f\n')
             fatm.write('xe3= 1. 0.  0. 0. -1. 0. u3=0.0            2f\n')
             fatm.write('xi=  %8.6f  %8.6f  %8.6f  %8.6f  %8.6f  %8.6f  v=1.0\n'%(\
-            numericalc.numeric_value(a[0])+shft[0],\
-            numericalc.numeric_value(a[1])+shft[1],\
-            numericalc.numeric_value(a[2])+shft[2],\
-            numericalc.numeric_value(a[3])+shft[3],\
-            numericalc.numeric_value(a[4])+shft[4],\
-            numericalc.numeric_value(a[5])+shft[5]))
+            (a[0][0]+a[0][1]*TAU)/(a[0][2])+shft[0],\
+            (a[1][0]+a[1][1]*TAU)/(a[1][2])+shft[1],\
+            (a[2][0]+a[2][1]*TAU)/(a[2][2])+shft[2],\
+            (a[3][0]+a[3][1]*TAU)/(a[3][2])+shft[3],\
+            (a[4][0]+a[4][1]*TAU)/(a[4][2])+shft[4],\
+            (a[5][0]+a[5][1]*TAU)/(a[5][2])+shft[5]))
             fatm.write('isyd=1\n')
         fatm.close()
     
@@ -1611,6 +1409,8 @@ def write_podatm(obj, position, vlist, path='.', basename='tmp', shift=[0.0,0.0,
                     tmp2.append(vlist[i1][i2]-1)
                 else:
                     pass
+            #print('tmp2=',tmp2)
+        
             tmp1=[]
             for i2 in range(1,len(vlist[i1])):
                 for i3 in range(len(tmp2)):
@@ -1619,63 +1419,567 @@ def write_podatm(obj, position, vlist, path='.', basename='tmp', shift=[0.0,0.0,
                         break
                     else:
                         pass
+            #print('tmp1=',tmp1)
+        
             fpod.write('%d %d %d \'comment\'\n'%(i1+1,len(tmp2),2))
             for i2 in range(len(tmp2)):
                 b=v[tmp2[i2]]
                 fpod.write('ej=  %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f\n'%(\
-                numericalc.numeric_value(b[0])-numericalc.numeric_value(a[0]),\
-                numericalc.numeric_value(b[1])-numericalc.numeric_value(a[1]),\
-                numericalc.numeric_value(b[2])-numericalc.numeric_value(a[2]),\
-                numericalc.numeric_value(b[3])-numericalc.numeric_value(a[3]),\
-                numericalc.numeric_value(b[4])-numericalc.numeric_value(a[4]),\
-                numericalc.numeric_value(b[5])-numericalc.numeric_value(a[5])))
+                (b[0][0]+b[0][1]*TAU)/(b[0][2])-(a[0][0]+a[0][1]*TAU)/(a[0][2]),\
+                (b[1][0]+b[1][1]*TAU)/(b[1][2])-(a[1][0]+a[1][1]*TAU)/(a[1][2]),\
+                (b[2][0]+b[2][1]*TAU)/(b[2][2])-(a[2][0]+a[2][1]*TAU)/(a[2][2]),\
+                (b[3][0]+b[3][1]*TAU)/(b[3][2])-(a[3][0]+a[3][1]*TAU)/(a[3][2]),\
+                (b[4][0]+b[4][1]*TAU)/(b[4][2])-(a[4][0]+a[4][1]*TAU)/(a[4][2]),\
+                (b[5][0]+b[5][1]*TAU)/(b[5][2])-(a[5][0]+a[5][1]*TAU)/(a[5][2])))
+                """
+                for i3 in range(6):
+                    if i3==0:
+                        fpod.write('ej=  %8.6f'%(\
+                        (b[i3][0]+b[i3][1]*TAU)/(b[i3][2]) - (a[i3][0]+a[i3][1]*TAU)/(a[i3][2])\
+                        )
+                    elif i3==5:
+                        fpod.write(' %8.6f\n'%(\
+                        (b[i3][0]+b[i3][1]*TAU)/(b[i3][2]) - (a[i3][0]+a[i3][1]*TAU)/(a[i3][2])\
+                        )
+                    else:
+                        fpod.write(' %8.6f'%(\
+                        (b[i3][0]+b[i3][1]*TAU)/(b[i3][2]) - (a[i3][0]+a[i3][1]*TAU)/(a[i3][2])\
+                        )
+                """
             fpod.write('nth= %d'%(int((len(vlist[i1])-1)/3)))
             for i2 in range(len(tmp1)):
                 fpod.write(' %d'%(tmp1[i2]+1))
             fpod.write('\n100000000000000000000000000000000000000000000000000000000000\n')
             fpod.write('000000000000000000000000000000000000000000000000000000000000\n')
         fpod.close()
-        print('    written in %s/%s.atm'%(path,basename))
-        print('    written in %s/%s.pod'%(path,basename))
+    
+        if verbose>0:
+            print('    written in %s/%s.atm'%(path,basename))
+            print('    written in %s/%s.pod'%(path,basename))
+    
     return 0
 
-
-
-def asymmetric(symmetric_obj, position, vecs):
+def read_xyz(path, basename, select = 'tetrahedron'):
     """
-    Asymmetric part of occupation domain.
+    Load new occupation domain on input XYZ file.
     
     Args:
-        symmetric_obj (numpy.ndarray):
-            Occupation domain of which the asymmetric part is calculated.
+        path (str): Path of the input XYZ file
+        basename (str): Basename of the input XYZ file
+        select (str)
+            'tetrahedron': set of tetrahedra (default)
+            'vertex'      : set of vertices
+            (default, select = 'tetrahedron')
+    Returns:
+        Occupation domains (numpy.ndarray):
+            Loaded occupation domains.
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedra (select = 'tetrahedron').
+            The shape is (num,6,3), where num=numbre_of_vertices (select = 'vertex').
+    
+    """
+    
+    def read_file(file):
+        try:
+            f=open(file,'r')
+        except IOError as e:
+            print(e)
+            sys.exit(0)
+        line=[]
+        while 1:
+            a=f.readline()
+            if not a:
+                break
+            line.append(a[:-1])
+        return line
+    
+    filename='%s/%s.xyz'%(path,basename)
+    
+    f1=read_file(filename)
+    f0=f1[0].split()
+    num=int(f0[0])
+    
+    for i in range(2,num+2):
+        fi=f1[i]
+        fi=fi.split()
+        a1=int(fi[10])
+        b1=int(fi[11])
+        c1=int(fi[12])
+        a2=int(fi[13])
+        b2=int(fi[14])
+        c2=int(fi[15])
+        a3=int(fi[16])
+        b3=int(fi[17])
+        c3=int(fi[18])
+        a4=int(fi[19])
+        b4=int(fi[20])
+        c4=int(fi[21])
+        a5=int(fi[22])
+        b5=int(fi[23])
+        c5=int(fi[24])
+        a6=int(fi[25])
+        b6=int(fi[26])
+        c6=int(fi[27])
+        if i==2:
+            tmp=np.array([a1,b1,c1,a2,b2,c2,a3,b3,c3,a4,b4,c4,a5,b5,c5,a6,b6,c6])
+        else:
+            tmp=np.append(tmp,[a1,b1,c1,a2,b2,c2,a3,b3,c3,a4,b4,c4,a5,b5,c5,a6,b6,c6])
+    print('    read %s/%s.xyz'%(path,basename))
+    
+    if select == 'tetrahedron':
+        return tmp.reshape(int(num/4),4,6,3)
+    elif select == 'vertex':
+        return tmp.reshape(int(num),6,3)
+    
+def simplification(obj, num_cycle = 10, verbose = 0):
+    """
+    Simplification of occupation domains.
+    
+    Args:
+        obj (numpy.ndarray): the occupation domain
             The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
-        position (numpy.ndarray):
-            6d coordinate of the site of which the occupation domain centres.
-            The shape is (6,3)
-        vecs (numpy.ndarray):
-            Three vectors that defines the asymmetric part.
-            The shape is (3,6,3)
+        num_cycle (int): numbre of cycles
+        verbose (int)
+            verbose = 0 (silent, default)
+            verbose = 1 (normal)
+            verbose > 2 (detail)
     
     Returns:
-        Asymmetric part of the occupation domains (numpy.ndarray):
-            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
-    """
-    v0 = np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
-    vecs = math1.mul_vectors(vecs,np.array([5,0,1]))
-    # vecs multiplied by [a,b,c], where [a,b,c]=(a+TAU*b)/c. 
-    # [a,b,c] has to be defined so that the tetrahedron whose vertices are defined 
-    # by v0, and vecs covers the asymmetric unit of the ocuppation domains.
-    # (default) [a,b,c]=[5,0,1].
-    aum = np.append(v0,vecs).reshape(1,4,6,3)
-    aum = shift(aum,position)
-    od_asym = intsct.intersection_two_obj_1(symmetric_obj,aum)
     
-    return od_asym
+        Simplified occupation domains (numpy.ndarray)
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+    
+    """
+    if obj.tolist()!=[[[[0]]]]:
+        n1,n2,n3=utils.obj_volume_6d(obj)
+        obj1=mics.generate_convex_hull(obj, np.array([[0]]), num_cycle, verbose-1)
+        obj2=intsct.intersection_two_obj_2(obj1, obj, verbose-1)
+        m1,m2,m3=utils.obj_volume_6d(obj2)
+        if verbose>0:
+            print(' volume of original obj  : %d %d %d (%10.8f)'%(n1,n2,n3,(n1+TAU*n2)/n3))
+            print(' volume of simplified obj: %d %d %d (%10.8f)'%(m1,m2,m3,(m1+TAU*m2)/m3))
+        else:
+            pass
+        if n1==m1 and n2==m2 and n3==m3:
+            print(' simplification: succeed')
+            return obj2
+        else:
+            print(' simplification: fail')
+            print(' return initial obj')
+            #return np.array([[[[0]]]])
+            return obj
+    else:
+        print(' zero volume')
+        return np.array([[[[0]]]])
 
+def simple_hand_step1(obj, path, basename_tmp):
+    """
+    Simplification of occupation domains by hand (step1).
+    
+    Args:
+        obj (numpy.ndarray): the occupation domain
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+        path (str): path of the tmporal file
+        basename_tmp (str): name for tmporal file.
+    
+    Returns:
+    
+        Tmporal occupation domains (numpy.ndarray):
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+    
+    """
+    
+    def write_xyz_smpl(a, path, basename):
+    
+        f=open('%s'%(path)+'/%s.xyz'%(basename),'w', encoding="utf-8", errors="ignore")
+        f.write('%d\n'%(len(a)))
+        f.write('%s\n'%(basename))
+        for i1 in range(len(a)):
+            a4,a5,a6=math1.projection3(a[i1][0],\
+                                        a[i1][1],\
+                                        a[i1][2],\
+                                        a[i1][3],\
+                                        a[i1][4],\
+                                        a[i1][5])
+            f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
+            ((a4[0]+a4[1]*TAU)/(a4[2]),\
+            (a5[0]+a5[1]*TAU)/(a5[2]),\
+            (a6[0]+a6[1]*TAU)/(a6[2]),\
+            i1,\
+            a[i1][0][0],a[i1][0][1],a[i1][0][2],\
+            a[i1][1][0],a[i1][1][1],a[i1][1][2],\
+            a[i1][2][0],a[i1][2][1],a[i1][2][2],\
+            a[i1][3][0],a[i1][3][1],a[i1][3][2],\
+            a[i1][4][0],a[i1][4][1],a[i1][4][2],\
+            a[i1][5][0],a[i1][5][1],a[i1][5][2]))
+        f.closed
+        return 0
+    od1a = utils.remove_doubling_dim4_in_perp_space(obj)
+    write_xyz_smpl(od1a, path, basename_tmp)
+    print('written in %s'%(path)+'/%s.xyz'%(basename_tmp))
+    print('open above XYZ file in vesta and make merge_list, and run simple_hand_step2()')
+    return od1a
 
+def simple_hand_step2(obj, merge_list):
+    """
+    Simplification of occupation domains by hand (step2).
+    
+    Args:
+        obj (numpy.ndarray): the occupation domain
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+        merge_list (list[[int,int,int,int,],[],...,[]])
+            A list containing lists of indices of vertices of tetrahedron.
+            The indices of vertices of tetrahedron in temporal file obtaind
+            by 'simple_hand_step1()'.
+    
+    Returns:
+        Simplified occupation domains (numpy.ndarray):
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+    
+    """
+    
+    def merge(obj,mylist):
+        tmp1=np.array([obj[mylist[0]-1]])
+        for i in range(1,len(mylist)):
+            tmp2=obj[mylist[i]-1]
+            tmp1=np.append(tmp1,tmp2)
+        return tmp1.reshape(len(mylist),6,3)
+    
+    for i in range(len(merge_list)):
+        tmp1=merge(obj,merge_list[i])
+        od2=intsct.tetrahedralization_points(tmp1,0)
+        if i==0:
+            od1=np.array(od2)
+        else:
+            od1=np.vstack([od1,od2])
+    return od1
 
+#  legacy simple
+def simple(obj, select, num_cycle = 3, verbose = 0, num_cycle_234 = [3,0,0], num_shuffle_234 = [1,0,0]):
+    """
+    Legacy: simple
+    """
+    if select == 0:
+        obj_new = mics.simplification_obj_edges(obj, num_cycle, verbose)
+    elif select == 1:
+        obj_new = mics.simplification_obj_edges_1(obj, num_cycle, verbose)
+    elif select == 2:
+        obj_new=mics.simplification_obj_smart(obj, num_cycle, verbose)
+    elif select == 3:
+        obj_new = mics.simplification_convex_polyhedron(obj, num_cycle, verbose, 0)
+    elif select == 4:
+        [num2_of_cycle, num3_of_cycle, num4_of_cycle] = num_cycle_234
+        [num2_of_shuffle, num3_of_shuffle, num4_of_shuffle] = num_shuffle_234
+        obj_new = mics.simplification(obj,\
+                                    num2_of_cycle,\
+                                    num3_of_cycle,\
+                                    num4_of_cycle,\
+                                    num2_of_shuffle,\
+                                    num3_of_shuffle,\
+                                    num4_of_shuffle,\
+                                    verbose)
+    else:
+        obj_new=mics.simplification_obj_smart(obj, num_cycle, verbose)
+    return obj_new
 
+def simple_special(obj, num, num_cycle, verbose_level = 0):
+    """
+    Legacy: simple_special
+    """
+    # 複雑に四面体分割されたObjectを単純化する
+    # 一部分（ただし、凸多面体に限る）だけ単純化したい場合．
+    # Parameters:
+    #  obj: 単純化したいobject(dim4のnumpy.ndarray)
+    #  num: 凸多面体を構成する四面体の配列インデックスをnumで指定(dim2のlist)
+    #  num_cycle: qcmodel.simplification_convex_polyhedronのサイクル
+    #  verbose_level: qcmodel.simplification_convex_polyhedronのverbose_level
+    n1,n2,n3=utils.obj_volume_6d(obj)
+    obj_new=np.array([0])
+    a=[]
+    len(obj)
+    for i3 in range(len(obj)):
+        counter=0
+        for i1 in range(len(num)):
+            for i2 in num[i1]:
+                if i3==i2:
+                    counter+=1
+                    break
+                else:
+                    pass
+        if counter==0:
+            if len(obj_new)==1:
+                obj_new=obj[i3].reshape(72)
+            else:
+                obj_new=np.append(obj_new,obj[i3])
+        else:
+            pass
+    if obj_new.tolist!=[0]:
+        obj_new=obj_new.reshape(int(len(obj_new)/72),4,6,3)
+        #print len(obj_new)
+    else:
+        pass
+        
+    for i1 in range(len(num)):
+        tmp=np.array([0])
+        for i2 in num[i1]:
+            if len(tmp)==1:
+                tmp=obj[i2].reshape(72)
+            else:
+                tmp=np.append(tmp,obj[i2])
+        tmp=mics.simplification_convex_polyhedron(tmp.reshape(int(len(tmp)/72),4,6,3),num_cycle,verbose_level,0)
+        if len(obj_new)==1:
+            obj_new=tmp.reshape(len(tmp)*72)
+        else:
+            obj_new=np.append(obj_new,tmp)
+    obj_new=obj_new.reshape(int(len(obj_new)/72),4,6,3)
+    m1,m2,m3=utils.obj_volume_6d(obj_new)
+    if verbose_level>0:
+         print(' volume of original obj  : %d %d %d (%10.8f)'%(n1,n2,n3,(n1+TAU*n2)/n3))
+         print(' volume of simplified obj: %d %d %d (%10.8f)'%(m1,m2,m3,(m1+TAU*m2)/m3))
+    if n1==m1 and n2==m2 and n3==m3:
+        print(' succeed')
+        return obj_new
+    else:
+        print(' fail, original obj returned.')
+        return obj
 
+def simple_special_1(obj, num, num_cycle, verbose_level = 0):
+    """
+    Legacy: simple
+    """
+    # 複雑に四面体分割されたObjectを単純化する
+    # 一部分（だけ単純化したい場合．
+    # Parameters:
+    #  obj: 単純化したいobject(dim4のnumpy.ndarray)
+    #  num: 多面体を構成する四面体の配列インデックスをnumで指定(dim2のlist)
+    #  num_cycle: qcmodel.simplification_convex_polyhedronのサイクル
+    #  verbose_level: qcmodel.simplification_obj_edges()のverbose_level
+    n1,n2,n3=utils.obj_volume_6d(obj)
+    obj_new=np.array([0])
+    a=[]
+    len(obj)
+    for i3 in range(len(obj)):
+        counter=0
+        for i1 in range(len(num)):
+            for i2 in num[i1]:
+                if i3==i2:
+                    counter+=1
+                    break
+                else:
+                    pass
+        if counter==0:
+            if len(obj_new)==1:
+                obj_new=obj[i3].reshape(72)
+            else:
+                obj_new=np.append(obj_new,obj[i3])
+        else:
+            pass
+    if obj_new.tolist!=[0]:
+        obj_new=obj_new.reshape(int(len(obj_new)/72),4,6,3)
+        #print len(obj_new)
+    else:
+        pass
+        
+    for i1 in range(len(num)):
+        tmp=np.array([0])
+        for i2 in num[i1]:
+            if len(tmp)==1:
+                tmp=obj[i2].reshape(72)
+            else:
+                tmp=np.append(tmp,obj[i2])
+        #tmp=mics.simplification_obj_edges(tmp.reshape(len(tmp)/72,4,6,3),num_cycle,verbose_level-1)
+        tmp=mics.simplification_obj_edges_1(tmp.reshape(int(len(tmp)/72),4,6,3),num_cycle,verbose_level-1)
+        if len(obj_new)==1:
+            obj_new=tmp.reshape(len(tmp)*72)
+        else:
+            obj_new=np.append(obj_new,tmp)
+    obj_new=obj_new.reshape(int(len(obj_new)/72),4,6,3)
+    m1,m2,m3=utils.obj_volume_6d(obj_new)
+    if verbose_level>0:
+        print(' volume of original obj  : %d %d %d (%10.8f)'%(n1,n2,n3,(n1+TAU*n2)/float(n3)))
+        print(' volume of simplified obj: %d %d %d (%10.8f)'%(m1,m2,m3,(m1+TAU*m2)/float(m3)))
+    else:
+        pass
+    if n1==m1 and n2==m2 and n3==m3:
+        print(' succeed')
+        return obj_new
+    else:
+        print(' fail, original obj returned.')
+        return obj
+
+def simple_rondom(obj, num_cycle, combination_num, verbose_level = 0):
+    """
+    Legacy: simple
+    """
+    
+    if verbose_level>0:
+        print('  simplification_rondom()')
+    else:
+        pass
+        
+    n1,n2,n3=utils.obj_volume_6d(obj)
+    obj_new=np.array([0])
+    obj_tmp=obj
+    for i in range(num_cycle):
+        print('--------------')
+        print('     %d-cycle'%(i))
+        print('--------------')
+        num=random.sample(range(len(obj_tmp)),combination_num)
+        #print     num
+        num=[num]
+        obj_new=simple_special_1(obj_tmp,num,2,verbose_level-1)
+        if len(obj_new)<len(obj_tmp):
+            obj_tmp=obj_new
+            if verbose_level>0:
+                print('  reduced')
+            else:
+                pass
+        else:
+            pass
+   
+    m1,m2,m3=utils.obj_volume_6d(obj_new)
+    if verbose_level>0:
+        print(' volume of original obj  : %d %d %d (%10.8f)'%(n1,n2,n3,(n1+TAU*n2)/n3))
+        print(' volume of simplified obj: %d %d %d (%10.8f)'%(m1,m2,m3,(m1+TAU*m2)/m3))
+    if n1==m1 and n2==m2 and n3==m3:
+        print(' succeed')
+        return obj_new
+    else:
+        print(' fail, original obj returned.')
+        return obj
+
+def simpl_add_point(obj, point, verbose = 0):
+    """
+    Legacy: simple
+    """
+    # Parameters:
+    #  obj: 単純化したいobject(dim4のnumpy.ndarray) ただし、凸多面体のみ
+    #  point: obj内に追加したい点の6次元座標(dim2のnumpy.ndarray)
+    obj_new=intsct.tetrahedralization_1(obj, point, verbose)
+    return obj_new
+    
+def simpl_manual(obj, num, coordinates, verbose_level = 0):
+    """
+    Legacy: simple
+    """
+    # 複雑に四面体分割されたObjectを単純化する
+    # 一部分（ただし、凸多面体に限る）だけ単純化したい場合．
+    # この一部分はnumで指定
+    # その頂点座標をcoordinatesで与える
+    # Parameters:
+    #  obj: 単純化したいobject(dim4のnumpy.ndarray)
+    #  num: 凸多面体を構成する四面体の配列インデックスをnumで指定(dim2のlist)
+    #  coordinates: 単純化したい部分の頂点（四面体分割に使う. dim3のnumpy.ndarrayを含むリスト）
+    n1,n2,n3=utils.obj_volume_6d(obj)
+    obj_new=np.array([0])
+    a=[]
+    len(obj)
+    for i3 in range(len(obj)):
+        counter=0
+        for i1 in range(len(num)):
+            for i2 in num[i1]:
+                if i3==i2:
+                    counter+=1
+                    break
+                else:
+                    pass
+        if counter==0:
+            if len(obj_new)==1:
+                obj_new=obj[i3].reshape(72)
+            else:
+                obj_new=np.append(obj_new,obj[i3])
+        else:
+            pass
+    if obj_new.tolist!=[0]:
+        obj_new=obj_new.reshape(len(obj_new)/72,4,6,3)
+        #print len(obj_new)
+    else:
+        pass
+        
+    for i1 in range(len(coordinates)):
+        tmp4=intsct.tetrahedralization_points(coordinates[i1])
+        if len(obj_new)==1:
+            obj_new=tmp4.reshape(len(tmp4)*72)
+        else:
+            obj_new=np.append(obj_new,tmp4)
+    obj_new=obj_new.reshape(len(obj_new)/72,4,6,3)
+    m1,m2,m3=utils.obj_volume_6d(obj_new)
+    if verbose_level>0:
+         print(' volume of original obj  : %d %d %d (%10.8f)'%(n1,n2,n3,(n1+TAU*n2)/float(n3)))
+         print(' volume of simplified obj: %d %d %d (%10.8f)'%(m1,m2,m3,(m1+TAU*m2)/float(m3)))
+    if n1==m1 and n2==m2 and n3==m3:
+        print(' succeed')
+        return obj_new
+    else:
+        print(' fail, original obj returned.')
+        return obj
+
+def simpl_manual_2(obj, num, obj_partial, verbose_level = 0):
+    """
+    Legacy: simple
+    """
+    # 複雑に四面体分割されたObjectを単純化する
+    # 四面分割を単純化したい部分が凸多面体でない場合、手で新たに四面体分割したobjを与える．
+    # 一部分はnumで指定
+    # 新しく四面体分割したobjを与える．
+    # Parameters:
+    #  obj: 単純化したいobject(dim4のnumpy.ndarray)
+    #  num: 凸多面体を構成する四面体の配列インデックスをnumで指定(dim2のlist)
+    #  obj_partial: 手で四面体分割したobj（四面体分割に使う. dim4のnumpy.ndarray）
+    n1,n2,n3=utils.obj_volume_6d(obj)
+    obj_new=np.array([0])
+    a=[]
+    len(obj)
+    for i3 in range(len(obj)):
+        counter=0
+        for i1 in range(len(num)):
+            for i2 in num[i1]:
+                if i3==i2:
+                    counter+=1
+                    break
+                else:
+                    pass
+        if counter==0:
+            if len(obj_new)==1:
+                obj_new=obj[i3].reshape(72)
+            else:
+                obj_new=np.append(obj_new,obj[i3])
+        else:
+            pass
+    if obj_new.tolist!=[0]:
+        obj_new=obj_new.reshape(len(obj_new)/72,4,6,3)
+        #print len(obj_new)
+    else:
+        pass
+        
+    if len(obj_new)==1:
+        obj_new=obj_partial.reshape(len(obj_partial)*72)
+    else:
+        obj_new=np.append(obj_new,obj_partial)
+    obj_new=obj_new.reshape(len(obj_new)/72,4,6,3)
+    m1,m2,m3=utils.obj_volume_6d(obj_new)
+    if verbose_level>0:
+        print(' volume of original obj  : %d %d %d (%10.8f)'%(n1,n2,n3,(n1+TAU*n2)/float(n3)))
+        print(' volume of simplified obj: %d %d %d (%10.8f)'%(m1,m2,m3,(m1+TAU*m2)/float(m3)))
+    if n1==m1 and n2==m2 and n3==m3:
+        print(' succeed')
+        return obj_new
+    else:
+        print(' fail, original obj returned.')
+        return obj
+
+def simpl_manual(obj, num, verbose_level = 0):
+    """
+    Legacy: simple
+    """
+    # 複雑に四面体分割されたObjectを単純化する
+    # 四面分割を単純化したい部分（凸多面体である必要がある）の四面体インデックス(m)とその頂点インデックス(n)を指定し、
+    # その頂点集合を四面体分割する．
+    # 新しく四面体分割したobjを与える．
+    # Parameters:
+    #  obj: 単純化したいobject(dim4のnumpy.ndarray)
+    #  num: 凸多面体を構成する四面体インデックス(m)とその頂点インデックス(n) (dim2のlist)
+    #        例　num = [[m1,n1],[m2,n2],...]
+    return 0
 
 if __name__ == "__main__":
     
@@ -1685,7 +1989,7 @@ if __name__ == "__main__":
     
     # generat STRT OD located at 0,0,0,0,0,0 by symmetric operations (m-3-5).
     pos0=np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
-    strt = symmetric(asymmetric_part_obj = strt_asym, position = pos0)
+    strt = symmetric(asymmetric_part = strt_asym, position = pos0)
     
     # move STRT OD to a position 1 1 1 0 -1 0.
     pos_b1=np.array([[ 1, 0, 1],[ 1, 0, 1],[ 1, 0, 1],[ 0, 0, 1],[-1, 0, 1],[ 0, 0, 1]]) # b_1

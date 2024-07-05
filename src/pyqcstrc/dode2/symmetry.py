@@ -5,14 +5,14 @@
 #
 import sys
 #sys.path.append('.')
-from pyqcstrc.ico2.math1 import (add, 
+from pyqcstrc.dode2.math1 import (add, 
                                 matrixpow, 
                                 dot_product, 
                                 dot_product_1, 
                                 sub_vectors, 
                                 add_vectors,
                                 )
-from pyqcstrc.ico2.utils import (remove_doubling_in_perp_space, 
+from pyqcstrc.dode2.utils import (remove_doubling_in_perp_space, 
                                 remove_doubling,
                                 )
 import numpy as np
@@ -37,16 +37,16 @@ def symop_obj(symop,obj,centre):
         print('object has an incorrect shape!')
         return 
 
-def symop_vecs(symop,tetrahedron,centre):
+def symop_vecs(symop,triangle,centre):
     """ Apply a symmetric operation on set of vectors around given centre. in TAU-style
     
     """
-    tetrahedron1=np.zeros(tetrahedron.shape,dtype=np.int64)
+    triangle1=np.zeros(triangle.shape,dtype=np.int64)
     i=0
-    for vt in tetrahedron:
-        tetrahedron1[i]=symop_vec(symop,vt,centre)
+    for vt in triangle:
+        triangle1[i]=symop_vec(symop,vt,centre)
         i+=1
-    return tetrahedron1
+    return triangle1
 
 def symop_vec(symop,vt,centre):
     """ Apply a symmetric operation on a vector around given centre. in TAU-style
@@ -63,7 +63,7 @@ def symop_vec(symop,vt,centre):
 def generator_obj_symmetric_obj(obj,centre):
     
     if obj.ndim==3 or obj.ndim==4:
-        mop=icosasymop()
+        mop=dodesymop()
         num=len(mop)
         shape=tuple([num])
         a=np.zeros(shape+obj.shape,dtype=np.int64)
@@ -81,16 +81,16 @@ def generator_obj_symmetric_obj(obj,centre):
         print('object has an incorrect shape!')
         return
 
-def generator_obj_symmetric_surface(obj,centre):
+def generator_obj_symmetric_triangle(obj,centre):
     return generator_obj_symmetric_obj(obj,centre)
     
-def generator_obj_symmetric_tetrahedron(obj,centre):
-    return generator_obj_symmetric_obj(obj,centre)
+#def generator_obj_symmetric_tetrahedron(obj,centre):
+#    return generator_obj_symmetric_obj(obj,centre)
 
-def generator_obj_symmetric_tetrahedron_specific_symop(obj,centre,list_of_symmetry_operation_index):
+def generator_obj_symmetric_triangle_specific_symop(obj,centre,list_of_symmetry_operation_index):
     # using specific symmetry operations
     if obj.ndim==3 or obj.ndim==4:
-        mop=icosasymop()
+        mop=dodesymop()
         shape=tuple([len(index_of_symmetry_operation)])
         a=np.zeros(shape+obj.shape,dtype=np.int64)
         i=0
@@ -102,8 +102,8 @@ def generator_obj_symmetric_tetrahedron_specific_symop(obj,centre,list_of_symmet
         print('object has an incorrect shape!')
         return
     
-def generator_obj_symmetric_tetrahedron_0(obj,centre,symmetry_operation_index):
-    mop=icosasymop()
+def generator_obj_symmetric_triangle_0(obj,centre,symmetry_operation_index):
+    mop=dodesymop()
     return symop_obj(mop[symmetry_operation_index],obj,centre)
 
 def generator_obj_symmetric_vec(vectors, centre):
@@ -117,59 +117,78 @@ def generator_equivalent_vec(vector,centre):
     a=generator_obj_symmetric_obj(vector,centre)
     return remove_doubling(a)
 
-def icosasymop():
-    # icosahedral symmetry operations
-    m1=np.array([[ 1, 0, 0, 0, 0, 0],\
+def dodesymop():
+    # dodecagonal symmetry operations
+    # c12
+    m1=np.array([[ 0, 1, 0, 0, 0, 0],\
                 [ 0, 0, 1, 0, 0, 0],\
                 [ 0, 0, 0, 1, 0, 0],\
+                [-1, 0, 1, 0, 0, 0],\
                 [ 0, 0, 0, 0, 1, 0],\
-                [ 0, 0, 0, 0, 0, 1],\
-                [ 0, 1, 0, 0, 0, 0]],dtype=np.int64)
+                [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
     # mirror
-    m2=np.array([[-1, 0, 0, 0, 0, 0],\
-                [ 0,-1, 0, 0, 0, 0],\
-                [ 0, 0, 0, 0, 0,-1],\
-                [ 0, 0, 0, 0,-1, 0],\
-                [ 0, 0, 0,-1, 0, 0],\
-                [ 0, 0,-1, 0, 0, 0]],dtype=np.int64)
-    # c2
-    m3=np.array([[ 0, 0, 0, 0, 0,-1],\
-                [ 0,-1, 0, 0, 0, 0],\
-                [ 0, 0, 0, 1, 0, 0],\
+    m2=np.array([[ 0, 0, 0, 1, 0, 0],\
                 [ 0, 0, 1, 0, 0, 0],\
-                [ 0, 0, 0, 0,-1, 0],\
-                [-1, 0, 0, 0, 0, 0]],dtype=np.int64)
-    # c3
-    m4=np.array([[ 0, 1, 0, 0, 0, 0],\
-                [ 0, 0, 1, 0, 0, 0],\
+                [ 0, 1, 0, 0, 0, 0],\
                 [ 1, 0, 0, 0, 0, 0],\
-                [ 0, 0, 0, 0, 0, 1],\
-                [ 0, 0, 0,-1, 0, 0],\
-                [ 0, 0, 0, 0,-1, 0]],dtype=np.int64)
-    # inversion
-    m5=np.array([[-1, 0, 0, 0, 0, 0],\
-                [ 0,-1, 0, 0, 0, 0],\
-                [ 0, 0,-1, 0, 0, 0],\
-                [ 0, 0, 0,-1, 0, 0],\
-                [ 0, 0, 0, 0,-1, 0],\
-                [ 0, 0, 0, 0, 0,-1]],dtype=np.int64)
+                [ 0, 0, 0, 0, 1, 0],\
+                [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
     symop=[]
-    for m in range(2):
-        for l in range(3):
-            for k in range(2):
-                for j in range(2):
-                    for i in range(5):
-                        s1=matrixpow(m1,i) # c5
-                        s2=matrixpow(m2,j) # mirror
-                        s3=matrixpow(m3,k) # c2
-                        s4=matrixpow(m4,l) # c3
-                        s5=matrixpow(m5,m) # inversion
-                        tmp=np.dot(s5,s4)
-                        tmp=np.dot(tmp,s3)
-                        tmp=np.dot(tmp,s2)
-                        tmp=np.dot(tmp,s1)
-                        symop.append(tmp)
+    for i1 in range(2):
+        for i2 in range(12):
+            s1=matrixpow(m1,i2) # c12
+            s2=matrixpow(m2,i1) # mirror
+            tmp=np.dot(s2,s1)
+            symop.append(tmp)
     return symop
+
+def site_symmetry(site):
+    
+    vec1=[]
+    centre=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+    dev=np.array([[-3,4,1],[2,-4,1],[-4,3,1],[3,1,1],[0,0,1],[0,0,1]],dtype=np.int64)
+    
+    # translation
+    v1=np.array([[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]]) # (1,0,0,0)
+    trans=generator_equivalent_vec(v1,centre)
+    
+    for k in range(6):
+        [b1,b2,b3]=add(site[k][0],site[k][1],site[k][2],dev[k][0],dev[k][1],dev[k][2])
+        vec1.extend([b1,b2,b3])
+    vec=np.array(vec1).reshape(6,3)
+    tmp3a=generator_equivalent_vec(vec,centre)
+    
+    # translational symmetry
+    vec1=[]
+    for i in range(len(tmp3a)):
+        for j in range(len(trans)):
+            for k in range(6):
+                [b1,b2,b3]=sub(tmp3a[i][k][0],tmp3a[i][k][1],tmp3a[i][k][2],trans[j][k][0],trans[j][k][1],trans[j][k][2])
+                vec1.extend([b1,b2,b3])
+    tmp3b=np.array(vec1).reshape(int(len(vec1)/18),6,3)
+    tmp3a=np.vstack([tmp3a,tmp3b])
+    
+    #print('1: len(tmp3a)=',len(tmp3a))
+    vec1=[]
+    for i in range(len(tmp3a)):
+        for k in range(6):
+            [b1,b2,b3]=sub(tmp3a[i][k][0],tmp3a[i][k][1],tmp3a[i][k][2],site[k][0],site[k][1],site[k][2])
+            vec1.extend([b1,b2,b3])
+    tmp3a=np.array(vec1).reshape(len(tmp3a),6,3)
+    #print(vec1)
+    
+    #print('2: len(tmp3a)=',len(tmp3a))
+    mop=dodesymop()
+    
+    numlst=[]
+    for i in range(len(tmp3a)):
+        for k in range(len(mop)):
+            vec1=symop_vec(mop[k],dev,centre)
+            if np.array_equal(np.array(vec1).reshape(6,3),tmp3a[i]):
+                numlst.extend([k])
+            else:
+                pass
+    return numlst
 
 if __name__ == '__main__':
     
@@ -210,14 +229,14 @@ if __name__ == '__main__':
             v[i1]=generate_random_vector(ndim)
         return v
     
-    def generate_random_tetrahedron():
-        return generate_random_vectors(4)
+    def generate_random_triangle():
+        return generate_random_vectors(3)
     
     cen0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
     
     
     print("TEST: symop_vec()")
-    symop=icosasymop()
+    symop=dodesymop()
     vt=generate_random_vector()
     counter=0
     for sop in symop:

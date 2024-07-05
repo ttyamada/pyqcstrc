@@ -7,7 +7,7 @@ import numpy as np
 from numpy.typing import NDArray
 import random
 
-TAU=(1+np.sqrt(5))/2.0
+TAU=np.sqrt(3)/2.0
 EPS=1e-6
 
 def coplanar_check_numeric_tau(pts: NDArray[np.int64], num_iteration: int=5) -> bool:
@@ -431,18 +431,18 @@ def inside_outside_obj_tau(point: NDArray[np.int64], obj: NDArray[np.int64]) -> 
     return inside_outside_obj(point,obj)
     
 def inside_outside_obj(point: NDArray[np.float64], obj: NDArray[np.float64]) -> bool:
-    """this function judges whether the point is inside an object (set of tetrahedra) or not
+    """this function judges whether the point is inside an object (set of triangle) or not
         
     Parameters
     ----------
     point: array
         coordinate of the point,xyz
     obj: array
-        vertex coordinates of tetrahedra, (xyz1, xyz2, xyz3, xyz4), (), (), ...
+        vertex coordinates of triangle, (xyz1, xyz2, xyz3), (), (), ...
     """
     flg=0
     for tetrahedron in obj:
-        if inside_outside_tetrahedron(point,tetrahedron):
+        if inside_outside_triangle(point,triangle):
             flg+=1
             break
     if flg==0:
@@ -450,24 +450,21 @@ def inside_outside_obj(point: NDArray[np.float64], obj: NDArray[np.float64]) -> 
     else:
         return False # outside
 
-def inside_outside_tetrahedron_tau(point: NDArray[np.int64], tetrahedron: NDArray[np.int64]) -> bool:
-    """this function judges whether the point is inside a tetrahedron or not
+def inside_outside_triangle_tau(point: NDArray[np.int64], triangle: NDArray[np.int64]) -> bool:
+    """this function judges whether the point is inside a triangle or not
         
     Parameters
     ----------
     point: array
         6d coordinate of the point in TAU-style.
     tetrahedron: array
-        6d vertex coordinates of tetrahedron in TAU-style.
+        6d vertex coordinates of triangle in TAU-style.
     """
-    #point=numerical_vector(point)
-    #tetrahedron=numerical_vectors(tetrahedron)
-    # 
     point=get_internal_component_numerical(point)
-    tetrahedron=get_internal_component_sets_numerical(tetrahedron)
-    return inside_outside_tetrahedron(point,tetrahedron)
+    tetrahedron=get_internal_component_sets_numerical(triangle)
+    return inside_outside_triangle(point,triangle)
 
-def inside_outside_tetrahedron(point: NDArray[np.float64], tetrahedron: NDArray[np.float64]) -> bool:
+def inside_outside_triangle(point: NDArray[np.float64], triangle: NDArray[np.float64]) -> bool:
     """this function judges whether the point is inside a tetrahedron or not
         
     Parameters
@@ -475,32 +472,30 @@ def inside_outside_tetrahedron(point: NDArray[np.float64], tetrahedron: NDArray[
     point: array
         coordinate of the point,xyz
     tetrahedron: array
-        vertex coordinates of tetrahedron, (xyz1, xyz2, xyz3, xyz4)
+        vertex coordinates of triangle, (xyz1, xyz2, xyz3)
     """
-    vol0=tetrahedron_volume_numerical(tetrahedron)
+    #vol0=triangle_volume_numerical(triangle)
+    vol0=triangle_area_numerical(triangle)
     
-    def small_tetrahedron(indx,p,tetrahedron0):
-        tet=np.zeros((4,3),dtype=np.float64)
-        for i in range(4):
+    def small_triangle(indx,p,triangle0):
+        tri=np.zeros((4,3),dtype=np.float64)
+        for i in range(3):
             if i==indx:
-                tet[i]=p
+                tri[i]=p
             else:
-                tet[i]=tetrahedron0[i]
-        return tet
+                tri[i]=triangle0[i]
+        return tri
     
-    tet1=small_tetrahedron(0,point,tetrahedron)
-    vol1=tetrahedron_volume_numerical(tet1)
+    tet1=small_triangle(0,point,triangle)
+    vol1=triangle_area_numerical(tet1)
     #
-    tet2=small_tetrahedron(1,point,tetrahedron)
-    vol2=tetrahedron_volume_numerical(tet2)
+    tet2=small_triangle(1,point,triangle)
+    vol2=triangle_area_numerical(tet2)
     #
-    tet3=small_tetrahedron(2,point,tetrahedron)
-    vol3=tetrahedron_volume_numerical(tet3)
-    #
-    tet4=small_tetrahedron(3,point,tetrahedron)
-    vol4=tetrahedron_volume_numerical(tet4)
+    tet3=small_triangle(2,point,triangle)
+    vol3=triangle_area_numerical(tet3)
     
-    if abs(vol0-vol1-vol2-vol3-vol4)<EPS*vol0:
+    if abs(vol0-vol1-vol2-vol3)<EPS*vol0:
         return True # inside
     else:
         return False # outside
@@ -511,55 +506,57 @@ def inside_outside_tetrahedron(point: NDArray[np.float64], tetrahedron: NDArray[
 
 
 def obj_volume_6d_numerical(obj: NDArray[np.int64]) -> float:
-    """This function returns volume of an object (set of tetrahedra).
+    """This function returns volume of an object (set of triangle).
         
     Parameters
     ----------
     object: array
-        6-dimensional vertex coordinates of tetrahedra.
+        6-dimensional vertex coordinates of triangle.
     """
     vol=0
-    for tetrahedron in obj:
-        vol+=tetrahedron_volume_6d_numerical(tetrahedron)
+    for triangle in obj:
+        vol+=triangle_volume_6d_numerical(triangle)
     return vol
 
-def tetrahedron_volume_6d_numerical(tetrahedron: NDArray[np.int64]) -> float:
-    """This function returns volume of a tetrahedron
+def triangle_volume_6d_numerical(triangle: NDArray[np.int64]) -> float:
+    """This function returns volume of a triangle
         
     Parameters
     ----------
     tetrahedron: array
-        6-dimensional vertex coordinates of the tetrahedron, xyzuvw0,xyzuvw1,xyzuvw2,xyzuvw3
+        6-dimensional vertex coordinates of the tetrahedron, xyzuvw0,xyzuvw1,xyzuvw2
     """
-    a=get_internal_component_sets_numerical(tetrahedron)
-    return tetrahedron_volume_numerical(a)
+    a=get_internal_component_sets_numerical(triangle)
+    #return triangle_volume_numerical(a)
+    return triangle_area_numerical(a)
 
-def obj_volume_numerical(obj: NDArray[np.float64]) -> float:
-    """This function returns volume of an object (set of tetrahedra).
-        
-    Parameters
-    ----------
-    object: array
-        3-dimensional vertex coordinates of tetrahedra.
-    """
-    vol=0
-    for tetrahedron in obj:
-        vol+=tetrahedron_volume_numerical(tetrahedron)
-    return vol
+#def obj_volume_numerical(obj: NDArray[np.float64]) -> float:
+#    """This function returns volume of an object (set of triangle).
+#        
+#    Parameters
+#    ----------
+#    object: array
+#        3-dimensional vertex coordinates of triangle.
+#    """
+#    vol=0
+#    for triangle in obj:
+#        vol+=triangle_area_numerical(triangle)
+#    return vol
 
-def tetrahedron_volume_numerical(tetrahedron: NDArray[np.float64]) -> float:
-    """This function returns volume of a tetrahedron
-        
-    Parameters
-    ----------
-    tetrahedron: array
-        vertex coordinates of the tetrahedron, xyz0,xyz1,xyz2,xyz3
-    """
-    xyz=np.zeros((3,3),dtype=np.float64)
-    for i in range(3):
-        xyz[i]=tetrahedron[i+1]-tetrahedron[0]
-    detm = np.linalg.det(xyz)
-    return abs(detm)/6.0
+#def triangle_area_numerical(triangle: NDArray[np.float64]) -> float:
+#    """This function returns volume of a triangle
+#        
+#    Parameters
+#    ----------
+#    tetrahedron: array
+#        vertex coordinates of the triangle, xyz0,xyz1,xyz2
+#    """
+#    xy1=np.ones((3,3),dtype=np.float64)
+#    for i in range(3):
+#        for j in range(3):
+#            xy1[i][j]=triangle[i][j]
+#    detm = np.linalg.det(xyz)
+#    return abs(detm)/2
 
 
 
@@ -599,12 +596,12 @@ def projection_numerical(vn: NDArray[np.float64]) -> NDArray[np.float64]:
     vn: array
         6-dimensional vector, xyzuvw.
     """
-    v1 =  (vn[0]-vn[4]) + TAU*(vn[1]+vn[2]) # x in Epar
-    v2 =  (vn[3]+vn[5]) + TAU*(vn[0]+vn[4]) # y in Epar
-    v3 =  (vn[1]-vn[2]) - TAU*(vn[3]-vn[5]) # z in Epar
-    v4 = -(vn[1]+vn[2]) + TAU*(vn[0]-vn[4]) # x in Eperp
-    v5 = -(vn[0]+vn[4]) + TAU*(vn[3]+vn[5]) # y in Eperp
-    v6 =  (vn[3]-vn[5]) + TAU*(vn[1]-vn[2]) # z in Eperp
+    v1 =  TAU*vn[0]+vn[1]-0.5*vn[3] # x in Epar
+    v2 = -0.5*vn[0]+vn[2]+TAU*vn[3] # y in Epar
+    v3 = vn[4]                      # z in Epar
+    v4 = -TAU*vn[0]+vn[1]-0.5*vn[3] # x in Eperp
+    v5 = -0.5*vn[0]+vn[2]-TAU*vn[3] # y in Eperp
+    v6 = vn[5]                      # z in Epperp, dummy
     return np.array([v1,v2,v3,v4,v5,v6],dtype=np.float64)
 
 def projection_sets_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
@@ -629,9 +626,12 @@ def projection3_numerical(vn: NDArray[np.float64]) -> NDArray[np.float64]:
     vn: array
         6-dimensional vector, xyzuvw.
     """
-    v4 = -(vn[1]+vn[2]) + TAU*(vn[0]-vn[4]) # x in Eperp
-    v5 = -(vn[0]+vn[4]) + TAU*(vn[3]+vn[5]) # y in Eperp
-    v6 =  (vn[3]-vn[5]) + TAU*(vn[1]-vn[2]) # z in Eperp
+    #v1 =  TAU*vn[0]+vn[1]-0.5*vn[3] # x in Epar
+    #v2 = -0.5*vn[0]+vn[2]+TAU*vn[3] # y in Epar
+    #v3 = vn[4]                      # z in Epar
+    v4 = -TAU*vn[0]+vn[1]-0.5*vn[3] # x in Eperp
+    v5 = -0.5*vn[0]+vn[2]-TAU*vn[3] # y in Eperp
+    v6 = vn[5]                      # z in Epperp, dummy
     return np.array([v4,v5,v6],dtype=np.float64)
 
 def projection3_sets_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
@@ -696,8 +696,8 @@ if __name__ == '__main__':
             v[i1]=generate_random_vector(ndim)
         return v
     
-    def generate_random_tetrahedron():
-        return generate_random_vectors(4)
+    def generate_random_triangle():
+        return generate_random_vectors(3)
     
     """
     print('check projection')
@@ -721,11 +721,11 @@ if __name__ == '__main__':
     
     """
     print('check tetrahedron')
-    tetrahedron=generate_random_tetrahedron() # in TAU-style
-    tetrahedron_num=numerical_vectors(tetrahedron) # in float
-    #print(tetrahedron_num)
-    vol=tetrahedron_volume_6d_numerical(tetrahedron_num)
-    print(vol)
+    triangle=generate_random_triangle() # in TAU-style
+    triangle_num=numerical_vectors(triangle) # in float
+    #print(triangle_num)
+    area=triangle_area_6d_numerical(triangle_num)
+    print(area)
     """
     
     ln=np.array([\

@@ -8,8 +8,7 @@ import numpy as np
 from numpy.typing import NDArray
 import time # in object_subtraction_dev1, tetrahedron_not_obj
 import itertools
-
-from pyqcstrc.ico2.math1 import (projection3,
+from pyqcstrc.dode2.math1 import (projection3,
                                 centroid, 
                                 centroid_obj,
                                 coplanar_check,
@@ -25,7 +24,7 @@ from pyqcstrc.ico2.math1 import (projection3,
                                 add_vectors, 
                                 mul_vector,
                                 )
-from pyqcstrc.ico2.numericalc import (numeric_value,
+from pyqcstrc.dode2.numericalc import (numeric_value,
                                     numerical_vector,
                                     length_numerical,
                                     get_internal_component_sets_numerical,
@@ -33,36 +32,22 @@ from pyqcstrc.ico2.numericalc import (numeric_value,
                                     check_intersection_two_segment_numerical_6d_tau,
                                     check_intersection_segment_surface_numerical_6d_tau,
                                     #check_intersection_segment_surface_numerical,
-                                    inside_outside_tetrahedron,
-                                    inside_outside_tetrahedron_tau,
+                                    inside_outside_triangle,
+                                    inside_outside_triangle_tau,
                                     on_out_surface,
                                     )
-from pyqcstrc.ico2.utils import (remove_doubling_in_perp_space,
-                                tetrahedron_volume_6d,
-                                obj_volume_6d,
-                                generator_surface_1,
-                                generator_unique_triangles,
+from pyqcstrc.dode2.utils import (remove_doubling_in_perp_space,
+                                triangle_area_6d,
+                                obj_area_6d,
+                                #generator_surface_1,
+                                #generator_unique_triangles,
                                 generator_unique_edges,
-                                tetrahedralization_points,
+                                triangulation_points,
                                 generate_convex_hull,
                                 )
-                    
-TAU=(1+np.sqrt(5))/2.0
-EPS=1e-6
 
-def decomposition(p: NDArray[np.int64]) -> NDArray[np.int64]:
-    try:
-        tri=Delaunay(p)
-    except:
-        print('error in decomposition()')
-        tmp=[0]
-    else:
-        #for i in range(len(tri.simplices)):
-        #    tet=tri.simplices[i]
-        #    tmp.append([tet[0],tet[1],tet[2],tet[3]])
-        for tet in tri.simplices:
-            tmp.append([tet[0],tet[1],tet[2],tet[3]])
-    return tmp
+TAU=np.sqrt(3)/2.0
+EPS=1e-6
 
 def ball_radius_obj(obj: NDArray[np.int64], centroid: NDArray[np.int64]) -> float:
     """estimate maximum distance between verices of given OBJ and its centroid.
@@ -93,142 +78,105 @@ def ball_radius_obj(obj: NDArray[np.int64], centroid: NDArray[np.int64]) -> floa
             pass
     return dd
 
-def ball_radius(tetrahedron: NDArray[np.int64], centroid: NDArray[np.int64]) -> float:
-    #  this transforms a tetrahedron to a boll which covers the tetrahedron
-    #  the centre of the boll is the centroid of the tetrahedron.
-    return ball_radius_obj(tetrahedron,centroid)
+def ball_radius(triangle: NDArray[np.int64], centroid: NDArray[np.int64]) -> float:
+    #  this transforms a tetrahedron to a boll which covers the triangle
+    #  the centre of the boll is the centroid of the triangle.
+    return ball_radius_obj(triangle,centroid)
 
 def distance_in_perp_space(vt1: NDArray[np.int64], vt2: NDArray[np.int64]) -> float:
     a=sub_vectors(vt1,vt2)
     a=projection3(a)
     return length_numerical(a)
 
-def rough_check_intersection_tetrahedron_obj(tetrahedron: NDArray[np.int64], cententer: NDArray[np.int64], distance: float) -> bool:
-    cen1=centroid(tetrahedron)
-    dd1=ball_radius(tetrahedron,cen1)
+def rough_check_intersection_triangle_obj(triangle: NDArray[np.int64], cententer: NDArray[np.int64], distance: float) -> bool:
+    cen1=centroid(triangle)
+    dd1=ball_radius(triangle,cen1)
     dd0=distance_in_perp_space(cen1,cententer)
     if dd0 <= dd1+distance: # two balls are intersecting.
         return True
     else: #
         return False
 
-def check_intersection_two_tetrahedron_4(tetrahedron_1: NDArray[np.int64], tetrahedron_2: NDArray[np.int64]) -> int:
-    # checking whether tetrahedron_1 is fully inside tetrahedron_2 or not
+def check_intersection_two_triangles(triangle_1: NDArray[np.int64], triangle_2: NDArray[np.int64]) -> int:
+    # checking whether triangle_1 is fully inside triangle_2 or not
     counter2=0
-    for vtx in tetrahedron_1:
-        if inside_outside_tetrahedron_tau(vtx,tetrahedron_2): # inside
+    for vtx in triangle_1:
+        if inside_outside_triangle_tau(vtx,triangle_2): # inside
             pass
         else:
             counter2+=1
             break
-    # checking whether tetrahedron_2 is fully inside tetrahedron_3 or not
+    # checking whether triangle_2 is fully inside triangle_1 or not
     counter3=0
-    for vtx in tetrahedron_2:
-        if inside_outside_tetrahedron_tau(vtx,tetrahedron_1): # inside
+    for vtx in triangle_2:
+        if inside_outside_triangle_tau(vtx,triangle_1): # inside
             pass
         else:
             counter3+=1
             break
     if counter2==0:
-        return 1 # tetrahedron_1 is fully inside tetrahedron_2
+        return 1 # triangle_1 is fully inside triangle_2
     elif counter3==0:
-        return 2 # tetrahedron_2 is fully inside tetrahedron_1
+        return 2 # triangle_2 is fully inside triangle_1
     else:
         #
         # -----------------
-        # tetrahedron_1
+        # triangle_1
         # -----------------
-        # vertex 1: tetrahedron_1[0],  consist of (a1+b1*TAU)/c1, ... (a6+b6*TAU)/c6    a_i,b_i,c_i = tetrahedron_1[0][i:0~5][0],tetrahedron_1[0][i:0~5][1],tetrahedron_1[0][i:0~5][2]
-        # vertex 2: tetrahedron_1[1]
-        # vertex 3: tetrahedron_1[2]
-        # vertex 4: tetrahedron_1[3]
+        # vertex 1: triangle_1[0],  consist of (a1+b1*TAU)/c1, ... (a6+b6*TAU)/c6    a_i,b_i,c_i = tetrahedron_1[0][i:0~5][0],tetrahedron_1[0][i:0~5][1],tetrahedron_1[0][i:0~5][2]
+        # vertex 2: triangle_1[1]
+        # vertex 3: triangle_1[2]
         #
-        # 4 surfaces of tetrahedron_1
+        # 1 triangle of triangle_1
         # surface 1: v1,v2,v3
-        # surface 2: v1,v2,v4
-        # surface 3: v1,v3,v4
-        # surface 4: v2,v3,v4
         #
-        # 6 edges of tetrahedron_1
+        # 3 edges of triangle_1
         # edge 1: v1,v2
         # edge 2: v1,v3
-        # edge 3: v1,v4
-        # edge 4: v2,v3
-        # edge 5: v2,v4
-        # edge 6: v3,v4
+        # edge 3: v2,v3
         #
         # -----------------
-        # tetrahedron_2
+        # triangle_2
         # -----------------
-        # vertex 1: tetrahedron_2[0]
-        # vertex 2: tetrahedron_2[1]
-        # vertex 3: tetrahedron_2[2]
-        # vertex 4: tetrahedron_2[3]
+        # vertex 1: triangle_2[0]
+        # vertex 2: triangle_2[1]
+        # vertex 3: triangle_2[2]
         #
-        # 4 surfaces of tetrahedron_2
+        # 1 surfaces of triangle_2
         # surface 1: w1,w2,w3
-        # surface 2: w1,w2,w4
-        # surface 3: w1,w3,w4
-        # surface 4: w2,w3,w4
         #
-        # 6 edges of tetrahedron_2
+        # 3 edges of triangle_2
         # edge 1: w1,w2
         # edge 2: w1,w3
-        # edge 3: w1,w4
-        # edge 4: w2,w3
-        # edge 5: w2,w4
-        # edge 6: w3,w4
+        # edge 3: w2,w3
         #
-        # case 1: intersection between (edge of tetrahedron_1) and (surface of tetrahedron_2)
-        # case 2: intersection between (edge of tetrahedron_2) and (surface of tetrahedron_1)
+        # case 1: intersection between (edge of triangle_1) and (surface of triangle_2)
+        # case 2: intersection between (edge of triangle_2) and (surface of triangle_1)
         #
         # combination_index
         # e.g. v1,v2,w1,w2,w3 (edge 1 and surface 1) ...
         comb=[\
         [0,1,0,1,2],\
-        [0,1,0,1,3],\
-        [0,1,0,2,3],\
-        [0,1,1,2,3],\
         [0,2,0,1,2],\
-        [0,2,0,1,3],\
-        [0,2,0,2,3],\
-        [0,2,1,2,3],\
-        [0,3,0,1,2],\
-        [0,3,0,1,3],\
-        [0,3,0,2,3],\
-        [0,3,1,2,3],\
-        [1,2,0,1,2],\
-        [1,2,0,1,3],\
-        [1,2,0,2,3],\
-        [1,2,1,2,3],\
-        [1,3,0,1,2],\
-        [1,3,0,1,3],\
-        [1,3,0,2,3],\
-        [1,3,1,2,3],\
-        [2,3,0,1,2],\
-        [2,3,0,1,3],\
-        [2,3,0,2,3],\
-        [2,3,1,2,3]]
+        [1,2,0,1,2]]
     
         counter1=0
-        for c in comb: # len(combination_index) = 24
+        for c in comb:
             # case 1: intersection between
-            # 6 edges of tetrahedron_1
-            # 4 surfaces of tetrahedron_2
-            segment=np.stack([tetrahedron_1[c[0]],tetrahedron_1[c[1]]])
-            surface=np.stack([tetrahedron_2[c[2]],tetrahedron_2[c[3]],tetrahedron_2[c[4]]])
-            #print(segment.shape)
-            #print(surface.shape)
+            # 3 edges of triangle_1
+            # 1 surfaces of triangle_2
+            segment=np.stack([triangle_1[c[0]],triangle_1[c[1]]])
+            surface=np.stack([triangle_2[c[2]],triangle_2[c[3]],triangle_2[c[4]]])
             if check_intersection_segment_surface_numerical_6d_tau(segment,surface): # intersectiing
                 counter1+=1
                 break
             else:
                 pass
             # case 2: intersection between
-            # 6 edges of tetrahedron_2
-            # 4 surfaces of tetrahedron_1
-            segment=np.stack([tetrahedron_2[c[0]],tetrahedron_2[c[1]]])
-            surface=np.stack([tetrahedron_1[c[2]],tetrahedron_1[c[3]],tetrahedron_1[c[4]]])
+            # 3 edges of triangle_2
+            # 1 surfaces of triangle_1
+            segment=np.stack([triangle_2[c[0]],triangle_2[c[1]]])
+            surface=np.stack([triangle_1[c[2]],triangle_1[c[3]],triangle_1[c[4]]])
             if check_intersection_segment_surface_numerical_6d_tau(segment,surface): # intersectiing
                 counter1+=1
                 break
@@ -334,93 +282,53 @@ def intersection_segment_surface(segment: NDArray[np.int64], surface: NDArray[np
     else: # no intersection
         return 
 
-def intersection_two_tetrahedron_4(tetrahedron_1: NDArray[np.int64], tetrahedron_2: NDArray[np.int64]) -> NDArray[np.int64]:
-    #print('intersection_two_tetrahedron_4()')
+def intersection_two_triangles(triangle_1: NDArray[np.int64], triangle_2: NDArray[np.int64]) -> NDArray[np.int64]:
     #
     # -----------------
-    # tetrahedron_1
+    # triangle_1
     # -----------------
-    # vertex 1: tetrahedron_1[0],  consist of (a1+b1*TAU)/c1, ... (a6+b6*TAU)/c6    a_i,b_i,c_i = tetrahedron_1[0][i:0~5][0],tetrahedron_1[0][i:0~5][1],tetrahedron_1[0][i:0~5][2]
-    # vertex 2: tetrahedron_1[1]
-    # vertex 3: tetrahedron_1[2]
-    # vertex 4: tetrahedron_1[3]
+    # vertex 1: triangle_1[0],  consist of (a1+b1*TAU)/c1, ... (a6+b6*TAU)/c6    a_i,b_i,c_i = tetrahedron_1[0][i:0~5][0],tetrahedron_1[0][i:0~5][1],tetrahedron_1[0][i:0~5][2]
+    # vertex 2: triangle_1[1]
+    # vertex 3: triangle_1[2]
     #
-    # 4 surfaces of tetrahedron_1
+    # 1 triangle of triangle_1
     # surface 1: v1,v2,v3
-    # surface 2: v1,v2,v4
-    # surface 3: v1,v3,v4
-    # surface 4: v2,v3,v4
     #
-    # 6 edges of tetrahedron_1
+    # 3 edges of triangle_1
     # edge 1: v1,v2
     # edge 2: v1,v3
-    # edge 3: v1,v4
-    # edge 4: v2,v3
-    # edge 5: v2,v4
-    # edge 6: v3,v4
+    # edge 3: v2,v3
     #
     # -----------------
-    # tetrahedron_2
+    # triangle_2
     # -----------------
-    # vertex 1: tetrahedron_2[0]
-    # vertex 2: tetrahedron_2[1]
-    # vertex 3: tetrahedron_2[2]
-    # vertex 4: tetrahedron_2[3]
+    # vertex 1: triangle_2[0]
+    # vertex 2: triangle_2[1]
+    # vertex 3: triangle_2[2]
     #
-    # 4 surfaces of tetrahedron_2
+    # 1 surfaces of triangle_2
     # surface 1: w1,w2,w3
-    # surface 2: w1,w2,w4
-    # surface 3: w1,w3,w4
-    # surface 4: w2,w3,w4
     #
-    # 6 edges of tetrahedron_2
+    # 3 edges of triangle_2
     # edge 1: w1,w2
     # edge 2: w1,w3
-    # edge 3: w1,w4
-    # edge 4: w2,w3
-    # edge 5: w2,w4
-    # edge 6: w3,w4
+    # edge 3: w2,w3
     #
-    # case 1: intersection between (edge of tetrahedron_1) and (surface of tetrahedron_2)
-    # case 2: intersection between (edge of tetrahedron_2) and (surface of tetrahedron_1)
+    # case 1: intersection between (edge of triangle_1) and (surface of triangle_2)
+    # case 2: intersection between (edge of triangle_2) and (surface of triangle_1)
     #
     # combination_index
     # e.g. v1,v2,w1,w2,w3 (edge 1 and surface 1) ...
     comb=[\
     [0,1,0,1,2],\
-    [0,1,0,1,3],\
-    [0,1,0,2,3],\
-    [0,1,1,2,3],\
     [0,2,0,1,2],\
-    [0,2,0,1,3],\
-    [0,2,0,2,3],\
-    [0,2,1,2,3],\
-    [0,3,0,1,2],\
-    [0,3,0,1,3],\
-    [0,3,0,2,3],\
-    [0,3,1,2,3],\
-    [1,2,0,1,2],\
-    [1,2,0,1,3],\
-    [1,2,0,2,3],\
-    [1,2,1,2,3],\
-    [1,3,0,1,2],\
-    [1,3,0,1,3],\
-    [1,3,0,2,3],\
-    [1,3,1,2,3],\
-    [2,3,0,1,2],\
-    [2,3,0,1,3],\
-    [2,3,0,2,3],\
-    [2,3,1,2,3]]
-    
-    #tmp=np.array([])
-    #tmp1=np.array([])
-    #array0=np.zeros((6,3),dtype=np.int64)
+    [1,2,0,1,2]]
     
     counter=0
     for c in comb:
-        # case 1: intersection between (edge of tetrahedron_1) and (surface of tetrahedron_2)
-        segment=np.stack([tetrahedron_1[c[0]],tetrahedron_1[c[1]]])
-        surface=np.stack([tetrahedron_2[c[2]],tetrahedron_2[c[3]],tetrahedron_2[c[4]]])
+        # case 1: intersection between (edge of triangle_1) and (surface of triangle_2)
+        segment=np.stack([triangle_1[c[0]],triangle_1[c[1]]])
+        surface=np.stack([triangle_2[c[2]],triangle_2[c[3]],triangle_2[c[4]]])
         vtx=intersection_segment_surface(segment,surface)
         if np.all(vtx==None):
             pass
@@ -432,9 +340,9 @@ def intersection_two_tetrahedron_4(tetrahedron_1: NDArray[np.int64], tetrahedron
                 tmp=np.vstack([tmp,vtx]) # intersecting points
             counter+=1
             #print('tmp',tmp)
-        # case 2: intersection between (edge of tetrahedron_2) and (surface of tetrahedron_1)
-        segment=np.stack([tetrahedron_2[c[0]],tetrahedron_2[c[1]]])
-        surface=np.stack([tetrahedron_1[c[2]],tetrahedron_1[c[3]],tetrahedron_1[c[4]]])
+        # case 2: intersection between (edge of triangle_2) and (surface of triangle_1)
+        segment=np.stack([triangle_2[c[0]],triangle_2[c[1]]])
+        surface=np.stack([triangle_1[c[2]],triangle_1[c[3]],triangle_1[c[4]]])
         vtx=intersection_segment_surface(segment,surface)
         if np.all(vtx==None):
             pass
@@ -453,10 +361,10 @@ def intersection_two_tetrahedron_4(tetrahedron_1: NDArray[np.int64], tetrahedron
     #a=get_internal_component_sets_numerical(tmp)
     #print(a)
     
-    # get vertces of tetrahedron_1 that are inside tetrahedron_2
-    for i1 in range(len(tetrahedron_1)):
-        vtx=tetrahedron_1[i1]
-        if inside_outside_tetrahedron_tau(vtx,tetrahedron_2): # inside
+    # get vertces of triangle_1 that are inside triangle_2
+    for i1 in range(len(triangle_1)):
+        vtx=triangle_1[i1]
+        if inside_outside_triangle_tau(vtx,triangle_2): # inside
             #print('tetrahedron_1[i1]',tetrahedron_1[i1])
             #a=get_internal_component_numerical(tetrahedron_1[i1])
             #print('      vertex of tet1',a)
@@ -466,10 +374,10 @@ def intersection_two_tetrahedron_4(tetrahedron_1: NDArray[np.int64], tetrahedron
                 tmp=np.vstack([tmp,[vtx]])
             counter+=1
             #print('tmp',tmp)
-    # get vertces of tetrahedron_2 that are inside tetrahedron_1
-    for i1 in range(len(tetrahedron_2)):
-        vtx=tetrahedron_2[i1]
-        if inside_outside_tetrahedron_tau(vtx,tetrahedron_1): # inside
+    # get vertces of triangle_2 that are inside triangle_1
+    for i1 in range(len(triangle_2)):
+        vtx=triangle_2[i1]
+        if inside_outside_triangle_tau(vtx,triangle_1): # inside
             #print('tetrahedron_2[i1]',tetrahedron_2[i1])
             if counter==0:
                 tmp=vtx.reshape(1,6,3)
@@ -487,22 +395,22 @@ def intersection_two_tetrahedron_4(tetrahedron_1: NDArray[np.int64], tetrahedron
     #print(a)
     
     #tmp4=np.array([[[[0]]]])
-    if counter>=4:
+    if counter>=3:
         tmp=remove_doubling_in_perp_space(tmp)
         #print(len(tmp))
-        if len(tmp)>=4:
-            # Tetrahedralization
+        if len(tmp)>=3:
+            # Triangulation
             if coplanar_check(tmp): # coplanar
-                pass
-            else:
-                if len(tmp)==4:
-                    tmp4=tmp.reshape(1,4,6,3)
+                if len(tmp)==3:
+                    tmp4=tmp.reshape(1,3,6,3)
                 else:
-                    tmp4=tetrahedralization_points(tmp)
-                v=obj_volume_6d(tmp4)
+                    tmp4=triangulation_points(tmp)
+                v=obj_area_6d(tmp4)
                 nv=numeric_value(v)
                 #print('     common vol:',v,nv)
                 return tmp4
+            else:
+                return 
         else:
             return 
     else:
@@ -515,9 +423,9 @@ def intersection_two_obj_1(obj1: NDArray[np.int64],obj2: NDArray[np.int64],kind=
     Parameters
     ----------
     obj1 : ndarray
-        a set of tetrahedra to be intersected with obj2.
+        a set of triangles to be intersected with obj2.
     obj2 : ndarray
-        a set of tetrahedra to be intersected with obj1.
+        a set of triangles to be intersected with obj1.
     kind : {'standard', 'simple'}, optional
         The default is 'standard'. 
     
@@ -542,40 +450,34 @@ def intersection_two_obj_1(obj1: NDArray[np.int64],obj2: NDArray[np.int64],kind=
     dd2=ball_radius_obj(obj2,cent2)
     
     counter0=0
-    for tetrahedron1 in obj1:
-        if rough_check_intersection_tetrahedron_obj(tetrahedron1,cent2,dd2):
+    for triangle1 in obj1:
+        if rough_check_intersection_triangle_obj(triangle1,cent2,dd2):
             counter1=0
-            #vol1=tetrahedron_volume_6d(tetrahedron1)
-            #print('vol1',vol1,numeric_value(vol1))
-            for tetrahedron2 in obj2:
-                flag=check_intersection_two_tetrahedron_4(tetrahedron1,tetrahedron2)
+            for triangle2 in obj2:
+                flag=check_intersection_two_triangles(triangle1,triangle2)
                 #
-                # tetrahedron_1 is fully inside tetrahedron_2
+                # tetrahedron_1 is fully inside triangle2
                 if flag==1:
                     if counter0==0:
-                        common4=tetrahedron1.reshape(1,4,6,3)
+                        common4=triangle1.reshape(1,3,6,3)
                         counter0+=1
                     else:
-                        common4=np.vstack([common4,[tetrahedron1]])
+                        common4=np.vstack([common4,[triangle1]])
                     break
                 #
-                # tetrahedron_2 is fully inside tetrahedron_1
+                # tetrahedron_2 is fully inside triangle1
                 elif flag==2:
                     if counter1==0:
-                        tmp_common4=tetrahedron2.reshape(1,4,6,3)
+                        tmp_common4=triangle2.reshape(1,3,6,3)
                         counter1+=1
                     else:
-                        tmp_common4=np.vstack([tmp_common4,[tetrahedron2]])
+                        tmp_common4=np.vstack([tmp_common4,[triangle2]])
                 #
-                # tetrahedron_1 and tetrahedron_2 are intersecting
+                # triangle1 and triangle2 are intersecting
                 elif flag==3:
-                    tmp4=intersection_two_tetrahedron_4(tetrahedron1,tetrahedron2)
+                    tmp4=intersection_two_triangles(triangle1,triangle2)
                     ###
                     ### Comment:
-                    ### intersection_two_tetrahedron_4()で見つからないのに
-                    ### check_intersection_two_tetrahedron_4()では交差して
-                    ### いると判定される場合がある。2つの四面体の交差点が3つ以下の場合
-                    ###（つまり接している場合）がこれに相当するので、以下のようにする。
                     ###
                     if np.all(tmp4==None):
                         pass
@@ -599,19 +501,19 @@ def intersection_two_obj_1(obj1: NDArray[np.int64],obj2: NDArray[np.int64],kind=
                 
             if counter1!=0:
                 #print('tmp_common4',tmp_common4)
-                #vol2=obj_volume_6d(tmp_common4)
+                #vol2=obj_area_6d(tmp_common4)
                 #print('vol2',vol2,numeric_value(vol2))
                 if kind=='simple':
-                    vol1=tetrahedron_volume_6d(tetrahedron1)
-                    vol2=obj_volume_6d(tmp_common4)
+                    vol1=triangle_area_6d(triangle1)
+                    vol2=obj_area_6d(tmp_common4)
                     if np.all(vol1==vol2):
                         if counter0==0:
-                            common4=tetrahedron1.reshape(1,4,6,3)
+                            common4=triangle1.reshape(1,3,6,3)
                             #print('common4.shape',common4.shape)
                             counter0+=1
                         else:
                             #common4=np.concatenate([common4,tetrahedron1])
-                            common4=np.vstack([common4,[tetrahedron1]])
+                            common4=np.vstack([common4,[triangle1]])
                             #print('common4.shape',common4.shape)
                     else:
                         if counter0==0:
@@ -648,9 +550,9 @@ def intersection_two_obj_convex(obj1: NDArray[np.int64], obj2: NDArray[np.int64]
     Parameters
     ----------
     obj1 : ndarray
-        a set of tetrahedra to be intersected with obj2.
+        a set of triangles to be intersected with obj2.
     obj2 : ndarray
-        a set of tetrahedra to be intersected with obj1.
+        a set of triangles to be intersected with obj1.
     kind : {'standard', 'simple'}, optional
         The default is 'standard'. 
     
@@ -667,8 +569,8 @@ def intersection_two_obj_convex(obj1: NDArray[np.int64], obj2: NDArray[np.int64]
     if verbose>0:
         print("       start: intersection_two_obj_convex()")
     
-    obj1_surf=generator_surface_1(obj1)
-    obj2_surf=generator_surface_1(obj2)
+    obj1_surf=obj1
+    obj2_surf=obj2
     obj1_edge=generator_unique_edges(obj1_surf)
     obj2_edge=generator_unique_edges(obj2_surf)
     
@@ -688,8 +590,8 @@ def intersection_two_obj_convex(obj1: NDArray[np.int64], obj2: NDArray[np.int64]
     vertices1=remove_doubling_in_perp_space(obj1_edge) # generating vertces of 1st OD
     for vrtx in vertices1:
         counter2a=0
-        for tetrahedron2 in obj2:
-            if inside_outside_tetrahedron_tau(vrtx,tetrahedron2):
+        for triangle2 in obj2:
+            if inside_outside_ttriangle_tau(vrtx,triangle2):
                 counter2a+=1
                 break
             else:
@@ -715,8 +617,8 @@ def intersection_two_obj_convex(obj1: NDArray[np.int64], obj2: NDArray[np.int64]
     vertices2=remove_doubling_in_perp_space(obj2_edge) # generating vertces of 2nd OD
     for vrtx in vertices2:
         counter2b=0
-        for tetrahedron1 in obj1:
-            if inside_outside_tetrahedron_tau(vrtx,tetrahedron1):
+        for triangle1 in obj1:
+            if inside_outside_triangle_tau(vrtx,triangle1):
                 counter2b+=1
                 break
             else:
@@ -774,7 +676,7 @@ def intersection_two_obj_convex(obj1: NDArray[np.int64], obj2: NDArray[np.int64]
             # common part = point1 + point_a1 + point_b1
             points=np.vstack([point1,point_a1,point_b1])
             points=remove_doubling_in_perp_space(points)
-            common=tetrahedralization_points(points)
+            common=triangulation_points(points)
             if np.all(common==None):
                 if verbose>0:
                     print('no common part')
@@ -1256,5 +1158,5 @@ if __name__ == '__main__':
             v[i1]=generate_random_vector(ndim)
         return v
     
-    def generate_random_tetrahedron():
-        return generate_random_vectors(4)
+    def generate_random_triangle():
+        return generate_random_vectors(3)
