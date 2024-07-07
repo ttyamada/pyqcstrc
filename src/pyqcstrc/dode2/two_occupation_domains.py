@@ -20,7 +20,7 @@ except ImportError:
 
 TAU=np.sqrt(3)/2.0
 
-def intersection(obj1,obj2,kind=None,verbose=0):
+def intersection(obj1,obj2,kind='standard',verbose=0):
     """
     Return an intersection between two objects: obj1 AND obj2.
     
@@ -49,7 +49,7 @@ def intersection(obj1,obj2,kind=None,verbose=0):
     
     """
     if obj1.ndim==4 and obj2.ndim==4:
-        common=intsct.intersection_two_obj_1(obj1,obj2,kind)
+        common=intsct.intersection_two_obj_1(obj1,obj2,kind,verbose)
         if np.all(common==None):
             if verbose>0:
                 print('no common part')
@@ -90,8 +90,8 @@ def intersection_convex(obj1,obj2,verbose=0):
     else:
         if verbose>0:
             print('incorrect ndim')
-        return
-        
+        return 
+    
 def subtraction(obj1,obj2,verbose=0):
     """
     Subtraction of two occupation domains projected onto perp space: obj1 NOT obj2 = obj1 NOT (obj1 AND obj2).
@@ -115,4 +115,4 @@ def subtraction(obj1,obj2,verbose=0):
     else:
         if verbose>0:
             print('incorrect ndim')
-        return
+        return 
