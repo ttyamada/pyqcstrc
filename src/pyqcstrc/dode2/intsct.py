@@ -32,6 +32,7 @@ from pyqcstrc.dode2.numericalc import (numeric_value,
                                     check_intersection_two_segment_numerical_6d_tau,
                                     check_intersection_segment_surface_numerical_6d_tau,
                                     #check_intersection_segment_surface_numerical,
+                                    check_intersection_two_segment_numerical,
                                     inside_outside_triangle,
                                     inside_outside_triangle_tau,
                                     on_out_surface,
@@ -155,10 +156,15 @@ def check_intersection_two_triangles(triangle_1: NDArray[np.int64], triangle_2: 
         #
         # combination_index
         # e.g. v1,v2,w1,w2,w3 (edge 1 and surface 1) ...
+        
+        #comb=[\
+        #[0,1,0,1,2],\
+        #[0,2,0,1,2],\
+        #[1,2,0,1,2]]
         comb=[\
-        [0,1,0,1,2],\
-        [0,2,0,1,2],\
-        [1,2,0,1,2]]
+        [0,1],\
+        [0,2],\
+        [1,2]]
     
         counter1=0
         for c in comb:
@@ -166,7 +172,8 @@ def check_intersection_two_triangles(triangle_1: NDArray[np.int64], triangle_2: 
             # 3 edges of triangle_1
             # 1 surfaces of triangle_2
             segment=np.stack([triangle_1[c[0]],triangle_1[c[1]]])
-            surface=np.stack([triangle_2[c[2]],triangle_2[c[3]],triangle_2[c[4]]])
+            #surface=np.stack([triangle_2[c[2]],triangle_2[c[3]],triangle_2[c[4]]])
+            surface=triangle_2
             if check_intersection_segment_surface_numerical_6d_tau(segment,surface): # intersectiing
                 counter1+=1
                 break
@@ -176,7 +183,8 @@ def check_intersection_two_triangles(triangle_1: NDArray[np.int64], triangle_2: 
             # 3 edges of triangle_2
             # 1 surfaces of triangle_1
             segment=np.stack([triangle_2[c[0]],triangle_2[c[1]]])
-            surface=np.stack([triangle_1[c[2]],triangle_1[c[3]],triangle_1[c[4]]])
+            #surface=np.stack([triangle_1[c[2]],triangle_1[c[3]],triangle_1[c[4]]])
+            surface=triangle_1
             if check_intersection_segment_surface_numerical_6d_tau(segment,surface): # intersectiing
                 counter1+=1
                 break
@@ -200,8 +208,9 @@ def intersection_two_segment(segment_1: NDArray[np.int64], segment_2: NDArray[np
     
     """
     # check whether two line segments are intersecting or not by numerical calc.
-    flg=check_intersection_two_segment_numerical(segment_1,segment_2)
-    if flg!=3: # intersecting
+    #if check_intersection_two_segment_numerical(segment_1,segment_2)!=3: # intersecting
+    #if check_intersection_two_segment_numerical(segment_1,segment_2): # intersecting
+    if check_intersection_two_segment_numerical_6d_tau(segment_1,segment_2): # intersecting
         # calc in TAU-style
         vec6AB=sub_vectors(segment_1[1],segment_1[0])
         vecAB=projection3(vec6AB)                 # AB
@@ -212,25 +221,19 @@ def intersection_two_segment(segment_1: NDArray[np.int64], segment_2: NDArray[np
         tmp=sub_vectors(segment_1[0],segment_2[0])
         vecCA=projection3(tmp)                    # CA
         
-        comb=[\
-        [0,1,2],\
-        [1,2,0],\
-        [2,0,1]]
-        c=comb[flg]
-        #
         #bunbo=vecAB[c[0]]*vecCD[c[1]]-vecCD[c[0]]*vecAB[c[1]]
-        tmp1=mul(vecAB[c[0]],vecCD[c[1]])
-        tmp2=mul(vecCD[c[0]],vecAB[c[1]])
+        tmp1=mul(vecAB[0],vecCD[1])
+        tmp2=mul(vecCD[0],vecAB[1])
         bunbo=sub(tmp1,tmp2)
         #
         #s=(vecCD[c[0]]*vecCA[c[1]]-vecCA[c[0]]*vecCD[c[1]])/bunbo
-        tmp1=mul(vecCD[c[0]],vecCA[c[1]])
-        tmp2=mul(vecCA[c[0]],vecCD[c[1]])
+        tmp1=mul(vecCD[0],vecCA[1])
+        tmp2=mul(vecCA[0],vecCD[1])
         tmp1=sub(tmp1,tmp2)
         s=div(tmp1,bunbo)
         #
         # OP = OA + s*AB
-        tmp=mul_vector(vecAB,s)
+        tmp=mul_vector(vec6AB,s)
         return add_vectors(segment_1[0],tmp)
     else: # no intersection
         return 
@@ -254,6 +257,8 @@ def intersection_segment_surface(segment: NDArray[np.int64], surface: NDArray[np
     """
     # check whether the line segment and the surface are intersecting or not by numerical calc.
     if check_intersection_segment_surface_numerical_6d_tau(segment,surface): # intersecting
+        
+        """
         # calc in TAU-style
         vec6AB=sub_vectors(segment[1],segment[0])
         vecAB=projection3(vec6AB)                 # AB # R
@@ -279,9 +284,29 @@ def intersection_segment_surface(segment: NDArray[np.int64], surface: NDArray[np
         tmp=mul_vector(vec6AB,t) # t*AB
         #print('   t=',numeric_value(t))
         return add_vectors(segment[0],tmp).reshape(1,6,3)
+        """
+        #  edge: 0-1,0-2,1-2
+        comb=[[0,1],[0,2],[1,2]]
+        counter=0
+        for j in comb:
+            segment1=np.vstack([surface[j[0]],surface[j[1]]])
+            tmp1=intersection_two_segment(segment,segment1.reshape(2,6,3))
+            if np.all(tmp1==None):
+                pass
+            else:
+                if counter==0:
+                    p=tmp1
+                else:
+                    p=np.vstack([p,tmp1])
+                counter+=1
+        if counter>0: # intersection
+            #print('p:',p)
+            return p
+        else: # no intersection
+            return 
     else: # no intersection
         return 
-
+    
 def intersection_two_triangles(triangle_1: NDArray[np.int64], triangle_2: NDArray[np.int64]) -> NDArray[np.int64]:
     #
     # -----------------
@@ -327,9 +352,11 @@ def intersection_two_triangles(triangle_1: NDArray[np.int64], triangle_2: NDArra
     counter=0
     for c in comb:
         # case 1: intersection between (edge of triangle_1) and (surface of triangle_2)
+        #print('case 1')
         segment=np.stack([triangle_1[c[0]],triangle_1[c[1]]])
         surface=np.stack([triangle_2[c[2]],triangle_2[c[3]],triangle_2[c[4]]])
         vtx=intersection_segment_surface(segment,surface)
+        #print('case 1, vtx',vtx)
         if np.all(vtx==None):
             pass
         else:
@@ -341,9 +368,11 @@ def intersection_two_triangles(triangle_1: NDArray[np.int64], triangle_2: NDArra
             counter+=1
             #print('tmp',tmp)
         # case 2: intersection between (edge of triangle_2) and (surface of triangle_1)
+        #print('case 2')
         segment=np.stack([triangle_2[c[0]],triangle_2[c[1]]])
         surface=np.stack([triangle_1[c[2]],triangle_1[c[3]],triangle_1[c[4]]])
         vtx=intersection_segment_surface(segment,surface)
+        #print('case 2, vtx',vtx)
         if np.all(vtx==None):
             pass
         else:
@@ -356,6 +385,8 @@ def intersection_two_triangles(triangle_1: NDArray[np.int64], triangle_2: NDArra
                 tmp=np.vstack([tmp,vtx]) # intersecting points
             counter+=1
             #print('tmp',tmp)
+    #print('tmp:',tmp)
+    tmp=tmp.reshape(int(len(tmp)/6),6,3)
     #tmp=remove_doubling_in_perp_space(tmp)
     #print('   (1) num of points=',len(tmp))
     #a=get_internal_component_sets_numerical(tmp)
@@ -398,19 +429,16 @@ def intersection_two_triangles(triangle_1: NDArray[np.int64], triangle_2: NDArra
     if counter>=3:
         tmp=remove_doubling_in_perp_space(tmp)
         #print(len(tmp))
-        if len(tmp)>=3:
-            # Triangulation
-            if coplanar_check(tmp): # coplanar
-                if len(tmp)==3:
-                    tmp4=tmp.reshape(1,3,6,3)
-                else:
-                    tmp4=triangulation_points(tmp)
-                v=obj_area_6d(tmp4)
-                nv=numeric_value(v)
-                #print('     common vol:',v,nv)
-                return tmp4
-            else:
+        if len(tmp)>3:
+            tmp4=triangulation_points(tmp)
+            if np.all(tmp4==None):
                 return 
+            else:
+                #v=obj_area_6d(tmp4)
+                #nv=numeric_value(v)
+                return tmp4
+        elif len(tmp)==3:
+            return tmp.reshape(1,3,6,3)
         else:
             return 
     else:
@@ -449,12 +477,21 @@ def intersection_two_obj_1(obj1: NDArray[np.int64],obj2: NDArray[np.int64],kind=
     cent2=centroid_obj(obj2)
     dd2=ball_radius_obj(obj2,cent2)
     
+    if verbose>0:
+        print("         dd2:%6.4f"%(dd2))
+    
     counter0=0
-    for triangle1 in obj1:
+    for i1,triangle1 in enumerate(obj1):
+        if verbose>0:
+            print("         %d-th triangle in obj1"%(i1))
         if rough_check_intersection_triangle_obj(triangle1,cent2,dd2):
+            if verbose>0:
+                print("          Rough_check:True")
             counter1=0
-            for triangle2 in obj2:
+            for i2,triangle2 in enumerate(obj2):
                 flag=check_intersection_two_triangles(triangle1,triangle2)
+                if verbose>0:
+                    print("          %d-th triangle in obj2, flag:%d"%(i2,flag))
                 #
                 # tetrahedron_1 is fully inside triangle2
                 if flag==1:
@@ -537,7 +574,11 @@ def intersection_two_obj_1(obj1: NDArray[np.int64],obj2: NDArray[np.int64],kind=
                         #print('tmp_common4.shape',tmp_common4.shape)
                 #print(common4.shape)
                 #return common4
-    
+        else:
+            if verbose>0:
+                print("          Rough_check:False")
+            pass
+            
     if counter0>0:
         return common4
     else:
