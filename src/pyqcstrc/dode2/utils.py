@@ -31,6 +31,8 @@ from scipy.spatial import Delaunay
 import itertools
 import time
 
+TAU=np.sqrt(3)/2
+
 def shift_object(obj: NDArray[np.int64], shift: NDArray[np.int64]) -> NDArray[np.int64]:
     """shift an object
     """
@@ -96,9 +98,9 @@ def triangle_area_6d(triangle: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     if triangle.ndim==3:
         vts=np.zeros((3,3,3),dtype=np.int64)
-        for i in range(4):
+        for i in range(3):
             vts[i]=projection3(triangle[i])
-        return triangle_volume(vts)
+        return triangle_area(vts)
     else:
         print('object has an incorrect shape!')
         return 
@@ -124,12 +126,14 @@ def triangle_area(vts: NDArray[np.int64]) -> NDArray[np.int64]:
     
     v=outer_product(v1,v2)
     
-    # avoid a negative value
-    val=numeric_value(v)
-    if val<0.0: # to avoid negative volume
-        return mul(v,np.array([-1,0,2]))
+    a1=v[2][0]
+    a2=v[2][1]
+    a3=v[2][2]
+    
+    if a1+a2*TAU<0.0: # to avoid negative volume...
+        return mul(v[2],np.array([-1,0,2]))
     else:
-        return mul(v,np.array([1,0,2]))
+        return mul(v[2],np.array([1,0,2]))
 
 #----------------------------
 # Remove doubling
@@ -387,6 +391,43 @@ def surface_cleaner(surface: NDArray[np.int64]) -> NDArray[np.int64]:
     
     return out
 
+def get_sets_of_coplanar_triangles(surface: NDArray[np.int64]) -> NDArray[np.int64]:
+    """
+    同一平面上にある三角形の集合を作る。surfaceに含まれるtriangleについて
+    順に同一平面上にあるかどうかをチェックし、もし以前のどの三角形とも同一平面
+    にない時はそのインデックスをlst_indx_groupに収納する。また、lst_indx_triangle
+    にもそのインデックスを収納する。一方、すでにチェックした三角形と同一平面に
+    にある場合はlst_indx_triangleに同一平面三角形のインデックスを収納
+    """
+    num=len(surface)
+    lst_indx_group=[0]
+    lst_indx_triangle=[0]
+    for i1 in range(1,num):
+        counter=0
+        for i2 in lst_indx_group:
+            if coplanar_check_two_triangles(surface[i1],surface[i2]): # coplanar
+                counter=1
+                break
+            else: # non coplanar
+                pass
+        if counter==0:
+            lst_indx_triangle.append(i1)
+            lst_indx_group.append(i1)
+        else:
+            lst_indx_triangle.append(i2)
+    lst_sets=[]
+    for i1 in lst_indx_group:
+        tmp=[]
+        for i2 in range(num):
+            if i1==lst_indx_triangle[i2]:
+                tmp.append(surface[i2])
+        num_triangle=len(tmp)
+        a=np.zeros((num_triangle,3,6,3),dtype=np.int64)
+        for i2 in range(num_triangle):
+            a[i2]=tmp[i2]
+        lst_sets.append(a)
+    return lst_sets
+
 def gen_border_edges_of_coplanar_triangles(coplanar_triangles: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     同一平面上にある三角形の辺のうち、どの三角形とも共有していない独立な辺を求める．
@@ -565,7 +606,9 @@ def triangulation_points(points: NDArray[np.int64]) -> NDArray[np.int64]:
         
     ltmp=decomposition(tmp)
     p=points
-    if ltmp!=[0]:
+    if np.all(ltmp==None):
+        return
+    else:
         counter=0
         for i in ltmp:
             tmp3=np.array([p[i[0]],p[i[1]],p[i[2]],p[i[3]]]).reshape(4,6,3)
@@ -582,8 +625,6 @@ def triangulation_points(points: NDArray[np.int64]) -> NDArray[np.int64]:
             return tmp1.reshape(int(len(tmp1)/54),3,6,3) # 3*6*3=54
         else:
             return 
-    else:
-        return 
 
 ##############################
 ####
