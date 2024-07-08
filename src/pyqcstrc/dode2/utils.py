@@ -464,7 +464,6 @@ def gen_border_edges_of_coplanar_triangles(coplanar_triangles: NDArray[np.int64]
 def equivalent(obj1: NDArray[np.int64], obj2: NDArray[np.int64]) -> bool:
     """Checking whether obj1 and obj1 are equivalent or not. 
     """
-    
     def check1(a,b,n):
         n1,_,_=a.shape
         n2,_,_=a.shape
@@ -541,8 +540,7 @@ def sort_vctors(vts: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     sort vectors in TAU-style
     
-    xi,yi,ziをxiでソート
-    
+    sort the coordinates (xi,yi,zi) such that the xi in the order.
     """
     n1,n2,_=vts.shape
     out=np.zeros(vts.shape,dtype=np.int64)
@@ -557,7 +555,6 @@ def sort_vctors(vts: NDArray[np.int64]) -> NDArray[np.int64]:
 def sort_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     sort triangle in an object
-    
     """
     out=np.zeros(vts.shape,dtype=np.int64)
     centroids=np.zeros(len(obj),dtype=np.float64)
@@ -587,26 +584,18 @@ def decomposition(tmp2v: NDArray[np.float64]):
         return 
     else:
         out=[]
-        #for i in range(len(tri.simplices)):
-        #    tet=tri.simplices[i]
         for tet in tri.simplices:
             out.append([tet[0],tet[1],tet[2]])
     return out
 
 def triangulation_points(points: NDArray[np.int64]):
     
-    #i1=0
+    tmp=np.zeros((len(points),2),dtype=np.float64)
     for i1,p in enumerate(points):
         v=projection3(p)
         v=numerical_vector(v)
-        if i1==0:
-            tmp=v[:2]
-        else:
-            tmp=np.vstack([tmp,v[:2]])
-        #i1+=1
+        tmp[i1]=v[:2]
         
-    print('triangulation_points()')
-    print(tmp)
     ltmp=decomposition(tmp)
     if np.all(ltmp==None):
         return 
@@ -624,7 +613,8 @@ def triangulation_points(points: NDArray[np.int64]):
                     tmp1=np.append(tmp1,tmp3)
                 counter+=1
         if counter!=0:
-            return tmp1.reshape(int(len(tmp1)/54),3,6,3) # 3*6*3=54
+            #return tmp1.reshape(int(len(tmp1)/54),3,6,3) # 3*6*3=54
+            return tmp1.reshape(counter,3,6,3) # 3*6*3=54
         else:
             return 
 
