@@ -91,7 +91,7 @@ def shift(obj,shift):
     """
     return utils.shift_object(obj, shift)
 
-def write(obj, path='.',basename='tmp',format='xyz',color='k',verbose=0,select='normal'):
+def write(obj=None,path=None,basename=None,format=None,color='k',select=None,verbose=0):
     """
     Export occupation domains.
     
@@ -121,18 +121,23 @@ def write(obj, path='.',basename='tmp',format='xyz',color='k',verbose=0,select='
         os.makedirs(path)
     else:
         pass
-        
+    
     if np.all(obj==None):
         print('    Empty OD')
-        return 1
-    else:
-        if format=='vesta' or format=='v' or format=='VESTA':
-            write_vesta(obj, path, basename, color, select='normal', verbose=0)
-        elif format == 'xyz':
-            write_xyz(obj, path, basename, select, verbose)
-        else:
-            pass
         return 0
+    else:
+        if format=='vesta':
+            if select==None:
+                select='normal'
+            write_vesta(obj,path,basename,color,select,verbose)
+            return 0
+        elif format == 'xyz':
+            if select==None:
+                select='triangle'
+            write_xyz(obj,path,basename,select,verbose)
+            return 0
+        else:
+            return 1
 
 def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0):
     """
@@ -157,6 +162,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
         int: 0 (succeed), 1 (fail) when select = 'simple' or 'normal'.
         ndarray: vertices, when select = 'podatm'.
     """
+    #print('write_vesta()')
     
     if os.path.exists(path)==False:
         os.makedirs(path)
@@ -192,12 +198,10 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
     #dmax=5.0
     dmax=10.0
     
-    if select=='simple' or 'egdes':
-        
+    if select=='simple' or select=='egdes':
         if np.all(obj==None):
             print('no volume obj')
             return 0
-        
         else:
             # get independent edges
             if select=='simple':
@@ -437,14 +441,13 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             return 0
         
     elif select=='normal':
-        
         if np.all(obj==None):
             print('no volume obj')
-            return 1
+            return 0
         else:
             print('#VESTA_FORMAT_VERSION 3.5.0\n', file=f)
-            i1=0
-            for obj1 in obj:
+            for i1,obj1 in enumerate(obj):
+                #print(' %d'%(i1))
                 print('MOLECULE\
                 \nTITLE',file=f)
                 print('%s/%s_%d\n'%(path,basename,i1), file=f)
@@ -472,35 +475,29 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
                 \n  1.000000    1.000000    1.000000  90.000000  90.000000  90.000000\
                 \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
                 \nSTRUC', file=f)
-                i2=0
-                for vertx in obj1:
+                for i2,vertx in enumerate(obj1):
                     xyz=math1.projection3(vertx)
                     xyz=numericalc.numerical_vector(xyz)
                     print('%4d Xx        Xx%d  1.0000    %8.6f %8.6f %8.6f        1'%\
                     (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
-                    i2+=1
                     print('                             0.000000    0.000000    0.000000  0.00', file=f)
                 print('  0 0 0 0 0 0 0\
-                \nTHERI 0', file = f)
-                i2=0
-                for _ in obj1:
+                \nTHERI 0', file=f)
+                for i2,_ in enumerate(obj1):
                     print('  %d        Xx%d  1.000000'%(i2+1,i2+1), file=f)
-                    i2+=1
                 print('  0 0 0\
                 \nSHAPE\
                 \n  0         0         0         0    0.000000  0    192    192    192    192\
                 \nBOUND\
                 \n         0          1        0          1        0          1\
                 \n  0    0    0    0  0\
-                \nSBOND', file = f)
+                \nSBOND', file=f)
                 clr=colors(color)
                 print('  1     Xx     Xx     0.00000     %3.2f  0  1  1  0  2  0.250  2.000 %3d %3d %3d'%(dmax,clr[0],clr[1],clr[2]), file=f)
                 print('  0 0 0 0\
-                \nSITET', file = f)
-                i2=0
-                for _ in obj1:
+                \nSITET', file=f)
+                for i2,_ in enumerate(obj1):
                     print('    %d        Xx%d  0.0100  76  76  76  76  76  76 204  0'%(i2+1,i2+1), file=f)
-                    i2+=1
                 print('  0 0 0 0 0 0\
                 \nVECTR\
                 \n 0 0 0 0 0\
@@ -519,8 +516,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
                 \nDLPLY\
                 \n -1\
                 \nPLN2D\
-                \n  0    0    0    0', file = f)
-                i1+=1
+                \n  0    0    0    0', file=f)
             print('ATOMT\
             \n  1        Xx  0.0100  76  76  76  76  76  76 204\
             \n  0 0 0 0 0 0\
@@ -632,14 +628,13 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \n 128.000\
             \nHKLPM\
             \n 255 255 255 255\
-            \n 128.000',file = f)
+            \n 128.000',file=f)
             f.close()
             if verbose>0:
                 print('    written in %s'%(file_name))
             return 0
     
-    if select == 'podatm':
-        
+    elif select == 'podatm':
         if np.all(obj==None):
             print('no volume obj')
             return 0
@@ -859,6 +854,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             if verbose>0:
                 print('    written in %s'%(file_name))
             return vertices
+    
     else:
         return 1
 
@@ -1021,7 +1017,8 @@ def read_xyz(path,basename,select='triangle',verbose=0):
         path (str): Path of the input XYZ file
         basename (str): Basename of the input XYZ file
         select (str)
-            'vertex'      : set of vertices (default)
+            'triangle'    : read as a set of triangles (default)
+            'vertex'      : read as a set of vertices
             (default, select = 'triangle')
         verbose (int): verbose option
     Returns:
