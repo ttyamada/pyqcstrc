@@ -212,28 +212,44 @@ def intersection_two_segment(segment_1: NDArray[np.int64], segment_2: NDArray[np
     #if check_intersection_two_segment_numerical(segment_1,segment_2): # intersecting
     if check_intersection_two_segment_numerical_6d_tau(segment_1,segment_2): # intersecting
         # calc in TAU-style
-        vec6AB=sub_vectors(segment_1[1],segment_1[0])
-        vecAB=projection3(vec6AB)                 # AB
+        vecAB_6d=sub_vectors(segment_1[1],segment_1[0])
+        vecAB=projection3(vecAB_6d)               # AB
         #
         tmp=sub_vectors(segment_2[1],segment_2[0])
         vecCD=projection3(tmp)                    # CD
         #
-        tmp=sub_vectors(segment_1[0],segment_2[0])
-        vecCA=projection3(tmp)                    # CA
-        
-        #bunbo=vecAB[c[0]]*vecCD[c[1]]-vecCD[c[0]]*vecAB[c[1]]
-        tmp1=mul(vecAB[0],vecCD[1])
-        tmp2=mul(vecCD[0],vecAB[1])
-        bunbo=sub(tmp1,tmp2)
+        #tmp=sub_vectors(segment_1[0],segment_2[0])
+        #vecCA=projection3(tmp)                    # CA
         #
-        #s=(vecCD[c[0]]*vecCA[c[1]]-vecCA[c[0]]*vecCD[c[1]])/bunbo
-        tmp1=mul(vecCD[0],vecCA[1])
-        tmp2=mul(vecCA[0],vecCD[1])
-        tmp1=sub(tmp1,tmp2)
-        s=div(tmp1,bunbo)
+        tmp=sub_vectors(segment_2[0],segment_1[0])
+        vecAC=projection3(tmp)                    # AC
+        
+        # bunbo=dot_product(vecAB,vecCD)*dot_product(vecCD,vecAB)-dot_product(vecAB,vecAB)*dot_product(vecCD,vecCD)
+        tmp1=dot_product(vecAB,vecCD)
+        tmp2=dot_product(vecCD,vecAB)
+        tmp3=mul(tmp1,tmp2)
+        #
+        tmp1=dot_product(vecAB,vecAB)
+        tmp2=dot_product(vecCD,vecCD)
+        tmp4=mul(tmp1,tmp2)
+        bunbo=sub(tmp3,tmp4)
+        
+        # bunshi=dot_product(vecAC,vecCD)*dot_product(vecCD,vecAB)-dot_product(vecCD,vecCD)*dot_product(vecAC,vecAB)
+        tmp1=dot_product(vecAC,vecCD)
+        tmp2=dot_product(vecCD,vecAB)
+        tmp3=mul(tmp1,tmp2)
+        #
+        tmp1=dot_product(vecCD,vecCD)
+        tmp2=dot_product(vecAC,vecAB)
+        tmp4=mul(tmp1,tmp2)
+        bunshi=sub(tmp3,tmp4)
+        
+        
+        # s=bunshi/bunbo
+        s=div(bunshi,bunbo)
         #
         # OP = OA + s*AB
-        tmp=mul_vector(vec6AB,s)
+        tmp=mul_vector(vecAB_6d,s)
         return add_vectors(segment_1[0],tmp)
     else: # no intersection
         return 
@@ -417,25 +433,15 @@ def intersection_two_triangles(triangle_1: NDArray[np.int64], triangle_2: NDArra
             counter+=1
         else:
             pass
-    #print('tmp.shape',tmp.shape)
-    #tmp=tmp.reshape(int(len(tmp)/6),6,3)
-    #print('tmp:',tmp)
-    #tmp=remove_doubling_in_perp_space(tmp)
-    #print('   (2) num of points=',len(tmp))
-    #a=get_internal_component_sets_numerical(tmp)
-    #print(a)
     
-    #tmp4=np.array([[[[0]]]])
     if counter>=3:
         tmp=remove_doubling_in_perp_space(tmp)
-        #print(len(tmp))
         if len(tmp)>3:
+            print(' len(tmp)=',len(tmp))
             tmp4=triangulation_points(tmp)
             if np.all(tmp4==None):
                 return 
             else:
-                #v=obj_area_6d(tmp4)
-                #nv=numeric_value(v)
                 return tmp4
         elif len(tmp)==3:
             return tmp.reshape(1,3,6,3)
@@ -444,7 +450,7 @@ def intersection_two_triangles(triangle_1: NDArray[np.int64], triangle_2: NDArra
     else:
         return 
 
-def intersection_two_obj_1(obj1: NDArray[np.int64],obj2: NDArray[np.int64],kind=None,verbose: int=0) -> NDArray[np.int64]:
+def intersection_two_obj_1(obj1: NDArray[np.int64],obj2: NDArray[np.int64],select=None,verbose: int=0) -> NDArray[np.int64]:
     """
     Return an intersection between two objects.
     
@@ -454,7 +460,7 @@ def intersection_two_obj_1(obj1: NDArray[np.int64],obj2: NDArray[np.int64],kind=
         a set of triangles to be intersected with obj2.
     obj2 : ndarray
         a set of triangles to be intersected with obj1.
-    kind : {'standard', 'simple'}, optional
+    select : {'standard', 'simple'}, optional
         The default is 'standard'. 
     
     Returns
@@ -482,6 +488,7 @@ def intersection_two_obj_1(obj1: NDArray[np.int64],obj2: NDArray[np.int64],kind=
     
     counter0=0
     for i1,triangle1 in enumerate(obj1):
+        print(' %d'%(i1))
         if verbose>0:
             print("         %d-th triangle in obj1"%(i1))
         if rough_check_intersection_triangle_obj(triangle1,cent2,dd2):
@@ -489,6 +496,7 @@ def intersection_two_obj_1(obj1: NDArray[np.int64],obj2: NDArray[np.int64],kind=
                 print("          Rough_check:True")
             counter1=0
             for i2,triangle2 in enumerate(obj2):
+                print('  %d'%(i2))
                 flag=check_intersection_two_triangles(triangle1,triangle2)
                 if verbose>0:
                     print("          %d-th triangle in obj2, flag:%d"%(i2,flag))
@@ -540,7 +548,7 @@ def intersection_two_obj_1(obj1: NDArray[np.int64],obj2: NDArray[np.int64],kind=
                 #print('tmp_common4',tmp_common4)
                 #vol2=obj_area_6d(tmp_common4)
                 #print('vol2',vol2,numeric_value(vol2))
-                if kind=='simple':
+                if select=='simple':
                     vol1=triangle_area_6d(triangle1)
                     vol2=obj_area_6d(tmp_common4)
                     if np.all(vol1==vol2):
