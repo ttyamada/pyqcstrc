@@ -579,39 +579,41 @@ def sort_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
 #----------------------------
 # Triangulation
 #----------------------------
-def decomposition(tmp2v: NDArray[np.int64]) -> NDArray[np.int64]:
+def decomposition(tmp2v: NDArray[np.float64]):
     try:
         tri=Delaunay(tmp2v)
     except:
         print('error in decomposition')
         return 
     else:
-        tmp=[]
-        for i in range(len(tri.simplices)):
-            tet=tri.simplices[i]
-            tmp.append([tet[0],tet[1],tet[2],tet[3]])
-    return tmp
+        out=[]
+        #for i in range(len(tri.simplices)):
+        #    tet=tri.simplices[i]
+        for tet in tri.simplices:
+            out.append([tet[0],tet[1],tet[2]])
+    return out
 
-def triangulation_points(points: NDArray[np.int64]) -> NDArray[np.int64]:
+def triangulation_points(points: NDArray[np.int64]):
     
-    i1=0
-    for p in points:
+    #i1=0
+    for i1,p in enumerate(points):
         v=projection3(p)
         v=numerical_vector(v)
         if i1==0:
-            tmp=v
+            tmp=v[:2]
         else:
-            tmp=np.vstack([tmp,v])
-        i1+=1
+            tmp=np.vstack([tmp,v[:2]])
+        #i1+=1
         
+    print('triangulation_points()')
+    print(tmp)
     ltmp=decomposition(tmp)
-    p=points
     if np.all(ltmp==None):
-        return
+        return 
     else:
         counter=0
         for i in ltmp:
-            tmp3=np.array([p[i[0]],p[i[1]],p[i[2]],p[i[3]]]).reshape(4,6,3)
+            tmp3=np.array([points[i[0]],points[i[1]],points[i[2]]]).reshape(3,6,3)
             vol=triangle_area_6d(tmp3)
             if vol[0]==0 and vol[1]==0:
                 pass
