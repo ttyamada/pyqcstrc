@@ -23,6 +23,7 @@ from pyqcstrc.dode2.numericalc import (projection_numerical,
 import numpy as np
 
 EPS=1e-6
+V0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
 
 def symop_obj(symop,obj,centre):
     """ Apply a symmetric operation on an object around given centre. in TAU-style
@@ -208,11 +209,10 @@ def site_symmetry(site,ndim=5):
     
     symop=dodesymop()
     traop=translation(ndim)
-    cen=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
     
     list1=[]
     for i2,op in enumerate(symop):
-        site1=symop_vec(op,site,cen)
+        site1=symop_vec(op,site,V0)
         flag=0
         for top in traop:
             site2=add_vectors(site1,top)
@@ -306,7 +306,6 @@ def site_symmetry_and_coset(site,ndim,verbose):
     
     symop=dodesymop()
     traop=translation(ndim)
-    cen=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
     
     # List of index of symmetry operators of the site symmetry group G.
     # The symmetry operators leaves xyz identical.
@@ -346,7 +345,7 @@ def site_symmetry_and_coset(site,ndim,verbose):
         pass
     
     for i2,op in enumerate(symop):
-        site1=symop_vec(op,site,cen)
+        site1=symop_vec(op,site,V0)
         flag=0
         for top in traop:
             site2=add_vectors(site1,top)
