@@ -6,7 +6,7 @@
 #import sys
 import numpy as np
 from numpy.typing import NDArray
-import time # in object_subtraction_dev1, tetrahedron_not_obj
+#import time # in subtraction_two_obj
 import itertools
 
 from pyqcstrc.ico2.math1 import (projection3,
@@ -802,18 +802,18 @@ def subtraction_two_obj(obj1: NDArray[np.int64], obj2: NDArray[np.int64], verbos
     
     if verbose>0:
         print('      generating surface_obj2')
-        start=time.time()
+    #    start=time.time()
     #
     surface_obj2=generator_surface_1(obj2,verbose-1)
     #
-    if verbose>0:
-        end=time.time()
-        time_diff=end-start
-        print('         ends in %4.3f sec'%time_diff)
+    #if verbose>0:
+    #    end=time.time()
+    #    time_diff=end-start
+    #    print('         ends in %4.3f sec'%time_diff)
     
     if verbose>0:
         print('      tetrahedron_not_obj_1 starts...')
-        start=time.time()
+    #    start=time.time()
     #
     
     flag=0
@@ -834,11 +834,11 @@ def subtraction_two_obj(obj1: NDArray[np.int64], obj2: NDArray[np.int64], verbos
                 out=np.vstack([out,a])
         counter1+=1
     
-    if flag==0:
-        if verbose>0:
-            end=time.time()
-            time_diff=end-start
-            print('         ends in %4.3f sec'%time_diff)
+    #if flag==0:
+    #    if verbose>0:
+    #        end=time.time()
+    #        time_diff=end-start
+    #        print('         ends in %4.3f sec'%time_diff)
     return out
 
 def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64], surface_obj: NDArray[np.int64], verbose: int=0) -> NDArray[np.int64]:
