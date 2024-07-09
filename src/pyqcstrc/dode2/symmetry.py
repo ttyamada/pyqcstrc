@@ -463,6 +463,60 @@ def find_overlaps(l1,l2):
     else:
         return True
 
+############################
+# Similarity transformation
+############################
+def similarity_obj(obj,m):
+    """similarity transformation of a triangle
+    """
+    out=np.zeros(obj.shape,dtype=np.int64)
+    for i1,od in enumerate(obj):
+        out[i1]=similarity_triangle(od,m)
+    return out
+
+def similarity_triangle(triangle,m):
+    """similarity transformation of a triangle
+    """
+    out=np.zeros(triangle.shape,dtype=np.int64)
+    for i1,vt in enumerate(triangle):
+        out[i1]=similarity_vec(vt,m)
+    return out
+
+def similarity_vec(vt,m):
+    """similarity transformation of a vector
+    """
+    vec1=[]
+    op=similarity(m)
+    return dot_product_1(op,vt)
+    
+def similarity(m):
+    """Similarity transformation of Dodecagonal QC
+    """
+    if m>0:
+        m1=np.array([[ 1, 0, 0, -1, 0, 0],\
+                    [ 1, 1, 0, 0, 0, 0],\
+                    [ 0, 1, 1, 1, 0, 0],\
+                    [ 0, 0, 1, 1, 0, 0],\
+                    [ 0, 0, 0, 0, 1, 0],\
+                    [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+        return matrixpow(m1.T,m)
+    elif m<0:
+        m1=np.array([[ 0, 1,-1, 1, 0, 0],\
+                   [ 0, 0, 1,-1, 0, 0],\
+                   [ 1,-1, 1, 0, 0, 0],\
+                   [-1, 1,-1, 1, 0, 0],\
+                   [ 0, 0, 0, 0, 1, 0],\
+                   [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+        return matrixpow(m1.T,-m)
+    else:
+        m1=np.array([[ 1, 0, 0, 0, 0, 0],\
+                   [ 0, 1, 0, 0, 0, 0],\
+                   [ 0, 0, 1, 0, 0, 0],\
+                   [ 0, 0, 0, 1, 0, 0],\
+                   [ 0, 0, 0, 0, 1, 0],\
+                   [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+        return m1
+
 if __name__ == '__main__':
     
     # test

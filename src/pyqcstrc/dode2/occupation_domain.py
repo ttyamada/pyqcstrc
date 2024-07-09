@@ -1314,6 +1314,9 @@ def simple_hand_step2(obj, merge_list):
             od1=np.vstack([od1,od2])
     return od1
 
+def similarity(obj,m):
+    return symmetry.similarity_obj(obj,m)
+    
 if __name__ == "__main__":
     
     test_dir='../../tests/dode/test'
