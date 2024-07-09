@@ -6,7 +6,7 @@
 #import sys
 import numpy as np
 from numpy.typing import NDArray
-import time # in object_subtraction_dev1, tetrahedron_not_obj
+#import time # in subtraction_two_obj
 import itertools
 
 from pyqcstrc.ico2.math1 import (projection3,
@@ -239,6 +239,7 @@ def check_intersection_two_tetrahedron_4(tetrahedron_1: NDArray[np.int64], tetra
         else:
             return 0 # no intersection
 
+### This function has ho be checked, although it is not used in ico2.
 def intersection_two_segment(segment_1: NDArray[np.int64], segment_2: NDArray[np.int64]) -> NDArray[np.int64]:
     """check intersection between two line segments.
     
@@ -264,25 +265,20 @@ def intersection_two_segment(segment_1: NDArray[np.int64], segment_2: NDArray[np
         tmp=sub_vectors(segment_1[0],segment_2[0])
         vecCA=projection3(tmp)                    # CA
         
-        comb=[\
-        [0,1,2],\
-        [1,2,0],\
-        [2,0,1]]
-        c=comb[flg]
         #
         #bunbo=vecAB[c[0]]*vecCD[c[1]]-vecCD[c[0]]*vecAB[c[1]]
-        tmp1=mul(vecAB[c[0]],vecCD[c[1]])
-        tmp2=mul(vecCD[c[0]],vecAB[c[1]])
+        tmp1=mul(vecAB[0],vecCD[1])
+        tmp2=mul(vecCD[0],vecAB[1])
         bunbo=sub(tmp1,tmp2)
         #
         #s=(vecCD[c[0]]*vecCA[c[1]]-vecCA[c[0]]*vecCD[c[1]])/bunbo
-        tmp1=mul(vecCD[c[0]],vecCA[c[1]])
-        tmp2=mul(vecCA[c[0]],vecCD[c[1]])
+        tmp1=mul(vecCD[0],vecCA[1])
+        tmp2=mul(vecCA[0],vecCD[1])
         tmp1=sub(tmp1,tmp2)
         s=div(tmp1,bunbo)
         #
         # OP = OA + s*AB
-        tmp=mul_vector(vecAB,s)
+        tmp=mul_vector(vec6AB,s)
         return add_vectors(segment_1[0],tmp)
     else: # no intersection
         return 
@@ -806,18 +802,18 @@ def subtraction_two_obj(obj1: NDArray[np.int64], obj2: NDArray[np.int64], verbos
     
     if verbose>0:
         print('      generating surface_obj2')
-        start=time.time()
+    #    start=time.time()
     #
     surface_obj2=generator_surface_1(obj2,verbose-1)
     #
-    if verbose>0:
-        end=time.time()
-        time_diff=end-start
-        print('         ends in %4.3f sec'%time_diff)
+    #if verbose>0:
+    #    end=time.time()
+    #    time_diff=end-start
+    #    print('         ends in %4.3f sec'%time_diff)
     
     if verbose>0:
         print('      tetrahedron_not_obj_1 starts...')
-        start=time.time()
+    #    start=time.time()
     #
     
     flag=0
@@ -838,11 +834,11 @@ def subtraction_two_obj(obj1: NDArray[np.int64], obj2: NDArray[np.int64], verbos
                 out=np.vstack([out,a])
         counter1+=1
     
-    if flag==0:
-        if verbose>0:
-            end=time.time()
-            time_diff=end-start
-            print('         ends in %4.3f sec'%time_diff)
+    #if flag==0:
+    #    if verbose>0:
+    #        end=time.time()
+    #        time_diff=end-start
+    #        print('         ends in %4.3f sec'%time_diff)
     return out
 
 def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64], surface_obj: NDArray[np.int64], verbose: int=0) -> NDArray[np.int64]:

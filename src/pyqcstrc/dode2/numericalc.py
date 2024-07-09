@@ -246,11 +246,10 @@ def check_intersection_segment_surface_numerical_6d_tau(line_segment: NDArray[np
     tr=get_internal_component_sets_numerical(triangle)
     return check_intersection_segment_surface_numerical(ln,tr)
     
-def check_intersection_segment_surface_numerical(ln: NDArray[np.float64], tr: NDArray[np.float64]) -> bool:
-    """check intersection between a line segment and a triangle.
+
+def check_intersection_segment_surface_numerical(line_segment: NDArray[np.float64], triangle: NDArray[np.float64]) -> bool:
     
-    Möller–Trumbore intersection algorithm
-    https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
+    """check intersection between a line segment and a triangle.
     
     Parameters
     ----------
@@ -261,8 +260,21 @@ def check_intersection_segment_surface_numerical(ln: NDArray[np.float64], tr: ND
     
     Returns
     -------
-    
     """
+    """
+    counter=0
+    for i in range(3):
+        if check_intersection_two_segment_numerical(line_segment,triangle[i])!=3:
+            counter+=1
+            break
+        else:
+            pass
+    if counter>0:
+        return True
+    else:
+        return False
+    
+    
     vecAB=ln[1]-ln[0] # AB # R
     vecCD=tr[1]-tr[0] # CD # E1
     vecCE=tr[2]-tr[0] # CE # E2
@@ -296,6 +308,21 @@ def check_intersection_segment_surface_numerical(ln: NDArray[np.float64], tr: ND
         else:
             #print('\n')
             return False
+    """
+    
+    #  edge: 0-1,0-2,1-2
+    comb=[[0,1],[0,2],[1,2]]
+    counter=0
+    for j in comb:
+        if check_intersection_two_segment_numerical(line_segment,triangle[j]):
+            counter+=1
+            break
+        else:
+            pass
+    if counter>0:
+        return True # intersecting
+    else:
+        return False
 
 def check_intersection_two_segment_numerical_6d_tau(segment_1: NDArray[np.int64], segment_2: NDArray[np.int64]) -> bool:
     """check intersection between two line segments
@@ -335,6 +362,7 @@ def check_intersection_two_segment_numerical(ln1: NDArray[np.float64], ln2: NDAr
                    2 (Intersection was found when a view allong to Y-axis)
                    3 (No intersection was found)
     -------
+    """
     
     """
     vecAB=ln1[1]-ln1[0] # AB
@@ -365,6 +393,44 @@ def check_intersection_two_segment_numerical(ln1: NDArray[np.float64], ln2: NDAr
         else:
             out+=1
     return out
+    """
+    
+    # line1-A
+    L1a=ln1[0]
+    
+    # line1-B
+    L1b=ln1[1]
+    
+    # line2-A
+    L2a=ln2[0]
+    
+    # line2-B
+    L2b=ln2[1]
+    
+    vecAB=L1b-L1a
+    vecAC=L2a-L1a
+    vecCD=L2b-L2a
+    
+    # bunshi
+    t1=np.dot(vecAC,vecCD)*np.dot(vecCD,vecAB)-np.dot(vecCD,vecCD)*np.dot(vecAC,vecAB)
+    # bunbo
+    t2=np.dot(vecAB,vecCD)*np.dot(vecCD,vecAB)-np.dot(vecAB,vecAB)*np.dot(vecCD,vecCD)
+    
+    if abs(t2)<EPS:
+        return False
+    else:
+        s=t1/t2
+        t=(-np.dot(vecAC,vecCD)+s*np.dot(vecAB,vecCD))/np.dot(vecCD,vecCD)
+        if s>=0.0 and s<=1.0 and t>=0.0 and t<=1.0:
+            dd=0
+            for i in range(3):
+                dd+=((L2a[i]-L1a[i])-s*(L1b[i]-L1a[i])+t*(L2b[i]-L2a[i]))**2
+            if dd<EPS:
+                return True # intersecting
+            else:
+                return False
+        else:
+            return False
     
 def triangle_area(a: NDArray[np.int64]) -> float:
     """Numerial calcuration of area of given triangle, a.
@@ -461,7 +527,7 @@ def inside_outside_triangle_tau(point: NDArray[np.int64], triangle: NDArray[np.i
         6d vertex coordinates of triangle in TAU-style.
     """
     point=get_internal_component_numerical(point)
-    tetrahedron=get_internal_component_sets_numerical(triangle)
+    triangle=get_internal_component_sets_numerical(triangle)
     return inside_outside_triangle(point,triangle)
 
 def inside_outside_triangle(point: NDArray[np.float64], triangle: NDArray[np.float64]) -> bool:
@@ -474,28 +540,27 @@ def inside_outside_triangle(point: NDArray[np.float64], triangle: NDArray[np.flo
     tetrahedron: array
         vertex coordinates of triangle, (xyz1, xyz2, xyz3)
     """
-    #vol0=triangle_volume_numerical(triangle)
-    vol0=triangle_area_numerical(triangle)
+    area0=triangle_area_numerical(triangle)
     
     def small_triangle(indx,p,triangle0):
         tri=np.zeros((4,3),dtype=np.float64)
-        for i in range(3):
+        for i,vt in enumerate(triangle0):
             if i==indx:
                 tri[i]=p
             else:
-                tri[i]=triangle0[i]
+                tri[i]=vt
         return tri
     
     tet1=small_triangle(0,point,triangle)
-    vol1=triangle_area_numerical(tet1)
+    area1=triangle_area_numerical(tet1)
     #
     tet2=small_triangle(1,point,triangle)
-    vol2=triangle_area_numerical(tet2)
+    area2=triangle_area_numerical(tet2)
     #
     tet3=small_triangle(2,point,triangle)
-    vol3=triangle_area_numerical(tet3)
+    area3=triangle_area_numerical(tet3)
     
-    if abs(vol0-vol1-vol2-vol3)<EPS*vol0:
+    if abs(area0-area1-area2-area3)<EPS*area0:
         return True # inside
     else:
         return False # outside

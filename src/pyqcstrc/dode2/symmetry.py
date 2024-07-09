@@ -15,7 +15,15 @@ from pyqcstrc.dode2.math1 import (add,
 from pyqcstrc.dode2.utils import (remove_doubling_in_perp_space, 
                                 remove_doubling,
                                 )
+from pyqcstrc.dode2.numericalc import (projection_numerical,
+                                projection3_numerical,
+                                numerical_vector,
+                                length_numerical,
+                                )
 import numpy as np
+
+EPS=1e-6
+V0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
 
 def symop_obj(symop,obj,centre):
     """ Apply a symmetric operation on an object around given centre. in TAU-style
@@ -50,18 +58,14 @@ def symop_vecs(symop,triangle,centre):
 
 def symop_vec(symop,vt,centre):
     """ Apply a symmetric operation on a vector around given centre. in TAU-style
-    
     """
     vt=sub_vectors(vt,centre)
     vt=dot_product_1(symop,vt)
     return add_vectors(vt,centre)
 
-
-
-
-
 def generator_obj_symmetric_obj(obj,centre):
-    
+    """
+    """
     if obj.ndim==3 or obj.ndim==4:
         mop=dodesymop()
         num=len(mop)
@@ -82,12 +86,16 @@ def generator_obj_symmetric_obj(obj,centre):
         return
 
 def generator_obj_symmetric_triangle(obj,centre):
+    """
+    """
     return generator_obj_symmetric_obj(obj,centre)
     
 #def generator_obj_symmetric_tetrahedron(obj,centre):
 #    return generator_obj_symmetric_obj(obj,centre)
 
 def generator_obj_symmetric_triangle_specific_symop(obj,centre,list_of_symmetry_operation_index):
+    """
+    """
     # using specific symmetry operations
     if obj.ndim==3 or obj.ndim==4:
         mop=dodesymop()
@@ -103,21 +111,31 @@ def generator_obj_symmetric_triangle_specific_symop(obj,centre,list_of_symmetry_
         return
     
 def generator_obj_symmetric_triangle_0(obj,centre,symmetry_operation_index):
+    """
+    """
     mop=dodesymop()
     return symop_obj(mop[symmetry_operation_index],obj,centre)
 
 def generator_obj_symmetric_vec(vectors, centre):
+    """
+    """
     return generator_obj_symmetric_obj(vectors,centre)
 
 def generator_equivalent_vectors(vectors,centre):
+    """
+    """
     a=generator_obj_symmetric_obj
     return remove_doubling_in_perp_space(a)
 
 def generator_equivalent_vec(vector,centre):
+    """
+    """
     a=generator_obj_symmetric_obj(vector,centre)
     return remove_doubling(a)
 
 def dodesymop():
+    """
+    """
     # dodecagonal symmetry operations
     # c12
     m1=np.array([[ 0, 1, 0, 0, 0, 0],\
@@ -142,53 +160,362 @@ def dodesymop():
             symop.append(tmp)
     return symop
 
-def site_symmetry(site):
-    
-    vec1=[]
-    centre=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
-    dev=np.array([[-3,4,1],[2,-4,1],[-4,3,1],[3,1,1],[0,0,1],[0,0,1]],dtype=np.int64)
-    
-    # translation
-    v1=np.array([[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]]) # (1,0,0,0)
-    trans=generator_equivalent_vec(v1,centre)
-    
-    for k in range(6):
-        [b1,b2,b3]=add(site[k][0],site[k][1],site[k][2],dev[k][0],dev[k][1],dev[k][2])
-        vec1.extend([b1,b2,b3])
-    vec=np.array(vec1).reshape(6,3)
-    tmp3a=generator_equivalent_vec(vec,centre)
-    
-    # translational symmetry
-    vec1=[]
-    for i in range(len(tmp3a)):
-        for j in range(len(trans)):
-            for k in range(6):
-                [b1,b2,b3]=sub(tmp3a[i][k][0],tmp3a[i][k][1],tmp3a[i][k][2],trans[j][k][0],trans[j][k][1],trans[j][k][2])
-                vec1.extend([b1,b2,b3])
-    tmp3b=np.array(vec1).reshape(int(len(vec1)/18),6,3)
-    tmp3a=np.vstack([tmp3a,tmp3b])
-    
-    #print('1: len(tmp3a)=',len(tmp3a))
-    vec1=[]
-    for i in range(len(tmp3a)):
-        for k in range(6):
-            [b1,b2,b3]=sub(tmp3a[i][k][0],tmp3a[i][k][1],tmp3a[i][k][2],site[k][0],site[k][1],site[k][2])
-            vec1.extend([b1,b2,b3])
-    tmp3a=np.array(vec1).reshape(len(tmp3a),6,3)
-    #print(vec1)
-    
-    #print('2: len(tmp3a)=',len(tmp3a))
+def generator_symmetric_vec_0(vector,centre,symmetry_operation_index):
     mop=dodesymop()
+    return symop_vec(mop[symmetry_operation_index],vector,centre)
     
-    numlst=[]
-    for i in range(len(tmp3a)):
-        for k in range(len(mop)):
-            vec1=symop_vec(mop[k],dev,centre)
-            if np.array_equal(np.array(vec1).reshape(6,3),tmp3a[i]):
-                numlst.extend([k])
+def translation(ndim):
+    """translational symmetry
+    """
+    symop=[]
+    lst=[-1,0,1]
+    tmp=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
+    symop.append(tmp)
+    if ndim==4:
+        for i1 in lst:
+            for i2 in lst:
+                for i3 in lst:
+                    for i4 in lst:
+                        tmp=np.array([[i1,0,1],[i2,0,1],[i3,0,1],[i4,0,1],[0,0,1],[0,0,1]])
+                        symop.append(tmp)
+    else:
+        for i1 in lst:
+            for i2 in lst:
+                for i3 in lst:
+                    for i4 in lst:
+                        for i5 in lst:
+                            tmp=np.array([[i1,0,1],[i2,0,1],[i3,0,1],[i4,0,1],[i5,0,1],[0,0,1]])
+                            symop.append(tmp)
+    return symop
+
+################ 
+# site symmetry
+################
+def site_symmetry(site,ndim=5):
+    """symmetry operators in the site symmetry group G.
+    
+    Args:
+        site (numpy.ndarray):
+            xyz coordinate of the site.
+            The shape is (6,3).
+        ndim (int):
+            dimension, 4 or 5
+        verbose (int)
+    
+    Returns:
+        List of index of symmetry operators of the site symmetry group G (list):
+            The symmetry operators leaves xyz identical.
+    """
+    
+    symop=dodesymop()
+    traop=translation(ndim)
+    
+    list1=[]
+    for i2,op in enumerate(symop):
+        site1=symop_vec(op,site,V0)
+        flag=0
+        for top in traop:
+            site2=add_vectors(site1,top)
+            tmp=sub_vectors(site,site2)
+            if length_numerical(tmp)<EPS:
+                list1.append(i2)
+                break
             else:
                 pass
-    return numlst
+    return remove_overlaps(list1)
+
+def coset(site,ndim=5):
+    """coset
+    """
+    symop=dodesymop()
+    
+    
+    list1=site_symmetry(site,ndim)
+    
+    # List of index of symmetry operators which are not in the G.
+    tmp=range(len(symop))
+    tmp=set(tmp)-set(list1)
+    list2=list(tmp)
+    
+    list2_new=remove_overlaps(list2)
+    
+    if len(symop)==len(list1):
+        list5=[0]
+    else:
+        # left coset decomposition:
+        list4=[]
+        for i2 in list2_new:
+            list3=[]
+            for i1 in list1:
+                op1=np.dot(symop[i2],symop[i1])
+                for i3,op in enumerate(symop):
+                    if np.all(op1==op):
+                        list3.append(i3)
+                        break
+                    else:
+                        pass
+            list4.append(list3)
+        
+        for i2 in range(len(list4)-1):
+            a=list4[i2]
+            b=[]
+            d=[]
+            list5=[0] # symmetry element of identity, symop[0]
+            list5.append(list2_new[i2])
+            i3=i2+1
+            while i3<len(list4):
+                b=list4[i3]
+                if len(d)==0:
+                    if find_overlaps(a,b):
+                        pass
+                    else:
+                        d=a+b
+                        list5.append(list2_new[i3])
+                else:
+                    if find_overlaps(d,b):
+                        pass
+                    else:
+                        d=d+b
+                        list5.append(list2_new[i3])
+                i3+=1
+            b=remove_overlaps(d)
+            if len(symop)==len(list5)*len(list1):
+                break
+            else:
+                pass
+    
+    return list5
+
+def site_symmetry_and_coset(site,ndim,verbose):
+    #symmetry operators in the site symmetry group G and its left coset decomposition.
+    #
+    #Args:
+    #    site (numpy.ndarray):
+    #        xyz coordinate of the site.
+    #        The shape is (6,3).
+    #    ndim (int):
+    #        dimension, 4 or 5
+    #    verbose (int)
+    #
+    #Returns:
+    #    List of index of symmetry operators of the site symmetry group G (list):
+    #        The symmetry operators leaves xyz identical.
+    #    
+    #    List of index of symmetry operators in the left coset representatives of the poibt group G (list):
+    #        The symmetry operators generates equivalent positions of the site xyz.
+    
+    symop=dodesymop()
+    traop=translation(ndim)
+    
+    # List of index of symmetry operators of the site symmetry group G.
+    # The symmetry operators leaves xyz identical.
+    list1=[]
+    
+    # List of index of symmetry operators which are not in the G.
+    list2=[]
+    
+    if verbose>0:
+        
+        xyz=projection_numerical(site)
+        xe=xyz[0]
+        ye=xyz[1]
+        ze=xyz[2]
+        xi=xyz[3]
+        yi=xyz[4]
+        #zi=xyz[5]
+        
+        sn=numerical_vector(site)
+        xyzn=numerical_vector(xyz)
+        xen=xyzn[0]
+        yen=xyzn[1]
+        zen=xyzn[2]
+        xin=xyzn[3]
+        yin=xyzn[4]
+        print('site_symmetry()')
+        print(' site coordinates: %3.2f %3.2f %3.2f %3.2f %3.2f %3.2f'%(\
+                                    float(sn[0]),\
+                                    float(sn[1]),\
+                                    float(sn[2]),\
+                                    float(sn[3]),\
+                                    float(sn[4]),\
+                                    float(sn[5])))
+        print('         in Epar : %3.2f %3.2f %3.2f'%(float(xen),float(yen),float(zen)))
+        print('         in Eperp: %3.2f %3.2f'%(float(xin),float(yin)))
+    else:
+        pass
+    
+    for i2,op in enumerate(symop):
+        site1=symop_vec(op,site,V0)
+        flag=0
+        for top in traop:
+            site2=add_vectors(site1,top)
+            tmp=sub_vectors(site,site2)
+            if length_numerical(tmp)<EPS:
+                list1.append(i2)
+                flag+=1
+                break
+            else:
+                pass
+        if flag==0:
+            list2.append(i2)
+    
+    list1_new=remove_overlaps(list1)
+    list2_new=remove_overlaps(list2)
+    
+    if verbose>0:
+        print('     multiplicity:',len(list1_new))
+        print('    site symmetry:',list1_new)
+    else:
+        pass
+    
+    if len(symop)==len(list1_new):
+        list5=[0]
+        if verbose>0:
+            print('       left coset:',list5)
+        else:
+            pass
+    else:
+        # left coset decomposition:
+        list4=[]
+        for i2 in list2_new:
+            list3=[]
+            for i1 in list1_new:
+                op1=np.dot(symop[i2],symop[i1])
+                for i3,op in enumerate(symop):
+                    if np.all(op1==op):
+                        list3.append(i3)
+                        break
+                    else:
+                        pass
+            list4.append(list3)
+        
+        #print('----------------')
+        #for i2 in range(len(list4)):
+        #    print(list4[i2])
+        #print('----------------')
+        
+        for i2 in range(len(list4)-1):
+            a=list4[i2]
+            b=[]
+            d=[]
+            list5=[0] # symmetry element of identity, symop[0]
+            list5.append(list2_new[i2])
+            i3=i2+1
+            while i3<len(list4):
+                b=list4[i3]
+                if len(d)==0:
+                    if find_overlaps(a,b):
+                        pass
+                    else:
+                        d=a+b
+                        list5.append(list2_new[i3])
+                else:
+                    if find_overlaps(d,b):
+                        pass
+                    else:
+                        d=d+b
+                        list5.append(list2_new[i3])
+                i3+=1
+            b=remove_overlaps(d)
+            if len(symop)==len(list5)*len(list1_new):
+                if verbose>0:
+                    print('       left coset:',list5)
+                else:
+                    pass
+                break
+            else:
+                pass
+    
+    return list1_new,list5
+
+#################
+#   Utilities
+#################
+def remove_overlaps(l1):
+    """
+    Remove overlap elements in list with set method.
+    
+    Args:
+        l1 (list):
+    
+    Returns:
+        l2 (list)
+    """
+    tmp=set(l1)
+    l2=list(tmp)
+    l2.sort()
+    return l2
+    
+def find_overlaps(l1,l2):
+    """find overlap or not btween list1 and list2.
+    
+    Args:
+        l1 (list):
+        l2 (list):
+    
+    Returns:
+        True : overlaping
+        False: no overlap
+    """
+    l3=remove_overlaps(l1+l2)
+    if len(l1)+len(l2)==len(l3): # no overlap
+        return False
+    else:
+        return True
+
+############################
+# Similarity transformation
+############################
+def similarity_obj(obj,m):
+    """similarity transformation of a triangle
+    """
+    out=np.zeros(obj.shape,dtype=np.int64)
+    for i1,od in enumerate(obj):
+        out[i1]=similarity_triangle(od,m)
+    return out
+
+def similarity_triangle(triangle,m):
+    """similarity transformation of a triangle
+    """
+    out=np.zeros(triangle.shape,dtype=np.int64)
+    for i1,vt in enumerate(triangle):
+        out[i1]=similarity_vec(vt,m)
+    return out
+
+def similarity_vec(vt,m):
+    """similarity transformation of a vector
+    """
+    vec1=[]
+    op=similarity(m)
+    return dot_product_1(op,vt)
+    
+def similarity(m):
+    """Similarity transformation of Dodecagonal QC
+    """
+    if m>0:
+        m1=np.array([[ 1, 0, 0, -1, 0, 0],\
+                    [ 1, 1, 0, 0, 0, 0],\
+                    [ 0, 1, 1, 1, 0, 0],\
+                    [ 0, 0, 1, 1, 0, 0],\
+                    [ 0, 0, 0, 0, 1, 0],\
+                    [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+        return matrixpow(m1.T,m)
+    elif m<0:
+        m1=np.array([[ 0, 1,-1, 1, 0, 0],\
+                   [ 0, 0, 1,-1, 0, 0],\
+                   [ 1,-1, 1, 0, 0, 0],\
+                   [-1, 1,-1, 1, 0, 0],\
+                   [ 0, 0, 0, 0, 1, 0],\
+                   [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+        return matrixpow(m1.T,-m)
+    else:
+        m1=np.array([[ 1, 0, 0, 0, 0, 0],\
+                   [ 0, 1, 0, 0, 0, 0],\
+                   [ 0, 0, 1, 0, 0, 0],\
+                   [ 0, 0, 0, 1, 0, 0],\
+                   [ 0, 0, 0, 0, 1, 0],\
+                   [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+        return m1
 
 if __name__ == '__main__':
     

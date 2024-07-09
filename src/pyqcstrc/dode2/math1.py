@@ -32,13 +32,13 @@ def add(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     c3=a[2]*b[2]
     x=np.array([c1,c2,c3],dtype=np.int64)
     g=np.gcd.reduce(x)
-    c1=c1/g
-    c2=c2/g
-    c3=c3/g
+    c1=int(c1/g)
+    c2=int(c2/g)
+    c3=int(c3/g)
     if c3<0:
-        return np.array([int(-c1),int(-c2),int(-c3)])
+        return np.array([-c1,-c2,-c3])
     else:
-        return np.array([int(c1),int(c2),int(c3)])
+        return np.array([c1,c2,c3])
 
 def mul(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     """
@@ -60,13 +60,13 @@ def mul(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     c3=4*a[2]*b[2]
     x=np.array([c1,c2,c3],dtype=np.int64)
     g=np.gcd.reduce(x)
-    c1=c1/g
-    c2=c2/g
-    c3=c3/g
+    c1=int(c1/g)
+    c2=int(c2/g)
+    c3=int(c3/g)
     if c3<0:
-        return np.array([int(-c1),int(-c2),int(-c3)])
+        return np.array([-c1,-c2,-c3])
     else:
-        return np.array([int(c1),int(c2),int(c3)])
+        return np.array([c1,c2,c3])
 
 def sub(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     """
@@ -130,13 +130,13 @@ def div(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
             x=np.array([c1,c2,c3],dtype=np.int64)
             g=np.gcd.reduce(x)
             if g!=0:
-                c1=c1/g
-                c2=c2/g
-                c3=c3/g
+                c1=int(c1/g)
+                c2=int(c2/g)
+                c3=int(c3/g)
                 if c3<0:
-                    return np.array([int(-c1),int(-c2),int(-c3)],dtype=np.int64)
+                    return np.array([-c1,-c2,-c3],dtype=np.int64)
                 else:
-                    return np.array([int(c1),int(c2),int(c3)],dtype=np.int64)
+                    return np.array([c1,c2,c3],dtype=np.int64)
             else:
                 print('ERROR_2:division error')
                 return 
