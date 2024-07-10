@@ -492,31 +492,14 @@ def similarity_vec(vt,m):
 def similarity(m):
     """Similarity transformation of Dodecagonal QC
     """
-    if m>0:
-        m1=np.array([[ 1, 0, 0, -1, 0, 0],\
-                    [ 1, 1, 0, 0, 0, 0],\
-                    [ 0, 1, 1, 1, 0, 0],\
-                    [ 0, 0, 1, 1, 0, 0],\
-                    [ 0, 0, 0, 0, 1, 0],\
-                    [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
-        return matrixpow(m1.T,m)
-    elif m<0:
-        m1=np.array([[ 0, 1,-1, 1, 0, 0],\
-                   [ 0, 0, 1,-1, 0, 0],\
-                   [ 1,-1, 1, 0, 0, 0],\
-                   [-1, 1,-1, 1, 0, 0],\
-                   [ 0, 0, 0, 0, 1, 0],\
-                   [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
-        return matrixpow(m1.T,-m)
-    else:
-        m1=np.array([[ 1, 0, 0, 0, 0, 0],\
-                   [ 0, 1, 0, 0, 0, 0],\
-                   [ 0, 0, 1, 0, 0, 0],\
-                   [ 0, 0, 0, 1, 0, 0],\
-                   [ 0, 0, 0, 0, 1, 0],\
-                   [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
-        return m1
-
+    m1=np.array([[ 1, 0, 0, -1, 0, 0],\
+                [ 1, 1, 0, 0, 0, 0],\
+                [ 0, 1, 1, 1, 0, 0],\
+                [ 0, 0, 1, 1, 0, 0],\
+                [ 0, 0, 0, 0, 1, 0],\
+                [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+    return matrixpow(m1.T,m)
+    
 if __name__ == '__main__':
     
     # test
