@@ -173,6 +173,31 @@ def icosasymop():
                         symop.append(tmp)
     return symop
 
+def translation(brv):
+    """translational symmetry
+    
+    brv : bravais lattce p, i, f, s, c
+            s : superlattice for decagonal quasicrystal
+    """
+    symop=[]
+    tmp=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
+    symop.append(tmp)
+
+    if brv=='p':
+        lst=[-1,0,1]
+    else:
+        print('not supported')
+        return 
+    for i1 in lst:
+        for i2 in lst:
+            for i3 in lst:
+                for i4 in lst:
+                    for i5 in lst:
+                        for i6 in lst:
+                            tmp=np.array([[i1,0,1],[i2,0,1],[i3,0,1],[i4,0,1],[i5,0,1],[i6,0,1]])
+                            symop.append(tmp)
+    return symop
+
 ####### WIP ########
 ################ 
 # site symmetry
@@ -391,23 +416,6 @@ def find_overlaps(l1,l2):
         return False
     else:
         return True
-
-def translation():
-    """translational symmetry
-    """
-    symop=[]
-    lst=[-1,0,1]
-    tmp=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
-    symop.append(tmp)
-    for i1 in lst:
-        for i2 in lst:
-            for i3 in lst:
-                for i4 in lst:
-                    for i5 in lst:
-                        for i6 in lst:
-                            tmp=np.array([[i1,0,1],[i2,0,1],[i3,0,1],[i4,0,1],[i5,0,1],[i6,0,1]])
-                            symop.append(tmp)
-    return symop
 
 ############################
 # Similarity transformation
