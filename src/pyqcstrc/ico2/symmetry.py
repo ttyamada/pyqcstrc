@@ -182,7 +182,7 @@ def translation(brv):
     symop=[]
     tmp=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
     symop.append(tmp)
-
+    
     if brv=='p':
         lst=[-1,0,1]
     else:
