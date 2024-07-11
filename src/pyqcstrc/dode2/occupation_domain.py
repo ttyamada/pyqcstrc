@@ -152,7 +152,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             one of the characters {'k','r','b','p','l','y','c','s'}, which are short-hand notations 
             for shades of black, red, blue, pink, lime, yellow, cyan, and silver in case where 'vesta' format is
             selected (default, color = 'k').
-        select (str):'simple' or 'normal'
+        select (str):'simple', 'normal', 'egdes', or 'podatm'
             'simple': Merging triangles into one single objecte
             'normal': Each triangle is set as single objecte (large file)
             'egdes':  Select this option when the obj is a set of edges.
@@ -213,20 +213,6 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
                 
             # get bond pairs, [[distance, XXX, YYY],...]
             pairs = []
-            
-            #for i1 in range(len(edges)):
-            #    dist=intsct.distance_in_perp_space(edges[i1][0],edges[i1][1])
-            #    a=[dist]
-            #    for i2 in range(2):
-            #        for i3 in range(len(vertices)):
-            #            tmp=np.vstack([edges[i1][i2],vertices[i3]])
-            #            tmp=utils.remove_doubling_in_perp_space(tmp.reshape(2,6,3))
-            #            if len(tmp)==1:
-            #                a.append(i3)
-            #                break
-            #            else:
-            #                pass
-            #    pairs.append(a)
             for edge in edges:
                 dist=intsct.distance_in_perp_space(edge[0],edge[1])
                 a=[dist]
@@ -269,13 +255,11 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \n  1.000000    1.000000    1.000000  90.000000  90.000000  90.000000\
             \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
             \nSTRUC', file=f)
-            #i2=0
             for i2,vrtx in enumerate(vertices):
                 xyz = math1.projection3(vrtx)
                 xyz=numericalc.numerical_vector(xyz)
                 print('%4d A        A%d  1.0000    %8.6f %8.6f %8.6f        1'%\
                 (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
-                #i2+=1
                 print('                             0.000000    0.000000    0.000000  0.00', file=f)
             print('  0 0 0 0 0 0 0\
             \nTHERI 0', file = f)
@@ -291,17 +275,13 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \n  0    0    0    0  0\
             \nSBOND', file = f)
             clr=colors(color)
-            #i2=0
             for i2,pair in enumerate(pairs):
                 print('  %d   A%d   A%d   %8.6f   %8.6f  0  1  1  1  2  0.250  2.000 %3d %3d %3d'%(\
                 i2+1, pair[1]+1, pair[2]+1, pair[0]-0.01, pair[0]+0.01, clr[0], clr[1], clr[2]), file=f)
-                #i2+=1
             print('  0 0 0 0\
             \nSITET', file = f)
-            #i2=0
             for i2 in range(len(vertices)):
-                print('    %d        A%d  0.100  76  76  76  76  76  76 204  0'%(i2+1,i2+1), file=f)
-                #i2+=1
+                print('    %d        A%d  0.050  76  76  76  76  76  76 204  0'%(i2+1,i2+1), file=f)
             print('  0 0 0 0 0 0\
             \nVECTR\
             \n 0 0 0 0 0\
@@ -326,9 +306,9 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \n  1        A  0.0100  76  76  76  76  76  76 204\
             \n  0 0 0 0 0 0\
             \nSCENE\
-            \n-0.538344 -0.838391  0.085359  0.000000\
-            \n-0.362057  0.138632 -0.921789  0.000000\
-            \n 0.760986 -0.527145 -0.378177  0.000000\
+            \n 1.000000 -0.000000 -0.000000  0.000000\
+            \n 0.000000  1.000000 -0.000000  0.000000\
+            \n 0.000000  0.000000  1.000000  0.000000\
             \n 0.000000  0.000000  0.000000  1.000000\
             \n  0.000    0.000\
             \n  0.000\
@@ -447,7 +427,6 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
         else:
             print('#VESTA_FORMAT_VERSION 3.5.0\n', file=f)
             for i1,obj1 in enumerate(obj):
-                #print(' %d'%(i1))
                 print('MOLECULE\
                 \nTITLE',file=f)
                 print('%s/%s_%d\n'%(path,basename,i1), file=f)
@@ -521,9 +500,9 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \n  1        Xx  0.0100  76  76  76  76  76  76 204\
             \n  0 0 0 0 0 0\
             \nSCENE\
-            \n-0.538344 -0.838391  0.085359  0.000000\
-            \n-0.362057  0.138632 -0.921789  0.000000\
-            \n 0.760986 -0.527145 -0.378177  0.000000\
+            \n 1.000000 -0.000000 -0.000000  0.000000\
+            \n 0.000000  1.000000 -0.000000  0.000000\
+            \n 0.000000  0.000000  1.000000  0.000000\
             \n 0.000000  0.000000  0.000000  1.000000\
             \n  0.000    0.000\
             \n  0.000\
@@ -908,6 +887,12 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
                 vt[3][0],vt[3][1],vt[3][2],\
                 vt[4][0],vt[4][1],vt[4][2],\
                 vt[5][0],vt[5][1],vt[5][2]))
+        v=utils.obj_area_6d(obj)
+        f.write('volume = %d %d %d (%8.6f)\n'%(v[0],v[1],v[2],numericalc.numeric_value(v)))
+        for i1,triangle in enumerate(obj):
+            v=utils.triangle_area_6d(triangle)
+            f.write('%3d-the triangle, %d %d %d (%8.6f)\n'\
+                    %(i1,v[0],v[1],v[2],numericalc.numeric_value(v)))
         f.closed
         return 0
     
@@ -984,22 +969,17 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         return 
     else:
         file_name='%s/%s.xyz'%(path,basename)
-        #if select == 'tetrahedron':
-        #    generator_xyz_dim4_tetrahedron(obj, file_name)
-        #    if verbose>0:
-        #        print('    written in %s/%s.xyz'%(path,basename))
-        #    return 0
-        if select == 'triangle' or 't':
+        if select=='triangle':
             generator_xyz_dim4_triangle(obj, file_name)
             if verbose>0:
                 print('    written in %s/%s.xyz'%(path,basename))
             return 0
-        elif select == 'edge' or 'e':
+        elif select=='edge':
             generator_xyz_dim4_edge(obj, file_name)
             if verbose>0:
                 print('    written in %s/%s.xyz'%(path,basename))
             return 0
-        elif select == 'vertex' or 'v':
+        elif select=='vertex':
             generator_xyz_dim4_vertex(obj, file_name)
             if verbose>0:
                 print('    written in %s/%s.xyz'%(path,basename))
