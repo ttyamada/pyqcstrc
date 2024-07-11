@@ -205,12 +205,12 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
                 
             # get bond pairs, [[distance, XXX, YYY],...]
             pairs = []
-            for i1 in range(len(edges)):
-                dist=intsct.distance_in_perp_space(edges[i1][0],edges[i1][1])
+            for i1,edge in enumerate(edges):
+                dist=intsct.distance_in_perp_space(edge[0],edge[1])
                 a=[dist]
-                for i2 in range(2):
-                    for i3 in range(len(vertices)):
-                        tmp=np.vstack([edges[i1][i2],vertices[i3]])
+                for i2,vt in enumerate(edge):
+                    for i3,vt1 in enumerate(vertices):
+                        tmp=np.vstack([vt,vt1])
                         tmp=utils.remove_doubling_in_perp_space(tmp.reshape(2,6,3))
                         if len(tmp)==1:
                             a.append(i3)
@@ -247,20 +247,16 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \n  1.000000    1.000000    1.000000  90.000000  90.000000  90.000000\
             \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
             \nSTRUC', file=f)
-            i2=0
-            for vrtx in vertices:
+            for i2,vrtx in enumerate(vertices):
                 xyz = math1.projection3(vrtx)
                 xyz=numericalc.numerical_vector(xyz)
                 print('%4d A        A%d  1.0000    %8.6f %8.6f %8.6f        1'%\
                 (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
-                i2+=1
                 print('                             0.000000    0.000000    0.000000  0.00', file=f)
             print('  0 0 0 0 0 0 0\
             \nTHERI 0', file = f)
-            i2=0
-            for __ in vertices:
+            for i2,__ in enumerate(vertices):
                 print('  %d        A%d  1.000000'%(i2+1,i2+1), file=f)
-                i2+=1
             print('  0 0 0\
             \nSHAPE\
             \n  0         0         0         0    0.000000  0    192    192    192    192\
@@ -269,17 +265,13 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \n  0    0    0    0  0\
             \nSBOND', file = f)
             clr=colors(color)
-            i2=0
-            for pair in pairs:
+            for i2,pair in enumerate(pairs):
                 print('  %d   A%d   A%d   %8.6f   %8.6f  0  1  1  1  2  0.250  2.000 %3d %3d %3d'%(\
                 i2+1, pair[1]+1, pair[2]+1, pair[0]-0.01, pair[0]+0.01, clr[0], clr[1], clr[2]), file=f)
-                i2+=1
             print('  0 0 0 0\
             \nSITET', file = f)
-            i2=0
-            for __ in vertices:
+            for i2,__ in enumerate(vertices):
                 print('    %d        A%d  0.100  76  76  76  76  76  76 204  0'%(i2+1,i2+1), file=f)
-                i2+=1
             print('  0 0 0 0 0 0\
             \nVECTR\
             \n 0 0 0 0 0\
@@ -425,8 +417,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             return 1
         else:
             print('#VESTA_FORMAT_VERSION 3.5.0\n', file=f)
-            i1=0
-            for obj1 in obj:
+            for i1,obj1 in enumerate(obj):
                 print('MOLECULE\
                 \nTITLE',file=f)
                 print('%s/%s_%d\n'%(path,basename,i1), file=f)
@@ -454,20 +445,16 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
                 \n  1.000000    1.000000    1.000000  90.000000  90.000000  90.000000\
                 \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
                 \nSTRUC', file=f)
-                i2=0
-                for vertx in obj1:
+                for i2,vertx in enumerate(obj1):
                     xyz=math1.projection3(vertx)
                     xyz=numericalc.numerical_vector(xyz)
                     print('%4d Xx        Xx%d  1.0000    %8.6f %8.6f %8.6f        1'%\
                     (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
-                    i2+=1
                     print('                             0.000000    0.000000    0.000000  0.00', file=f)
                 print('  0 0 0 0 0 0 0\
                 \nTHERI 0', file = f)
-                i2=0
-                for _ in obj1:
+                for i2,_ in enumerate(obj1):
                     print('  %d        Xx%d  1.000000'%(i2+1,i2+1), file=f)
-                    i2+=1
                 print('  0 0 0\
                 \nSHAPE\
                 \n  0         0         0         0    0.000000  0    192    192    192    192\
@@ -479,10 +466,8 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
                 print('  1     Xx     Xx     0.00000     %3.2f  0  1  1  0  2  0.250  2.000 %3d %3d %3d'%(dmax,clr[0],clr[1],clr[2]), file=f)
                 print('  0 0 0 0\
                 \nSITET', file = f)
-                i2=0
-                for _ in obj1:
+                for i2,_ in enumerate(obj1):
                     print('    %d        Xx%d  0.0100  76  76  76  76  76  76 204  0'%(i2+1,i2+1), file=f)
-                    i2+=1
                 print('  0 0 0 0 0 0\
                 \nVECTR\
                 \n 0 0 0 0 0\
@@ -502,14 +487,13 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
                 \n -1\
                 \nPLN2D\
                 \n  0    0    0    0', file = f)
-                i1+=1
             print('ATOMT\
             \n  1        Xx  0.0100  76  76  76  76  76  76 204\
             \n  0 0 0 0 0 0\
             \nSCENE\
-            \n-0.538344 -0.838391  0.085359  0.000000\
-            \n-0.362057  0.138632 -0.921789  0.000000\
-            \n 0.760986 -0.527145 -0.378177  0.000000\
+            \n 1.000000 -0.000000 -0.000000  0.000000\
+            \n 0.000000  1.000000 -0.000000  0.000000\
+            \n 0.000000  0.000000  1.000000  0.000000\
             \n 0.000000  0.000000  0.000000  1.000000\
             \n  0.000    0.000\
             \n  0.000\
@@ -620,7 +604,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
                 print('    written in %s'%(file_name))
             return 0
     
-    if select == 'podatm':
+    elif select == 'podatm':
         
         if np.all(obj==None):
             print('no volume obj')
@@ -635,12 +619,10 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             for edge in edges:
                 dist=intsct.distance_in_perp_space(edge[0],edge[1])
                 a=[dist]
-                for i2 in range(2):
-                    i3=0
-                    for vrtx in vertices:
-                        tmp=np.vstack([edge[i2],vrtx])
+                for vt in edge:
+                    for i3,vrtx in enumerate(vertices):
+                        tmp=np.vstack([vt,vrtx])
                         tmp=utils.remove_doubling_in_perp_space(tmp.reshape(2,6,3))
-                        i3+=1
                         if len(tmp)==1:
                             a.append(i3)
                             break
@@ -676,12 +658,10 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \n  1.000000    1.000000    1.000000  90.000000  90.000000  90.000000\
             \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
             \nSTRUC', file=f)
-            i2=0
-            for vrtx in vertices:
+            for i2,vrtx in enumerate(vertices):
                 xyz = math1.projection3(vrtx)
                 print('%4d A        A%d  1.0000    %8.6f %8.6f %8.6f        1'%\
                 (i2+1,i2+1,numericalc.numeric_value(xyz[0]),numericalc.numeric_value(xyz[1]),numericalc.numeric_value(xyz[2])), file=f)
-                i2+=1
                 print('                             0.000000    0.000000    0.000000  0.00', file=f)
             print('  0 0 0 0 0 0 0\
             \nTHERI 0', file = f)
@@ -695,10 +675,9 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \n  0    0    0    0  0\
             \nSBOND', file = f)
             clr=colors(color)
-            for pair in range(len(pairs)):
+            for i2,pair in enumerate(pairs):
                 print('  %d   A%d   A%d   %6.3f   %6.3f  0  1  1  1  2  0.250  2.000 %3d %3d %3d'%(\
                 i2+1, pair[1]+1, pair[2]+1, pair[0]-0.01, pair[0]+0.01, clr[0], clr[1], clr[2]), file=f)
-                i2+=1
             print('  0 0 0 0\
             \nSITET', file = f)
             for i2 in range(len(vertices)):
@@ -721,7 +700,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \nDLPLY\
             \n -1\
             \nPLN2D\
-            \n  0    0    0    0', file = f)
+            \n  0    0    0    0', file=f)
         
             print('ATOMT\
             \n  1        A  0.0100  76  76  76  76  76  76 204\
@@ -841,6 +820,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             if verbose>0:
                 print('    written in %s'%(file_name))
             return vertices
+    
     else:
         return 1
     
@@ -881,28 +861,25 @@ def write_xyz(obj,path='.',basename='tmp',select='tetrahedron',verbose=0):
         f=open('%s'%(filename),'w', encoding="utf-8", errors="ignore")
         f.write('%d\n'%(len(obj)*4))
         f.write('%s\n'%(filename))
-        i1=0
-        for tetrahedron in obj:
-            for i2 in range(4):
-                v=math1.projection3(tetrahedron[i2])
+        for i1,tetrahedron in enumerate(obj):
+            for i2,vt in enumerate(tetrahedron):
+                v=math1.projection3(vt)
                 f.write('Xx %8.6f %8.6f %8.6f # %3d-the tetrahedron %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
                 (numericalc.numeric_value(v[0]),\
                 numericalc.numeric_value(v[1]),\
                 numericalc.numeric_value(v[2]),\
                 i1,i2,\
-                tetrahedron[i2][0][0],tetrahedron[i2][0][1],tetrahedron[i2][0][2],\
-                tetrahedron[i2][1][0],tetrahedron[i2][1][1],tetrahedron[i2][1][2],\
-                tetrahedron[i2][2][0],tetrahedron[i2][2][1],tetrahedron[i2][2][2],\
-                tetrahedron[i2][3][0],tetrahedron[i2][3][1],tetrahedron[i2][3][2],\
-                tetrahedron[i2][4][0],tetrahedron[i2][4][1],tetrahedron[i2][4][2],\
-                tetrahedron[i2][5][0],tetrahedron[i2][5][1],tetrahedron[i2][5][2]))
-            i1+=1
+                vt[0][0],vt[0][1],vt[0][2],\
+                vt[1][0],vt[1][1],vt[1][2],\
+                vt[2][0],vt[2][1],vt[2][2],\
+                vt[3][0],vt[3][1],vt[3][2],\
+                vt[4][0],vt[4][1],vt[4][2],\
+                vt[5][0],vt[5][1],vt[5][2]))
         vol=utils.obj_volume_6d(obj)
         f.write('volume = %d %d %d (%8.6f)\n'%(vol[0],vol[1],vol[2],numericalc.numeric_value(vol)))
-        for i1 in range(len(obj)):
+        for i1,tetrahedron in enumerate(obj):
             v=utils.tetrahedron_volume_6d(tetrahedron)
-            f.write('%3d-the tetrahedron, %d %d %d (%8.6f)\n'\
-                    %(i1,v[0],v[1],v[2],numericalc.numeric_value(v)))
+            f.write('%3d-the tetrahedron, %d %d %d (%8.6f)\n'%(i1,v[0],v[1],v[2],numericalc.numeric_value(v)))
         f.close()
         return 0
     
@@ -922,22 +899,20 @@ def write_xyz(obj,path='.',basename='tmp',select='tetrahedron',verbose=0):
         f=open('%s'%(filename),'w', encoding="utf-8", errors="ignore")
         f.write('%d\n'%(len(obj)*3))
         f.write('%s\n'%(filename))
-        i1=0
-        for triangle in obj:
-            for i2 in range(3):
-                v=math1.projection3(triangle[i2])
+        for i1,triangle in enumerate(obj):
+            for i2,vt in enumerate(triangle):
+                v=math1.projection3(vt)
                 f.write('Xx %8.6f %8.6f %8.6f # %3d-the triangle %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
                 (numericalc.numeric_value(v[0]),\
                 numericalc.numeric_value(v[1]),\
                 numericalc.numeric_value(v[2]),\
                 i1,i2,\
-                triangle[i2][0][0],triangle[i2][0][1],triangle[i2][0][2],\
-                triangle[i2][1][0],triangle[i2][1][1],triangle[i2][1][2],\
-                triangle[i2][2][0],triangle[i2][2][1],triangle[i2][2][2],\
-                triangle[i2][3][0],triangle[i2][3][1],triangle[i2][3][2],\
-                triangle[i2][4][0],triangle[i2][4][1],triangle[i2][4][2],\
-                triangle[i2][5][0],triangle[i2][5][1],triangle[i2][5][2]))
-            i1+=1
+                vt[0][0],vt[0][1],vt[0][2],\
+                vt[1][0],vt[1][1],vt[1][2],\
+                vt[2][0],vt[2][1],vt[2][2],\
+                vt[3][0],vt[3][1],vt[3][2],\
+                vt[4][0],vt[4][1],vt[4][2],\
+                vt[5][0],vt[5][1],vt[5][2]))
         f.closed
         return 0
     
@@ -957,22 +932,20 @@ def write_xyz(obj,path='.',basename='tmp',select='tetrahedron',verbose=0):
         f=open('%s'%(filename),'w', encoding="utf-8", errors="ignore")
         f.write('%d\n'%(len(obj)*2))
         f.write('%s\n'%(filename))
-        i1=0
-        for edge in obj:
-            for i2 in range(2):
-                v=math1.projection3(edge[i2])
+        for i1,edge in enumerate(obj):
+            for i2,vt in enumerate(edge):
+                v=math1.projection3(vt)
                 f.write('Xx %8.6f %8.6f %8.6f # %3d-the edge %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
                 (numericalc.numeric_value(v[0]),\
                 numericalc.numeric_value(v[1]),\
                 numericalc.numeric_value(v[2]),\
                 i1,i2,\
-                edge[i2][0][0],edge[i2][0][1],edge[i2][0][2],\
-                edge[i2][1][0],edge[i2][1][1],edge[i2][1][2],\
-                edge[i2][2][0],edge[i2][2][1],edge[i2][2][2],\
-                edge[i2][3][0],edge[i2][3][1],edge[i2][3][2],\
-                edge[i2][4][0],edge[i2][4][1],edge[i2][4][2],\
-                edge[i2][5][0],edge[i2][5][1],edge[i2][5][2]))
-            i1+=1
+                vt[0][0],vt[0][1],vt[0][2],\
+                vt[1][0],vt[1][1],vt[1][2],\
+                vt[2][0],vt[2][1],vt[2][2],\
+                vt[3][0],vt[3][1],vt[3][2],\
+                vt[4][0],vt[4][1],vt[4][2],\
+                vt[5][0],vt[5][1],vt[5][2]))
         f.closed
         return 0
     
@@ -992,8 +965,7 @@ def write_xyz(obj,path='.',basename='tmp',select='tetrahedron',verbose=0):
         f=open('%s'%(filename),'w', encoding="utf-8", errors="ignore")
         f.write('%d\n'%(len(obj)))
         f.write('%s\n'%(filename))
-        i1=0
-        for point in obj:
+        for i1,point in enumerate(obj):
             v=math1.projection3(point)
             f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # # # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
             (numericalc.numeric_value(v[0]),\
@@ -1006,7 +978,6 @@ def write_xyz(obj,path='.',basename='tmp',select='tetrahedron',verbose=0):
             point[3][0],point[3][1],point[3][2],\
             point[4][0],point[4][1],point[4][2],\
             point[5][0],point[5][1],point[5][2]))
-            i1=0
         f.closed
         return 0
     
@@ -1018,22 +989,22 @@ def write_xyz(obj,path='.',basename='tmp',select='tetrahedron',verbose=0):
         return 
     else:
         file_name='%s/%s.xyz'%(path,basename)
-        if select == 'tetrahedron':
+        if select=='tetrahedron':
             generator_xyz_dim4_tetrahedron(obj, file_name)
             if verbose>0:
                 print('    written in %s/%s.xyz'%(path,basename))
             return 0
-        elif select == 'triangle':
+        elif select=='triangle':
             generator_xyz_dim4_triangle(obj, file_name)
             if verbose>0:
                 print('    written in %s/%s.xyz'%(path,basename))
             return 0
-        elif select == 'edge':
+        elif select=='edge':
             generator_xyz_dim4_edge(obj, file_name)
             if verbose>0:
                 print('    written in %s/%s.xyz'%(path,basename))
             return 0
-        elif select == 'vertex':
+        elif select=='vertex':
             generator_xyz_dim4_vertex(obj, file_name)
             if verbose>0:
                 print('    written in %s/%s.xyz'%(path,basename))
@@ -1109,7 +1080,6 @@ def read_xyz(path,basename,select='tetrahedron',verbose=0):
             tmp=np.append(tmp,[a1,b1,c1,a2,b2,c2,a3,b3,c3,a4,b4,c4,a5,b5,c5,a6,b6,c6])
     if verbose>0:
         print('    read %s/%s.xyz'%(path,basename))
-    
     if select == 'tetrahedron':
         return tmp.reshape(int(num/4),4,6,3)
     elif select == 'vertex':
@@ -1238,8 +1208,8 @@ def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
         lst_indx=[]
         for tetrahedron in obj:
             for vrtx1 in tetrahedron:
-                for i1 in range(len(vtxs)):
-                    if np.all(vrtx1==vtxs[i1]):
+                for i1,vt in enumerate(vtxs):
+                    if np.all(vrtx1==vt):
                         lst_indx.append(i1+1) # add 1 to avoide index 0.
                         break
                     else:
@@ -1278,19 +1248,19 @@ def simple_hand_step1(obj, path, basename_tmp):
         f=open('%s'%(path)+'/%s.xyz'%(basename),'w', encoding="utf-8", errors="ignore")
         f.write('%d\n'%(len(a)))
         f.write('%s\n'%(basename))
-        for i1 in range(len(a)):
-            xyz=math1.projection3(a[i1])
+        for i1,b in enumerate(a):
+            xyz=math1.projection3(b)
             f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
             (numericalc.numeric_value(xyz),\
             numericalc.numeric_value(xyz),\
             numericalc.numeric_value(xyz),\
             i1,\
-            a[i1][0][0],a[i1][0][1],a[i1][0][2],\
-            a[i1][1][0],a[i1][1][1],a[i1][1][2],\
-            a[i1][2][0],a[i1][2][1],a[i1][2][2],\
-            a[i1][3][0],a[i1][3][1],a[i1][3][2],\
-            a[i1][4][0],a[i1][4][1],a[i1][4][2],\
-            a[i1][5][0],a[i1][5][1],a[i1][5][2]))
+            b[0][0],b[0][1],b[0][2],\
+            b[1][0],b[1][1],b[1][2],\
+            b[2][0],b[2][1],b[2][2],\
+            b[3][0],b[3][1],b[3][2],\
+            b[4][0],b[4][1],b[4][2],\
+            b[5][0],b[5][1],b[5][2]))
         f.closed
         return 0
         
@@ -1325,209 +1295,17 @@ def simple_hand_step2(obj, merge_list):
             tmp1=np.append(tmp1,tmp2)
         return tmp1.reshape(len(mylist),6,3)
     
-    for i in range(len(merge_list)):
-        tmp1=merge(obj,merge_list[i])
+    for i1,lst in enumerate(merge_list):
+        tmp1=merge(obj,lst)
         od2=intsct.tetrahedralization_points(tmp1)
-        if i==0:
+        if i1==0:
             od1=np.array(od2)
         else:
             od1=np.vstack([od1,od2])
     return od1
 
-def site_symmetry(wyckoff_position, centering, verbose=0):
-    """
-    Symmetry operators in the site symmetry group G and its left coset decomposition.
-    
-    Args:
-        Wyckoff position (numpy.ndarray):
-            6D coordinate.
-            The shape is (6,3).
-        centering:
-            primitive lattice ('p')
-            face-centered lattice ('f') and 
-            body-centered lattice ('i')
-        verbose (int)
-    
-    Returns:
-        List of index of symmetry operators of the site symmetry group G (list):
-            The symmetry operators leaves xyz identical.
-        
-        List of index of symmetry operators in the left coset representatives of the poibt group G (list):
-            The symmetry operators generates equivalent positions of the site xyz.
-    """
-    def translation():
-        """
-        translational symmetry
-        primitive type lattice is assumed
-        """
-        
-        # under development
-        if centering=='i':
-            cop = symmetry.generator_equivalent_vec(np.array([[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]]))
-        elif centering=='f':
-            cop = symmetry.generator_equivalent_vec(np.array([[1,0,2],[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1]]))
-        else:
-            pass
-        symop=[]
-        tmp=np.array([0,0,0,0,0,0])
-        symop.append(tmp)
-        for i1 in [-1,0,1]:
-            for i2 in [-1,0,1]:
-                for i3 in [-1,0,1]:
-                    for i4 in [-1,0,1]:
-                        for i5 in [-1,0,1]:
-                            for i6 in [-1,0,1]:
-                                tmp=np.array([i1,i2,i3,i4,i5,i6])
-                                symop.append(tmp)
-        return symop
-    
-    def remove_overlaps_in_a_list(l1):
-        """
-        Remove overlap elements in list with set method.
-        
-        Args:
-            l1 (list):
-        
-        Returns:
-            l2 (list)
-        """
-        tmp=set(l1)
-        l2=list(tmp)
-        l2.sort()
-        return l2
-    
-    def find_overlaps(l1,l2):
-        """
-        find overlap or not btween list1 and list2.
-        
-        Args:
-            l1 (list):
-            l2 (list):
-        
-        Returns:
-            0 (int): no intersection
-            1 (int): intersection
-        """
-        l3=remove_overlaps_in_a_list(l1+l2)
-        if len(l1)+len(l2)==len(l3): # no overlap
-            return 0
-        else:
-            return 1
-    
-    symop=symmetry.icosasymop()
-    traop=translation()
-    
-     # List of index of symmetry operators of the site symmetry group G.
-     # The symmetry operators leaves xyz identical.
-    list1=[]
-    
-    # List of index of symmetry operators which are not in the G.
-    list2=[]
-    
-    pos=wyckoff_position
-    a1=(pos[0][0]+TAU*pos[0][1])/pos[0][2]
-    a2=(pos[1][0]+TAU*pos[1][1])/pos[1][2]
-    a3=(pos[2][0]+TAU*pos[2][1])/pos[2][2]
-    a4=(pos[3][0]+TAU*pos[3][1])/pos[3][2]
-    a5=(pos[4][0]+TAU*pos[4][1])/pos[4][2]
-    a6=(pos[5][0]+TAU*pos[5][1])/pos[5][2]
-    xyz=np.array([a1,a2,a3,a4,a5,a6])
-    
-    xyzi=numericalc.projection_numerical(xyz[0],xyz[1],xyz[2],xyz[3],xyz[4],xyz[5])
-    xi=xyzi[3]
-    yi=xyzi[4]
-    zi=xyzi[5]
-    if verbose>0:
-        print(' site coordinates: %3.2f %3.2f %3.2f %3.2f'%(xyz[0],xyz[1],xyz[2],xyz[3],xyz[4],xyz[5]))
-        print('         in Epar : %5.3f %5.3f %5.3f'%(xyi[0],xyi[1],xyi[2]))
-        print('         in Eperp: %5.3f %5.3f %5.3f'%(xyi[3],xyi[4],xyi[5]))
-    else:
-        pass
-    
-    for i2 in range(len(symop)):
-        flag=0
-        for i1 in range(len(traop)):
-            xyz1=np.dot(symop[i2],xyz)
-            xyz2=xyz1+traop[i1]
-            a=numericalc12.projection_numerical(xyz2[0],xyz2[1],xyz2[2],xyz2[3],xyz2[4],xyz2[5])
-            if abs(a[3]-xi)<EPS and abs(a[4]-yi)<EPS and abs(a[5]-zi)<EPS:
-                list1.append(i2)
-                flag+=1
-                break
-            else:
-                pass
-        if flag==0:
-            list2.append(i2)
-    
-    list1_new=remove_overlaps_in_a_list(list1)
-    list2_new=remove_overlaps_in_a_list(list2)
-    
-    if verbose>0:
-        print('     multiplicity:',len(list1_new))
-        print('    site symmetry:',list1_new)
-    else:
-        pass
-    
-    if int(len(symop)/len(list1_new))==1:
-        list5=[0]
-        if verbose>0:
-            print('       left coset:',list5)
-        else:
-            pass
-    
-    else:
-        # left coset decomposition:
-        list4=[]
-        for i2 in list2_new:
-            list3=[]
-            for i1 in list1_new:
-                op1=np.dot(symop[i2],symop[i1])
-                for i3 in range(len(symop)):
-                    if np.all(op1==symop[i3]):
-                        list3.append(i3)
-                        break
-                    else:
-                        pass
-            list4.append(list3)
-        
-        #print('----------------')
-        #for i2 in range(len(list4)):
-        #    print(list4[i2])
-        #print('----------------')
-        
-        for i2 in range(len(list4)-1):
-            a=list4[i2]
-            b=[]
-            d=[]
-            list5=[0] # symmetry element of identity, symop[0]
-            list5.append(list2_new[i2])
-            i3=i2+1
-            while i3<len(list4):
-                b=list4[i3]
-                if len(d)==0:
-                    if find_overlaps(a,b)==0:
-                        d=a+b
-                        list5.append(list2_new[i3])
-                    else:
-                        pass
-                else:
-                    if find_overlaps(d,b)==0:
-                        d=d+b
-                        list5.append(list2_new[i3])
-                    else:
-                        pass
-                i3+=1
-            b=remove_overlaps_in_a_list(d)
-            if int(len(symop)/len(list1_new))==len(list5):
-                if verbose>0:
-                    print('       left coset:',list5)
-                else:
-                    pass
-                break
-            else:
-                pass
-    
-    return list1_new, list5
+def site_symmetry(site):
+    return symmetry.site_symmetry(site)
 
 def write_podatm(obj, position, vlist, path='.', basename='tmp', shift=[0.0,0.0,0.0,0.0,0.0,0.0], verbose=0):
     """
@@ -1639,8 +1417,6 @@ def write_podatm(obj, position, vlist, path='.', basename='tmp', shift=[0.0,0.0,
         print('    written in %s/%s.pod'%(path,basename))
     return 0
 
-
-
 def asymmetric(symmetric_obj, position, vecs):
     """
     Asymmetric part of occupation domain.
@@ -1671,11 +1447,6 @@ def asymmetric(symmetric_obj, position, vecs):
     od_asym = intsct.intersection_two_obj_1(symmetric_obj,aum)
     
     return od_asym
-
-
-
-
-
 
 if __name__ == "__main__":
     
