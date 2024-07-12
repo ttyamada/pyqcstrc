@@ -204,19 +204,22 @@ def numerical_vectors(vts: NDArray[np.int64]) -> NDArray[np.int64]:
     -------
     array
     """
-    if vts.dim==3:
+    if vts.ndim==3:
         n1,n2,_=vts.shape
         w=np.zeros((n1,n2),dtype=np.float64)
         for i1,vt in enumerate(vts):
             w[i1]=numerical_vector(vt)
-    elif vts.dim==4:
+        return w
+    elif vts.ndim==4:
         n1,n2,n3,_=vts.shape
         w=np.zeros((n1,n2,n3),dtype=np.float64)
         for i1,triangle in enumerate(vts):
             for i2,vt in enumerate(triangle):
                 w[i1][i2]=numerical_vector(vt)
-    return w
-
+        return w
+    else:
+        print('error')
+        return 
 def length_numerical(vt: NDArray[np.int64]) -> float:
     """numerical value of norm of vector, v, in Tau-style
     
