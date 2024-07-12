@@ -220,6 +220,7 @@ def numerical_vectors(vts: NDArray[np.int64]) -> NDArray[np.int64]:
     else:
         print('error')
         return 
+
 def length_numerical(vt: NDArray[np.int64]) -> float:
     """numerical value of norm of vector, v, in Tau-style
     
@@ -706,8 +707,9 @@ def projection3_numerical(vn: NDArray[np.float64]) -> NDArray[np.float64]:
     #v3 = vn[4]                      # z in Epar
     v4 = -TAU*vn[0]+vn[1]-0.5*vn[3] # x in Eperp
     v5 = -0.5*vn[0]+vn[2]-TAU*vn[3] # y in Eperp
-    v6 = vn[5]                      # z in Epperp, dummy
-    return np.array([v4,v5,v6],dtype=np.float64)
+    #v6 = vn[5]                      # z in Epperp, dummy
+    #return np.array([v4,v5,v6],dtype=np.float64)
+    return np.array([v4,v5],dtype=np.float64)
 
 def projection3_sets_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
     """perpendicular component of a 6D lattice vector in direct space.
@@ -718,7 +720,8 @@ def projection3_sets_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
         set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
     """
     num=len(vns)
-    m=np.zeros((num,3),dtype=np.float64)
+    #m=np.zeros((num,3),dtype=np.float64)
+    m=np.zeros((num,2),dtype=np.float64)
     for i in range(num):
         m[i]=projection3_numerical(vns[i])
     return m
