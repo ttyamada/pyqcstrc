@@ -95,19 +95,42 @@ def generator_obj_symmetric_triangle(obj,centre):
 #def generator_obj_symmetric_tetrahedron(obj,centre):
 #    return generator_obj_symmetric_obj(obj,centre)
 
-def generator_obj_symmetric_triangle_specific_symop(obj,centre,list_of_symmetry_operation_index):
+def generator_obj_symmetric_triangle_specific_symop(obj,centre,index_of_symmetry_operation):
     """
+    triangle: triangles
+    (3,6,3)
     """
     # using specific symmetry operations
-    if obj.ndim==3 or obj.ndim==4:
+    if obj.ndim==3:
         mop=dodesymop()
         shape=tuple([len(index_of_symmetry_operation)])
         a=np.zeros(shape+obj.shape,dtype=np.int64)
-        i=0
-        for i in index_of_symmetry_operation:
-            a[i]=symop_obj(mop[i],obj,centre)
-            i+=1
+        j=0
+        for i1 in index_of_symmetry_operation:
+            a[j]=symop_obj(mop[i1],obj,centre)
+            j+=1
         return a
+    else:
+        print('object has an incorrect shape!')
+        return
+
+def generator_obj_symmetric_obj_specific_symop(obj,centre,index_of_symmetry_operation):
+    """
+    obj: a set of triangles
+    (n,3,6,3)
+    """
+    # using specific symmetry operations
+    if obj.ndim==4:
+        mop=dodesymop()
+        shape=tuple([len(index_of_symmetry_operation)])
+        a=np.zeros(shape+obj.shape,dtype=np.int64)
+        j=0
+        for i1 in index_of_symmetry_operation:
+            a[j]=symop_obj(mop[i1],obj,centre)
+            j+=1
+        n1,n2,_,_,_=a.shape
+        #return a.reshape(int(len(a)/54),3,6,3)
+        return a.reshape(n1*n2,3,6,3)
     else:
         print('object has an incorrect shape!')
         return
