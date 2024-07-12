@@ -95,14 +95,30 @@ def generator_obj_symmetric_tetrahedron_specific_symop(obj,centre,list_of_symmet
         mop=icosasymop()
         shape=tuple([len(index_of_symmetry_operation)])
         a=np.zeros(shape+obj.shape,dtype=np.int64)
-        i=0
-        for i in index_of_symmetry_operation:
-            a[i]=symop_obj(mop[i],obj,centre)
-            i+=1
+        j0=0
+        for i1 in index_of_symmetry_operation:
+            a[j0]=symop_obj(mop[i1],obj,centre)
+            j0+=1
         return a
     else:
         print('object has an incorrect shape!')
         return
+
+def generator_obj_symmetric_obj_specific_symop(obj,centre,list_of_symmetry_operation_index):
+    # using specific symmetry operations
+    if obj.ndim==4:
+        mop=icosasymop()
+        shape=tuple([len(index_of_symmetry_operation)])
+        a=np.zeros(shape+obj.shape,dtype=np.int64)
+        j0=0
+        for i1 in index_of_symmetry_operation:
+            a[j0]=symop_obj(mop[i1],obj,centre)
+            j0+=1
+        return a
+    else:
+        print('object has an incorrect shape!')
+        return
+
     
 def generator_obj_symmetric_tetrahedron_0(obj,centre,symmetry_operation_index):
     mop=icosasymop()
