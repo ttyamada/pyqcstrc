@@ -15,6 +15,7 @@ from pyqcstrc.ico2.math1 import (add,
 from pyqcstrc.ico2.utils import (remove_doubling_in_perp_space, 
                                 remove_doubling,
                                 )
+from pyqcstrc.ico2.numericalc import (length_numerical)
 import numpy as np
 
 EPS=1e-6
@@ -90,14 +91,27 @@ def generator_obj_symmetric_surface(obj,centre):
 def generator_obj_symmetric_tetrahedron(obj,centre):
     return generator_obj_symmetric_obj(obj,centre)
 
+def generator_obj_symmetric_vector_specific_symop(vt,centre,list_of_symmetry_operation_index):
+    # using specific symmetry operations
+    if vt.ndim==2:
+        mop=icosasymop()
+        shape=tuple([len(list_of_symmetry_operation_index)])
+        a=np.zeros(shape+vt.shape,dtype=np.int64)
+        for j0,i1 in enumerate(list_of_symmetry_operation_index):
+            a[j0]=symop_obj(mop[i1],vt,centre)
+        return a
+    else:
+        print('vt has an incorrect shape!')
+        return
+        
 def generator_obj_symmetric_tetrahedron_specific_symop(obj,centre,list_of_symmetry_operation_index):
     # using specific symmetry operations
     if obj.ndim==3 or obj.ndim==4:
         mop=icosasymop()
-        shape=tuple([len(index_of_symmetry_operation)])
+        shape=tuple([len(list_of_symmetry_operation_index)])
         a=np.zeros(shape+obj.shape,dtype=np.int64)
         j0=0
-        for i1 in index_of_symmetry_operation:
+        for i1 in list_of_symmetry_operation_index:
             a[j0]=symop_obj(mop[i1],obj,centre)
             j0+=1
         return a
@@ -109,10 +123,10 @@ def generator_obj_symmetric_obj_specific_symop(obj,centre,list_of_symmetry_opera
     # using specific symmetry operations
     if obj.ndim==4:
         mop=icosasymop()
-        shape=tuple([len(index_of_symmetry_operation)])
+        shape=tuple([len(list_of_symmetry_operation_index)])
         a=np.zeros(shape+obj.shape,dtype=np.int64)
         j0=0
-        for i1 in index_of_symmetry_operation:
+        for i1 in list_of_symmetry_operation_index:
             a[j0]=symop_obj(mop[i1],obj,centre)
             j0+=1
         return a
@@ -249,12 +263,12 @@ def site_symmetry(site,brv):
                 pass
     return remove_overlaps(list1)
 
-def coset(site):
+def coset(site,brv):
     """coset
     """
     symop=icosasymop()
     
-    list1=site_symmetry(site)
+    list1=site_symmetry(site,brv)
     
     # List of index of symmetry operators which are not in the G.
     tmp=range(len(symop))
@@ -309,7 +323,7 @@ def coset(site):
                 pass
     return list5
 
-def site_symmetry_and_coset(site):
+def site_symmetry_and_coset(site,brv):
     #symmetry operators in the site symmetry group G and its left coset decomposition.
     #
     #Args:
@@ -325,7 +339,7 @@ def site_symmetry_and_coset(site):
     #        The symmetry operators generates equivalent positions of the site xyz.
     
     symop=icosasymop()
-    traop=translation()
+    traop=translation(brv)
     
     # List of index of symmetry operators of the site symmetry group G.
     # The symmetry operators leaves xyz identical.
