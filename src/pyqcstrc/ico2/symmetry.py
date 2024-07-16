@@ -218,7 +218,7 @@ def translation(brv):
 ################ 
 # site symmetry
 ################
-def site_symmetry(site):
+def site_symmetry(site,brv):
     """symmetry operators in the site symmetry group G.
     
     Args:
@@ -232,7 +232,7 @@ def site_symmetry(site):
     """
     
     symop=icosasymop()
-    traop=translation()
+    traop=translation(brv)
     
     list1=[]
     for i2,op in enumerate(symop):
