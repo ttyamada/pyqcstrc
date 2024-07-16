@@ -18,6 +18,7 @@ from pyqcstrc.ico2.utils import (remove_doubling_in_perp_space,
 import numpy as np
 
 EPS=1e-6
+V0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
 
 def symop_obj(symop,obj,centre):
     """ Apply a symmetric operation on an object around given centre. in TAU-style
