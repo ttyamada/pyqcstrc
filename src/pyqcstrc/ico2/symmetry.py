@@ -46,10 +46,8 @@ def symop_vecs(symop,tetrahedron,centre):
     
     """
     tetrahedron1=np.zeros(tetrahedron.shape,dtype=np.int64)
-    i=0
-    for vt in tetrahedron:
+    for i,vt in enumerate(tetrahedron):
         tetrahedron1[i]=symop_vec(symop,vt,centre)
-        i+=1
     return tetrahedron1
 
 def symop_vec(symop,vt,centre):
@@ -134,7 +132,7 @@ def generator_obj_symmetric_obj_specific_symop(obj,centre,list_of_symmetry_opera
         print('object has an incorrect shape!')
         return
 
-    
+
 def generator_obj_symmetric_tetrahedron_0(obj,centre,symmetry_operation_index):
     mop=icosasymop()
     return symop_obj(mop[symmetry_operation_index],obj,centre)
@@ -470,7 +468,7 @@ def similarity_triangle(triangle,m):
 def similarity_vec(vt,m):
     """similarity transformation of a vector
     """
-    vec1=[]
+    #vec1=[]
     op=similarity(m)
     return dot_product_1(op,vt)
     
