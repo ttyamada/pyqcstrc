@@ -198,7 +198,7 @@ def coset(site,brv):
             else:
                 pass
     return list5
-
+    
 def site_symmetry_and_coset(site,brv):
     #symmetry operators in the site symmetry group G and its left coset decomposition.
     #
