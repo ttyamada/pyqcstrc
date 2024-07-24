@@ -240,7 +240,7 @@ def translation(ndim):
                         for i5 in lst:
                             tmp=np.array([[i1,0,1],[i2,0,1],[i3,0,1],[i4,0,1],[i5,0,1],[0,0,1]])
                             symop.append(tmp)
-    return symop
+    return np.array(symop)
 
 ################ 
 # site symmetry
@@ -261,7 +261,7 @@ def site_symmetry(site,ndim=5):
             The symmetry operators leaves xyz identical.
     """
     
-    symop=dodesymop()
+    symop=dodesymop_array()
     traop=translation(ndim)
     
     list1=[]
@@ -281,7 +281,7 @@ def site_symmetry(site,ndim=5):
 def coset(site,ndim=5):
     """coset
     """
-    symop=dodesymop()
+    symop=dodesymop_array()
     
     
     list1=site_symmetry(site,ndim)
@@ -358,7 +358,7 @@ def site_symmetry_and_coset(site,ndim,verbose):
     #    List of index of symmetry operators in the left coset representatives of the poibt group G (list):
     #        The symmetry operators generates equivalent positions of the site xyz.
     
-    symop=dodesymop()
+    symop=dodesymop_array()
     traop=translation(ndim)
     
     # List of index of symmetry operators of the site symmetry group G.
