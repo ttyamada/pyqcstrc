@@ -202,6 +202,62 @@ def icosasymop():
                         symop.append(tmp)
     return symop
 
+def icosasymop_array():
+    # icosahedral symmetry operations
+    m1=np.array([[ 1, 0, 0, 0, 0, 0],\
+                [ 0, 0, 1, 0, 0, 0],\
+                [ 0, 0, 0, 1, 0, 0],\
+                [ 0, 0, 0, 0, 1, 0],\
+                [ 0, 0, 0, 0, 0, 1],\
+                [ 0, 1, 0, 0, 0, 0]],dtype=np.int64)
+    # mirror
+    m2=np.array([[-1, 0, 0, 0, 0, 0],\
+                [ 0,-1, 0, 0, 0, 0],\
+                [ 0, 0, 0, 0, 0,-1],\
+                [ 0, 0, 0, 0,-1, 0],\
+                [ 0, 0, 0,-1, 0, 0],\
+                [ 0, 0,-1, 0, 0, 0]],dtype=np.int64)
+    # c2
+    m3=np.array([[ 0, 0, 0, 0, 0,-1],\
+                [ 0,-1, 0, 0, 0, 0],\
+                [ 0, 0, 0, 1, 0, 0],\
+                [ 0, 0, 1, 0, 0, 0],\
+                [ 0, 0, 0, 0,-1, 0],\
+                [-1, 0, 0, 0, 0, 0]],dtype=np.int64)
+    # c3
+    m4=np.array([[ 0, 1, 0, 0, 0, 0],\
+                [ 0, 0, 1, 0, 0, 0],\
+                [ 1, 0, 0, 0, 0, 0],\
+                [ 0, 0, 0, 0, 0, 1],\
+                [ 0, 0, 0,-1, 0, 0],\
+                [ 0, 0, 0, 0,-1, 0]],dtype=np.int64)
+    # inversion
+    m5=np.array([[-1, 0, 0, 0, 0, 0],\
+                [ 0,-1, 0, 0, 0, 0],\
+                [ 0, 0,-1, 0, 0, 0],\
+                [ 0, 0, 0,-1, 0, 0],\
+                [ 0, 0, 0, 0,-1, 0],\
+                [ 0, 0, 0, 0, 0,-1]],dtype=np.int64)
+    symop=np.zeros((120,6,6),dtype=np.int64)
+    num=0
+    for m in range(2):
+        for l in range(3):
+            for k in range(2):
+                for j in range(2):
+                    for i in range(5):
+                        s1=matrixpow(m1,i) # c5
+                        s2=matrixpow(m2,j) # mirror
+                        s3=matrixpow(m3,k) # c2
+                        s4=matrixpow(m4,l) # c3
+                        s5=matrixpow(m5,m) # inversion
+                        tmp=np.dot(s5,s4)
+                        tmp=np.dot(tmp,s3)
+                        tmp=np.dot(tmp,s2)
+                        tmp=np.dot(tmp,s1)
+                        symop[num]=tmp
+                        num+=1
+    return symop
+
 def translation(brv):
     """translational symmetry
     
