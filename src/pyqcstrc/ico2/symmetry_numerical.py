@@ -6,6 +6,7 @@
 import sys
 import numpy as np
 from pyqcstrc.ico2.symmetry import (icosasymop,
+                                    icosasymop_array,
                                     remove_overlaps,
                                     find_overlaps,
                                     similarity,
@@ -112,23 +113,25 @@ def generator_obj_symmetric_vector_specific_symop(vn,centre,list_of_symmetry_ope
 
 def generator_obj_symmetric_vectors_specific_symop(vns,centre,list_of_symmetry_operation_index):
     # using specific symmetry operations
-    if vns.ndim==2:
-        mop=icosasymop()
-        symop=[]
-        for i1 in list_of_symmetry_operation_index:
-            symop.append(mop[i1])
-        return symop_vecs(symop,vns,centre)
-    elif vns.ndim==3:
-        mop=icosasymop()
-        symop=[]
+    #mop=icosasymop()
+    mop=icosasymop_array()
+    symop=[]
+    ndim=vns.ndim
+    if ndim==3:
         for i1 in list_of_symmetry_operation_index:
             symop.append(mop[i1])
         return symop_obj(symop,vns,centre)
+    elif ndim==2:
+        for i1 in list_of_symmetry_operation_index:
+            symop.append(mop[i1])
+        return symop_vecs(symop,vns,centre)
+    #elif ndim==1:
+    #    for i1 in list_of_symmetry_operation_index:
+    #        symop.append(mop[i1])
+    #    return symop_vec(symop,vns,centre)
     else:
         print('vn has an incorrect shape!')
         return
-
-
 
 def translation(brv):
     """translational symmetry
@@ -170,7 +173,8 @@ def site_symmetry(site,brv):
             The symmetry operators leaves xyz identical.
     """
     
-    symop=icosasymop()
+    #symop=icosasymop()
+    symop=icosasymop_array()
     traop=translation(brv)
     
     list1=[]
@@ -192,7 +196,8 @@ def site_symmetry(site,brv):
 def coset(site,brv):
     """coset
     """
-    symop=icosasymop()
+    #symop=icosasymop()
+    symop=icosasymop_array()
     
     list1=site_symmetry(site,brv)
     
@@ -248,7 +253,7 @@ def coset(site,brv):
             else:
                 pass
     return list5
-    
+
 def site_symmetry_and_coset(site,brv):
     #symmetry operators in the site symmetry group G and its left coset decomposition.
     #
@@ -264,7 +269,8 @@ def site_symmetry_and_coset(site,brv):
     #    List of index of symmetry operators in the left coset representatives of the poibt group G (list):
     #        The symmetry operators generates equivalent positions of the site xyz.
     
-    symop=icosasymop()
+    #symop=icosasymop()
+    symop=icosasymop_array()
     traop=translation(brv)
     
     # List of index of symmetry operators of the site symmetry group G.
