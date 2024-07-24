@@ -281,7 +281,7 @@ def translation(brv):
                         for i6 in lst:
                             tmp=np.array([[i1,0,1],[i2,0,1],[i3,0,1],[i4,0,1],[i5,0,1],[i6,0,1]])
                             symop.append(tmp)
-    return symop
+    return np.array(symop)
 
 ####### WIP ########
 ################ 
