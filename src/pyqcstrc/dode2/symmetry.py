@@ -185,6 +185,35 @@ def dodesymop():
             symop.append(tmp)
     return symop
 
+def dodesymop_array():
+    """
+    """
+    # dodecagonal symmetry operations
+    # c12
+    m1=np.array([[ 0, 1, 0, 0, 0, 0],\
+                [ 0, 0, 1, 0, 0, 0],\
+                [ 0, 0, 0, 1, 0, 0],\
+                [-1, 0, 1, 0, 0, 0],\
+                [ 0, 0, 0, 0, 1, 0],\
+                [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+    # mirror
+    m2=np.array([[ 0, 0, 0, 1, 0, 0],\
+                [ 0, 0, 1, 0, 0, 0],\
+                [ 0, 1, 0, 0, 0, 0],\
+                [ 1, 0, 0, 0, 0, 0],\
+                [ 0, 0, 0, 0, 1, 0],\
+                [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+    symop=np.zeros((24,6,6),dtype=np.int64)
+    num=0
+    for i1 in range(2):
+        for i2 in range(12):
+            s1=matrixpow(m1,i2) # c12
+            s2=matrixpow(m2,i1) # mirror
+            tmp=np.dot(s2,s1)
+            symop[num]=tmp
+            num+=1
+    return symop
+
 def generator_symmetric_vec_0(vector,centre,symmetry_operation_index):
     mop=dodesymop()
     return symop_vec(mop[symmetry_operation_index],vector,centre)
