@@ -68,11 +68,12 @@ def generator_obj_symmetric_obj(obj,centre):
     """
     if obj.ndim==3 or obj.ndim==4:
         if np.all(centre==V0):
-            mop=dodesymop()
+            mop=dodesymop_array()
         else:
+            lst_site_symmetry=site_symmetry(centre)
             mop=[]
-            tmp=dodesymop()
-            for i in site_symmetry:
+            tmp=dodesymop_array()
+            for i in lst_site_symmetry:
                 mop.append(tmp[i])
         num=len(mop)
         shape=tuple([num])
