@@ -705,11 +705,11 @@ def projection3_numerical(vn: NDArray[np.float64]) -> NDArray[np.float64]:
     #v1 =  TAU*vn[0]+vn[1]-0.5*vn[3] # x in Epar
     #v2 = -0.5*vn[0]+vn[2]+TAU*vn[3] # y in Epar
     #v3 = vn[4]                      # z in Epar
-    v4 = -TAU*vn[0]+vn[1]-0.5*vn[3] # x in Eperp
-    v5 = -0.5*vn[0]+vn[2]-TAU*vn[3] # y in Eperp
-    #v6 = vn[5]                      # z in Epperp, dummy
-    #return np.array([v4,v5,v6],dtype=np.float64)
-    return np.array([v4,v5],dtype=np.float64)
+    v4 = -TAU*vn[0]+vn[1]-0.5*vn[3]  # x in Eperp
+    v5 = -0.5*vn[0]+vn[2]-TAU*vn[3]  # y in Eperp
+    v6 = vn[5]                      # z in Epperp, dummy
+    #return np.array([v4,v5],dtype=np.float64)
+    return np.array([v4,v5,v6],dtype=np.float64)
 
 def projection3_sets_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
     """perpendicular component of a 6D lattice vector in direct space.
@@ -720,13 +720,129 @@ def projection3_sets_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
         set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
     """
     num=len(vns)
-    #m=np.zeros((num,3),dtype=np.float64)
-    m=np.zeros((num,2),dtype=np.float64)
+    m=np.zeros((num,3),dtype=np.float64)
+    #m=np.zeros((num,2),dtype=np.float64)
     for i in range(num):
         m[i]=projection3_numerical(vns[i])
     return m
 
+def projection_numerical_phason(vn: NDArray[np.float64],mat: NDArray[np.float64]) -> NDArray[np.float64]:
+    """parallel and perpendicular components of a 6D lattice vector in direct space under uniform phason strain.
+    
+    Parameters
+    ----------
+    vn: array
+        6-dimensional vector, xyzuvw.
+    mat: array
+        phason matrix
+    """
+    u11=mat[0][0]
+    u12=mat[0][1]
+    u21=mat[1][0]
+    u22=mat[1][1]
+    v1 =  TAU*vn[0]+vn[1]-0.5*vn[3] # x in Epar
+    v2 = -0.5*vn[0]+vn[2]+TAU*vn[3] # y in Epar
+    v3 = vn[4]                      # z in Epar
+    v4=(-TAU+u11*TAU-0.5*u21)*vn[0] + (1+u11)*vn[1] +     u21*vn[2] + (-0.5-0.5*u11+TAU*u21)*vn[3] # x in Eperp
+    v5=(-0.5+TAU*u12-0.5*u22)*vn[0] +     u12*vn[1] + (1+u22)*vn[2] + (-TAU-0.5*u12+TAU*u22)*vn[3] # y in Eperp
+    v6=vn[5]                                                                                       # z in Epperp, dummy
+    return np.array([v1,v2,v3,v4,v5,v6],dtype=np.float64)
 
+
+
+def inout_occupation_domain_numerical(obj,point):
+    """
+    """
+    triangles=np.zeros((len(obj),3,3),dtype=np.float64)
+    #print("obj.shape:",obj.shape)
+    for i1,triangle in enumerate(obj):
+        #print("triangle.shape:",triangle.shape)
+        triangles[i1]=get_internal_component_sets_numerical(triangle)
+    
+    counter=0
+    for triangle in triangles:
+        if inside_outside_triangle_numerical(triangle,point): # inside
+            counter+=1
+            break
+        else:
+            pass
+    if counter>0:
+        return True
+    else:
+        return False
+    
+def inside_outside_triangle_numerical(triangle,point):
+    """
+    """
+    tmp=np.append(triangle[0],triangle[1])
+    tmp=np.append(tmp,triangle[2])
+    tmp=tmp.reshape(3,3)
+    area0=triangle_area_numerical(tmp)
+    #
+    tmp=np.append(point,triangle[1])
+    tmp=np.append(tmp,triangle[2])
+    tmp=tmp.reshape(3,3)
+    area1=triangle_area_numerical(tmp)
+    #
+    tmp=np.append(point,triangle[0])
+    tmp=np.append(tmp,triangle[2])
+    tmp=tmp.reshape(3,3)
+    area1+=triangle_area_numerical(tmp)
+    #
+    tmp=np.append(point,triangle[0])
+    tmp=np.append(tmp,triangle[1])
+    tmp=tmp.reshape(3,3)
+    area1+=triangle_area_numerical(tmp)
+    
+    if abs(area0-area1)<EPS:
+        return True # inside
+    else:
+        return False # outside
+
+
+def strc(objs,positions,pmatrx,nmax,eshift,shift,verbose):
+    """
+    """
+    if np.all(pmatrx==None):
+        shft=projection_numerical(shift)
+        flg=0
+    else: # under uniform phason strain
+        shft=projection_numerical_phason(shift,pmatrx)
+        flg=1
+        
+    lst=[]
+    for h1 in range(-nmax,nmax+1):
+        if verbose>0:
+            print(h1)
+        for h2 in range(-nmax,nmax+1):
+            for h3 in range(-nmax,nmax+1):
+                for h4 in range(-nmax,nmax+1):
+                    for h5 in range(-nmax,nmax+1):
+                        vn=np.array([h1,h2,h3,h4,h5,0],dtype=np.float64)
+                        if flg==0: 
+                            v=projection_numerical(vn)
+                        else:
+                            v=projection_numerical_phason(vn,pmatrx)
+                        
+                        # i-th independent occupation domain
+                        for i1,obj1 in enumerate(objs):
+                            pos=numerical_vectors(positions[i1])
+                            xe=numerical_vector(eshift[i1])
+                            if flg==0:
+                                shfte=projection_numerical(xe)
+                            else:
+                                shfte=projection_numerical_phason(xe,pmatrx)
+                                
+                            for i2,obj2 in enumerate(obj1):
+                                pos_eq=pos[i2]
+                                if flg==0:
+                                    w=projection_numerical(pos_eq)
+                                else:
+                                    w=projection_numerical_phason(pos_eq,pmatrx)
+                                if inout_occupation_domain_numerical(obj2,np.array(v[3:6])-np.array([shft[3],shft[4],shft[5]])): # inside
+                                    lst.append([v-w-shfte,i1,h1,h2,h3,h4])
+                                    #break
+    return lst
 
 ################
 # Unnecessary functions？？？
