@@ -823,7 +823,7 @@ def strc(objs,positions,pmatrx,nmax,eshift,shift,verbose):
                             v=projection_numerical(vn)
                         else:
                             v=projection_numerical_phason(vn,pmatrx)
-                        
+                        #
                         # i-th independent occupation domain
                         for i1,obj1 in enumerate(objs):
                             pos=numerical_vectors(positions[i1])
@@ -832,7 +832,8 @@ def strc(objs,positions,pmatrx,nmax,eshift,shift,verbose):
                                 shfte=projection_numerical(xe)
                             else:
                                 shfte=projection_numerical_phason(xe,pmatrx)
-                                
+                            #
+                            # equivalent occupation domains
                             for i2,obj2 in enumerate(obj1):
                                 pos_eq=pos[i2]
                                 if flg==0:
@@ -841,7 +842,6 @@ def strc(objs,positions,pmatrx,nmax,eshift,shift,verbose):
                                     w=projection_numerical_phason(pos_eq,pmatrx)
                                 if inout_occupation_domain_numerical(obj2,np.array(v[3:6])-np.array([shft[3],shft[4],shft[5]])): # inside
                                     lst.append([v-w-shfte,i1,h1,h2,h3,h4])
-                                    #break
     return lst
 
 ################
