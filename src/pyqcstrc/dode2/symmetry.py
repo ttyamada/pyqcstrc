@@ -96,6 +96,25 @@ def generator_obj_symmetric_triangle(obj,centre):
 #def generator_obj_symmetric_tetrahedron(obj,centre):
 #    return generator_obj_symmetric_obj(obj,centre)
 
+def generator_obj_symmetric_vector_specific_symop(obj,centre,index_of_symmetry_operation):
+    """
+    vector: triangles
+    (6,3)
+    """
+    # using specific symmetry operations
+    if obj.ndim==2:
+        mop=dodesymop()
+        shape=tuple([len(index_of_symmetry_operation)])
+        a=np.zeros(shape+obj.shape,dtype=np.int64)
+        j=0
+        for i1 in index_of_symmetry_operation:
+            a[j]=symop_obj(mop[i1],obj,centre)
+            j+=1
+        return a
+    else:
+        print('object has an incorrect shape!')
+        return
+
 def generator_obj_symmetric_triangle_specific_symop(obj,centre,index_of_symmetry_operation):
     """
     triangle: triangles
@@ -215,9 +234,11 @@ def dodesymop_array():
             num+=1
     return symop
 
-def generator_symmetric_vec_0(vector,centre,symmetry_operation_index):
+def generator_symmetric_vec_specific_symop(vector,centre,index_of_symmetry_operation):
     mop=dodesymop()
+    a=np.zeros(len(index_of_symmetry_operation))
     return symop_vec(mop[symmetry_operation_index],vector,centre)
+
     
 def translation(ndim):
     """translational symmetry
