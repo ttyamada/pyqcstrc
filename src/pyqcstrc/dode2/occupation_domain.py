@@ -1301,33 +1301,66 @@ def similarity(obj,m):
     """
     return symmetry.similarity_obj(obj,m)
 
-def qcstrc(obj,positions,path,basename,atm,phason_matrix,nmax,shift,origin_shift,option=0,verbose=0):
+def qcstrc(mystrc,path,basename,phason_matrix,nmax,origin_shift,option=0,verbose=0):
     """
-    obj: asymmetric unit of occupation domain
+    mystrc
+    
     """
+    
+    objs=[]
+    pos=[]
+    atm=[]
+    eshift=[]
+    
+    for strc in mystrc:
+        obj1,wsite,atom,shift=strc
+        
+        ndim=5
+        V0=np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]]) # 1a, (0,0,0,0)
+        
+        #
+        #print('\nVertex OD')
+        #print('obj1.shape:',obj1.shape)
+        num_coset=symmetry.coset(wsite,ndim)
+        #num_wsym=symmetry.site_symmetry(wsite,ndim)
+        #print('num_wsym:',num_wsym)
+        #print('num_coset:',num_coset)
+        tmp=symmetry.generator_obj_symmetric_obj(obj1,wsite)
+        num=len(tmp)
+        tmp=symmetry.generator_obj_symmetric_obj_specific_symop(tmp,V0,num_coset)
+        objs1=tmp.reshape(len(num_coset),num,3,6,3)
+        pos1=symmetry.generator_obj_symmetric_vector_specific_symop(wsite,V0,num_coset)
+        #print('objs1.shape:',objs1.shape)
+        #print('pos1.shape:',pos1.shape)
+        #
+        objs.append(objs1)
+        pos.append(pos1)
+        atm.append(atom)
+        eshift.append(shift)
+        
+    
+    
+    
     if np.all(phason_matrix)==0:
         phason_matrix=None
     else:
         pass
     
-    if len(obj)==len(atm) and len(obj)==len(positions):
-        lst=[]
-        a=numericalc.strc(obj,positions,phason_matrix,nmax,shift,origin_shift,verbose)
-        f=open('%s/%s.xyz'%(path,basename),'w', encoding="utf-8", errors="ignore")
-        f.write('%d\n'%(len(a)))
-        f.write('%s.xyz\n'%(basename))
-        for b in a:
-            if option==0:
-                #print('b:',b)
-                f.write('%s %8.6f %8.6f %8.6f\n'%(atm[int(b[1])],b[0][0],b[0][1],b[0][2]))
-            elif option==1: # Eperp, x, y
-                f.write('%s %8.6f %8.6f %8.6f # %3d %3d %3d %3d\n'%(atm[int(b[3])],b[0],b[1],b[2],b[4],b[5],b[6],b[7]))
-            else:
-                pass
-        f.closed
-        print('    written in %s/%s.xyz'%(path,basename))
-    else:
-        pass
+    lst=[]
+    a=numericalc.strc(objs,pos,phason_matrix,nmax,eshift,origin_shift,verbose)
+    f=open('%s/%s.xyz'%(path,basename),'w', encoding="utf-8", errors="ignore")
+    f.write('%d\n'%(len(a)))
+    f.write('%s.xyz\n'%(basename))
+    for b in a:
+        if option==0:
+            #print('b:',b)
+            f.write('%s %8.6f %8.6f %8.6f\n'%(atm[int(b[1])],b[0][0],b[0][1],b[0][2]))
+        elif option==1: # Eperp, x, y
+            f.write('%s %8.6f %8.6f %8.6f # %3d %3d %3d %3d\n'%(atm[int(b[3])],b[0],b[1],b[2],b[4],b[5],b[6],b[7]))
+        else:
+            pass
+    f.closed
+    print('    written in %s/%s.xyz'%(path,basename))
     return 0
 
 if __name__ == "__main__":
