@@ -97,7 +97,7 @@ def triangle_area_6d(triangle: NDArray[np.int64]) -> NDArray[np.int64]:
         Area in TAU-style.
     """
     if triangle.ndim==3:
-        print('triangle',triangle)
+        #print('triangle',triangle)
         vts=np.zeros((3,3,3),dtype=np.int64)
         for i,vt in enumerate(triangle):
             vts[i]=projection3(vt)
