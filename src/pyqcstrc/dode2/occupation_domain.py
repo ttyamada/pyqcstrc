@@ -1295,8 +1295,41 @@ def simple_hand_step2(obj, merge_list):
     return od1
 
 def similarity(obj,m):
+    """
+    obj:
+    m: order of similarity transformation
+    """
     return symmetry.similarity_obj(obj,m)
+
+def qcstrc(obj,positions,path,basename,atm,phason_matrix,nmax,shift,origin_shift,option=0,verbose=0):
+    """
+    obj: asymmetric unit of occupation domain
+    """
+    if np.all(phason_matrix)==0:
+        phason_matrix=None
+    else:
+        pass
     
+    if len(obj)==len(atm) and len(obj)==len(positions):
+        lst=[]
+        a=numericalc.strc(obj,positions,phason_matrix,nmax,shift,origin_shift,verbose)
+        f=open('%s/%s.xyz'%(path,basename),'w', encoding="utf-8", errors="ignore")
+        f.write('%d\n'%(len(a)))
+        f.write('%s.xyz\n'%(basename))
+        for b in a:
+            if option==0:
+                #print('b:',b)
+                f.write('%s %8.6f %8.6f %8.6f\n'%(atm[int(b[1])],b[0][0],b[0][1],b[0][2]))
+            elif option==1: # Eperp, x, y
+                f.write('%s %8.6f %8.6f %8.6f # %3d %3d %3d %3d\n'%(atm[int(b[3])],b[0],b[1],b[2],b[4],b[5],b[6],b[7]))
+            else:
+                pass
+        f.closed
+        print('    written in %s/%s.xyz'%(path,basename))
+    else:
+        pass
+    return 0
+
 if __name__ == "__main__":
     
     test_dir='../../tests/dode/test'
