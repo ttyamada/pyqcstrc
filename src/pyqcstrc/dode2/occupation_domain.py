@@ -276,7 +276,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \nSBOND', file = f)
             clr=colors(color)
             for i2,pair in enumerate(pairs):
-                print('  %d   A%d   A%d   %8.6f   %8.6f  0  1  1  1  2  0.250  2.000 %3d %3d %3d'%(\
+                print('  %d   A%d   A%d   %8.6f   %8.6f  0  1  1  1  1  0.100  2.000 %3d %3d %3d'%(\
                 i2+1, pair[1]+1, pair[2]+1, pair[0]-0.01, pair[0]+0.01, clr[0], clr[1], clr[2]), file=f)
             print('  0 0 0 0\
             \nSITET', file = f)
