@@ -234,6 +234,35 @@ def mul_vectors(vts: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.i
         print('incorrect shape')
         return
 
+def shift_vectors(vts: NDArray[np.int64], vt: NDArray[np.int64]) -> NDArray[np.int64]:
+    """Shift a set of vectors by adding a vector in SIN-style.
+    
+    Parameters
+    ----------
+    vts: array
+        a set of vectors in SIN-style
+    coeff: array,
+        a scalar in SIN-style
+    
+    Returns
+    -------
+    Multiplied vectors: array in SIN-style
+    """
+    if vts.ndim==3:
+        a=np.zeros(vts.shape,dtype=np.int64)
+        for i,vt1 in enumerate(vts):
+            a[i]=add_vectors(vt1,vt)
+        return a
+    elif vts.ndim==4:
+        a=np.zeros(vts.shape,dtype=np.int64)
+        for i1,vt1 in enumerate(vts):
+            for i2,vt2 in enumerate(vt1):
+                a[i1][i2]=add_vectors(vt2,vt)
+    else:
+        print('incorrect shape')
+        return
+    
+    
 def outer_product(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int64]:
     """Outer product of two 3d vectors, v1 and v2 in SIN-style.
 
