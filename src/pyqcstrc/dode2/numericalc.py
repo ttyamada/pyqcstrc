@@ -798,12 +798,12 @@ def inside_outside_triangle_numerical(triangle,point):
 def strc(objs,positions,pmatrx,n1max,n5max,eshift,oshift,verbose):
     """
     """
-    if np.all(pmatrx)==None:
-        orgshft=projection_numerical(oshift)
-        flg=0
-    else: # under uniform phason strain
+    if np.any(pmatrx)!=0:  # under uniform phason strain
         orgshft=projection_numerical_phason(oshift,pmatrx)
         flg=1
+    else:
+        orgshft=projection_numerical(oshift)
+        flg=0
         
     lst=[]
     for h1 in range(-n1max,n1max+1):
@@ -823,6 +823,7 @@ def strc(objs,positions,pmatrx,n1max,n5max,eshift,oshift,verbose):
                         for i1,obj1 in enumerate(objs):
                             pos=numerical_vectors(positions[i1])
                             xe=numerical_vector(eshift[i1])
+                            #print('eshift[i1]:',eshift[i1])
                             #if flg==0:
                             #    shfte=projection_numerical(xe)
                             #else:
@@ -840,7 +841,7 @@ def strc(objs,positions,pmatrx,n1max,n5max,eshift,oshift,verbose):
                                     else:
                                         w=projection_numerical_phason(pos_eq,pmatrx)
                                         shfte=projection_numerical_phason(xe,pmatrx)
-                                    lst.append([v-w-shfte,i1,h1,h2,h3,h4,h5])
+                                    lst.append([v-w+shfte,i1,h1,h2,h3,h4,h5])
     return lst
 
 ################
