@@ -495,8 +495,28 @@ def projection3(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     v3i=mtrixcal(M0,M0,M0,M0,M0,M1,vt) # 0,0,0,0,0,1
     return np.array([v1i,v2i,v3i],dtype=np.int64)
 
+#########
+#  WIP  #
+#########
 def projection_perp(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     """This returns 6D indeces of a projection of 6D vector (v) onto Eperp
+    
+    Parameters
+    ----------
+    v: array
+        6-dimensional vector in SIN-style
+
+    Returns
+    -------
+    6d vectors projected onto Eperp in SIN-style.
+    """
+    return 
+
+#########
+#  WIP  #
+#########
+def projection_par(vt: NDArray[np.int64]) -> NDArray[np.int64]:
+    """This returns 6D indeces of a projection of 6D vector (v) onto Epar
     
     Parameters
     ----------
