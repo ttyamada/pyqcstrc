@@ -8,7 +8,7 @@ from numpy.typing import NDArray
 import random
 
 TAU=np.sqrt(3)/2.0
-EPS=1e-6
+EPS=1e-6 # tolerance
 
 def coplanar_check_numeric_tau(pts: NDArray[np.int64], num_iteration: int=5) -> bool:
     """check the points (pts) are in coplanar or not
@@ -483,17 +483,19 @@ def triangle_area_numerical(a: NDArray[np.float64]) -> float:
     area of given triangle: float
     """
     
-    x1=a[1][0]-a[0][0]
-    y1=a[1][1]-a[0][1]
-    z1=a[1][2]-a[0][2]
+    #x1=a[1][0]-a[0][0]
+    #y1=a[1][1]-a[0][1]
+    #z1=a[1][2]-a[0][2]
+    #
+    #x2=a[2][0]-a[0][0]
+    #y2=a[2][1]-a[0][1]
+    #z2=a[2][2]-a[0][2]
+    #
+    #v1=np.array([x1,y1,z1])
+    #v2=np.array([x2,y2,z2])
     
-    x2=a[2][0]-a[0][0]
-    y2=a[2][1]-a[0][1]
-    z2=a[2][2]-a[0][2]
-    
-    v1=np.array([x1,y1,z1])
-    v2=np.array([x2,y2,z2])
-    
+    v1=a[1]-a[0]
+    v2=a[2]-a[0]
     v3=np.cross(v2,v1) # cross product
     return np.sqrt(np.sum(np.abs(v3**2)))/2.0
 
@@ -564,14 +566,14 @@ def inside_outside_triangle(point: NDArray[np.float64], triangle: NDArray[np.flo
     
     tet1=small_triangle(0,point,triangle)
     area1=triangle_area_numerical(tet1)
-    #
-    tet2=small_triangle(1,point,triangle)
-    area2=triangle_area_numerical(tet2)
-    #
-    tet3=small_triangle(2,point,triangle)
-    area3=triangle_area_numerical(tet3)
     
-    if abs(area0-area1-area2-area3)<EPS*area0:
+    tet2=small_triangle(1,point,triangle)
+    area1+=triangle_area_numerical(tet2)
+    
+    tet3=small_triangle(2,point,triangle)
+    area1+=triangle_area_numerical(tet3)
+    
+    if abs(area0-area1)<EPS:
         return True # inside
     else:
         return False # outside
@@ -743,34 +745,28 @@ def projection_numerical_phason(vn: NDArray[np.float64],mat: NDArray[np.float64]
     v1 =  TAU*vn[0]+vn[1]-0.5*vn[3] # x in Epar
     v2 = -0.5*vn[0]+vn[2]+TAU*vn[3] # y in Epar
     v3 = vn[4]                      # z in Epar
-    v4=(-TAU+u11*TAU-0.5*u21)*vn[0] + (1+u11)*vn[1] +     u21*vn[2] + (-0.5-0.5*u11+TAU*u21)*vn[3] # x in Eperp
-    v5=(-0.5+TAU*u12-0.5*u22)*vn[0] +     u12*vn[1] + (1+u22)*vn[2] + (-TAU-0.5*u12+TAU*u22)*vn[3] # y in Eperp
-    v6=vn[5]                                                                                       # z in Epperp, dummy
+    v4 = (-TAU+u11*TAU-0.5*u21)*vn[0] + (1+u11)*vn[1] +     u21*vn[2] + (-0.5-0.5*u11+TAU*u21)*vn[3] # x in Eperp
+    v5 = (-0.5+TAU*u12-0.5*u22)*vn[0] +     u12*vn[1] + (1+u22)*vn[2] + (-TAU-0.5*u12+TAU*u22)*vn[3] # y in Eperp
+    v6= vn[5]                                                                                      # z in Epperp, dummy
     return np.array([v1,v2,v3,v4,v5,v6],dtype=np.float64)
-
-
-
+    
 def inout_occupation_domain_numerical(obj,point):
     """
     """
     triangles=np.zeros((len(obj),3,3),dtype=np.float64)
-    #print("obj.shape:",obj.shape)
     for i1,triangle in enumerate(obj):
-        #print("triangle.shape:",triangle.shape)
         triangles[i1]=get_internal_component_sets_numerical(triangle)
-    
+        
     counter=0
     for triangle in triangles:
         if inside_outside_triangle_numerical(triangle,point): # inside
-            counter+=1
+            counter=1
             break
-        else:
-            pass
     if counter>0:
         return True
     else:
         return False
-    
+
 def inside_outside_triangle_numerical(triangle,point):
     """
     """
@@ -799,25 +795,24 @@ def inside_outside_triangle_numerical(triangle,point):
     else:
         return False # outside
 
-
-def strc(objs,positions,pmatrx,nmax,eshift,shift,verbose):
+def strc(objs,positions,pmatrx,n1max,n5max,eshift,oshift,verbose):
     """
     """
-    if np.all(pmatrx==None):
-        shft=projection_numerical(shift)
+    if np.all(pmatrx)==None:
+        orgshft=projection_numerical(oshift)
         flg=0
     else: # under uniform phason strain
-        shft=projection_numerical_phason(shift,pmatrx)
+        orgshft=projection_numerical_phason(oshift,pmatrx)
         flg=1
         
     lst=[]
-    for h1 in range(-nmax,nmax+1):
+    for h1 in range(-n1max,n1max+1):
         if verbose>0:
             print(h1)
-        for h2 in range(-nmax,nmax+1):
-            for h3 in range(-nmax,nmax+1):
-                for h4 in range(-nmax,nmax+1):
-                    for h5 in range(-nmax,nmax+1):
+        for h2 in range(-n1max,n1max+1):
+            for h3 in range(-n1max,n1max+1):
+                for h4 in range(-n1max,n1max+1):
+                    for h5 in range(-n5max,n5max+1):
                         vn=np.array([h1,h2,h3,h4,h5,0],dtype=np.float64)
                         if flg==0: 
                             v=projection_numerical(vn)
@@ -828,20 +823,24 @@ def strc(objs,positions,pmatrx,nmax,eshift,shift,verbose):
                         for i1,obj1 in enumerate(objs):
                             pos=numerical_vectors(positions[i1])
                             xe=numerical_vector(eshift[i1])
-                            if flg==0:
-                                shfte=projection_numerical(xe)
-                            else:
-                                shfte=projection_numerical_phason(xe,pmatrx)
+                            #if flg==0:
+                            #    shfte=projection_numerical(xe)
+                            #else:
+                            #    shfte=projection_numerical_phason(xe,pmatrx)
                             #
                             # equivalent occupation domains
                             for i2,obj2 in enumerate(obj1):
                                 pos_eq=pos[i2]
-                                if flg==0:
-                                    w=projection_numerical(pos_eq)
-                                else:
-                                    w=projection_numerical_phason(pos_eq,pmatrx)
-                                if inout_occupation_domain_numerical(obj2,np.array(v[3:6])-np.array([shft[3],shft[4],shft[5]])): # inside
-                                    lst.append([v-w-shfte,i1,h1,h2,h3,h4])
+                                #if inout_occupation_domain_numerical(obj2,np.array(v[3:6])-np.array([shft[3],shft[4],shft[5]])): # inside
+                                point=v[3:6]-orgshft[3:6]
+                                if inout_occupation_domain_numerical(obj2,point): # inside
+                                    if flg==0:
+                                        w=projection_numerical(pos_eq)
+                                        shfte=projection_numerical(xe)
+                                    else:
+                                        w=projection_numerical_phason(pos_eq,pmatrx)
+                                        shfte=projection_numerical_phason(xe,pmatrx)
+                                    lst.append([v-w-shfte,i1,h1,h2,h3,h4,h5])
     return lst
 
 ################
