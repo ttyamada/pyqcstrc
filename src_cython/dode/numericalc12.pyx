@@ -150,8 +150,8 @@ cpdef list projection_2_numerical(double h1,double h2,double h3,double h4,double
     # see Yamamoto ActaCrystal (1997)
     cdef double v1e,v2e,v3e
     cdef double v1i,v2i,v3i
-    v1e=SIN*h1+h2-0.5*h4
-    v2e=-0.5*h1+h3+SIN*h4
+    v1e= SIN*h1 +h2     -0.5*h4
+    v2e=-0.5*h1     +h3 +SIN*h4
     v3e=h5 # dummy
     v1i=(-SIN+u11*SIN-0.5*u21)*h1 + (1+u11)*h2 + u21*h3 + (-0.5-0.5*u11+SIN*u21)*h4
     v2i=(-0.5+SIN*u12-0.5*u22)*h1 + u12*h2 + (1+u22)*h3 + (-SIN-0.5*u12+SIN*u22)*h4
