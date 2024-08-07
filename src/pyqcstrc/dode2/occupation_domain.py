@@ -1332,11 +1332,6 @@ def qcstrc(mystrc,path,basename,phason_matrix,n1max,n5max,origin_shift,option=0,
         atm.append(atom)
         eshift.append(shift)
         
-    if np.any(phason_matrix)!=0:
-        pass
-    else:
-        phason_matrix=None
-    
     lst=[]
     a=numericalc.strc(objs,pos,phason_matrix,n1max,n5max,eshift,origin_shift,verbose)
     f=open('%s/%s.xyz'%(path,basename),'w', encoding="utf-8", errors="ignore")
