@@ -1301,7 +1301,7 @@ def similarity(obj,m):
     """
     return symmetry.similarity_obj(obj,m)
 
-def qcstrc(mystrc,path,basename,phason_matrix,nmax,origin_shift,option=0,verbose=0):
+def qcstrc(mystrc,path,basename,phason_matrix,n1max,n5max,origin_shift,option=0,verbose=0):
     """
     mystrc
     
@@ -1317,46 +1317,43 @@ def qcstrc(mystrc,path,basename,phason_matrix,nmax,origin_shift,option=0,verbose
         
         ndim=5
         V0=np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]]) # 1a, (0,0,0,0)
-        
         #
-        #print('\nVertex OD')
-        #print('obj1.shape:',obj1.shape)
+        # generate independent occypation domains from their asymmetric units
         num_coset=symmetry.coset(wsite,ndim)
-        #num_wsym=symmetry.site_symmetry(wsite,ndim)
-        #print('num_wsym:',num_wsym)
-        #print('num_coset:',num_coset)
         tmp=symmetry.generator_obj_symmetric_obj(obj1,wsite)
         num=len(tmp)
         tmp=symmetry.generator_obj_symmetric_obj_specific_symop(tmp,V0,num_coset)
         objs1=tmp.reshape(len(num_coset),num,3,6,3)
+        # generate positions of the independent occypation domains
         pos1=symmetry.generator_obj_symmetric_vector_specific_symop(wsite,V0,num_coset)
-        #print('objs1.shape:',objs1.shape)
-        #print('pos1.shape:',pos1.shape)
         #
         objs.append(objs1)
         pos.append(pos1)
         atm.append(atom)
         eshift.append(shift)
         
-    
-    
-    
-    if np.all(phason_matrix)==0:
-        phason_matrix=None
-    else:
+    if np.any(phason_matrix)!=0:
         pass
+    else:
+        phason_matrix=None
     
     lst=[]
-    a=numericalc.strc(objs,pos,phason_matrix,nmax,eshift,origin_shift,verbose)
+    a=numericalc.strc(objs,pos,phason_matrix,n1max,n5max,eshift,origin_shift,verbose)
     f=open('%s/%s.xyz'%(path,basename),'w', encoding="utf-8", errors="ignore")
     f.write('%d\n'%(len(a)))
     f.write('%s.xyz\n'%(basename))
     for b in a:
-        if option==0:
-            #print('b:',b)
+        if option==0: # x,y,z in Epar
             f.write('%s %8.6f %8.6f %8.6f\n'%(atm[int(b[1])],b[0][0],b[0][1],b[0][2]))
-        elif option==1: # Eperp, x, y
-            f.write('%s %8.6f %8.6f %8.6f # %3d %3d %3d %3d\n'%(atm[int(b[3])],b[0],b[1],b[2],b[4],b[5],b[6],b[7]))
+        elif option==1: # x,y,z in Epar, h1-h5
+            f.write('%s %8.6f %8.6f %8.6f # %3d %3d %3d %3d %3d\n'%(atm[int(b[1])],b[0][0],b[0][1],b[0][2],b[2],b[3],b[4],b[5],b[6]))
+        elif option==2: # x,y,z in Epar, x,y,z in Eperp, h1-h5
+            f.write('%s %8.6f %8.6f %8.6f # %8.6f %8.6f %8.6f %3d %3d %3d %3d %3d\n'%(\
+                                    atm[int(b[1])],\
+                                    b[0][0],b[0][1],b[0][2],\
+                                    b[0][3],b[0][4],b[0][5],\
+                                    b[2],b[3],b[4],b[5],b[6],
+                                    ))
         else:
             pass
     f.closed
