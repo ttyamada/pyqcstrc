@@ -45,16 +45,16 @@ def symop_obj(symop,obj,centre):
         print('object has an incorrect shape!')
         return 
 
-def symop_vecs(symop,triangle,centre):
+def symop_vecs(symop,vts,centre):
     """ Apply a symmetric operation on set of vectors around given centre. in TAU-style
     
     """
-    triangle1=np.zeros(triangle.shape,dtype=np.int64)
+    out=np.zeros(vts.shape,dtype=np.int64)
     i=0
-    for vt in triangle:
-        triangle1[i]=symop_vec(symop,vt,centre)
+    for vt in vts:
+        out[i]=symop_vec(symop,vt,centre)
         i+=1
-    return triangle1
+    return out
 
 def symop_vec(symop,vt,centre):
     """ Apply a symmetric operation on a vector around given centre. in TAU-style
@@ -262,9 +262,10 @@ def mattrix_dode_sym():
     symop[1]=m2
     symop[2]=m3
     return symop
+
 def generator_symmetric_vec_specific_symop(vector,centre,index_of_symmetry_operation):
     mop=dodesymop()
-    a=np.zeros(len(index_of_symmetry_operation))
+    #a=np.zeros(len(index_of_symmetry_operation))
     return symop_vec(mop[symmetry_operation_index],vector,centre)
 
     
@@ -292,6 +293,25 @@ def translation(ndim):
                             symop.append(tmp)
     return np.array(symop)
 
+################ 
+# numeric
+################
+def generator_equivalent_numeric_vector_specific_symop(vn,index_of_symmetry_operation):
+    mop=dodesymop_array()
+    out=np.zeros((len(index_of_symmetry_operation),6),dtype=np.float64)
+    for i1 in index_of_symmetry_operation:
+        out[i1]=mop[i1]@vn
+    return out
+    
+def generator_equivalent_numeric_vectors_specific_symop(vns,index_of_symmetry_operation):
+    mop=dodesymop_array()
+    num1=len(index_of_symmetry_operation)
+    out=np.zeros((num1,len(vns),6),dtype=np.float64)
+    for i1 in range(num1):
+        for vn in vns:
+            out[i1]=mop[i1]@vn
+    return out
+    
 ################ 
 # site symmetry
 ################
