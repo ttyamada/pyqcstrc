@@ -749,7 +749,49 @@ def projection_numerical_phason(vn: NDArray[np.float64],mat: NDArray[np.float64]
     v5 = (-0.5+TAU*u12-0.5*u22)*vn[0] +     u12*vn[1] + (1+u22)*vn[2] + (-TAU-0.5*u12+TAU*u22)*vn[3] # y in Eperp
     v6= vn[5]                                                                                      # z in Epperp, dummy
     return np.array([v1,v2,v3,v4,v5,v6],dtype=np.float64)
+
+#########
+#  WIP  #
+#########
+def projection_numerical_perp(vn: NDArray[np.float64]) -> NDArray[np.float64]:
+    """This returns 6D vector which corresponds to a projection of vn onto Eperp.
     
+    Parameters
+    ----------
+    v: array
+        6-dimensional vector
+
+    Returns
+    -------
+    6d vectors projected onto Eperp
+    """
+    return 
+
+#########
+#  WIP  #
+#########
+def projection_numerical_par(vn: NDArray[np.float64]) -> NDArray[np.float64]:
+    """This returns 6D vector which corresponds to a projection of vn onto Epar.
+    
+    Parameters
+    ----------
+    v: array
+        6-dimensional vector
+
+    Returns
+    -------
+    6d vectors projected onto Eperp.
+    """
+    m=np.array([\
+            [ 0.5,          0.577350269,  0.0,         -0.288675135,  0.0,  0.0],\
+            [ 0.288675135,  0.5,          0.288675135,  0.0,          0.0,  0.0],\
+            [ 0.0,          0.288675135,  0.5,          0.288675135,  0.0,  0.0],\
+            [-0.288675135,  0.0,          0.577350269,  0.5,          0.0,  0.0],\
+            [ 0.0,          0.0,          0.0,          0.0,          1.0,  0.0],\
+            [ 0.0,          0.0,          0.0,          0.0,          0.0,  0.0],\
+        ])
+    return m@vn
+
 def inout_occupation_domain_numerical(obj,point):
     """
     """
