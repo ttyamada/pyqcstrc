@@ -133,6 +133,13 @@ def generator_obj_symmetric_vectors_specific_symop(vns,centre,list_of_symmetry_o
         print('vn has an incorrect shape!')
         return
 
+def generator_equivalent_numeric_vector_specific_symop(vn,index_of_symmetry_operation):
+    mop=icosasymop_array()
+    out=np.zeros((len(index_of_symmetry_operation),6),dtype=np.float64)
+    for i1 in index_of_symmetry_operation:
+        out[i1]=mop[i1]@vn
+    return out
+    
 def translation(brv):
     """translational symmetry
     
