@@ -659,8 +659,53 @@ def projection3_sets_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
         m[i]=projection3_numerical(vns[i])
     return m
 
+#########
+#  WIP  #
+#########
+def projection_numerical_perp(vn: NDArray[np.float64]) -> NDArray[np.float64]:
+    """This returns 6D vector which corresponds to a projection of vn onto Eperp.
+    
+    Parameters
+    ----------
+    v: array
+        6-dimensional vector
 
+    Returns
+    -------
+    6d vectors projected onto Eperp
+    """
+    
+    m=np.array([[  0.5, -0.2236068, -0.2236068, -0.2236068, -0.2236068, -0.2236068],
+           [-0.2236068,  0.5      , -0.2236068,  0.2236068,  0.2236068, -0.2236068],
+           [-0.2236068, -0.2236068,  0.5      , -0.2236068,  0.2236068,  0.2236068],
+           [-0.2236068,  0.2236068, -0.2236068,  0.5      , -0.2236068,  0.2236068],
+           [-0.2236068,  0.2236068,  0.2236068, -0.2236068,  0.5      , -0.2236068],
+           [-0.2236068, -0.2236068,  0.2236068,  0.2236068, -0.2236068,  0.5      ]])
+    return m@vn
 
+#########
+#  WIP  #
+#########
+def projection_numerical_par(vn: NDArray[np.float64]) -> NDArray[np.float64]:
+    """This returns 6D vector which corresponds to a projection of vn onto Epar.
+    
+    Parameters
+    ----------
+    v: array
+        6-dimensional vector
+
+    Returns
+    -------
+    6d vectors projected onto Eperp.
+    """
+    m=np.array([[  0.5,  0.2236068,  0.2236068,  0.2236068,  0.2236068,  0.2236068],
+           [ 0.2236068,  0.5      ,  0.2236068, -0.2236068, -0.2236068,  0.2236068],
+           [ 0.2236068,  0.2236068,  0.5      ,  0.2236068, -0.2236068, -0.2236068],
+           [ 0.2236068, -0.2236068,  0.2236068,  0.5      ,  0.2236068, -0.2236068],
+           [ 0.2236068, -0.2236068, -0.2236068,  0.2236068,  0.5      ,  0.2236068],
+           [ 0.2236068,  0.2236068, -0.2236068, -0.2236068,  0.2236068,  0.5      ]])
+    return m@vn
+    
 ################
 # Unnecessary functions？？？
 ################
