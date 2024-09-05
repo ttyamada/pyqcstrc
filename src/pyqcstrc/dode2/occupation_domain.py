@@ -276,7 +276,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \nSBOND', file = f)
             clr=colors(color)
             for i2,pair in enumerate(pairs):
-                print('  %d   A%d   A%d   %8.6f   %8.6f  0  1  1  1  1  0.100  2.000 %3d %3d %3d'%(\
+                print('  %d   A%d   A%d   %8.6f   %8.6f  0  1  1  1  2  0.100  2.000 %3d %3d %3d'%(\
                 i2+1, pair[1]+1, pair[2]+1, pair[0]-0.01, pair[0]+0.01, clr[0], clr[1], clr[2]), file=f)
             print('  0 0 0 0\
             \nSITET', file = f)
@@ -330,7 +330,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \nATOMP\
             \n 24  24    0  50  2.0    0\
             \nBONDP\
-            \n  1  16  0.250  2.000 127 127 127\
+            \n  3  16  0.250  2.000 127 127 127\
             \nPOLYP\
             \n 204 1  1.000 180 180 180\
             \nISURF\
@@ -619,9 +619,12 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             return 0
         else:
             # get independent edges
-            edges = utils.generator_obj_edge(obj, verbose)
+            #edges = utils.generator_obj_edge(obj, verbose)
+            edges = utils.generator_unique_edges(obj)
+            #print(len(edges))
             # get independent vertices of the edges
             vertices = utils.remove_doubling_in_perp_space(edges)
+            #print(len(vertices))
             # get bond pairs, [[distance, XXX, YYY],...]
             pairs = []
             for edge in edges:
@@ -632,14 +635,16 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
                     for vrtx in vertices:
                         tmp=np.vstack([edge[i2],vrtx])
                         tmp=utils.remove_doubling_in_perp_space(tmp.reshape(2,6,3))
-                        i3+=1
+                        #i3+=1
                         if len(tmp)==1:
                             a.append(i3)
                             break
                         else:
+                            i3+=1
                             pass
                 pairs.append(a)
-                
+            #print(len(pairs))
+            
             print('#VESTA_FORMAT_VERSION 3.5.0\n', file=f)
             print('MOLECULE\
             \nTITLE',file=f)
@@ -687,14 +692,17 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \n  0    0    0    0  0\
             \nSBOND', file = f)
             clr=colors(color)
-            for pair in range(len(pairs)):
+            #print(pairs)
+            #print(len(pairs))
+            for pair in pairs:
+                #print(pair)
                 print('  %d   A%d   A%d   %6.3f   %6.3f  0  1  1  1  2  0.250  2.000 %3d %3d %3d'%(\
                 i2+1, pair[1]+1, pair[2]+1, pair[0]-0.01, pair[0]+0.01, clr[0], clr[1], clr[2]), file=f)
                 i2+=1
             print('  0 0 0 0\
             \nSITET', file = f)
             for i2 in range(len(vertices)):
-                print('    %d        A%d  0.100  76  76  76  76  76  76 204  0'%(i2+1,i2+1), file=f)
+                print('    %d        A%d  0.030  76  76  76  76  76  76 204  0'%(i2+1,i2+1), file=f)
             print('  0 0 0 0 0 0\
             \nVECTR\
             \n 0 0 0 0 0\
@@ -856,7 +864,7 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         int: 0 (succeed), 1 (fail)
     """
     
-    def generator_xyz_dim4_triangle(obj,filename):
+    def generator_xyz_dim4_triangle(obj,path,filename):
         """
         Generate object (set of triangles) object in XYZ format.
     
@@ -869,7 +877,7 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
             int: 0 (succeed), 1 (fail)
         
         """
-        f=open('%s'%(filename),'w', encoding="utf-8", errors="ignore")
+        f=open('%s/%s.xyz'%(path,filename),'w', encoding="utf-8", errors="ignore")
         f.write('%d\n'%(len(obj)*3))
         f.write('%s\n'%(filename))
         i1=0
@@ -896,7 +904,7 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f.closed
         return 0
     
-    def generator_xyz_dim4_edge(obj,filename):
+    def generator_xyz_dim4_edge(obj,path,filename):
         """
         Generate object (set of edges) object in XYZ format.
     
@@ -909,7 +917,7 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
             int: 0 (succeed), 1 (fail)
         
         """
-        f=open('%s'%(filename),'w', encoding="utf-8", errors="ignore")
+        f=open('%s/%s.xyz'%(path,filename),'w', encoding="utf-8", errors="ignore")
         f.write('%d\n'%(len(obj)*2))
         f.write('%s\n'%(filename))
         for i1,edge in enumerate(obj):
@@ -929,7 +937,7 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f.closed
         return 0
     
-    def generator_xyz_dim4_vertex(obj, filename):
+    def generator_xyz_dim4_vertex(obj,path,filename):
         """
         Generate object (set of vertexs) object in XYZ format.
     
@@ -942,7 +950,42 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
             int: 0 (succeed), 1 (fail)
         
         """
-        f=open('%s'%(filename),'w', encoding="utf-8", errors="ignore")
+        f=open('%s/%s.xyz'%(path,filename),'w', encoding="utf-8", errors="ignore")
+        f.write('%d\n'%(len(obj)))
+        f.write('%s\n'%(filename))
+        counter=0
+        for triangle in range(len(obj)):
+            for point in range(len(triangle)):
+                v=math1.projection3(point)
+                f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # # # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
+                (numericalc.numeric_value(v[0]),\
+                numericalc.numeric_value(v[1]),\
+                numericalc.numeric_value(v[2]),\
+                counter,\
+                point[0][0],point[0][1],point[0][2],\
+                point[1][0],point[1][1],point[1][2],\
+                point[2][0],point[2][1],point[2][2],\
+                point[3][0],point[3][1],point[3][2],\
+                point[4][0],point[4][1],point[4][2],\
+                point[5][0],point[5][1],point[5][2]))
+                counter+=1
+        f.closed
+        return 0
+    
+    def generator_xyz_dim3_vertex(obj,path,filename):
+        """
+        Generate object (set of vertexs) object in XYZ format.
+    
+        Args:
+            obj (numpy.ndarray): the occupation domain
+                The shape is (num,6,3), where num=numbre_of_vertices.
+            filename (str): filename of the output XYZ file
+        
+        Returns:
+            int: 0 (succeed), 1 (fail)
+        
+        """
+        f=open('%s/%s.xyz'%(path,filename),'w', encoding="utf-8", errors="ignore")
         f.write('%d\n'%(len(obj)))
         f.write('%s\n'%(filename))
         for i1,point in enumerate(obj):
@@ -960,27 +1003,35 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
             point[5][0],point[5][1],point[5][2]))
         f.closed
         return 0
-    
+        
     if np.all(obj==None):
         print('empty obj')
         return 
-    elif obj.ndim!=4:
+    elif obj.ndim<3 or obj.ndim>4:
         print('object has an incorrect shape!')
         return 
+    elif obj.ndim==3:
+        if select=='vertex':
+            generator_xyz_dim3_vertex(obj,path,basename)
+            if verbose>0:
+                print('    written in %s/%s.xyz'%(path,basename))
+            return 0
+        else:
+            return 
     else:
         file_name='%s/%s.xyz'%(path,basename)
         if select=='triangle':
-            generator_xyz_dim4_triangle(obj, file_name)
+            generator_xyz_dim4_triangle(obj,path,basename)
             if verbose>0:
                 print('    written in %s/%s.xyz'%(path,basename))
             return 0
         elif select=='edge':
-            generator_xyz_dim4_edge(obj, file_name)
+            generator_xyz_dim4_edge(obj,path,basename)
             if verbose>0:
                 print('    written in %s/%s.xyz'%(path,basename))
             return 0
         elif select=='vertex':
-            generator_xyz_dim4_vertex(obj, file_name)
+            generator_xyz_dim4_vertex(obj,path,basename)
             if verbose>0:
                 print('    written in %s/%s.xyz'%(path,basename))
             return 0
@@ -1215,6 +1266,147 @@ def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
         print('No common vertex found in the object. pod and atm cannot be created.')
         return 1
 
+##### WIP
+def write_podatm(obj, position, vlist = [0], path = '.', basename = 'tmp', shift=[0.0,0.0,0.0,0.0,0.0,0.0], verbose = 0):
+    """
+    Generate pod and atom files.
+    
+    Args:
+        obj (numpy.ndarray): the occupation domain
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+        position (numpy.ndarray): 6D coordinates of the position of the occupation domain.
+        vertices (list): 
+        vlist (list): 
+        path (str): Path of the output files
+        basename (str): Basename of the output files
+        verbose (int):
+            verbose = 0 (silent, default)
+            verbose = 1 (normal)
+    
+    Returns:
+        int: 0 (succeed), 1 (fail)
+    
+    """
+    
+    if os.path.exists(path) == False:
+        os.makedirs(path)
+    else:
+        pass
+    
+    if obj.tolist()==[[[[0]]]] or obj.tolist()==[[[0]]]:
+        print('no volume obj')
+        return 0
+    else:
+        fatm=open('%s/%s.atm'%(path,basename),'w', encoding="utf-8", errors="ignore")
+        fpod=open('%s/%s.pod'%(path,basename),'w', encoding="utf-8", errors="ignore")
+    
+        """
+        # get independent edges
+        edges = utils.generator_obj_edge(obj, verbose-1)
+        # get independent vertices of the edges
+        v = utils.remove_doubling_dim4_in_perp_space(edges)
+        """
+        #v=vertices
+        v=obj
+    
+        # shift
+        #shft=[0.00001,0.00002,0.00000,-0.00001,0.00001,-0.00002]
+        #shft=[0.0,0.0,0.0,0.0,0.0,0.0]
+        shft=shift
+        # .atm file
+        for i in range(len(vlist)):
+            a=v[vlist[i][0]-1]
+            fatm.write('%d \'Em\' 1 %d 1 2.0 0. 0. 1.0 0. 0. 0.\n'%(i+1,i+1))
+            fatm.write('x=  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f\n'%(\
+            (position[0][0]+position[0][1]*TAU)/(position[0][2]),\
+            (position[1][0]+position[1][1]*TAU)/(position[1][2]),\
+            (position[2][0]+position[2][1]*TAU)/(position[2][2]),\
+            (position[3][0]+position[3][1]*TAU)/(position[3][2]),\
+            (position[4][0]+position[4][1]*TAU)/(position[4][2]),\
+            (position[5][0]+position[5][1]*TAU)/(position[5][2])))
+            fatm.write('xe1= 0.  0.  0.  0.  0.  0.  0. u1=0.0            \n')
+            fatm.write('xe2= 0.  0.  0.  0.  0.  0.  0. u2=0.0            \n')
+            fatm.write('xe3= 0.  0.  0.  0.  0.  0.  0. u3=0.0            \n')
+            fatm.write('xi=  %8.6f  %8.6f  %8.6f  %8.6f  %8.6f  %8.6f  0.000000  v=1.0\n'%(\
+            (a[0][0]+a[0][1]*TAU)/(a[0][2])+shft[0],\
+            (a[1][0]+a[1][1]*TAU)/(a[1][2])+shft[1],\
+            (a[2][0]+a[2][1]*TAU)/(a[2][2])+shft[2],\
+            (a[3][0]+a[3][1]*TAU)/(a[3][2])+shft[3],\
+            (a[4][0]+a[4][1]*TAU)/(a[4][2])+shft[4],\
+            (a[5][0]+a[5][1]*TAU)/(a[5][2])+shft[5]))
+            fatm.write('isyd=1\n')
+        fatm.close()
+    
+        # .pod file
+        fpod.write('nsymo=3 icent=1 brv=\'p\' io=%d\n'%(len(vlist)))
+        fpod.write('symmetry operator\n')
+        fpod.write('y,z,u,−x+z,v,          12f\n')
+        fpod.write('x,y−u,x−z,−u,−v        my\n')
+        fpod.write('x,y,z,u,−v             mz\n')
+        for i1 in range(len(vlist)):
+            a=v[vlist[i1][0]-1]
+            tmp2=[vlist[i1][1]-1]
+            for i2 in range(2,len(vlist[i1])):
+                counter=0
+                for i3 in range(len(tmp2)):
+                    if vlist[i1][i2]-1==tmp2[i3]:
+                        counter+=1
+                        break
+                    else:
+                        pass
+                if counter==0:
+                    tmp2.append(vlist[i1][i2]-1)
+                else:
+                    pass
+            #print('tmp2=',tmp2)
+        
+            tmp1=[]
+            for i2 in range(1,len(vlist[i1])):
+                for i3 in range(len(tmp2)):
+                    if vlist[i1][i2]-1==tmp2[i3]:
+                        tmp1.append(i3)
+                        break
+                    else:
+                        pass
+            #print('tmp1=',tmp1)
+        
+            fpod.write('%d %d %d \'comment\'\n'%(i1+1,len(tmp2),2))
+            for i2 in range(len(tmp2)):
+                b=v[tmp2[i2]]
+                fpod.write('ej=  %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f 0.00000\n'%(\
+                (b[0][0]+b[0][1]*TAU)/(b[0][2])-(a[0][0]+a[0][1]*TAU)/(a[0][2]),\
+                (b[1][0]+b[1][1]*TAU)/(b[1][2])-(a[1][0]+a[1][1]*TAU)/(a[1][2]),\
+                (b[2][0]+b[2][1]*TAU)/(b[2][2])-(a[2][0]+a[2][1]*TAU)/(a[2][2]),\
+                (b[3][0]+b[3][1]*TAU)/(b[3][2])-(a[3][0]+a[3][1]*TAU)/(a[3][2]),\
+                (b[4][0]+b[4][1]*TAU)/(b[4][2])-(a[4][0]+a[4][1]*TAU)/(a[4][2]),\
+                (b[5][0]+b[5][1]*TAU)/(b[5][2])-(a[5][0]+a[5][1]*TAU)/(a[5][2])))
+                """
+                for i3 in range(6):
+                    if i3==0:
+                        fpod.write('ej=  %8.6f'%(\
+                        (b[i3][0]+b[i3][1]*TAU)/(b[i3][2]) - (a[i3][0]+a[i3][1]*TAU)/(a[i3][2])\
+                        )
+                    elif i3==5:
+                        fpod.write(' %8.6f\n'%(\
+                        (b[i3][0]+b[i3][1]*TAU)/(b[i3][2]) - (a[i3][0]+a[i3][1]*TAU)/(a[i3][2])\
+                        )
+                    else:
+                        fpod.write(' %8.6f'%(\
+                        (b[i3][0]+b[i3][1]*TAU)/(b[i3][2]) - (a[i3][0]+a[i3][1]*TAU)/(a[i3][2])\
+                        )
+                """
+            fpod.write('nth= %d'%(int((len(vlist[i1])-1)/3)+1))
+            for i2 in range(len(tmp1)):
+                fpod.write(' %d'%(tmp1[i2]+1))
+            fpod.write('\n100000000000000000000000\n')
+        fpod.close()
+    
+        if verbose>0:
+            print('    written in %s/%s.atm'%(path,basename))
+            print('    written in %s/%s.pod'%(path,basename))
+    
+    return 0
+
 #########################
 #          WIP          #
 #########################
@@ -1301,7 +1493,7 @@ def similarity(obj,m):
     """
     return symmetry.similarity_obj(obj,m)
 
-def qcstrc(mystrc,path,basename,phason_matrix,n1max,n5max,origin_shift,option=0,verbose=0):
+def qcstrc(apar,cpar,mystrc,path,basename,phason_matrix,n1max,n5max,origin_shift,option=0,verbose=0):
     """
     mystrc
     
@@ -1311,6 +1503,8 @@ def qcstrc(mystrc,path,basename,phason_matrix,n1max,n5max,origin_shift,option=0,
     pos=[]
     atm=[]
     eshift=[]
+    
+    apar=apar*2/np.sqrt(6)
     
     for strc in mystrc:
         obj1,wsite,atom,shift=strc
@@ -1333,19 +1527,19 @@ def qcstrc(mystrc,path,basename,phason_matrix,n1max,n5max,origin_shift,option=0,
         eshift.append(shift)
         
     lst=[]
-    a=numericalc.strc(objs,pos,phason_matrix,n1max,n5max,eshift,origin_shift,verbose)
+    generated_strc=numericalc.strc(objs,pos,phason_matrix,n1max,n5max,eshift,origin_shift,verbose)
     f=open('%s/%s.xyz'%(path,basename),'w', encoding="utf-8", errors="ignore")
-    f.write('%d\n'%(len(a)))
+    f.write('%d\n'%(len(generated_strc)))
     f.write('%s.xyz\n'%(basename))
-    for b in a:
+    for b in generated_strc:
         if option==0: # x,y,z in Epar
-            f.write('%s %8.6f %8.6f %8.6f\n'%(atm[int(b[1])],b[0][0],b[0][1],b[0][2]))
+            f.write('%s %8.6f %8.6f %8.6f\n'%(atm[int(b[1])],b[0][0]*apar,b[0][1]*apar,b[0][2]*cpar))
         elif option==1: # x,y,z in Epar, h1-h5
-            f.write('%s %8.6f %8.6f %8.6f # %3d %3d %3d %3d %3d\n'%(atm[int(b[1])],b[0][0],b[0][1],b[0][2],b[2],b[3],b[4],b[5],b[6]))
+            f.write('%s %8.6f %8.6f %8.6f # %3d %3d %3d %3d %3d\n'%(atm[int(b[1])],b[0][0]*apar,b[0][1]*apar,b[0][2]*cpar,b[2],b[3],b[4],b[5],b[6]))
         elif option==2: # x,y,z in Epar, x,y,z in Eperp, h1-h5
             f.write('%s %8.6f %8.6f %8.6f # %8.6f %8.6f %8.6f %3d %3d %3d %3d %3d\n'%(\
                                     atm[int(b[1])],\
-                                    b[0][0],b[0][1],b[0][2],\
+                                    b[0][0]*apar,b[0][1]*apar,b[0][2]*cpar,\
                                     b[0][3],b[0][4],b[0][5],\
                                     b[2],b[3],b[4],b[5],b[6],
                                     ))
