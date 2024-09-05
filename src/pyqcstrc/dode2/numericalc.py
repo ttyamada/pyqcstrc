@@ -854,7 +854,8 @@ def strc(objs,positions,pmatrx,n1max,n5max,eshift,oshift,verbose):
         for h2 in range(-n1max,n1max+1):
             for h3 in range(-n1max,n1max+1):
                 for h4 in range(-n1max,n1max+1):
-                    for h5 in range(-n5max,n5max+1):
+                    #for h5 in range(-n5max,n5max+1):
+                    for h5 in range(0,n5max+1):
                         vn=np.array([h1,h2,h3,h4,h5,0],dtype=np.float64)
                         if flg==0: 
                             v=projection_numerical(vn)
@@ -893,7 +894,7 @@ def strc(objs,positions,pmatrx,n1max,n5max,eshift,oshift,verbose):
 def matrix_dot(m1,m2):
     return np.dot(m1,m2)
 
-def inner_product_numerical(v1, v2):
+def inner_product_numerical(v1,v2):
     return np.dot(v1,v2)
 
 if __name__ == '__main__':
