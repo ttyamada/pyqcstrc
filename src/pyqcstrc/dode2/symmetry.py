@@ -259,14 +259,14 @@ def dodesymop(pg='-12m2'):
 def dodesymop_array(pg='-12m2'):
     """
     """
-    ops=mattrix_dode_sym(pg)
+    ops=matrix_dode_sym(pg)
     num=0
     if pg=='12/mmm':
         m1=ops[0]
         m2=ops[1]
         m3=ops[2]
         m4=ops[3]
-        symop=zeros((96,6,6),dtype=np.int64)
+        symop=np.zeros((96,6,6),dtype=np.int64)
         for i1 in range(2):
             for i2 in range(2):
                 for i3 in range(2):
@@ -283,6 +283,7 @@ def dodesymop_array(pg='-12m2'):
     elif pg=='-12m2':
         m1=ops[4]
         m2=ops[1]
+        symop=np.zeros((24,6,6),dtype=np.int64)
         for i1 in range(2):
             for i2 in range(12):
                 s1=matrixpow(m1,i2) # s12
@@ -292,6 +293,7 @@ def dodesymop_array(pg='-12m2'):
                 num+=1
     elif pg=='-12':
         m1=ops[4]
+        symop=np.zeros((12,6,6),dtype=np.int64)
         for i1 in range(12):
             s1=matrixpow(m1,i1) # s12
             symop.append(s1)
@@ -299,6 +301,7 @@ def dodesymop_array(pg='-12m2'):
             num+=1
     elif pg=='12':
         m1=ops[0]
+        symop=np.zeros((12,6,6),dtype=np.int64)
         for i1 in range(12):
             s1=matrixpow(m1,i1) # c12
             symop.append(s1)
@@ -306,7 +309,7 @@ def dodesymop_array(pg='-12m2'):
             num+=1
     return symop
     
-def mattrix_dode_sym(pg='-12m2'):
+def matrix_dode_sym(pg='-12m2'):
     # c12
     # y, z, u, −x + z, v,
     m1=np.array([[0, 1, 0, 0, 0, 0],\
@@ -341,27 +344,18 @@ def mattrix_dode_sym(pg='-12m2'):
                 [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
     # s12
     # IR12: -y, -z, -u, x-z, -v
-    m4=np.array([[0,-1, 0, 0, 0, 0],\
+    m5=np.array([[0,-1, 0, 0, 0, 0],\
                 [ 0, 0,-1, 0, 0, 0],\
                 [ 0, 0, 0,-1, 0, 0],\
                 [ 1, 0,-1, 0, 0, 0],\
                 [ 0, 0, 0, 0,-1, 0],\
                 [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
-    if pg=='12/mmm':
-        symop=np.zeros((3,6,6),dtype=np.int64)
-        symop[0]=m1
-        symop[1]=m2
-        symop[3]=m3
-    elif pg=='-12m2':
-        symop=np.zeros((2,6,6),dtype=np.int64)
-        symop[1]=m4
-        symop[2]=m2
-    elif pg=='-12':
-        symop=np.zeros((1,6,6),dtype=np.int64)
-        symop[1]=m4
-    elif pg=='12':
-        symop=np.zeros((1,6,6),dtype=np.int64)
-        symop[1]=m1
+    symop=np.zeros((5,6,6),dtype=np.int64)
+    symop[0]=m1
+    symop[1]=m2
+    symop[2]=m3
+    symop[3]=m4
+    symop[4]=m5
     return symop
 
 """
@@ -400,7 +394,6 @@ def generator_symmetric_vec_specific_symop(vector,centre,index_of_symmetry_opera
     mop=dodesymop_array(pg)
     #a=np.zeros(len(index_of_symmetry_operation))
     return symop_vec(mop[symmetry_operation_index],vector,centre)
-
     
 def translation(ndim):
     """translational symmetry
@@ -480,12 +473,11 @@ def site_symmetry(site,ndim=5,pg='-12m2'):
             else:
                 pass
     return remove_overlaps(list1)
-
+    
 def coset(site,ndim=5,pg='-12m2'):
     """coset
     """
     symop=dodesymop_array(pg)
-    
     
     list1=site_symmetry(site,ndim,pg)
     
@@ -543,7 +535,7 @@ def coset(site,ndim=5,pg='-12m2'):
     
     return list5
 
-def site_symmetry_and_coset(site,ndim,verbose,pg='-12m2'):
+def site_symmetry_and_coset(site,ndim=5,verbose=0,pg='-12m2'):
     #symmetry operators in the site symmetry group G and its left coset decomposition.
     #
     #Args:
@@ -833,7 +825,7 @@ if __name__ == '__main__':
     
     print('Stereographic projection')
     import matplotlib.pyplot as plt
-    fig, ax = plt.subplots(figsize=(4,4))
+    fig, ax = plt.subplots(figsize=(8,8))
     
     #pg='12/mmm'
     #pg='-12m2'
@@ -841,7 +833,8 @@ if __name__ == '__main__':
     #pg='12'
     symop=dodesymop()
     
-    vn0=np.array([1, 2, 3, 4, 5, 0])
+    """
+    vn0=np.array([1, 2, 3, 4, 5, 0]) 
     #vn0=np.array([0, 0, 0, 1, 1, 0])
     x1=[]
     y1=[]
@@ -870,4 +863,146 @@ if __name__ == '__main__':
     ax.scatter(x1, y1, s=40,  marker='o', color='black', alpha=1.0, edgecolors='black')
     plt.xlim(-1.1,1.1)
     plt.ylim(-1.1,1.1)
+    plt.show()
+    """
+    
+    
+    # Symmetric positions, P\bar{12}m2(12^5mm)
+    V_1a =np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]]) # ( 0,  0,  0,  0,  0) # \bar{12}m2(12^5mm)
+    V_2a =np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[1,0,4],[0,0,1]]) # ( 0,  0,  0,  0, u1) # 6mm(6^5mm)
+    V_4a =np.array([[0,0,1],[2,0,3],[0,0,1],[1,0,3],[1,0,4],[0,0,1]]) # ( 0,2/3,  0,1/3, u2) # 3m(3^2m)
+    V_6a =np.array([[0,0,1],[1,0,2],[0,0,1],[0,0,1],[1,0,4],[0,0,1]]) # ( 0,1/2,  0,  0, u3) # mm2(mm1)
+    V_6b =np.array([[0,0,1],[1,0,2],[1,0,2],[0,0,1],[1,0,4],[0,0,1]]) # ( 0,1/2,1/2,  0, u4) # mm2(mm1)
+    V_12a=np.array([[0,0,1],[1,0,2],[1,0,3],[0,0,1],[1,0,4],[0,0,1]]) # ( 0,1/2,  z,  0, u5) # m11(m11)
+    #site=V_1a
+    #site=V_2a
+    site=V_4a
+    #site=V_6a
+    #site=V_6b
+    #site=V_12a
+    
+    #vn0=np.array([1, 2, 3, 4, 5, 0])
+    #vn0=np.array([0, 2/3, 0, 1/3, 1/2, 0])
+    vn0=numerical_vector(site)
+    
+    #idx_site,idx_coset=site_symmetry_and_coset(site,ndim=5)
+    idx_site=site_symmetry(site,ndim=5)
+    idx_coset=coset(site,ndim=5)
+    #print(idx_site)
+    #print(idx_coset)
+    x1e=[]
+    y1e=[]
+    x2e=[]
+    y2e=[]
+    x1i=[]
+    y1i=[]
+    x2i=[]
+    y2i=[]
+    for idx in idx_site:
+        sop=symop[idx]
+        vn=np.dot(sop,vn0)
+        p=projection_numerical(vn)
+        xe=p[0]
+        ye=p[1]
+        ze=p[2]
+        xi=p[3]
+        yi=p[4]
+        zi=p[5]
+        dde=np.sqrt(xe**2+ye**2+ze**2)
+        ddi=np.sqrt(xi**2+yi**2+zi**2)
+        xe=xe/dde
+        ye=ye/dde
+        ze=ze/dde
+        xi=xi/ddi
+        yi=yi/ddi
+        zi=zi/ddi
+        if ze>=0:
+            x1e.append(float(xe))
+            y1e.append(float(ye))
+        else:
+            x2e.append(float(xe))
+            y2e.append(float(ye))
+        if zi>=0:
+            x1i.append(float(xi))
+            y1i.append(float(yi))
+        else:
+            x2i.append(float(xi))
+            y2i.append(float(yi))
+        
+    x3e=[]
+    y3e=[]
+    x4e=[]
+    y4e=[]
+    x3i=[]
+    y3i=[]
+    x4i=[]
+    y4i=[]
+    for idx in idx_coset:
+        sop=symop[idx]
+        vn=np.dot(sop,vn0)
+        p=projection_numerical(vn)
+        xe=p[0]
+        ye=p[1]
+        ze=p[2]
+        xi=p[3]
+        yi=p[4]
+        zi=p[5]
+        dde=np.sqrt(xe**2+ye**2+ze**2)
+        ddi=np.sqrt(xi**2+yi**2+zi**2)
+        xe=xe/dde
+        ye=ye/dde
+        ze=ze/dde
+        xi=xi/ddi
+        yi=yi/ddi
+        zi=zi/ddi
+        if ze>0:
+            x3e.append(float(xe))
+            y3e.append(float(ye))
+        else:
+            x4e.append(float(xe))
+            y4e.append(float(ye))
+        if zi>0:
+            x3i.append(float(xi))
+            y3i.append(float(yi))
+        else:
+            x4i.append(float(xi))
+            y4i.append(float(yi))
+            
+    ax1 = fig.add_subplot(2, 2, 1)
+    ax1.set_title('site symmetry (par)')
+    ax1.scatter([0], [0], s=30000, marker='o', color='white', alpha=1.0, edgecolors='black')
+    ax1.scatter(x2e, y2e, s=200, marker='o', color='white', alpha=1.0, edgecolors='black')
+    ax1.scatter(x1e, y1e, s=40,  marker='o', color='black', alpha=1.0, edgecolors='black')
+    ax1.set_xlim(-1.3,1.3)
+    ax1.set_ylim(-1.3,1.3)
+    ax1.axis("off")
+    
+    ax2 = fig.add_subplot(2, 2, 2)
+    ax2.set_title('coset (par)')
+    ax2.scatter([0], [0], s=30000, marker='o', color='white', alpha=1.0, edgecolors='black')
+    ax2.scatter(x4e, y4e, s=200, marker='o', color='white', alpha=1.0, edgecolors='black')
+    ax2.scatter(x3e, y3e, s=40,  marker='o', color='black', alpha=1.0, edgecolors='black')
+    ax2.set_xlim(-1.3,1.3)
+    ax2.set_ylim(-1.3,1.3)
+    ax2.axis("off")
+    
+    ax3 = fig.add_subplot(2, 2, 3)
+    ax3.set_title('site symmetry (perp)')
+    ax3.scatter([0], [0], s=30000, marker='o', color='white', alpha=1.0, edgecolors='black')
+    ax3.scatter(x2i, y2i, s=200, marker='o', color='white', alpha=1.0, edgecolors='black')
+    ax3.scatter(x1i, y1i, s=40,  marker='o', color='black', alpha=1.0, edgecolors='black')
+    ax3.set_xlim(-1.3,1.3)
+    ax3.set_ylim(-1.3,1.3)
+    ax3.axis("off")
+    
+    ax4 = fig.add_subplot(2, 2, 4)
+    ax4.set_title('coset (perp)')
+    ax4.scatter([0], [0], s=30000, marker='o', color='white', alpha=1.0, edgecolors='black')
+    ax4.scatter(x4i, y4i, s=200, marker='o', color='white', alpha=1.0, edgecolors='black')
+    ax4.scatter(x3i, y3i, s=40,  marker='o', color='black', alpha=1.0, edgecolors='black')
+    ax4.set_xlim(-1.3,1.3)
+    ax4.set_ylim(-1.3,1.3)
+    ax4.axis("off")
+    
+    #plt.axis("off")
     plt.show()
