@@ -22,7 +22,7 @@ TAU=np.sqrt(3)/2.0
 def volume(obj):
     return utils.obj_area_6d(obj)
 
-def symmetric(obj,centre):
+def symmetric(obj,centre,pg):
     """
     Generate symmterical occupation domain by symmetric elements on the asymmetric unit.
     
@@ -33,7 +33,8 @@ def symmetric(obj,centre):
         centre (numpy.ndarray):
             6d coordinate of the symmetric centre.
             The shape is (6,3)
-    
+        pg (string):
+            point group, '12/mmm', '-12m2', '-12', '12'
     Returns:
         Symmetric occupation domains (numpy.ndarray):
             The shape is (num,3,6,3), where num=numbre_of_tetrahedron.
@@ -41,12 +42,12 @@ def symmetric(obj,centre):
     """
     if obj.ndim==3 or obj.ndim==4:
         #return symmetry.generator_obj_symmetric_tetrahedron(obj,centre)
-        return symmetry.generator_obj_symmetric_triangle(obj,centre)
+        return symmetry.generator_obj_symmetric_triangle(obj,centre,pg)
     else:
         print('object has an incorrect shape!')
         return 
 
-def symmetric_0(obj,centre,indx_symop):
+def symmetric_0(obj,centre,indx_symop,pg):
     """
     Generate symmtericic occupation domain by applying symmetric elements on the asymmetric unit.
     
@@ -64,7 +65,7 @@ def symmetric_0(obj,centre,indx_symop):
     
     """
     if obj.ndim==3 or obj.ndim==4:
-        return symmetry.generator_obj_symmetric_triangle_0(obj,centre,indx_symop)
+        return symmetry.generator_obj_symmetric_triangle_0(obj,centre,indx_symop,pg)
     else:
         print('object has an incorrect shape!')
         return 
@@ -1267,7 +1268,7 @@ def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
         return 1
 
 ##### WIP
-def write_podatm(obj, position, vlist = [0], path = '.', basename = 'tmp', shift=[0.0,0.0,0.0,0.0,0.0,0.0], verbose = 0):
+def write_podatm(obj, position, vlist=[0], path='.', basename='tmp', shift=[0., 0., 0., 0., 0., 0.], verbose=0):
     """
     Generate pod and atom files.
     
@@ -1317,32 +1318,39 @@ def write_podatm(obj, position, vlist = [0], path = '.', basename = 'tmp', shift
         for i in range(len(vlist)):
             a=v[vlist[i][0]-1]
             fatm.write('%d \'Em\' 1 %d 1 2.0 0. 0. 1.0 0. 0. 0.\n'%(i+1,i+1))
+            #fatm.write('x=  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f\n'%(\
+            #(position[0][0]+position[0][1]*TAU)/(position[0][2]),\
+            #(position[1][0]+position[1][1]*TAU)/(position[1][2]),\
+            #(position[2][0]+position[2][1]*TAU)/(position[2][2]),\
+            #(position[3][0]+position[3][1]*TAU)/(position[3][2]),\
+            #(position[4][0]+position[4][1]*TAU)/(position[4][2]),\
+            #(position[5][0]+position[5][1]*TAU)/(position[5][2])))
+            p=numericalc.numerical_vector(position)
             fatm.write('x=  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f\n'%(\
-            (position[0][0]+position[0][1]*TAU)/(position[0][2]),\
-            (position[1][0]+position[1][1]*TAU)/(position[1][2]),\
-            (position[2][0]+position[2][1]*TAU)/(position[2][2]),\
-            (position[3][0]+position[3][1]*TAU)/(position[3][2]),\
-            (position[4][0]+position[4][1]*TAU)/(position[4][2]),\
-            (position[5][0]+position[5][1]*TAU)/(position[5][2])))
+            p[0],p[1],p[2],p[3],p[4],p[5]))
+            
             fatm.write('xe1= 0.  0.  0.  0.  0.  0.  0. u1=0.0            \n')
             fatm.write('xe2= 0.  0.  0.  0.  0.  0.  0. u2=0.0            \n')
             fatm.write('xe3= 0.  0.  0.  0.  0.  0.  0. u3=0.0            \n')
+            #fatm.write('xi=  %8.6f  %8.6f  %8.6f  %8.6f  %8.6f  %8.6f  0.000000  v=1.0\n'%(\
+            #(a[0][0]+a[0][1]*TAU)/(a[0][2])+shft[0],\
+            #(a[1][0]+a[1][1]*TAU)/(a[1][2])+shft[1],\
+            #(a[2][0]+a[2][1]*TAU)/(a[2][2])+shft[2],\
+            #(a[3][0]+a[3][1]*TAU)/(a[3][2])+shft[3],\
+            #(a[4][0]+a[4][1]*TAU)/(a[4][2])+shft[4],\
+            #(a[5][0]+a[5][1]*TAU)/(a[5][2])+shft[5]))
+            a=numericalc.numerical_vector(a)
             fatm.write('xi=  %8.6f  %8.6f  %8.6f  %8.6f  %8.6f  %8.6f  0.000000  v=1.0\n'%(\
-            (a[0][0]+a[0][1]*TAU)/(a[0][2])+shft[0],\
-            (a[1][0]+a[1][1]*TAU)/(a[1][2])+shft[1],\
-            (a[2][0]+a[2][1]*TAU)/(a[2][2])+shft[2],\
-            (a[3][0]+a[3][1]*TAU)/(a[3][2])+shft[3],\
-            (a[4][0]+a[4][1]*TAU)/(a[4][2])+shft[4],\
-            (a[5][0]+a[5][1]*TAU)/(a[5][2])+shft[5]))
+            a[0],a[1],a[2],a[3],a[4],a[5]))
             fatm.write('isyd=1\n')
         fatm.close()
     
         # .pod file
-        fpod.write('nsymo=3 icent=1 brv=\'p\' io=%d\n'%(len(vlist)))
-        fpod.write('symmetry operator\n')
-        fpod.write('y,z,u,−x+z,v,          12f\n')
-        fpod.write('x,y−u,x−z,−u,−v        my\n')
-        fpod.write('x,y,z,u,−v             mz\n')
+        #fpod.write('nsymo=3 icent=1 brv=\'p\' io=%d\n'%(len(vlist)))
+        #fpod.write('symmetry operator\n')
+        #fpod.write('y,z,u,−x+z,v,          12f\n')
+        #fpod.write('x,y−u,x−z,−u,−v        my\n')
+        #fpod.write('x,y,z,u,−v             mz\n')
         for i1 in range(len(vlist)):
             a=v[vlist[i1][0]-1]
             tmp2=[vlist[i1][1]-1]
@@ -1373,13 +1381,41 @@ def write_podatm(obj, position, vlist = [0], path = '.', basename = 'tmp', shift
             fpod.write('%d %d %d \'comment\'\n'%(i1+1,len(tmp2),2))
             for i2 in range(len(tmp2)):
                 b=v[tmp2[i2]]
-                fpod.write('ej=  %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f 0.00000\n'%(\
-                (b[0][0]+b[0][1]*TAU)/(b[0][2])-(a[0][0]+a[0][1]*TAU)/(a[0][2]),\
-                (b[1][0]+b[1][1]*TAU)/(b[1][2])-(a[1][0]+a[1][1]*TAU)/(a[1][2]),\
-                (b[2][0]+b[2][1]*TAU)/(b[2][2])-(a[2][0]+a[2][1]*TAU)/(a[2][2]),\
-                (b[3][0]+b[3][1]*TAU)/(b[3][2])-(a[3][0]+a[3][1]*TAU)/(a[3][2]),\
-                (b[4][0]+b[4][1]*TAU)/(b[4][2])-(a[4][0]+a[4][1]*TAU)/(a[4][2]),\
-                (b[5][0]+b[5][1]*TAU)/(b[5][2])-(a[5][0]+a[5][1]*TAU)/(a[5][2])))
+                #fpod.write('ej=  %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f 0.00000\n'%(\
+                #(b[0][0]+b[0][1]*TAU)/(b[0][2])-(a[0][0]+a[0][1]*TAU)/(a[0][2]),\
+                #(b[1][0]+b[1][1]*TAU)/(b[1][2])-(a[1][0]+a[1][1]*TAU)/(a[1][2]),\
+                #(b[2][0]+b[2][1]*TAU)/(b[2][2])-(a[2][0]+a[2][1]*TAU)/(a[2][2]),\
+                #(b[3][0]+b[3][1]*TAU)/(b[3][2])-(a[3][0]+a[3][1]*TAU)/(a[3][2]),\
+                #(b[4][0]+b[4][1]*TAU)/(b[4][2])-(a[4][0]+a[4][1]*TAU)/(a[4][2]),\
+                #(b[5][0]+b[5][1]*TAU)/(b[5][2])-(a[5][0]+a[5][1]*TAU)/(a[5][2])))
+                b=math1.sub_vectors(b,a)
+                b=numericalc.numerical_vector(b)
+                fpod.write('ej=  %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f\n'%(\
+                #b[0],b[1],b[2],b[3],b[4],b[5]))
+                
+                """ 5次元ベクトルから7次元ベクトルへの変換　一意に決まらない!?
+                if b[1]>0.0 and b[3]>0.0:
+                    if b[1]-b[3]>0.0:
+                        e3=b[3]
+                        e1=b[1]-b[3]
+                    elif b[1]-b[3]<0.0:
+                        e3=b[1]
+                        e1=b[3]-b[1]
+                    else:# b[1]-b[3]==0.0
+                        e3=b[1]
+                elif b[1]<0.0 and b[3]<0.0:
+                    if b[1]-b[3]<0.0:
+                        e3=b[1]
+                        e1=b[3]-b[1]
+                    elif b[1]-b[3]>0.0:
+                        e3=b[3]
+                        e1=b[1]-b[3]
+                    else:# b[1]-b[3]==0.0
+                        e3=b[1]
+                """
+                
+                b[1],b[0]+b[2],b[1]+b[3],b[2],b[3],-b[0],b[4]))
+                
                 """
                 for i3 in range(6):
                     if i3==0:
@@ -1493,40 +1529,107 @@ def similarity(obj,m):
     """
     return symmetry.similarity_obj(obj,m)
 
-def qcstrc(apar,cpar,mystrc,path,basename,phason_matrix,n1max,n5max,origin_shift,option=0,verbose=0):
+def qcstrc(apar,cpar,mystrc,path,basename,phason_matrix,n1max,n5max,origin_shift,option=0,pg='-12m2',verbose=0):
     """
     mystrc
     
     """
+    apar=apar*2/np.sqrt(6)
+    dim=5
+    v0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]]) # (0,0,0,0)
     
     objs=[]
     pos=[]
     atm=[]
     eshift=[]
     
-    apar=apar*2/np.sqrt(6)
-    
+    """ # old ver.
+    ########## From HERE ##########
     for strc in mystrc:
         obj1,wsite,atom,shift=strc
         
-        ndim=5
-        V0=np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]]) # 1a, (0,0,0,0)
-        #
+        dim=5
+        v0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]]) # (0,0,0,0)
+        
+        #-----------------------------------------------------------------------
         # generate independent occypation domains from their asymmetric units
-        num_coset=symmetry.coset(wsite,ndim)
+        #-----------------------------------------------------------------------
+        num_coset=symmetry.coset(wsite,dim)
         tmp=symmetry.generator_obj_symmetric_obj(obj1,wsite)
         num=len(tmp)
-        tmp=symmetry.generator_obj_symmetric_obj_specific_symop(tmp,V0,num_coset)
+        tmp=symmetry.generator_obj_symmetric_obj_specific_symop(tmp,v0,num_coset)
         objs1=tmp.reshape(len(num_coset),num,3,6,3)
+        
+        #-----------------------------------------------------------------------
         # generate positions of the independent occypation domains
-        pos1=symmetry.generator_obj_symmetric_vector_specific_symop(wsite,V0,num_coset)
-        #
+        #-----------------------------------------------------------------------
+        pos1=symmetry.generator_obj_symmetric_vector_specific_symop(wsite,v0,num_coset)
+        
         objs.append(objs1)
         pos.append(pos1)
         atm.append(atom)
         eshift.append(shift)
+    ########## To HERE ##########
+    """
+    
+    ########## From HERE ##########
+    print('  point group:',pg)
+    for strc in mystrc:
+        obj,wsite,atom,shift=strc
+        wsiten=numericalc.numerical_vector(wsite)
+        print('   wsite: %4.3f %4.3f %4.3f %4.3f %4.3f'%(wsiten[0],wsiten[1],wsiten[2],wsiten[3],wsiten[4]))
+        num_stsym=symmetry.site_symmetry(wsite,dim,pg)
+        print('    num_sisym:',num_stsym)
+        num_coset=symmetry.coset(wsite,dim,pg)
+        #num_coset=symmetry.coset_a(wsite,dim,pg)
+        print('    num_coset:',num_coset)
+        #num_coset=num_coset[17]
+        #num_equiv=symmetry.equivalent_positions(wsite,dim,pg)
+        #print('   num_equiv:',num_equiv)
+        for i1 in num_stsym:
+            #-----------------------------------------------------------------------
+            # generate independent occupation domains from their asymmetric units
+            #-----------------------------------------------------------------------
+            obj1=symmetry.generator_obj_symmetric_obj_specific_symop(obj,wsite,[i1],pg)
+            for i2 in num_coset:
+            #for i2 in num_equiv:
+                #--------------------------------------------------------------------------------
+                # place the independent occupation domain at each position equivalent to "wsite"
+                #--------------------------------------------------------------------------------
+                obj2=symmetry.generator_obj_symmetric_obj_specific_symop(obj1,v0,[i2],pg)
+                pos2=symmetry.generator_obj_symmetric_vector_specific_symop(wsite,v0,[i2],pg)
+                #
+                objs.append(obj2.reshape(1,len(obj2),3,6,3))
+                pos.append(pos2)
+                atm.append(atom)
+                eshift.append(shift)
+    ########## To HERE ##########
+    """
+    ########## To HERE ##########
+    for strc in mystrc:
+        obj,wsite,atom,shift=strc
+
+        #-------------------------------------------------------
+        # generate an independent OD from its asymmetric unit.
+        #-------------------------------------------------------
+        obj1=symmetry.generator_obj_symmetric_obj(obj,wsite)
         
-    lst=[]
+        #---------------------------------------------------------------
+        # put the independent OD at each position equivalent to 'wsite'
+        #---------------------------------------------------------------
+        num_coset=symmetry.coset(wsite,dim)
+        for i1 in num_coset:
+            obj2=symmetry.generator_obj_symmetric_obj_specific_symop(obj1,v0,[i1])
+            pos2=symmetry.generator_obj_symmetric_vector_specific_symop(wsite,v0,[i1])
+            
+            objs.append(obj2.reshape(1,len(obj2),3,6,3))
+            pos.append(pos2)
+            
+            atm.append(atom)
+            eshift.append(shift)
+    ########## To HERE ##########
+    """
+    
     generated_strc=numericalc.strc(objs,pos,phason_matrix,n1max,n5max,eshift,origin_shift,verbose)
     f=open('%s/%s.xyz'%(path,basename),'w', encoding="utf-8", errors="ignore")
     f.write('%d\n'%(len(generated_strc)))

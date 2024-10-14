@@ -861,8 +861,9 @@ def strc(objs,positions,pmatrx,n1max,n5max,eshift,oshift,verbose):
                             v=projection_numerical(vn)
                         else:
                             v=projection_numerical_phason(vn,pmatrx)
-                        #
+                        #-------------------------------------
                         # i-th independent occupation domain
+                        #-------------------------------------
                         for i1,obj1 in enumerate(objs):
                             pos=numerical_vectors(positions[i1])
                             xe=numerical_vector(eshift[i1])

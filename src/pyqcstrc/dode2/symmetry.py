@@ -4,7 +4,7 @@
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 #
 import sys
-#sys.path.append('.')
+import itertools
 from pyqcstrc.dode2.math1 import (add, 
                                 matrixpow, 
                                 dot_product, 
@@ -259,57 +259,70 @@ def dodesymop(pg='-12m2'):
 def dodesymop_array(pg='-12m2'):
     """
     """
-    ops=matrix_dode_sym(pg)
+    ops=matrix_dode_sym()
     num=0
     if pg=='12/mmm':
-        m1=ops[0]
-        m2=ops[1]
-        m3=ops[2]
-        m4=ops[3]
+        m1=ops[0] # c12
+        m2=ops[1] # mirror,y
+        m3=ops[2] # mirror,z
+        m4=ops[3] # inversion
         symop=np.zeros((96,6,6),dtype=np.int64)
         for i1 in range(2):
+            s4=matrixpow(m4,i1)
             for i2 in range(2):
+                s3=matrixpow(m3,i2)
                 for i3 in range(2):
+                    s2=matrixpow(m2,i3)
                     for i4 in range(12):
-                        s1=matrixpow(m1,i4) # c12
-                        s2=matrixpow(m2,i3) # mirror,y
-                        s3=matrixpow(m3,i2) # mirror,z
-                        s4=matrixpow(m4,i1) # inversion
+                        s1=matrixpow(m1,i4)
                         tmp=np.dot(s2,s1)
                         tmp=np.dot(s3,tmp)
                         tmp=np.dot(s4,tmp)
                         symop[num]=tmp
                         num+=1
+    elif pg=='12mm':
+        m1=ops[0] # C12
+        m2=ops[1] # mirror,y
+        m3=ops[3] # inversion
+        symop=np.zeros((48,6,6),dtype=np.int64)
+        for i1 in range(2):
+            s3=matrixpow(m3,i1)
+            for i2 in range(2):
+                s2=matrixpow(m2,i2)
+                for i3 in range(12):
+                    s1=matrixpow(m1,i3)
+                    tmp=np.dot(s2,s1)
+                    tmp=np.dot(s3,tmp)
+                    symop[num]=tmp
+                    num+=1
     elif pg=='-12m2':
-        m1=ops[4]
-        m2=ops[1]
+        m1=ops[4] # s12
+        m2=ops[1] # mirror,y
         symop=np.zeros((24,6,6),dtype=np.int64)
         for i1 in range(2):
+            s2=matrixpow(m2,i1)
             for i2 in range(12):
-                s1=matrixpow(m1,i2) # s12
-                s2=matrixpow(m2,i1) # mirror,y
+                s1=matrixpow(m1,i2)
                 tmp=np.dot(s2,s1)
                 symop[num]=tmp
                 num+=1
     elif pg=='-12':
-        m1=ops[4]
+        m1=ops[4] # s12
         symop=np.zeros((12,6,6),dtype=np.int64)
         for i1 in range(12):
-            s1=matrixpow(m1,i1) # s12
-            symop.append(s1)
-            symop[num]=tmp
+            s1=matrixpow(m1,i1)
+            symop[num]=s1
             num+=1
     elif pg=='12':
-        m1=ops[0]
+        m1=ops[0] # c12
         symop=np.zeros((12,6,6),dtype=np.int64)
         for i1 in range(12):
-            s1=matrixpow(m1,i1) # c12
-            symop.append(s1)
-            symop[num]=tmp
+            s1=matrixpow(m1,i1)
+            symop[num]=s1
             num+=1
     return symop
     
-def matrix_dode_sym(pg='-12m2'):
+def matrix_dode_sym():
     # c12
     # y, z, u, −x + z, v,
     m1=np.array([[0, 1, 0, 0, 0, 0],\
@@ -344,12 +357,13 @@ def matrix_dode_sym(pg='-12m2'):
                 [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
     # s12
     # IR12: -y, -z, -u, x-z, -v
-    m5=np.array([[0,-1, 0, 0, 0, 0],\
-                [ 0, 0,-1, 0, 0, 0],\
-                [ 0, 0, 0,-1, 0, 0],\
-                [ 1, 0,-1, 0, 0, 0],\
-                [ 0, 0, 0, 0,-1, 0],\
-                [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+    #m5=np.array([[0,-1, 0, 0, 0, 0],\
+    #            [ 0, 0,-1, 0, 0, 0],\
+    #            [ 0, 0, 0,-1, 0, 0],\
+    #            [ 1, 0,-1, 0, 0, 0],\
+    #            [ 0, 0, 0, 0,-1, 0],\
+    #            [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+    m5=np.dot(m4,m1)
     symop=np.zeros((5,6,6),dtype=np.int64)
     symop[0]=m1
     symop[1]=m2
@@ -441,8 +455,8 @@ def generator_equivalent_numeric_vectors_specific_symop(vns,index_of_symmetry_op
 ################ 
 # site symmetry
 ################
-def site_symmetry(site,ndim=5,pg='-12m2'):
-    """symmetry operators in the site symmetry group G.
+def site_symmetry(site,dim=5,pg='-12m2'):
+    """symmetry operators of site symmetry group of 'site'.
     
     Args:
         site (numpy.ndarray):
@@ -453,12 +467,12 @@ def site_symmetry(site,ndim=5,pg='-12m2'):
         verbose (int)
     
     Returns:
-        List of index of symmetry operators of the site symmetry group G (list):
+        List of index of symmetry operators of the site symmetry group (list):
             The symmetry operators leaves xyz identical.
     """
     
     symop=dodesymop_array(pg)
-    traop=translation(ndim)
+    traop=translation(dim)
     
     list1=[]
     for i2,op in enumerate(symop):
@@ -473,44 +487,231 @@ def site_symmetry(site,ndim=5,pg='-12m2'):
             else:
                 pass
     return remove_overlaps(list1)
+
+def equivalent_positions(site,dim=5,pg='-12m2'):
+    """symmetry operators that generate equivalent positions of 'site'.
     
-def coset(site,ndim=5,pg='-12m2'):
-    """coset
+    Args:
+        site (numpy.ndarray):
+            xyz coordinate of the site.
+            The shape is (6,3).
+        ndim (int):
+            dimension, 4 or 5
+        verbose (int)
+    
+    Returns:
+        List of index of symmetry operators of the equivalent positions of 'site'. (list):
+    """
+    symop=dodesymop_array(pg)
+    #print('len(symop):',len(symop))
+    
+    lst=site_symmetry(site,dim,pg)
+    #print('len(lst):',len(lst))
+    a=set(range(len(symop)))
+    b=set(lst)-{0}
+    #return list(a-b)
+    
+    idx_equiv=list(a-b)
+    return idx_equiv
+    """
+    vts=generator_obj_symmetric_vector_specific_symop(site,V0,idx_equiv,pg)
+    idx_site_unit=[]
+    for i,vt in enumerate(vts):
+        vn=numerical_vector(vt)
+        print('%d: %6.4f %6.4f %6.4f %6.4f %6.4f'%(i,vn[0],vn[1],vn[2],vn[3],vn[4]))
+        #print(vn)
+        if vn[0]>=0 and vn[1]>=0 and vn[2]>=0 and vn[3]>=0:
+            #print(vn)
+            idx_site_unit.append(i)
+    #print('idx_site_unit:',idx_site_unit)
+    return idx_site_unit
+    """
+
+def coset(site,dim=5,pg='-12m2'):
+    """left coset decomposition
+    """
+    symop=dodesymop_array(pg)
+    num_ord_g=len(symop)
+    
+    list1=site_symmetry(site,dim,pg)
+    num_ord_h=len(list1)
+    
+    if num_ord_g==num_ord_h:
+        return [0]
+        
+    elif num_ord_h==1:
+        return list(range(num_ord_g))
+        
+    elif int(num_ord_g/num_ord_h)-num_ord_g/num_ord_h<EPS:
+        out=[0]
+        num_index=int(num_ord_g/num_ord_h)
+        if num_index==1:
+            return out
+        else:
+            # lst_index_else: list of index of symmetry operators which are not in the G.
+            tmp=set(range(num_ord_g))-set(list1)
+            lst_index_else=list(tmp)
+            
+            list4=[]
+            for i2 in lst_index_else:
+                lst_tmp=[]
+                for i1 in list1: # i1-th symmetry operation of the site symmetry (point group, H)
+                    op1=np.dot(symop[i2],symop[i1])
+                    for i3,op in enumerate(symop):
+                        if np.all(op==op1):
+                            lst_tmp.append(i3)
+                            break
+                        else:
+                            pass
+                list4.append(lst_tmp)
+            
+            lst=list(range(len(list4)))
+            for pair in itertools.combinations(lst,num_index-1):
+                a=[]
+                for i1 in pair:
+                    a+=list4[i1]
+                c=remove_overlaps(a)
+                if len(c)==len(a):
+                    break
+            for i in pair:
+                out.append(lst_index_else[i])
+            return out
+    else:
+        print('error')
+        return 
+
+def coset_a(site,dim=5,pg='-12m2'):
+    """left coset decomposition
+    """
+    print('============= in coset_a() =============')
+    symop=dodesymop_array(pg)
+    num_ord_g=len(symop)
+    
+    list1=site_symmetry(site,dim,pg)
+    num_ord_h=len(list1)
+    
+    print('site simmetry (list1):',list1)
+    
+    if num_ord_g==num_ord_h:
+        return [0]
+        
+    elif int(num_ord_g/num_ord_h)-num_ord_g/num_ord_h<EPS:
+        #out=[0]
+        out=[]
+        num_index=int(num_ord_g/num_ord_h)
+        if num_index==1:
+            return out
+        else:
+            # lst_index_else: list of index of symmetry operators which are not in the G.
+            tmp=set(range(num_ord_g))-set(list1)
+            lst_index_else=list(tmp)
+            print('sym op not in site sym (lst_index_else):',lst_index_else)
+            list4=[]
+            for i2 in lst_index_else:
+                lst_tmp=[]
+                for i1 in list1: # i1-th symmetry operation of the site symmetry (point group, H)
+                    op1=np.dot(symop[i2],symop[i1])
+                    for i3,op in enumerate(symop):
+                        if np.all(op==op1):
+                            lst_tmp.append(i3)
+                            break
+                        else:
+                            pass
+                list4.append(lst_tmp)
+                
+            for i in range(len(list4)):
+                print('%d'%(lst_index_else[i]),list4[i])
+                
+            """
+            lst=list(range(len(list4)))
+            for pair in itertools.combinations(lst,num_index-1):
+                a=[]
+                for i1 in pair:
+                    a+=list4[i1]
+                c=remove_overlaps(a)
+                if len(c)==len(a):
+                    break
+            for i in pair:
+                out.append(lst_index_else[i])
+            return out
+            """
+            
+            tmp=[]
+            lst=list(range(len(list4)))
+            for pair in itertools.combinations(lst,num_index-1):
+                a=[]
+                for i1 in pair:
+                    a+=list4[i1]
+                c=remove_overlaps(a)
+                if len(c)==len(a):
+                    tmp.append(pair)
+            for i in range(len(tmp)):
+                out0=[0]
+                for j in tmp[i]:
+                    out0.append(lst_index_else[j])
+                out.append(out0)
+                #print('#%d'%(i))
+                #print(out0)
+                for j1 in out0:
+                    lst_tmp=[]
+                    for i1 in list1:
+                        op1=np.dot(symop[j1],symop[i1])
+                        for i3,op in enumerate(symop):
+                            if np.all(op==op1):
+                                lst_tmp.append(i3)
+                                break
+                            else:
+                                pass
+                    b=remove_overlaps(lst_tmp)
+                    #print(b)
+            #print(out)
+            #return out[17] # 5, 17
+            print('============= in coset_a() =============')
+            return out
+    else:
+        print('error')
+        return 
+
+def coset_1(site,dim=5,pg='-12m2'):
+    """
+    left coset decomposition
+    another vasion, without using intertools
     """
     symop=dodesymop_array(pg)
     
-    list1=site_symmetry(site,ndim,pg)
-    
-    # List of index of symmetry operators which are not in the G.
-    tmp=range(len(symop))
-    tmp=set(tmp)-set(list1)
-    list2=list(tmp)
-    
-    list2_new=remove_overlaps(list2)
+    list1=site_symmetry(site,dim,pg)
     
     if len(symop)==len(list1):
-        list5=[0]
+        return [0]
     else:
-        # left coset decomposition:
+        # list2: list of index of symmetry operators which are not in the G.
+        tmp=range(len(symop))
+        tmp=set(tmp)-set(list1)
+        #list2=list(tmp)
+        #list2_new=remove_overlaps(list2)
+        #list2=remove_overlaps(list(tmp))
+        list2=list(tmp)
+        
         list4=[]
-        for i2 in list2_new:
+        for i2 in list2:
             list3=[]
             for i1 in list1:
-                op1=np.dot(symop[i2],symop[i1])
+                op1=np.dot(symop[i2],symop[i1]) # left coset decomposition
                 for i3,op in enumerate(symop):
-                    if np.all(op1==op):
+                    if np.all(op==op1):
                         list3.append(i3)
                         break
                     else:
                         pass
             list4.append(list3)
-        
+            
         for i2 in range(len(list4)-1):
             a=list4[i2]
             b=[]
             d=[]
-            list5=[0] # symmetry element of identity, symop[0]
-            list5.append(list2_new[i2])
+            #list5=[0] # symmetry element of identity, symop[0]
+            list5=[]
+            list5.append(list2[i2])
             i3=i2+1
             while i3<len(list4):
                 b=list4[i3]
@@ -519,23 +720,23 @@ def coset(site,ndim=5,pg='-12m2'):
                         pass
                     else:
                         d=a+b
-                        list5.append(list2_new[i3])
+                        list5.append(list2[i3])
                 else:
                     if find_overlaps(d,b):
                         pass
                     else:
                         d=d+b
-                        list5.append(list2_new[i3])
+                        list5.append(list2[i3])
                 i3+=1
             b=remove_overlaps(d)
             if len(symop)==len(list5)*len(list1):
                 break
             else:
                 pass
-    
-    return list5
+                
+        return list5
 
-def site_symmetry_and_coset(site,ndim=5,verbose=0,pg='-12m2'):
+def site_symmetry_and_coset(site,dim=5,pg='-12m2',verbose=0):
     #symmetry operators in the site symmetry group G and its left coset decomposition.
     #
     #Args:
@@ -554,7 +755,7 @@ def site_symmetry_and_coset(site,ndim=5,verbose=0,pg='-12m2'):
     #        The symmetry operators generates equivalent positions of the site xyz.
     
     symop=dodesymop_array(pg)
-    traop=translation(ndim)
+    traop=translation(dim)
     
     # List of index of symmetry operators of the site symmetry group G.
     # The symmetry operators leaves xyz identical.
@@ -748,7 +949,358 @@ def similarity(m):
                 [ 0, 0, 0, 0, 1, 0],\
                 [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
     return matrixpow(m1.T,m)
+
+############################
+# Group
+############################
+def generate_multiplication_table(a,flag,ndim):
+    """
+    対称行列リストaから積表を求める
+    Generation of a multiplication table from symmetry elements,
+    for point group (flag='PG'), 
+    for space group (flag='SG').
     
+    input:
+    list a, list of symmetry elements
+    string flag: 'SG' for space group, 'PG' for point group,
+    int ndim: dimention of periodic structure, (dummy for flag == 'PG')
+    
+    return:
+    int ndarray table
+        1（群をつくらない場合）
+    """
+    RTOL=1e-02
+    ATOL=1e-03
+    
+    def translation_one_unit_cel(ndim):
+        """
+        ユニットセル1つ分だけシフトする。
+        並進を含む対称操作が等価かどうか確認するときに用いる。
+    
+        int ndim: 3次元結晶の場合は3, icoの場合は6, decagonal, dodecagonalの場合は5
+        """
+        z0 = np.zeros([6,7])
+        z1 = np.zeros([2,8])
+    
+        t1 = np.array([[1,0,0,0,0,0]]).T
+        t2 = np.array([[0,1,0,0,0,0]]).T
+        t3 = np.array([[0,0,1,0,0,0]]).T
+    
+        a1 = [-1,0,1]
+    
+        lst=[]
+        if ndim==6:
+            t4 = np.array([[0,0,0,1,0,0]]).T
+            t5 = np.array([[0,0,0,0,1,0]]).T
+            t6 = np.array([[0,0,0,0,0,1]]).T
+            for i1 in a1:
+                for i2 in a1:
+                    for i3 in a1:
+                        for i4 in a1:
+                            for i5 in a1:
+                                for i6 in a1:
+                                    t = t1*i1+t2*i2+t3*i3+t4*i4+t5*i5+t6*i6
+                                    tmp = np.block([z0,t])
+                                    tmp = np.block([[tmp],[z1]])
+                                    lst.append(tmp)
+        elif ndim==3:
+            for i1 in a1:
+                for i2 in a1:
+                    for i3 in a1:
+                        t = t1*i1+t2*i2+t3*i3
+                        tmp = np.block([z0,t])
+                        tmp = np.block([[tmp],[z1]])
+                        lst.append(tmp)
+        elif ndim==5:
+             t4 = np.array([[0,0,0,1,0,0]]).T
+             t5 = np.array([[0,0,0,0,1,0]]).T
+             for i1 in a1:
+                for i2 in a1:
+                    for i3 in a1:
+                        for i4 in a1:
+                            for i5 in a1:
+                                t = t1*i1+t2*i2+t3*i3+t4*i4+t5*i5
+                                tmp = np.block([z0,t])
+                                tmp = np.block([[tmp],[z1]])
+                                lst.append(tmp)
+        else:
+            pass
+        return lst
+    
+    def equivalent(a,b,flag=0,ndim=6):
+        """
+        judge whether symmetric matrices a and b are equivalen or not. 
+        Input
+        nd.array a: symmetry element matrix
+        nd.array b: symmetry element matrix
+        int flag: 
+            0 with translation symmetry, 
+            1 without translation symmetry
+        int ndim, dimension of periodic structure
+        """
+        counter = 0
+        if flag==0:
+            for t in translation_one_unit_cel(ndim):
+                if np.all(np.isclose(a, b+t, rtol=RTOL, atol=ATOL)):
+                    counter+=1
+                    break
+        else:
+            if np.all(np.isclose(a, b, rtol=RTOL, atol=ATOL)):
+                counter+=1
+        if counter!=0:
+            return True
+        else:
+            return False
+    
+    num = len(a)
+    
+    #print('generate_multiplication_table()')
+    # 元の通し番号と6D表現行列を出力
+    #print('\nSymmetry Elements')
+    #for i1 in range(num):
+    #    print('# %d:'%i1)
+    #    print(a[i1])
+    
+    if flag=='SG':
+        nflag = 0
+    else:
+        nflag = 1
+        
+    # 積表を作成
+    lst = []
+    for i1 in range(num):
+        for i2 in range(num):
+            b = np.dot(a[i2],a[i1])
+            counter = 0
+            for i3 in range(num):
+                if equivalent(b,a[i3],nflag,ndim):
+                    counter+=1
+                    lst.append(i3)
+                    break
+            if counter == 0:
+                lst.append(-1) # a1とa2の積がリストaの中に含まれていない場合は-1を代入する。
+    if len(lst) == num**2:
+        return np.array(lst).reshape(num,num)
+    else:
+        print('Cannot make multiplication table.')
+        return 1
+
+def check_closure(mul_table,combination):
+    # 閉包性(closure)
+    counter3 = 0
+    num = len(combination)
+    for i2 in range(num):
+        for i3 in range(num):
+            counter = 0
+            for i4 in combination:
+                if mul_table[i2][i3] == i4:
+                    counter+=1
+            if counter == 0:
+                counter3+=1
+                break
+    if counter3 == 0:
+        return True # closure
+    else:
+        return False
+
+def check_identity_element(combination,num_identity=0):
+    # 単位元(identity element)の存在
+    counter1 = 0
+    for i2 in range(len(combination)):
+        if combination[i2] == num_identity:
+            counter1+=1
+            break
+    if counter1 == 1:
+        return True
+    else:
+        return False
+
+def check_inverse_element(mul_table,num_identity=0):
+    # 逆元(inverse element)の存在
+    (m,n)=mul_table.shape
+    if m == n:
+        counter2 = 0
+        for i2 in range(m):
+            counter = 0
+            for i3 in range(m):
+                if mul_table[i2][i3] == num_identity:
+                    counter+=1
+                    break
+            if counter != 1:
+                counter2+=1
+                break
+        if counter2 == 0:
+            return True
+        else:
+            return False
+    else:
+        return False
+
+def check_connectivity(mul_table,combination):
+    # 結合律(connectivity)
+    counter3=0
+    num = len(combination)
+    for i2 in range(num):
+        for i3 in range(num):
+            for i4 in range(num):
+                ab = mul_table[i2][i3]
+                ab =combination.index(ab)
+                abc1 = mul_table[ab][i4]
+                bc = mul_table[i3][i4]
+                bc =combination.index(bc)
+                abc2 = mul_table[i2][bc]
+                if abc1 != abc2:
+                    counter3+=1
+                    break
+    if counter3 == 0:
+        return True
+    else:
+        return False
+
+def check_group(a,flag='SG',ndim=6):
+    """
+    """
+    table=generate_multiplication_table(a,flag,ndim)
+    comb=list(range(len(a)))
+    
+    if check_closure(table,comb): # 閉包性のチェック
+        #if check_identity_element(comb,num_identity): # 単位元の存在
+        # 前処理で単位元を必ず含んでいる為、単位元の存在を再度確認する必要はない。
+        num_identity=0
+        if check_inverse_element(table,num_identity): # 逆元の存在
+            if check_connectivity(table,comb): # 結合律
+                return True
+            else:
+                return False
+        else:
+            return False
+    else:
+        return False
+
+def stereographic_projection(symop,idx_site,idx_coset,vn0):
+    #print('Stereographic projection')
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots(figsize=(8,8))
+    
+    x1e=[]
+    y1e=[]
+    x2e=[]
+    y2e=[]
+    x1i=[]
+    y1i=[]
+    x2i=[]
+    y2i=[]
+    for idx in idx_site:
+        sop=symop[idx]
+        vn=np.dot(sop,vn0)
+        p=projection_numerical(vn)
+        xe=p[0]
+        ye=p[1]
+        ze=p[2]
+        xi=p[3]
+        yi=p[4]
+        zi=p[5]
+        dde=np.sqrt(xe**2+ye**2+ze**2)+EPS
+        ddi=np.sqrt(xi**2+yi**2+zi**2)+EPS
+        xe=xe/dde
+        ye=ye/dde
+        ze=ze/dde
+        xi=xi/ddi
+        yi=yi/ddi
+        zi=zi/ddi
+        if ze>=0:
+            x1e.append(float(xe))
+            y1e.append(float(ye))
+        else:
+            x2e.append(float(xe))
+            y2e.append(float(ye))
+        if zi>=0:
+            x1i.append(float(xi))
+            y1i.append(float(yi))
+        else:
+            x2i.append(float(xi))
+            y2i.append(float(yi))
+            
+    x3e=[]
+    y3e=[]
+    x4e=[]
+    y4e=[]
+    x3i=[]
+    y3i=[]
+    x4i=[]
+    y4i=[]
+    for idx in idx_coset:
+        sop=symop[idx]
+        vn=np.dot(sop,vn0)
+        p=projection_numerical(vn)
+        print(p)
+        xe=p[0]
+        ye=p[1]
+        ze=p[2]
+        xi=p[3]
+        yi=p[4]
+        zi=p[5]
+        dde=np.sqrt(xe**2+ye**2+ze**2)
+        ddi=np.sqrt(xi**2+yi**2+zi**2)
+        xe=xe/dde
+        ye=ye/dde
+        ze=ze/dde
+        xi=xi/ddi
+        yi=yi/ddi
+        zi=zi/ddi
+        if ze>=0:
+            x3e.append(float(xe))
+            y3e.append(float(ye))
+        else:
+            x4e.append(float(xe))
+            y4e.append(float(ye))
+        if zi>=0:
+            x3i.append(float(xi))
+            y3i.append(float(yi))
+        else:
+            x4i.append(float(xi))
+            y4i.append(float(yi))
+            
+    ax1 = fig.add_subplot(2, 2, 1)
+    ax1.set_title('site symmetry (par)')
+    ax1.scatter([0], [0], s=30000, marker='o', color='white', alpha=1.0, edgecolors='black')
+    ax1.scatter(x2e, y2e, s=200, marker='o', color='white', alpha=1.0, edgecolors='black')
+    ax1.scatter(x1e, y1e, s=40,  marker='o', color='black', alpha=1.0, edgecolors='black')
+    ax1.set_xlim(-1.3,1.3)
+    ax1.set_ylim(-1.3,1.3)
+    ax1.axis("off")
+    
+    ax2 = fig.add_subplot(2, 2, 2)
+    ax2.set_title('coset (par)')
+    ax2.scatter([0], [0], s=30000, marker='o', color='white', alpha=1.0, edgecolors='black')
+    ax2.scatter(x4e, y4e, s=200, marker='o', color='white', alpha=1.0, edgecolors='black')
+    ax2.scatter(x3e, y3e, s=40,  marker='o', color='black', alpha=1.0, edgecolors='black')
+    ax2.set_xlim(-1.3,1.3)
+    ax2.set_ylim(-1.3,1.3)
+    ax2.axis("off")
+    
+    ax3 = fig.add_subplot(2, 2, 3)
+    ax3.set_title('site symmetry (perp)')
+    ax3.scatter([0], [0], s=30000, marker='o', color='white', alpha=1.0, edgecolors='black')
+    ax3.scatter(x2i, y2i, s=200, marker='o', color='white', alpha=1.0, edgecolors='black')
+    ax3.scatter(x1i, y1i, s=40,  marker='o', color='black', alpha=1.0, edgecolors='black')
+    ax3.set_xlim(-1.3,1.3)
+    ax3.set_ylim(-1.3,1.3)
+    ax3.axis("off")
+    
+    ax4 = fig.add_subplot(2, 2, 4)
+    ax4.set_title('coset (perp)')
+    ax4.scatter([0], [0], s=30000, marker='o', color='white', alpha=1.0, edgecolors='black')
+    ax4.scatter(x4i, y4i, s=200, marker='o', color='white', alpha=1.0, edgecolors='black')
+    ax4.scatter(x3i, y3i, s=40,  marker='o', color='black', alpha=1.0, edgecolors='black')
+    ax4.set_xlim(-1.3,1.3)
+    ax4.set_ylim(-1.3,1.3)
+    ax4.axis("off")
+    
+    #plt.axis("off")
+    plt.show()
+    return 0
+
 if __name__ == '__main__':
     
     # test
@@ -822,16 +1374,8 @@ if __name__ == '__main__':
     svts=symop_vecs(symop[1],vts,cen0)
     print(svts)
     """
-    
-    print('Stereographic projection')
-    import matplotlib.pyplot as plt
-    fig, ax = plt.subplots(figsize=(8,8))
-    
-    #pg='12/mmm'
-    #pg='-12m2'
-    #pg='-12'
-    #pg='12'
-    symop=dodesymop()
+        
+    dim=5
     
     """
     vn0=np.array([1, 2, 3, 4, 5, 0]) 
@@ -866,6 +1410,26 @@ if __name__ == '__main__':
     plt.show()
     """
     
+    #pg='12/mmm'
+    #pg='12mm'
+    #pg='-12m2'
+    pg='-12'
+    #pg='12'
+    #symop=dodesymop()
+    symop=dodesymop_array(pg)
+    
+    ########################################
+    # 生成元から作った集合が群をなすかどうかを確認
+    ########################################
+    flag='PG'
+    #flag='SG'
+    dim=5
+    if check_group(symop,flag,dim):
+        print('checking group: pass')
+    else:
+        print('checking group: fail')
+    ########################################
+    ########################################
     
     # Symmetric positions, P\bar{12}m2(12^5mm)
     V_1a =np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]]) # ( 0,  0,  0,  0,  0) # \bar{12}m2(12^5mm)
@@ -881,128 +1445,78 @@ if __name__ == '__main__':
     #site=V_6b
     #site=V_12a
     
-    #vn0=np.array([1, 2, 3, 4, 5, 0])
-    #vn0=np.array([0, 2/3, 0, 1/3, 1/2, 0])
+    #vn0=np.array([0.0, 1.0, 0.1, 0.0, 0.1, 0])
     vn0=numerical_vector(site)
     
-    #idx_site,idx_coset=site_symmetry_and_coset(site,ndim=5)
-    idx_site=site_symmetry(site,ndim=5)
-    idx_coset=coset(site,ndim=5)
-    #print(idx_site)
-    #print(idx_coset)
-    x1e=[]
-    y1e=[]
-    x2e=[]
-    y2e=[]
-    x1i=[]
-    y1i=[]
-    x2i=[]
-    y2i=[]
-    for idx in idx_site:
-        sop=symop[idx]
-        vn=np.dot(sop,vn0)
-        p=projection_numerical(vn)
-        xe=p[0]
-        ye=p[1]
-        ze=p[2]
-        xi=p[3]
-        yi=p[4]
-        zi=p[5]
-        dde=np.sqrt(xe**2+ye**2+ze**2)
-        ddi=np.sqrt(xi**2+yi**2+zi**2)
-        xe=xe/dde
-        ye=ye/dde
-        ze=ze/dde
-        xi=xi/ddi
-        yi=yi/ddi
-        zi=zi/ddi
-        if ze>=0:
-            x1e.append(float(xe))
-            y1e.append(float(ye))
-        else:
-            x2e.append(float(xe))
-            y2e.append(float(ye))
-        if zi>=0:
-            x1i.append(float(xi))
-            y1i.append(float(yi))
-        else:
-            x2i.append(float(xi))
-            y2i.append(float(yi))
+    #idx_site,idx_coset=site_symmetry_and_coset(site,dim,pg)
+    #print(' idx_site:',idx_site)
+    #print('idx_coset:',idx_coset)
+    #print('\n')
+    idx_site=site_symmetry(site,dim,pg)
+    print(' idx_site:',idx_site)
+    #idx_equiv=equivalent_positions(site,dim,pg)
+    #print('idx_equiv:',idx_equiv)
+    #vts=generator_obj_symmetric_vector_specific_symop(site,V0,idx_equiv,pg)
+    #idx_site_unit=[]
+    #for i,vt in enumerate(vts):
+    #    #print('%d'%(i),vt)
+    #    vn=numerical_vector(vt)
+    #    #print(vn)
+    #    if vn[0]>=0 and vn[1]>=0 and vn[2]>=0 and vn[3]>=0:
+    #        print(vn)
+    #        idx_site_unit.append(i)
+    #print('idx_site_unit:',idx_site_unit)
+    
+    #print('idx_coset:',idx_coset)
+    
+    #idx_coset=coset(site,dim,pg)
+    idx_coset=coset_a(site,dim,pg) # 全ての余剰類分解を計算
+    print('idx_coset:')
+    num=0
+    for a in idx_coset:
+        print('  %d'%(num),a)
+        num+=1
         
-    x3e=[]
-    y3e=[]
-    x4e=[]
-    y4e=[]
-    x3i=[]
-    y3i=[]
-    x4i=[]
-    y4i=[]
-    for idx in idx_coset:
-        sop=symop[idx]
-        vn=np.dot(sop,vn0)
-        p=projection_numerical(vn)
-        xe=p[0]
-        ye=p[1]
-        ze=p[2]
-        xi=p[3]
-        yi=p[4]
-        zi=p[5]
-        dde=np.sqrt(xe**2+ye**2+ze**2)
-        ddi=np.sqrt(xi**2+yi**2+zi**2)
-        xe=xe/dde
-        ye=ye/dde
-        ze=ze/dde
-        xi=xi/ddi
-        yi=yi/ddi
-        zi=zi/ddi
-        if ze>0:
-            x3e.append(float(xe))
-            y3e.append(float(ye))
+    RTOL=1e-02
+    ATOL=1e-03
+    
+    print('\n checking...')
+    lst0=[]
+    for b in idx_coset[0]:
+        vn=symop[b]@vn0
+        lst0.append(vn)
+        print(vn)
+    #print(lst0)
+    print('\n')
+    for i in range(1,len(idx_coset)):
+        lst1=[]
+        for b in idx_coset[i]:
+            vn=symop[b]@vn0
+            lst1.append(vn)
+            #print(vn)
+        counter=0
+        for l1 in lst1:
+            for l0 in lst0:
+                #if np.all(l1==l0):
+                if np.all(np.isclose(l0,l1,rtol=RTOL, atol=ATOL)):
+                    counter+=1
+                    break
+                else:
+                    pass
+        if counter==len(idx_coset):
+            print('%d: ok'%(i))
         else:
-            x4e.append(float(xe))
-            y4e.append(float(ye))
-        if zi>0:
-            x3i.append(float(xi))
-            y3i.append(float(yi))
-        else:
-            x4i.append(float(xi))
-            y4i.append(float(yi))
+            print('%d: diff'%(i),counter)
             
-    ax1 = fig.add_subplot(2, 2, 1)
-    ax1.set_title('site symmetry (par)')
-    ax1.scatter([0], [0], s=30000, marker='o', color='white', alpha=1.0, edgecolors='black')
-    ax1.scatter(x2e, y2e, s=200, marker='o', color='white', alpha=1.0, edgecolors='black')
-    ax1.scatter(x1e, y1e, s=40,  marker='o', color='black', alpha=1.0, edgecolors='black')
-    ax1.set_xlim(-1.3,1.3)
-    ax1.set_ylim(-1.3,1.3)
-    ax1.axis("off")
+            #lst1.append(vn)
+        #tmp=set(lst1)
+        #l2=list(tmp)
+        #l2.sort()
+        #print(l2)
+        
+    idx_coset=idx_coset[17]
+    print(idx_coset)
     
-    ax2 = fig.add_subplot(2, 2, 2)
-    ax2.set_title('coset (par)')
-    ax2.scatter([0], [0], s=30000, marker='o', color='white', alpha=1.0, edgecolors='black')
-    ax2.scatter(x4e, y4e, s=200, marker='o', color='white', alpha=1.0, edgecolors='black')
-    ax2.scatter(x3e, y3e, s=40,  marker='o', color='black', alpha=1.0, edgecolors='black')
-    ax2.set_xlim(-1.3,1.3)
-    ax2.set_ylim(-1.3,1.3)
-    ax2.axis("off")
+    print('Stereographic projection')
+    stereographic_projection(symop,idx_site,idx_coset,vn0)
     
-    ax3 = fig.add_subplot(2, 2, 3)
-    ax3.set_title('site symmetry (perp)')
-    ax3.scatter([0], [0], s=30000, marker='o', color='white', alpha=1.0, edgecolors='black')
-    ax3.scatter(x2i, y2i, s=200, marker='o', color='white', alpha=1.0, edgecolors='black')
-    ax3.scatter(x1i, y1i, s=40,  marker='o', color='black', alpha=1.0, edgecolors='black')
-    ax3.set_xlim(-1.3,1.3)
-    ax3.set_ylim(-1.3,1.3)
-    ax3.axis("off")
-    
-    ax4 = fig.add_subplot(2, 2, 4)
-    ax4.set_title('coset (perp)')
-    ax4.scatter([0], [0], s=30000, marker='o', color='white', alpha=1.0, edgecolors='black')
-    ax4.scatter(x4i, y4i, s=200, marker='o', color='white', alpha=1.0, edgecolors='black')
-    ax4.scatter(x3i, y3i, s=40,  marker='o', color='black', alpha=1.0, edgecolors='black')
-    ax4.set_xlim(-1.3,1.3)
-    ax4.set_ylim(-1.3,1.3)
-    ax4.axis("off")
-    
-    #plt.axis("off")
-    plt.show()
