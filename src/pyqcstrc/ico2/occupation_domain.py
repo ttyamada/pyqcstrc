@@ -146,8 +146,10 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
         select (str):'simple' or 'normal'
             'simple': Merging tetrahedra into one single objecte
             'normal': Each tetrahedron is set as single objecte (large file)
-            'egdes':  Select this option when the obj is a set of edges.
-            'podatm': same as 'simple' but return "vertices" necessary to input 
+             'egdes': Select this option when the obj is a set of edges.
+            'podatm': Same as 'simple' but return "vertices" necessary to input 
+              'atom': Atomic structure 
+               'mag': Magnetic structure
             (default, select = 'normal')
     Returns:
         int: 0 (succeed), 1 (fail) when select = 'simple' or 'normal'.
@@ -188,7 +190,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
     #dmax=5.0
     dmax=10.0
     
-    if select=='simple' or 'egdes':
+    if select=='simple' or select=='egdes':
         
         if np.all(obj==None):
             print('no volume obj')
@@ -821,6 +823,217 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
                 print('    written in %s'%(file_name))
             return vertices
     
+    elif select == 'atom' or select == 'mag':
+        
+        print('#VESTA_FORMAT_VERSION 3.5.4\n', file=f)
+        
+        print('\nMOLECULE', file=f)
+        print('\nTITLE\
+        \nNew structure\n', file=f)
+        
+        print('GROUP\
+        \n1 1 P 1', file=f)
+        print('SYMOP\
+        \n 0.000000  0.000000  0.000000  1  0  0   0  1  0   0  0  1   1\
+        \n -1.0 -1.0 -1.0  0 0 0  0 0 0  0 0 0', file=f)
+        print('TRANM 0\
+        \n 0.000000  0.000000  0.000000  1  0  0   0  1  0   0  0  1', file=f)
+        print('LTRANSL\
+        \n -1\
+        \n 0.000000  0.000000  0.000000  0.000000  0.000000  0.000000', file=f)
+        print('LORIENT\
+        \n -1   0   0   0   0\
+        \n 1.000000  0.000000  0.000000  1.000000  0.000000  0.000000\
+        \n 0.000000  0.000000  1.000000  0.000000  0.000000  1.000000', file=f)
+        print('LMATRIX\
+        \n 1.000000  0.000000  0.000000  0.000000\
+        \n 0.000000  1.000000  0.000000  0.000000\
+        \n 0.000000  0.000000  1.000000  0.000000\
+        \n 0.000000  0.000000  0.000000  1.000000\
+        \n 0.000000  0.000000  0.000000', file=f)
+        print('CELLP\
+        \n  1.000000   1.000000   1.000000  90.000000  90.000000  90.000000\
+        \n  0.000000   0.000000   0.000000   0.000000   0.000000   0.000000', file=f)
+        print('STRUC', file=f)
+        for i1,site in enumerate(obj):
+            element,xyz,num_od,h1,h2,h3,h4,h5,h6,mu = site
+            print('%d %s        %s%d  1.0000   %8.6f   %8.6f   %8.6f   1        -'%(\
+                i1+1,element,element,i1+1,xyz[0],xyz[1],xyz[2]), file=f)
+            print('                                    0.000000   0.000000   0.000000  0.00', file=f)
+        print('  0 0 0 0 0 0 0', file=f)
+        print('THERI 1', file=f)
+        for i1,site in enumerate(obj):
+            element,xyz,num_od,h1,h2,h3,h4,h5,h6,mu = site
+            print('%d        %s%d -0.000000'%(i1+1,element,i1+1), file=f)
+        print('  0 0 0', file=f)
+        print('SHAPE', file=f)
+        print('  0       0       0       0   0.000000  0   192   192   192   192', file=f)
+        print('BOUND', file=f)
+        print('       0        1         0        1         0        1', file=f)
+        print('  0   0   0   0  0', file=f)
+        print('SBOND', file=f)
+        print('  0 0 0 0', file=f)
+        print('SITET', file=f)
+        for i1,site in enumerate(obj):
+            element,xyz,num_od,h1,h2,h3,h4,h5,h6,mu = site
+            print('%d        %s%d  0.8000  76  76  76  76  76  76 204  0'%(i1+1,element,i1+1), file=f)
+        print('  0 0 0 0 0 0', file=f)
+        print('VECTR', file=f)
+        if select == 'mag':
+            for i1,site in enumerate(obj):
+                mu=site[9]
+                if np.all(mu==0):
+                    pass
+                else:
+                    #print(mu)
+                    print('   %d    %8.6f    %8.6f    %8.6f 0'%(i1+1,mu[0],mu[1],mu[2]), file=f)
+                    print('    %d   0    0    0    0'%(i1+1), file=f)
+                    print(' 0 0 0 0 0', file=f)
+        else:
+            pass
+        print(' 0 0 0 0 0', file=f)
+        print('VECTT', file=f) # color of arrows
+        if select == 'mag':
+            for i1,site in enumerate(obj):
+                mu=site[9]
+                if np.all(mu==0):
+                    pass
+                else:
+                    print('   %d  0.500 255   0   0 1'%(i1+1), file=f)
+        else:
+            pass
+        print(' 0 0 0 0 0', file=f)
+        print('SPLAN', file=f)
+        print('  0   0   0   0', file=f)
+        print('LBLAT\
+        \n -1\
+        \nLBLSP\
+        \n -1\
+        \nDLATM\
+        \n -1\
+        \nDLBND\
+        \n -1\
+        \nDLPLY\
+        \n -1\
+        \nPLN2D\
+        \n  0   0   0   0\
+        \nATOMT\
+        \n  1         Xx  0.8000  76  76  76  76  76  76 204\
+        \n  0 0 0 0 0 0\
+        \nSCENE\
+        \n 0.963232 -0.028532 -0.267152  0.000000\
+        \n-0.046121  0.962025 -0.269037  0.000000\
+        \n 0.264683  0.271466  0.925337  0.000000\
+        \n 0.000000  0.000000  0.000000  1.000000\
+        \n  0.000   0.000\
+        \n  0.000\
+        \n  1.000\
+        \nHBOND 0 2', file=f)
+
+        print('\nSTYLE\
+        \nDISPF 37753794\
+        \nMODEL   0  1  0\
+        \nSURFS   0  1  1\
+        \nSECTS  32  1\
+        \nFORMS   0  1\
+        \nATOMS   0  0  1\
+        \nBONDS   1\
+        \nPOLYS   1\
+        \nVECTS 2.000000\
+        \nFORMP\
+        \n  1  1.0   0   0   0\
+        \nATOMP\
+        \n 24  24   0  50  2.0   0\
+        \nBONDP\
+        \n  1  16  0.250  2.000 127 127 127\
+        \nPOLYP\
+        \n 204 1  1.000 180 180 180\
+        \nISURF\
+        \n  0   0   0   0\
+        \nTEX3P\
+        \n  1  0.00000E+00  1.00000E+00\
+        \nSECTP\
+        \n  1  5.00000E-01  5.00000E-01  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00\
+        \nCONTR\
+        \n 0.1 -1 1 1 10 -1 2 5\
+        \n 2 1 2 1\
+        \n   0   0   0\
+        \n   0   0   0\
+        \n   0   0   0\
+        \n   0   0   0\
+        \nHKLPP\
+        \n 192 1  1.000 255   0 255\
+        \nUCOLP\
+        \n   0   1  1.000   0   0   0\
+        \nCOMPS 1\
+        \nLABEL 1    12  1.000 0\
+        \nPROJT 0  0.962\
+        \nBKGRC\
+        \n 255 255 255\
+        \nDPTHQ 1 -0.5000  3.5000\
+        \nLIGHT0 1\
+        \n 1.000000  0.000000  0.000000  0.000000\
+        \n 0.000000  1.000000  0.000000  0.000000\
+        \n 0.000000  0.000000  1.000000  0.000000\
+        \n 0.000000  0.000000  0.000000  1.000000\
+        \n 0.000000  0.000000 20.000000  0.000000\
+        \n 0.000000  0.000000 -1.000000\
+        \n  26  26  26 255\
+        \n 179 179 179 255\
+        \n 255 255 255 255\
+        \nLIGHT1\
+        \n 1.000000  0.000000  0.000000  0.000000\
+        \n 0.000000  1.000000  0.000000  0.000000\
+        \n 0.000000  0.000000  1.000000  0.000000\
+        \n 0.000000  0.000000  0.000000  1.000000\
+        \n 0.000000  0.000000 20.000000  0.000000\
+        \n 0.000000  0.000000 -1.000000\
+        \n   0   0   0   0\
+        \n   0   0   0   0\
+        \n   0   0   0   0\
+        \nLIGHT2\
+        \n 1.000000  0.000000  0.000000  0.000000\
+        \n 0.000000  1.000000  0.000000  0.000000\
+        \n 0.000000  0.000000  1.000000  0.000000\
+        \n 0.000000  0.000000  0.000000  1.000000\
+        \n 0.000000  0.000000 20.000000  0.000000\
+        \n 0.000000  0.000000 -1.000000\
+        \n   0   0   0   0\
+        \n   0   0   0   0\
+        \n   0   0   0   0\
+        \nLIGHT3\
+        \n 1.000000  0.000000  0.000000  0.000000\
+        \n 0.000000  1.000000  0.000000  0.000000\
+        \n 0.000000  0.000000  1.000000  0.000000\
+        \n 0.000000  0.000000  0.000000  1.000000\
+        \n 0.000000  0.000000 20.000000  0.000000\
+        \n 0.000000  0.000000 -1.000000\
+        \n   0   0   0   0\
+        \n   0   0   0   0\
+        \n   0   0   0   0\
+        \nSECCL 0', file=f)
+
+        print('\nTEXCL 0', file=f)
+
+        print('\nATOMM\
+        \n 204 204 204 255\
+        \n  25.600\
+        \nBONDM\
+        \n 255 255 255 255\
+        \n 128.000\
+        \nPOLYM\
+        \n 255 255 255 255\
+        \n 128.000\
+        \nSURFM\
+        \n   0   0   0 255\
+        \n 128.000\
+        \nFORMM\
+        \n 255 255 255 255\
+        \n 128.000\
+        \nHKLPM\
+        \n 255 255 255 255\
+        \n 128.000', file=f)
+        return 0
     else:
         return 1
     

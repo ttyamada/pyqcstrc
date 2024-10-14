@@ -15,7 +15,8 @@ from pyqcstrc.ico2.math1 import (add,
 from pyqcstrc.ico2.utils import (remove_doubling_in_perp_space, 
                                 remove_doubling,
                                 )
-from pyqcstrc.ico2.numericalc import (length_numerical)
+from pyqcstrc.ico2.numericalc import (length_numerical,
+                                     numerical_vector)
 import numpy as np
 
 EPS=1e-6
@@ -119,14 +120,18 @@ def generator_obj_symmetric_tetrahedron_specific_symop(obj,centre,list_of_symmet
 
 def generator_obj_symmetric_obj_specific_symop(obj,centre,list_of_symmetry_operation_index):
     # using specific symmetry operations
+    mop=icosasymop()
+    shape=tuple([len(list_of_symmetry_operation_index)])
+    a=np.zeros(shape+obj.shape,dtype=np.int64)
+    #print('shape+obj.shape:',shape+obj.shape)
     if obj.ndim==4:
-        mop=icosasymop()
-        shape=tuple([len(list_of_symmetry_operation_index)])
-        a=np.zeros(shape+obj.shape,dtype=np.int64)
-        j0=0
-        for i1 in list_of_symmetry_operation_index:
+        for j0,i1 in enumerate(list_of_symmetry_operation_index):
             a[j0]=symop_obj(mop[i1],obj,centre)
-            j0+=1
+        return a
+    elif obj.ndim==5:
+        for j0,i1 in enumerate(list_of_symmetry_operation_index):
+            for j1,ob in enumerate(obj):
+                a[j0][j1]=symop_obj(mop[i1],ob,centre)
         return a
     else:
         print('object has an incorrect shape!')
@@ -258,7 +263,7 @@ def icosasymop_array():
                         num+=1
     return symop
 
-def translation(brv):
+def translation(brv,flag=0):
     """translational symmetry
     
     brv : bravais lattce p, i, f, s, c
@@ -269,7 +274,20 @@ def translation(brv):
     symop.append(tmp)
     
     if brv=='p':
-        lst=[-1,0,1]
+        if flag==0:
+            lst=[-1,0,1]
+        elif flag==1:
+            lst=[0,1]
+        elif flag==-1:
+            lst=[-1,0]
+        else:
+            lst=[-1,0,1]
+    elif brv=='f':
+        print('not supported')
+        return 
+    elif brv=='s':
+        print('not supported')
+        return 
     else:
         print('not supported')
         return 
@@ -287,39 +305,211 @@ def translation(brv):
 ################ 
 # site symmetry
 ################
-def site_symmetry(site,brv):
-    """symmetry operators in the site symmetry group G.
-    
-    Args:
-        site (numpy.ndarray):
-            xyz coordinate of the site.
-            The shape is (6,3).
+def site_symmetry_and_coset(site,brv,verbose=0):
+    #symmetry operators in the site symmetry group G and its left coset decomposition.
+    #
+    #Args:
+    #    site (numpy.ndarray):
+    #        xyz coordinate of the site.
+    #        The shape is (6,3).
+    #
+    #Returns:
+    #    List of index of symmetry operators of the site symmetry group G (list):
+    #        The symmetry operators leaves xyz identical.
+    #    
+    #    List of index of symmetry operators in the left coset representatives of the poibt group G (list):
+    #        The symmetry operators generates equivalent positions of the site xyz.
+    vn=numerical_vector(site)
+    if verbose>0:
+        print(' site: %3.2f %3.2f %3.2f %3.2f %3.2f %3.2f'%(vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
+    def site_symmetry(site,symop,brv):
+        """symmetry operators in the site symmetry group G.
+        
+        Args:
+            site (numpy.ndarray):
+                xyz coordinate of the site.
+                The shape is (6,3).
             
-    Returns:
-        List of index of symmetry operators of the site symmetry group G (list):
-            The symmetry operators leaves xyz identical.
+        Returns:
+            List of index of symmetry operators of the site symmetry group G (list):
+                The symmetry operators leaves xyz identical.
+        """
+        #print('site_symmetry():')
+        
+        #symop=icosasymop()
+        traop=translation(brv)
+        
+        list1=[]
+        for i2,op in enumerate(symop):
+            site1=symop_vec(op,site,V0)
+            flag=0
+            for top in traop:
+                site2=add_vectors(site1,top)
+                tmp=sub_vectors(site,site2)
+                if length_numerical(tmp)<EPS:
+                    list1.append(i2)
+                    break
+                else:
+                    pass
+        return remove_overlaps(list1)
+        
+    def coset(site,symop,brv,idx_site):
+        """
+        """
+        #print('coset():')
+        #idx_site=site_symmetry(site,brv)
+        
+        # coordinate of equivalent sites
+        pos_equiv=equivalent_positions(site,brv)
+        #print('  number of equivalent positions:',len(pos_equiv))
+        #for xyz in pos_equiv:
+        #    print(xyz)
+        
+        # site symmetry以外の対称操作のインデックスを収納したリストを作成（idx_else）
+        a=set(range(len(symop)))
+        b=set(idx_site)-{0}
+        idx_else=list(a-b)
+        
+        # idx_elseの対称操作のうち、各等価サイトを作る対称操作を調べる
+        tmp1=[]
+        for pos in pos_equiv:
+            #print('  pos:',pos)
+            tmp=[]
+            for idx in idx_else:
+                #pos1=symop[idx]@site
+                pos1=symop_vec(symop[idx],site,V0)
+                if np.all(pos==pos1):
+                    tmp.append(idx)
+                    #break
+                else:
+                    pass
+            tmp1.append(tmp)
+            #print('  idx_coset',tmp)
+            
+        # いくつかある組み合わせのうち最初のものを選ぶ。
+        idx_coset=[]
+        for i in range(len(tmp1)):
+            idx_coset.append((tmp1[i][0]))
+            
+        if check_coset(site,idx_coset,symop,idx_site):
+            return idx_coset
+        else:
+            return 
+            
+    def check_coset(site,comb,symop,idx_site):
+        """
+        """
+        #symop=symop_array()
+        #list1=site_symmetry(site)
+        
+        list4=[]
+        for i2 in comb:
+            for i1 in idx_site: # i1-th symmetry operation of the site symmetry (point group, H)
+                op1=symop[i2]@symop[i1]
+                for i3,op in enumerate(symop):
+                    if np.all(op==op1):
+                        num=i3
+                        break
+                    else:
+                        pass
+                list4.append(num)
+        c=remove_overlaps(list4)
+        if len(c)==len(list4):
+            return True
+        else:
+            return False
+    
+    symop=icosasymop_array()
+    idx_site=site_symmetry(site,symop,brv)
+    idx_coset=coset(site,symop,brv,idx_site)
+    if verbose>0:
+        print('  order of site symmetry:',len(idx_site))
+        print('  number of equivalent positions:',len(idx_coset))
+    #print('  idx_coset:',idx_coset)
+    #print('  idx_site:',idx_site)
+    return idx_site,idx_coset
+
+def equivalent_positions(site,brv):
     """
+    """
+    symop=icosasymop_array()
+    """
+    #print('len(symop):',len(symop))
     
-    symop=icosasymop()
-    traop=translation(brv)
+    lst=site_symmetry(site)
+    #print('len(lst):',len(lst))
+    a=set(range(len(symop)))
+    b=set(lst)-{0}
+    #return list(a-b)
     
-    list1=[]
-    for i2,op in enumerate(symop):
-        site1=symop_vec(op,site,V0)
-        flag=0
-        for top in traop:
-            site2=add_vectors(site1,top)
-            tmp=sub_vectors(site,site2)
-            if length_numerical(tmp)<EPS:
-                list1.append(i2)
+    idx_equiv=list(a-b)
+    
+    """
+    lst_pos=[]
+    #for idx in idx_equiv:
+    for op in symop:
+        #p=op@site
+        p=symop_vec(op,site,centre=V0)
+        #print('p:',p)
+        lst_pos.append(p)
+    
+    """
+    print('initioal list:')
+    for pos in lst_pos:
+        print(pos)
+    """
+    # 重複をなくす
+    lst_pos_1=[lst_pos[0]]
+    for i1 in range(1,len(lst_pos)):
+        pos1=lst_pos[i1]
+        flg=0
+        for pos2 in lst_pos_1:
+            if np.all(pos2==pos1):
+                flg+=1
                 break
             else:
                 pass
-    return remove_overlaps(list1)
-
-def coset(site,brv):
-    """coset
+        if flg==0:
+            lst_pos_1.append(pos1)
     """
+    print('equivalent positions without doubling:')
+    for pos in lst_pos_1:
+        print(pos) 
+    """
+    
+    # 求めた等価なサイトのうち、並進操作を施して同一なのであれば、どちらか片方を選ぶようにする。
+    lst_saved=[site]
+    if len(lst_pos_1)==1:
+        pass
+    else:
+        for i1 in range(1,len(lst_pos_1)):
+            p=lst_pos_1[i1]
+            counter=0
+            for tr in translation(brv,flag=1):
+                pos=p+tr
+                for saved in lst_saved:
+                    #if np.allclose(pos,saved):
+                    if np.all(pos==saved):
+                        counter+=1
+                        break
+                if counter>0:
+                    break
+            if counter==0:
+                lst_saved.append(p)
+        #print('lst_saved:',lst_saved)
+    
+    # 求めたサイトのうち単位胞内にあるサイトを選ぶ
+    lst_saved_new=[]
+    for vt in lst_saved:
+        vn=numerical_vector(vt)
+        if np.all(vn>=0):
+            lst_saved_new.append(vt)
+        else:
+            pass
+    return lst_saved_new
+
+""" old
+def coset(site,brv):
     symop=icosasymop()
     
     list1=site_symmetry(site,brv)
@@ -466,6 +656,7 @@ def site_symmetry_and_coset(site,brv):
                 pass
     
     return list1_new,list5
+"""
 
 #################
 #   Utilities
@@ -484,7 +675,7 @@ def remove_overlaps(l1):
     l2=list(tmp)
     l2.sort()
     return l2
-    
+
 def find_overlaps(l1,l2):
     """find overlap or not btween list1 and list2.
     
@@ -527,7 +718,7 @@ def similarity_vec(vt,m):
     #vec1=[]
     op=similarity(m)
     return dot_product_1(op,vt)
-    
+
 def similarity(m):
     """Similarity transformation of icosahedral QCs
     """
@@ -538,16 +729,19 @@ def similarity(m):
                     [ 1,-1,-1, 1, 1, 1],\
                     [ 1, 1,-1,-1, 1, 1]],dtype=np.int64)
     return matrixpow(m1.T,m)
-    
+
 if __name__ == '__main__':
-    
-    # test
     
     import random
     from numericalc import (numerical_vectors,
                             numerical_vector,
                             numeric_value,)
-                            
+    
+    # test
+    POS_V  = np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+    POS_C  = np.array([[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]],dtype=np.int64)
+    POS_EC = np.array([[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+    
     def generate_random_value():
         """ generate value in TAU-style
         """
@@ -583,7 +777,7 @@ if __name__ == '__main__':
     
     cen0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
     
-    
+    """
     print("TEST: symop_vec()")
     symop=icosasymop()
     vt=generate_random_vector()
@@ -613,4 +807,24 @@ if __name__ == '__main__':
     print(vts)
     svts=symop_vecs(symop[1],vts,cen0)
     print(svts)
+    """
+    
+    
+    brv='p'
+    
+    print('TEST: site_symmetry_and_coset()')
+    #site=POS_V
+    #site=POS_C
+    site=POS_EC
+    #print('site:')
+    #print(site)
+    
+    pos_eq=equivalent_positions(site,brv)
+    #print('pos_eq:',len(pos_eq))
+    #for i1,xyz in enumerate(pos_eq):
+    #    print(i1,xyz)
+        
+    idx_ssym,idx_coset=site_symmetry_and_coset(site,brv,verbose=1)
+    #print('idx_ssym:',idx_ssym)
+    #print('idx_coset:',idx_coset)
     

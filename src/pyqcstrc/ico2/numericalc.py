@@ -478,6 +478,23 @@ def inside_outside_tetrahedron_tau(point: NDArray[np.int64], tetrahedron: NDArra
     tetrahedron=get_internal_component_sets_numerical(tetrahedron)
     return inside_outside_tetrahedron(point,tetrahedron)
 
+def inside_outside_tetrahedron_tau_v2(point: NDArray[np.float64], tetrahedron: NDArray[np.int64]) -> bool:
+    """this function judges whether the point is inside a tetrahedron or not
+        
+    Parameters
+    ----------
+    point: array
+        6d coordinate of the point.
+    tetrahedron: array
+        6d vertex coordinates of tetrahedron in TAU-style.
+    """
+    #point=numerical_vector(point)
+    #tetrahedron=numerical_vectors(tetrahedron)
+    # 
+    #point=get_internal_component_numerical(point)
+    tet=get_internal_component_sets_numerical(tetrahedron)
+    return inside_outside_tetrahedron(point,tet)
+
 def inside_outside_tetrahedron(point: NDArray[np.float64], tetrahedron: NDArray[np.float64]) -> bool:
     """this function judges whether the point is inside a tetrahedron or not
         
@@ -488,7 +505,6 @@ def inside_outside_tetrahedron(point: NDArray[np.float64], tetrahedron: NDArray[
     tetrahedron: array
         vertex coordinates of tetrahedron, (xyz1, xyz2, xyz3, xyz4)
     """
-    vol0=tetrahedron_volume_numerical(tetrahedron)
     
     def small_tetrahedron(indx,p,tetrahedron0):
         tet=np.zeros((4,3),dtype=np.float64)
@@ -498,6 +514,13 @@ def inside_outside_tetrahedron(point: NDArray[np.float64], tetrahedron: NDArray[
             else:
                 tet[i]=tetrahedron0[i]
         return tet
+    
+    #if inside_outside_tetrahedron_rough(point,tetrahedron):
+    #    pass
+    #else:
+    #    return False # outside
+    
+    vol0=tetrahedron_volume_numerical(tetrahedron)
     
     tet1=small_tetrahedron(0,point,tetrahedron)
     vol1=tetrahedron_volume_numerical(tet1)
@@ -511,15 +534,33 @@ def inside_outside_tetrahedron(point: NDArray[np.float64], tetrahedron: NDArray[
     tet4=small_tetrahedron(3,point,tetrahedron)
     vol4=tetrahedron_volume_numerical(tet4)
     
-    if abs(vol0-vol1-vol2-vol3-vol4)<EPS*vol0:
+    #if abs(vol0-vol1-vol2-vol3-vol4)<EPS*vol0:
+    if abs(vol0-vol1-vol2-vol3-vol4)<EPS:
+        #print(' Inside')
         return True # inside
     else:
         return False # outside
 
-
-
-
-
+def inside_outside_tetrahedron_rough(point: NDArray[np.float64], tetrahedron: NDArray[np.float64]) -> bool:
+    # rough check, spherical approximantion
+    
+    def centroid(tet):
+        a=np.zeros((3),dtype=np.float64)
+        for vn in tet:
+            a+=vn
+        return a/4.
+    
+    cen=centroid(tetrahedron)
+    dd=[]
+    for vn in tetrahedron:
+        dd.append(np.linalg.norm(vn-cen))
+    #print(' distance',np.linalg.norm(point-cen))
+    #print('  radius:',max(dd))
+    if np.linalg.norm(point-cen)<=max(dd):
+        #print(' rough: Inside')
+        return True
+    else:
+        return False
 
 def obj_volume_6d_numerical(obj: NDArray[np.int64]) -> float:
     """This function returns volume of an object (set of tetrahedra).
@@ -618,6 +659,23 @@ def projection_numerical(vn: NDArray[np.float64]) -> NDArray[np.float64]:
     v6 =  (vn[3]-vn[5]) + TAU*(vn[1]-vn[2]) # z in Eperp
     return np.array([v1,v2,v3,v4,v5,v6],dtype=np.float64)
 
+def projection_par_numerical(vn: NDArray[np.float64]) -> NDArray[np.float64]:
+    """parallel components of a 6D lattice vector in direct space.
+    
+    Parameters
+    ----------
+    vn: array
+        6-dimensional vector, xyzuvw.
+    """
+    v1 =  (vn[0]-vn[4]) + TAU*(vn[1]+vn[2]) # x in Epar
+    v2 =  (vn[3]+vn[5]) + TAU*(vn[0]+vn[4]) # y in Epar
+    v3 =  (vn[1]-vn[2]) - TAU*(vn[3]-vn[5]) # z in Epar
+    #v4 = -(vn[1]+vn[2]) + TAU*(vn[0]-vn[4]) # x in Eperp
+    #v5 = -(vn[0]+vn[4]) + TAU*(vn[3]+vn[5]) # y in Eperp
+    #v6 =  (vn[3]-vn[5]) + TAU*(vn[1]-vn[2]) # z in Eperp
+    #return np.array([v1,v2,v3,v4,v5,v6],dtype=np.float64)
+    return np.array([v1,v2,v3],dtype=np.float64)
+
 def projection_sets_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
     """parallel and perpendicular components of a 6D lattice vector in direct space.
     
@@ -630,6 +688,43 @@ def projection_sets_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
     m=np.zeros((num,6),dtype=np.float64)
     for i in range(num):
         m[i]=projection_numerical(vns[i])
+    return m
+    
+def projection_sets_par_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
+    """parallel components of a 6D lattice vector in direct space.
+    
+    Parameters
+    ----------
+    vsn: array
+        set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
+    """
+    num=len(vns)
+    m=np.zeros((num,3),dtype=np.float64)
+    for i in range(num):
+        m[i]=projection_par_numerical(vns[i])
+    return m
+    
+def projection_sets_par_numerical_normalized(vns: NDArray[np.float64]) -> NDArray[np.float64]:
+    """normalization of parallel components of a 6D lattice vector in direct space.
+    
+    Parameters
+    ----------
+    vsn: array
+        set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
+    """
+    if vns.ndim==3:
+        n1,n2,_=vns.shape
+        m=np.zeros((n1,n2,3),dtype=np.float64)
+        for i1 in range(n1):
+            for i2 in range(n2):
+                a=projection_par_numerical(vns[i1][i2])
+                m[i1][i2]=a/np.linalg.norm(a)
+    elif vns.ndim==2:
+        num=len(vns)
+        m=np.zeros((num,3),dtype=np.float64)
+        for i in range(num):
+            a=projection_par_numerical(vns[i])
+            m[i]=a/np.linalg.norm(a)
     return m
     
 def projection3_numerical(vn: NDArray[np.float64]) -> NDArray[np.float64]:
@@ -705,7 +800,7 @@ def projection_numerical_par(vn: NDArray[np.float64]) -> NDArray[np.float64]:
            [ 0.2236068, -0.2236068, -0.2236068,  0.2236068,  0.5      ,  0.2236068],
            [ 0.2236068,  0.2236068, -0.2236068, -0.2236068,  0.2236068,  0.5      ]])
     return m@vn
-    
+
 ################
 # Unnecessary functions？？？
 ################
@@ -784,6 +879,7 @@ if __name__ == '__main__':
     print(vol)
     """
     
+    """
     ln=np.array([\
     [1.61803399, -1.,          0. ],\
     [3.73607, -0.19098,1.30902 ]])
@@ -795,4 +891,24 @@ if __name__ == '__main__':
     
     a=check_intersection_segment_surface_numerical(ln,tr)
     print(a)
+    """
+    
+    eps=1e-3
+    tetrahedron=np.array([[ -1, -1, -1],\
+                          [  1,  1, -1],\
+                          [ -1,  1,  1],\
+                          [  1, -1,  1]])
+    #point=np.array([0,0,np.sqrt(3)+eps])
+    point=np.array([ -1+eps, -1+eps, -1+eps])
+    print('inside_outside_tetrahedron_rough:')
+    if inside_outside_tetrahedron_rough(point,tetrahedron):
+        print(' inside')
+    else:
+        print(' outside')
+    
+    print('inside_outside_tetrahedron:')
+    if inside_outside_tetrahedron(point,tetrahedron):
+        print(' inside')
+    else:
+        print(' outside')
     

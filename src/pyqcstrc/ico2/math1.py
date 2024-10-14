@@ -36,6 +36,8 @@ def add(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     c3=c3/g
     if c3<0:
         return np.array([int(-c1),int(-c2),int(-c3)])
+    elif c1==0 and c2==0:
+        return np.array([0,0,1])
     else:
         return np.array([int(c1),int(c2),int(c3)])
 
@@ -64,6 +66,8 @@ def mul(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     c3=c3/g
     if c3<0:
         return np.array([int(-c1),int(-c2),int(-c3)])
+    elif c1==0 and c2==0:
+        return np.array([0,0,1])
     else:
         return np.array([int(c1),int(c2),int(c3)])
 
@@ -129,6 +133,8 @@ def div(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
                 c3=c3/g
                 if c3<0:
                     return np.array([int(-c1),int(-c2),int(-c3)],dtype=np.int64)
+                elif c1==0 and c2==0:
+                    return np.array([0,0,1])
                 else:
                     return np.array([int(c1),int(c2),int(c3)],dtype=np.int64)
             else:

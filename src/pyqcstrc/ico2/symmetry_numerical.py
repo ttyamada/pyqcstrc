@@ -134,10 +134,17 @@ def generator_obj_symmetric_vectors_specific_symop(vns,centre,list_of_symmetry_o
         return
 
 def generator_equivalent_numeric_vector_specific_symop(vn,index_of_symmetry_operation):
+    #print('generator_equivalent_numeric_vector_specific_symop()')
+    #print('  vn:',vn)
+    #print('  index_of_symmetry_operation:',index_of_symmetry_operation)
+    #print('  len(index_of_symmetry_operation):',len(index_of_symmetry_operation))
     mop=icosasymop_array()
+    #print('    len(mop):',len(mop))
     out=np.zeros((len(index_of_symmetry_operation),6),dtype=np.float64)
-    for i1 in index_of_symmetry_operation:
-        out[i1]=mop[i1]@vn
+    for i1,indx in enumerate(index_of_symmetry_operation):
+        #print('    i1:',i1)
+        #print('    mop[indx]@vn:',mop[indx]@vn)
+        out[i1]=mop[indx]@vn
     return out
     
 def translation(brv):
