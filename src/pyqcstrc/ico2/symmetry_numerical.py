@@ -7,6 +7,7 @@ import sys
 import numpy as np
 from pyqcstrc.ico2.symmetry import (icosasymop,
                                     icosasymop_array,
+                                    icosasymop3_array,
                                     remove_overlaps,
                                     find_overlaps,
                                     similarity,
@@ -111,10 +112,49 @@ def generator_obj_symmetric_vector_specific_symop(vn,centre,list_of_symmetry_ope
         print('vn has an incorrect shape!')
         return
 
+def generator_obj_symmetric_vector_specific_symop_1(vn,centre,list_of_symmetry_operation_index):
+    #
+    # for axial vector
+    #
+    if vn.ndim==1:
+        mop=icosasymop3_array('axial')
+        symop=[]
+        for i1 in list_of_symmetry_operation_index:
+            symop.append(mop[i1])
+        return symop_vec(symop,vn,centre)
+    else:
+        print('vn has an incorrect shape!')
+        return 
+
 def generator_obj_symmetric_vectors_specific_symop(vns,centre,list_of_symmetry_operation_index):
     # using specific symmetry operations
     #mop=icosasymop()
     mop=icosasymop_array()
+    symop=[]
+    ndim=vns.ndim
+    if ndim==3:
+        for i1 in list_of_symmetry_operation_index:
+            symop.append(mop[i1])
+        return symop_obj(symop,vns,centre)
+    elif ndim==2:
+        for i1 in list_of_symmetry_operation_index:
+            symop.append(mop[i1])
+        return symop_vecs(symop,vns,centre)
+    #elif ndim==1:
+    #    for i1 in list_of_symmetry_operation_index:
+    #        symop.append(mop[i1])
+    #    return symop_vec(symop,vns,centre)
+    else:
+        print('vn has an incorrect shape!')
+        return
+
+def generator_obj_symmetric_vectors_specific_symop_1(vns,centre,list_of_symmetry_operation_index):
+    #
+    # for axial vector
+    #
+    # using specific symmetry operations
+    #mop=icosasymop()
+    mop=icosasymop3_array('axial')
     symop=[]
     ndim=vns.ndim
     if ndim==3:
@@ -174,6 +214,7 @@ def translation(brv):
 ################ 
 # site symmetry
 ################
+
 def site_symmetry(site,brv):
     """symmetry operators in the site symmetry group G.
     
