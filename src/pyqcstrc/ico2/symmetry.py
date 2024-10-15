@@ -11,16 +11,21 @@ from pyqcstrc.ico2.math1 import (add,
                                 dot_product_1, 
                                 sub_vectors, 
                                 add_vectors,
+                                mul_vectors,
                                 )
 from pyqcstrc.ico2.utils import (remove_doubling_in_perp_space, 
                                 remove_doubling,
                                 )
 from pyqcstrc.ico2.numericalc import (length_numerical,
-                                     numerical_vector)
+                                     numerical_vector,
+                                     numeric_value,
+                                     )
 import numpy as np
 
+PI=np.pi
 EPS=1e-6
 V0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+TAU=(1+np.sqrt(5))/2.0
 
 def symop_obj(symop,obj,centre):
     """ Apply a symmetric operation on an object around given centre. in TAU-style
@@ -65,15 +70,13 @@ def symop_vec(symop,vt,centre):
 
 def generator_obj_symmetric_obj(obj,centre):
     
-    if obj.ndim==3 or obj.ndim==4:
+    if obj.ndim==2 or obj.ndim==3 or obj.ndim==4:
         mop=icosasymop()
         num=len(mop)
         shape=tuple([num])
         a=np.zeros(shape+obj.shape,dtype=np.int64)
-        i=0
-        for op in mop:
+        for i,op in enumerate(mop):
             a[i]=symop_obj(op,obj,centre)
-            i+=1
         if obj.ndim==4:
             n1,n2,_,_=obj.shape
             a=a.reshape(num*n1,n2,6,3)
@@ -146,12 +149,14 @@ def generator_obj_symmetric_vec(vectors, centre):
     return generator_obj_symmetric_obj(vectors,centre)
 
 def generator_equivalent_vectors(vectors,centre):
-    a=generator_obj_symmetric_obj
+    a=generator_obj_symmetric_obj(vector,centre)
     return remove_doubling_in_perp_space(a)
+    #return remove_doubling(a)
 
 def generator_equivalent_vec(vector,centre):
     a=generator_obj_symmetric_obj(vector,centre)
-    return remove_doubling(a)
+    return remove_doubling_in_perp_space(a)
+    #return remove_doubling(a)
 
 def icosasymop():
     # icosahedral symmetry operations
@@ -245,11 +250,11 @@ def icosasymop_array():
                 [ 0, 0, 0, 0, 0,-1]],dtype=np.int64)
     symop=np.zeros((120,6,6),dtype=np.int64)
     num=0
-    for m in range(2):
-        for l in range(3):
-            for k in range(2):
-                for j in range(2):
-                    for i in range(5):
+    for m in range(2): # 2
+        for l in range(3): # 3
+            for k in range(2): # 2
+                for j in range(2): # 2
+                    for i in range(5): # 5
                         s1=matrixpow(m1,i) # c5
                         s2=matrixpow(m2,j) # mirror
                         s3=matrixpow(m3,k) # c2
@@ -301,6 +306,108 @@ def translation(brv,flag=0):
                             symop.append(tmp)
     return np.array(symop)
 
+# new ver
+def translation_new(brv,flag=0):
+    """translational symmetry
+    
+    brv : bravais lattce p, i, f, s, c
+            s : superlattice for decagonal quasicrystal
+    """
+    symop=[]
+    symop.append(V0)
+    
+    if brv=='p':
+        if flag==1:
+            lst=[0,1]
+        elif flag==-1:
+            lst=[-1,0]
+        else:
+            lst=[-1,0,1]
+        for i1 in lst:
+            for i2 in lst:
+                for i3 in lst:
+                    for i4 in lst:
+                        for i5 in lst:
+                            for i6 in lst:
+                                tmp=np.array([[i1,0,1],[i2,0,1],[i3,0,1],[i4,0,1],[i5,0,1],[i6,0,1]])
+                                symop.append(tmp)
+        return np.array(symop)
+        
+    elif brv=='f':
+        tf=np.array([[[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],\
+                    [[1,0,2],[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],\
+                    [[1,0,2],[0,0,1],[1,0,2],[0,0,1],[0,0,1],[0,0,1]],\
+                    [[1,0,2],[0,0,1],[0,0,1],[1,0,2],[0,0,1],[0,0,1]],\
+                    [[1,0,2],[0,0,1],[0,0,1],[0,0,1],[1,0,2],[0,0,1]],\
+                    [[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[1,0,2]],\
+                    [[0,0,1],[1,0,2],[1,0,2],[0,0,1],[0,0,1],[0,0,1]],\
+                    [[0,0,1],[1,0,2],[0,0,1],[1,0,2],[0,0,1],[0,0,1]],\
+                    [[0,0,1],[1,0,2],[0,0,1],[0,0,1],[1,0,2],[0,0,1]],\
+                    [[0,0,1],[1,0,2],[0,0,1],[0,0,1],[0,0,1],[1,0,2]],\
+                    [[0,0,1],[0,0,1],[1,0,2],[1,0,2],[0,0,1],[0,0,1]],\
+                    [[0,0,1],[0,0,1],[1,0,2],[0,0,1],[1,0,2],[0,0,1]],\
+                    [[0,0,1],[0,0,1],[1,0,2],[0,0,1],[0,0,1],[1,0,2]],\
+                    [[0,0,1],[0,0,1],[0,0,1],[1,0,2],[1,0,2],[0,0,1]],\
+                    [[0,0,1],[0,0,1],[0,0,1],[1,0,2],[0,0,1],[1,0,2]],\
+                    [[0,0,1],[0,0,1],[0,0,1],[0,0,1],[1,0,2],[1,0,2]],\
+                    [[0,0,1],[0,0,1],[1,0,2],[1,0,2],[1,0,2],[1,0,2]],\
+                    [[0,0,1],[1,0,2],[0,0,1],[1,0,2],[1,0,2],[1,0,2]],\
+                    [[0,0,1],[1,0,2],[1,0,2],[0,0,1],[1,0,2],[1,0,2]],\
+                    [[0,0,1],[1,0,2],[1,0,2],[1,0,2],[0,0,1],[1,0,2]],\
+                    [[0,0,1],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[0,0,1]],\
+                    [[1,0,2],[0,0,1],[0,0,1],[1,0,2],[1,0,2],[1,0,2]],\
+                    [[1,0,2],[0,0,1],[1,0,2],[0,0,1],[1,0,2],[1,0,2]],\
+                    [[1,0,2],[0,0,1],[1,0,2],[1,0,2],[0,0,1],[1,0,2]],\
+                    [[1,0,2],[0,0,1],[1,0,2],[1,0,2],[1,0,2],[0,0,1]],\
+                    [[1,0,2],[1,0,2],[0,0,1],[0,0,1],[1,0,2],[1,0,2]],\
+                    [[1,0,2],[1,0,2],[0,0,1],[1,0,2],[0,0,1],[1,0,2]],\
+                    [[1,0,2],[1,0,2],[0,0,1],[1,0,2],[1,0,2],[0,0,1]],\
+                    [[1,0,2],[1,0,2],[1,0,2],[0,0,1],[0,0,1],[1,0,2]],\
+                    [[1,0,2],[1,0,2],[1,0,2],[0,0,1],[1,0,2],[0,0,1]],\
+                    [[1,0,2],[1,0,2],[1,0,2],[1,0,2],[0,0,1],[0,0,1]],\
+                    [[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]]])
+        a=np.zeros((len(tf)*2**6,6,3),dtype=np.int64)
+        symop=V0
+        lst=[0,1]
+        counter1=0
+        for i1 in lst:
+            for i2 in lst:
+                for i3 in lst:
+                    for i4 in lst:
+                        for i5 in lst:
+                            for i6 in lst:
+                                tmp=np.array([[i1,0,1],[i2,0,1],[i3,0,1],[i4,0,1],[i5,0,1],[i6,0,1]])
+                                for tf1 in tf:
+                                    tf2=add_vectors(tf1,tmp)
+                                    #flag=0
+                                    #for tf3 in tf2:
+                                    #    if numeric_value(tf3)>1.0:
+                                    #        flag+=1
+                                    #        break
+                                    #    else:
+                                    #        pass
+                                    #if flag==0:
+                                    #    a[counter1]=tf2
+                                    #    counter1+=1
+                                    a[counter1]=tf2
+                                    counter1+=1
+        a=a[:counter1]
+        #remove_doubling(a)
+        return a
+        
+    elif brv=='s':
+        #tf=mul_vectors(tf,np.array([2,0,1]))
+        return 
+        
+    elif brv=='i':
+        t1=np.array([[[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],\
+            [[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]]])
+        return 
+    else:
+        print('no lattice type selected.')
+        return 
+        
+        
 ####### WIP ########
 ################ 
 # site symmetry
@@ -319,9 +426,7 @@ def site_symmetry_and_coset(site,brv,verbose=0):
     #    
     #    List of index of symmetry operators in the left coset representatives of the poibt group G (list):
     #        The symmetry operators generates equivalent positions of the site xyz.
-    vn=numerical_vector(site)
-    if verbose>0:
-        print(' site: %3.2f %3.2f %3.2f %3.2f %3.2f %3.2f'%(vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
+    
     def site_symmetry(site,symop,brv):
         """symmetry operators in the site symmetry group G.
         
@@ -337,8 +442,13 @@ def site_symmetry_and_coset(site,brv,verbose=0):
         #print('site_symmetry():')
         
         #symop=icosasymop()
-        traop=translation(brv)
         
+        
+        traop=translation(brv,flag=1)
+        #traop=translation_new(brv,flag=1)
+        
+        
+        #"""
         list1=[]
         for i2,op in enumerate(symop):
             site1=symop_vec(op,site,V0)
@@ -351,6 +461,39 @@ def site_symmetry_and_coset(site,brv,verbose=0):
                     break
                 else:
                     pass
+        
+        #
+        # WIP
+        #
+        """
+        list1=[]
+        
+        vtg=np.array([[1,0,3],[0,1,4],[1,0,5],[0,1,6],[1,0,7],[0,1,8]],dtype=np.int64)
+        
+        # サイト周りでvtgに対して点群の対称操作を施す
+        a=np.zeros((len(symop),6,3),dtype=np.int64)
+        for i1,op in enumerate(symop):
+            a[i1]=symop_vec(op,vtg,site)
+        
+        # vtgに対して並進を含む全ての対称操作を施す
+        b=np.zeros((len(symop)*len(traop),6,3),dtype=np.int64)
+        counter=0
+        for op in symop:
+            tmp1=symop_vec(op,vtg,V0)
+            for tr in traop:
+                b[counter]=add_vectors(tmp1,tr)
+                counter+=1
+                
+        # 一致するものを探す。
+        for i1,a1 in enumerate(a):
+            for b1 in b:
+                tmp=sub_vectors(a1,b1)
+                if length_numerical(tmp)<EPS:
+                    list1.append(i1)
+                    break
+                else:
+                    pass
+        """
         return remove_overlaps(list1)
         
     def coset(site,symop,brv,idx_site):
@@ -395,7 +538,7 @@ def site_symmetry_and_coset(site,brv,verbose=0):
             return idx_coset
         else:
             return 
-            
+        
     def check_coset(site,comb,symop,idx_site):
         """
         """
@@ -418,10 +561,15 @@ def site_symmetry_and_coset(site,brv,verbose=0):
             return True
         else:
             return False
-    
+            
+    vn=numerical_vector(site)
+    if verbose>0:
+        print(' site: %3.2f %3.2f %3.2f %3.2f %3.2f %3.2f'%(vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
+        
     symop=icosasymop_array()
     idx_site=site_symmetry(site,symop,brv)
     idx_coset=coset(site,symop,brv,idx_site)
+    #print(idx_coset)
     if verbose>0:
         print('  order of site symmetry:',len(idx_site))
         print('  number of equivalent positions:',len(idx_coset))
@@ -508,6 +656,85 @@ def equivalent_positions(site,brv):
             pass
     return lst_saved_new
 
+def icosasymop3_array(flag=None):
+    """
+    symmetry operation
+    
+    flag: 
+        'axial': axial vector (e.g. classical spin)
+    """
+    def _matrixpow(m,num):
+        """
+        do rotational operation num times
+        """
+        m0=np.array([[1.0, 0.0, 0.0],\
+                     [0.0, 1.0, 0.0],\
+                     [0.0, 0.0, 1.0]],dtype=np.float64)
+        for _ in range(num):
+            m0 = np.dot(m0,m)
+        return m0
+        
+    def _genmatrix(axis,fold):
+        """
+        generate matrix for n-fold roatational symmetry, Cn
+        
+        input
+        ndarray axis: roatational axis
+        int n:
+        """ 
+        n1, n2, n3 = axis/np.linalg.norm(axis)
+        theta = -2.0*PI/fold
+        cos = np.cos(theta)
+        sin = np.sin(theta)
+    
+        # Rodrigues' rotation formula
+        a11 = n1**2.0*(1.0-cos) +    cos
+        a12 = n1*n2  *(1.0-cos) + n3*sin
+        a13 = n1*n3  *(1.0-cos) - n2*sin
+        a21 = n1*n2  *(1.0-cos) - n3*sin
+        a22 = n2**2.0*(1.0-cos) +    cos
+        a23 = n2*n3  *(1.0-cos) + n1*sin
+        a31 = n1*n3  *(1.0-cos) + n2*sin
+        a32 = n2*n3  *(1.0-cos) - n1*sin
+        a33 = n3**2.0*(1.0-cos) +    cos
+        
+        return np.array([[a11, a21, a31],\
+                         [a12, a22, a32],\
+                         [a13, a23, a33]], dtype=np.float64)
+                         
+    # matrix of symmetry operation
+    m1=_genmatrix(np.array([    1.0,  TAU,   0.0],dtype=np.float64), 5) # c5
+    m2=_genmatrix(np.array([   -TAU, +1.0, TAU+1],dtype=np.float64), 2) # mirror
+    m3=_genmatrix(np.array([   -TAU, -1.0, TAU+1],dtype=np.float64), 2) # c2
+    m4=_genmatrix(np.array([2*TAU+1,  TAU,   0.0],dtype=np.float64), 3) # c3
+    m5=np.array([[-1.0, 0.0, 0.0],\
+                 [ 0.0,-1.0, 0.0],\
+                 [ 0.0, 0.0,-1.0]],dtype=np.float64) # inverse
+                
+    symop=np.zeros((120,3,3),dtype=np.float64)
+    num=0
+    for m in range(2): # 2
+        for l in range(3): # 3
+            for k in range(2): # 2
+                for j in range(2): # 2
+                    for i in range(5): # 5
+                        s1=_matrixpow(m1,i) # c5
+                        s2=_matrixpow(m2,j) # mirror
+                        s3=_matrixpow(m3,k) # c2
+                        s4=_matrixpow(m4,l) # c3
+                        s5=_matrixpow(m5,m) # inversion
+                        tmp=np.dot(s5,s4)
+                        tmp=np.dot(tmp,s3)
+                        tmp=np.dot(tmp,s2)
+                        tmp=np.dot(tmp,s1)
+                        if flag=='axial':
+                            tmp=np.linalg.det(tmp)*tmp
+                        else:
+                            pass
+                        symop[num]=tmp
+                        num+=1
+    return symop
+    
 """ old
 def coset(site,brv):
     symop=icosasymop()
@@ -809,22 +1036,56 @@ if __name__ == '__main__':
     print(svts)
     """
     
+    print('TEST: icosasymop_array and icosasymop3_array')
+    from pyqcstrc.ico2.numericalc import (
+                            projection_par_numerical,
+                            numerical_vector,
+                            )
     
-    brv='p'
+    flag=None
+    #flag='axial'
+    op3 = icosasymop3_array(flag)
+    op6 = icosasymop_array()
+    vt=np.array([[1,0,3],[0,1,4],[1,0,5],[0,1,6],[1,0,7],[0,1,8]],dtype=np.int64)
+    vn=numerical_vector(vt)
+    vn=projection_par_numerical(vn)
+    counter=0
+    for i1 in range(120):
+        a=np.dot(op3[i1],vn)
+        b=symop_vec(op6[i1],vt,cen0)
+        bn=numerical_vector(b)
+        bn=projection_par_numerical(bn)
+        #print('%d'%(i1))
+        #print(' a:',a)
+        #print(' b:',bn)
+        if np.allclose(a,bn):
+            pass
+        else:
+            counter+=1
+    if counter==0:
+        print('ok')
+    else:
+        print('wrong!')
     
+    """
     print('TEST: site_symmetry_and_coset()')
     #site=POS_V
     #site=POS_C
     site=POS_EC
-    #print('site:')
-    #print(site)
     
-    pos_eq=equivalent_positions(site,brv)
-    #print('pos_eq:',len(pos_eq))
-    #for i1,xyz in enumerate(pos_eq):
-    #    print(i1,xyz)
-        
+    print('site:')
+    print(site)
+    
+    print('P-type icosahedral lattice')
+    brv='p'
     idx_ssym,idx_coset=site_symmetry_and_coset(site,brv,verbose=1)
-    #print('idx_ssym:',idx_ssym)
-    #print('idx_coset:',idx_coset)
+    print('idx_ssym:',idx_ssym)
+    print('idx_coset:',idx_coset)
     
+    
+    print('F-type icosahedral lattice')
+    brv='f'
+    idx_ssym,idx_coset=site_symmetry_and_coset(site,brv,verbose=1)
+    print('idx_ssym:',idx_ssym)
+    print('idx_coset:',idx_coset)
+    """
