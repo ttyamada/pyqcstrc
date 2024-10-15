@@ -719,13 +719,19 @@ def projection_sets_par_numerical_normalized(vns: NDArray[np.float64]) -> NDArra
             for i2 in range(n2):
                 a=projection_par_numerical(vns[i1][i2])
                 m[i1][i2]=a/np.linalg.norm(a)
+        return m
     elif vns.ndim==2:
         num=len(vns)
         m=np.zeros((num,3),dtype=np.float64)
         for i in range(num):
             a=projection_par_numerical(vns[i])
             m[i]=a/np.linalg.norm(a)
-    return m
+        return m
+    elif vns.ndim==1:
+        vns=projection_par_numerical(vns)
+        return vns/np.linalg.norm(vns)
+    else:
+        return 
     
 def projection3_numerical(vn: NDArray[np.float64]) -> NDArray[np.float64]:
     """perpendicular component of a 6D lattice vector in direct space.
