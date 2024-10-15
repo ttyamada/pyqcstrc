@@ -23,8 +23,9 @@ try:
                                           get_internal_component_numerical,
                                           get_internal_component_sets_numerical
                                           )
-    from pyqcstrc.ico2.symmetry_numerical import (site_symmetry_and_coset,
-                                                  generator_obj_symmetric_vector_specific_symop,
+    from pyqcstrc.ico2.symmetry_numerical import (generator_obj_symmetric_vector_specific_symop,
+                                                  generator_obj_symmetric_vector_specific_symop_1,
+                                                  generator_obj_symmetric_vectors_specific_symop_1,
                                                   generator_obj_symmetric_vectors_specific_symop,
                                                   generator_equivalent_numeric_vector_specific_symop,
                                                   )
@@ -32,6 +33,7 @@ try:
                                         generator_obj_symmetric_obj_specific_symop,
                                         site_symmetry_and_coset,
                                         icosasymop_array,
+                                        icosasymop3_array,
                                         )
 except ImportError:
     print('import error in structure_factor\n')
@@ -40,6 +42,7 @@ TAU=(1+np.sqrt(5))/2.0
 EPS=1e-6
 V0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
 V1=np.array([0, 0, 0, 0, 0, 0],dtype=np.float64)
+V2=np.array([0, 0, 0],dtype=np.float64)
 CONST1 = 1/np.sqrt(2.0+TAU)
 
 def strc(aico,brv,model,nmax,oshift,verbose):
@@ -144,24 +147,37 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                 #
                 # symmetry operation on x1,x2,x3 for each subdevided OD. 
                 #
+                ve1=projection_sets_par_numerical_normalized(x1)
+                ve2=projection_sets_par_numerical_normalized(x2)
+                ve3=projection_sets_par_numerical_normalized(x3)
+                
                 # in the independent OD (obj)
-                v1_=generator_obj_symmetric_vector_specific_symop(x1,V1,indx_site_sym) # 5f
-                v2_=generator_obj_symmetric_vector_specific_symop(x2,V1,indx_site_sym) # 3f
-                v3_=generator_obj_symmetric_vector_specific_symop(x3,V1,indx_site_sym) # 2f
+                #v1_=generator_obj_symmetric_vector_specific_symop(x1,V1,indx_site_sym) # 5f
+                #v2_=generator_obj_symmetric_vector_specific_symop(x2,V1,indx_site_sym) # 3f
+                #v3_=generator_obj_symmetric_vector_specific_symop(x3,V1,indx_site_sym) # 2f
+                v1_=generator_obj_symmetric_vector_specific_symop_1(ve1,V2,indx_site_sym) # 5f
+                v2_=generator_obj_symmetric_vector_specific_symop_1(ve2,V2,indx_site_sym) # 3f
+                v3_=generator_obj_symmetric_vector_specific_symop_1(ve3,V2,indx_site_sym) # 2f
                 #
                 # in the ODs at equivalent positions
-                v1_=generator_obj_symmetric_vectors_specific_symop(v1_,V1,indx_coset)
-                v2_=generator_obj_symmetric_vectors_specific_symop(v2_,V1,indx_coset)
-                v3_=generator_obj_symmetric_vectors_specific_symop(v3_,V1,indx_coset)
+                #v1_=generator_obj_symmetric_vectors_specific_symop(v1_,V1,indx_coset)
+                #v2_=generator_obj_symmetric_vectors_specific_symop(v2_,V1,indx_coset)
+                #v3_=generator_obj_symmetric_vectors_specific_symop(v3_,V1,indx_coset)
+                v1_=generator_obj_symmetric_vectors_specific_symop_1(v1_,V2,indx_coset)
+                v2_=generator_obj_symmetric_vectors_specific_symop_1(v2_,V2,indx_coset)
+                v3_=generator_obj_symmetric_vectors_specific_symop_1(v3_,V2,indx_coset)
                 #
-                ve1=projection_sets_par_numerical_normalized(v1_)
-                ve2=projection_sets_par_numerical_normalized(v2_)
-                ve3=projection_sets_par_numerical_normalized(v3_)
+                #ve1=projection_sets_par_numerical_normalized(v1_)
+                #ve2=projection_sets_par_numerical_normalized(v2_)
+                #ve3=projection_sets_par_numerical_normalized(v3_)
                 #print('ve3.shape',ve3.shape)
                 #
-                lst_xe1.append(ve1)
-                lst_xe2.append(ve2)
-                lst_xe3.append(ve3)
+                #lst_xe1.append(ve1)
+                #lst_xe2.append(ve2)
+                #lst_xe3.append(ve3)
+                lst_xe1.append(v1_)
+                lst_xe2.append(v2_)
+                lst_xe3.append(v3_)
                 #
             else: # symmetric ODs
                 # WIP
