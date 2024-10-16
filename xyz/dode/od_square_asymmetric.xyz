@@ -1,0 +1,7 @@
+3
+./1_square_asymmetric/od_square_asymmetric.xyz
+Xx 0.500000 0.500000 0.000000 #   0-the triangle 0-th vertex # 0 0 1 1 0 2 1 0 2 0 0 1 0 0 1 0 0 1
+Xx 0.500000 0.866025 0.000000 #   0-the triangle 1-th vertex # 3 -4 3 -3 4 3 3 -2 3 -3 2 3 0 0 1 0 0 1
+Xx 0.788675 0.788675 0.000000 #   0-the triangle 2-th vertex # 0 -2 3 0 0 1 0 0 1 0 -2 3 0 0 1 0 0 1
+area = 3 -2 24 (0.052831)
+  0-the triangle, 3 -2 24 (0.052831)

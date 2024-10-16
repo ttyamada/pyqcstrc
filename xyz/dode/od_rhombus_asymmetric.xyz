@@ -1,0 +1,7 @@
+3
+./1_rhombus_asymmetric/od_rhombus_asymmetric.xyz
+Xx -0.683013 -0.683013 0.000000 #   0-the triangle 0-th vertex # 1 0 2 0 0 1 0 0 1 1 0 2 0 0 1 0 0 1
+Xx -0.866025 -0.500000 0.000000 #   0-the triangle 1-th vertex # 2 -2 1 -2 2 1 2 -2 1 -1 2 1 0 0 1 0 0 1
+Xx -0.788675 -0.788675 0.000000 #   0-the triangle 2-th vertex # 0 2 3 0 0 1 0 0 1 0 2 3 0 0 1 0 0 1
+area = -3 4 24 (0.019338)
+  0-the triangle, -3 4 24 (0.019338)

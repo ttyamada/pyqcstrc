@@ -1,0 +1,8 @@
+4
+EC_asymmeric
+Xx 0.000000 0.000000 0.000000 #   0-the tetrahedron 0-th vertex # 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 7.854102 -4.854102 0.000000 #   0-the tetrahedron 1-th vertex # 3 0 2 -3 0 2 -3 0 2 -3 0 2 -3 0 2 -3 0 2
+Xx 3.927051 6.354102 0.000000 #   0-the tetrahedron 2-th vertex # 0 0 1 -3 0 4 -3 0 4 3 0 2 -3 0 2 3 0 2
+Xx 3.177051 5.140576 4.390576 #   0-the tetrahedron 3-th vertex # 0 0 1 3 0 4 -3 0 2 3 0 2 -3 0 2 3 0 4
+volume = 225 360 16 (50.468265)
+  0-the tetrahedron, 225 360 16 (50.468265)

@@ -1,0 +1,19 @@
+12
+./1_edge_asymmetric/od_edge_asymmetric.xyz
+Xx 0.500000 0.000000 0.000000 #   0-the triangle 0-th vertex # 0 0 1 1 0 2 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.500000 0.866025 0.000000 #   0-the triangle 1-th vertex # 0 0 1 0 0 1 0 0 1 -1 0 1 0 0 1 0 0 1
+Xx 0.788675 0.788675 0.000000 #   0-the triangle 2-th vertex # 0 -2 3 0 0 1 0 0 1 0 -2 3 0 0 1 0 0 1
+Xx 0.500000 0.000000 0.000000 #   1-the triangle 0-th vertex # 0 0 1 1 0 2 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.788675 0.788675 0.000000 #   1-the triangle 1-th vertex # 0 -2 3 0 0 1 0 0 1 0 -2 3 0 0 1 0 0 1
+Xx 0.866025 0.500000 0.000000 #   1-the triangle 2-th vertex # -1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.500000 0.000000 0.000000 #   2-the triangle 0-th vertex # 0 0 1 1 0 2 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.866025 0.500000 0.000000 #   2-the triangle 1-th vertex # -1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.077350 0.288675 0.000000 #   2-the triangle 2-th vertex # 0 -2 3 0 2 3 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.500000 0.000000 0.000000 #   3-the triangle 0-th vertex # 0 0 1 1 0 2 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.077350 0.288675 0.000000 #   3-the triangle 1-th vertex # 0 -2 3 0 2 3 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.000000 0.000000 0.000000 #   3-the triangle 2-th vertex # 0 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+area = 0 5 12 (0.360844)
+  0-the triangle, 1 0 8 (0.125000)
+  1-the triangle, 0 1 12 (0.072169)
+  2-the triangle, -1 2 8 (0.091506)
+  3-the triangle, 0 1 12 (0.072169)

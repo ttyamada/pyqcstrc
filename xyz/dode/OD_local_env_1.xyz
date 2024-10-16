@@ -1,0 +1,11 @@
+6
+./OD_local_env_1.xyz
+Xx 0.288675 0.077350 0.000000 #   0-the triangle 0-th vertex # 3 -4 3 -3 4 3 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.267949 0.000000 0.000000 #   0-the triangle 1-th vertex # 0 0 1 2 -2 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.366025 0.000000 0.000000 #   0-the triangle 2-th vertex # 0 0 1 -1 2 2 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.288675 0.077350 0.000000 #   1-the triangle 0-th vertex # 3 -4 3 -3 4 3 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.000000 0.000000 0.000000 #   1-the triangle 1-th vertex # 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.267949 0.000000 0.000000 #   1-the triangle 2-th vertex # 0 0 1 2 -2 1 0 0 1 0 0 1 0 0 1 0 0 1
+area = 9 -10 24 (0.014156)
+  0-the triangle, 33 -38 24 (0.003793)
+  1-the triangle, -6 7 6 (0.010363)

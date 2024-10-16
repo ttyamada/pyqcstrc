@@ -1,0 +1,11 @@
+6
+./1_triangle_asymmetric/od_triangle_asymmetric.xyz
+Xx 0.500000 -0.288675 0.000000 #   0-the triangle 0-th vertex # 0 0 3 2 0 3 0 0 3 1 0 3 0 0 1 0 0 1
+Xx 0.500000 0.133975 0.000000 #   0-the triangle 1-th vertex # -2 2 1 2 -2 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.788675 0.211325 0.000000 #   0-the triangle 2-th vertex # -3 2 3 3 -2 3 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.500000 -0.288675 0.000000 #   1-the triangle 0-th vertex # 0 0 3 2 0 3 0 0 3 1 0 3 0 0 1 0 0 1
+Xx 0.788675 0.211325 0.000000 #   1-the triangle 1-th vertex # -3 2 3 3 -2 3 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.000000 0.000000 0.000000 #   1-the triangle 2-th vertex # 0 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+area = 0 1 6 (0.144338)
+  0-the triangle, -1 2 12 (0.061004)
+  1-the triangle, 1 0 12 (0.083333)
