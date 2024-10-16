@@ -313,28 +313,29 @@ def translation_new(brv,flag=0):
     brv : bravais lattce p, i, f, s, c
             s : superlattice for decagonal quasicrystal
     """
-    symop=[]
-    symop.append(V0)
+    if flag==1:
+        lst=[0,1]
+    elif flag==-1:
+        lst=[-1,0]
+    else:
+        lst=[-1,0,1]
+        
+    tr=np.zeros((len(lst)**6,6,3),dtype=np.int64)
+    j1=0
+    for i1 in lst:
+        for i2 in lst:
+            for i3 in lst:
+                for i4 in lst:
+                    for i5 in lst:
+                        for i6 in lst:
+                            tr[j1]=np.array([[i1,0,1],[i2,0,1],[i3,0,1],[i4,0,1],[i5,0,1],[i6,0,1]])
+                            j1+=1
     
     if brv=='p':
-        if flag==1:
-            lst=[0,1]
-        elif flag==-1:
-            lst=[-1,0]
-        else:
-            lst=[-1,0,1]
-        for i1 in lst:
-            for i2 in lst:
-                for i3 in lst:
-                    for i4 in lst:
-                        for i5 in lst:
-                            for i6 in lst:
-                                tmp=np.array([[i1,0,1],[i2,0,1],[i3,0,1],[i4,0,1],[i5,0,1],[i6,0,1]])
-                                symop.append(tmp)
-        return np.array(symop)
+        return tr
         
     elif brv=='f':
-        tf=np.array([[[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],\
+        tc=np.array([[[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],\
                     [[1,0,2],[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],\
                     [[1,0,2],[0,0,1],[1,0,2],[0,0,1],[0,0,1],[0,0,1]],\
                     [[1,0,2],[0,0,1],[0,0,1],[1,0,2],[0,0,1],[0,0,1]],\
@@ -366,33 +367,26 @@ def translation_new(brv,flag=0):
                     [[1,0,2],[1,0,2],[1,0,2],[0,0,1],[1,0,2],[0,0,1]],\
                     [[1,0,2],[1,0,2],[1,0,2],[1,0,2],[0,0,1],[0,0,1]],\
                     [[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]]])
-        a=np.zeros((len(tf)*2**6,6,3),dtype=np.int64)
-        symop=V0
-        lst=[0,1]
+        a=np.zeros((len(tc)*len(tr),6,3),dtype=np.int64)
         counter1=0
-        for i1 in lst:
-            for i2 in lst:
-                for i3 in lst:
-                    for i4 in lst:
-                        for i5 in lst:
-                            for i6 in lst:
-                                tmp=np.array([[i1,0,1],[i2,0,1],[i3,0,1],[i4,0,1],[i5,0,1],[i6,0,1]])
-                                for tf1 in tf:
-                                    tf2=add_vectors(tf1,tmp)
-                                    #flag=0
-                                    #for tf3 in tf2:
-                                    #    if numeric_value(tf3)>1.0:
-                                    #        flag+=1
-                                    #        break
-                                    #    else:
-                                    #        pass
-                                    #if flag==0:
-                                    #    a[counter1]=tf2
-                                    #    counter1+=1
-                                    a[counter1]=tf2
-                                    counter1+=1
+        for tr1 in tr:
+            for tc1 in tc:
+                tc2=add_vectors(tr1,tc1)
+                flag=0
+                #"""
+                for tc3 in tc2:
+                    if numeric_value(tc3)>1.0:
+                        flag+=1
+                        break
+                    else:
+                        pass
+                if flag==0:
+                    a[counter1]=tc2
+                    counter1+=1
+                #"""
+                #a[counter1]=tc2
+                #counter1+=1
         a=a[:counter1]
-        #remove_doubling(a)
         return a
         
     elif brv=='s':
@@ -400,9 +394,30 @@ def translation_new(brv,flag=0):
         return 
         
     elif brv=='i':
-        t1=np.array([[[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],\
-            [[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]]])
-        return 
+        tc=np.array([[[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],\
+                     [[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]]])
+        a=np.zeros((len(tc)*len(tr),6,3),dtype=np.int64)
+        counter1=0
+        for tr1 in tr:
+            for tc1 in tc:
+                tc2=add_vectors(tr1,tc1)
+                flag=0
+                #"""
+                for tc3 in tc2:
+                    if numeric_value(tc3)>1.0:
+                        flag+=1
+                        break
+                    else:
+                        pass
+                if flag==0:
+                    a[counter1]=tc2
+                    counter1+=1
+                #"""
+                #a[counter1]=tc2
+                #counter1+=1
+        a=a[:counter1]
+        return a
+         
     else:
         print('no lattice type selected.')
         return 
@@ -439,62 +454,74 @@ def site_symmetry_and_coset(site,brv,verbose=0):
             List of index of symmetry operators of the site symmetry group G (list):
                 The symmetry operators leaves xyz identical.
         """
-        #print('site_symmetry():')
+        POS_V  = np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+        POS_C  = np.array([[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]],dtype=np.int64)
+        POS_EC = np.array([[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
         
-        #symop=icosasymop()
+        if np.all(site==POS_V):
+            a=[]
+            for i in range(120):
+                a.append(i)
+            return a
+        elif np.all(site==POS_EC):
+            if brv=='f':
+                a=[]
+                for i in range(120):
+                    a.append(i)
+            else:
+                a=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69]
+            return a
+        elif  np.all(site==POS_C):
+            a=[]
+            for i in range(120):
+                a.append(i)
+            return a
+        else:
+            pass
         
-        
-        traop=translation(brv,flag=1)
-        #traop=translation_new(brv,flag=1)
-        
-        
-        #"""
-        list1=[]
-        for i2,op in enumerate(symop):
-            site1=symop_vec(op,site,V0)
-            flag=0
-            for top in traop:
-                site2=add_vectors(site1,top)
-                tmp=sub_vectors(site,site2)
-                if length_numerical(tmp)<EPS:
-                    list1.append(i2)
-                    break
-                else:
-                    pass
-        
-        #
-        # WIP
-        #
-        """
-        list1=[]
-        
+        # サイト周りでvtgに対して点群m35の対称操作を施す。
         vtg=np.array([[1,0,3],[0,1,4],[1,0,5],[0,1,6],[1,0,7],[0,1,8]],dtype=np.int64)
-        
-        # サイト周りでvtgに対して点群の対称操作を施す
         a=np.zeros((len(symop),6,3),dtype=np.int64)
         for i1,op in enumerate(symop):
             a[i1]=symop_vec(op,vtg,site)
-        
-        # vtgに対して並進を含む全ての対称操作を施す
-        b=np.zeros((len(symop)*len(traop),6,3),dtype=np.int64)
-        counter=0
-        for op in symop:
-            tmp1=symop_vec(op,vtg,V0)
-            for tr in traop:
-                b[counter]=add_vectors(tmp1,tr)
-                counter+=1
-                
-        # 一致するものを探す。
+            
+        if brv=='p':
+            flag=1
+        elif brv=='f':
+            flag=0
+        traop=translation_new(brv,flag)
+        lst=[]
         for i1,a1 in enumerate(a):
-            for b1 in b:
-                tmp=sub_vectors(a1,b1)
-                if length_numerical(tmp)<EPS:
-                    list1.append(i1)
+            # vtgに対して並進を含む全ての対称操作を施す。
+            #print('%3d     a1:'%(i1),numerical_vector(a1))
+            counter1=0
+            for op in symop:
+                tmp1=symop_vec(op,vtg,V0)
+                if np.all(a1==tmp1):
+                    counter1+=1
+                    #print('      tmp1:',numerical_vector(tmp1))
                     break
                 else:
-                    pass
-        """
-        return remove_overlaps(list1)
+                    flag1=0
+                    for tr in traop:
+                        b=add_vectors(tmp1,tr)
+                        if np.all(a1==b):
+                            flag1+=1
+                            #print('         b:',numerical_vector(b))
+                            break
+                        else:
+                            pass
+                    if flag1==1:
+                        counter1+=1
+                        break
+                    else:
+                        pass
+            if counter1==1:
+                lst.append(i1)
+            else:
+                pass
+        print(lst)
+        return lst
         
     def coset(site,symop,brv,idx_site):
         """
@@ -538,7 +565,7 @@ def site_symmetry_and_coset(site,brv,verbose=0):
             return idx_coset
         else:
             return 
-        
+            
     def check_coset(site,comb,symop,idx_site):
         """
         """
@@ -562,6 +589,48 @@ def site_symmetry_and_coset(site,brv,verbose=0):
         else:
             return False
             
+    def equivalent_positions(site,brv):
+        """
+        siteに対して点群の対称性を施したサイトのうち、並進操作のみで結ばれない位置を求める。
+        適切な名前を決める必要がある！！！
+        """
+        #print('site:',numerical_vector(site))
+        symop=icosasymop_array()
+        eqpos=np.zeros((len(symop),6,3),dtype=np.int64)
+        for i,op in enumerate(symop):
+            eqpos[i]=symop_vec(op,site,centre=V0)
+        eqpos1=remove_doubling(eqpos) 
+    
+        # 求めた等価なサイトのうち、並進操作を施して同一なのであれば、どちらか片方を選ぶようにする。
+        if len(eqpos1)==1:
+            pass
+        else:
+            lst_saved=[site]
+            translation=translation_new(brv,flag=0)
+            for pos in eqpos1:
+                counter=0
+                for tr in translation:
+                    pos1=add_vectors(pos,tr)
+                    if np.all(site==pos1):
+                        counter+=1
+                        break
+                    else:
+                        pass
+                if counter==0:
+                    lst_saved.append(pos)
+                
+        # 求めたサイトのうち単位胞内にあるサイトを選ぶ
+        out=np.zeros((len(lst_saved),6,3),dtype=np.int64)
+        num=0
+        for vt in lst_saved:
+            vn=numerical_vector(vt)
+            if np.all(vn>=0.0):# and np.all(vn<=1.0):
+                out[num]=vt
+                num+=1
+            else:
+                pass
+        return out[:num]
+        
     vn=numerical_vector(site)
     if verbose>0:
         print(' site: %3.2f %3.2f %3.2f %3.2f %3.2f %3.2f'%(vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
@@ -576,85 +645,6 @@ def site_symmetry_and_coset(site,brv,verbose=0):
     #print('  idx_coset:',idx_coset)
     #print('  idx_site:',idx_site)
     return idx_site,idx_coset
-
-def equivalent_positions(site,brv):
-    """
-    """
-    symop=icosasymop_array()
-    """
-    #print('len(symop):',len(symop))
-    
-    lst=site_symmetry(site)
-    #print('len(lst):',len(lst))
-    a=set(range(len(symop)))
-    b=set(lst)-{0}
-    #return list(a-b)
-    
-    idx_equiv=list(a-b)
-    
-    """
-    lst_pos=[]
-    #for idx in idx_equiv:
-    for op in symop:
-        #p=op@site
-        p=symop_vec(op,site,centre=V0)
-        #print('p:',p)
-        lst_pos.append(p)
-    
-    """
-    print('initioal list:')
-    for pos in lst_pos:
-        print(pos)
-    """
-    # 重複をなくす
-    lst_pos_1=[lst_pos[0]]
-    for i1 in range(1,len(lst_pos)):
-        pos1=lst_pos[i1]
-        flg=0
-        for pos2 in lst_pos_1:
-            if np.all(pos2==pos1):
-                flg+=1
-                break
-            else:
-                pass
-        if flg==0:
-            lst_pos_1.append(pos1)
-    """
-    print('equivalent positions without doubling:')
-    for pos in lst_pos_1:
-        print(pos) 
-    """
-    
-    # 求めた等価なサイトのうち、並進操作を施して同一なのであれば、どちらか片方を選ぶようにする。
-    lst_saved=[site]
-    if len(lst_pos_1)==1:
-        pass
-    else:
-        for i1 in range(1,len(lst_pos_1)):
-            p=lst_pos_1[i1]
-            counter=0
-            for tr in translation(brv,flag=1):
-                pos=p+tr
-                for saved in lst_saved:
-                    #if np.allclose(pos,saved):
-                    if np.all(pos==saved):
-                        counter+=1
-                        break
-                if counter>0:
-                    break
-            if counter==0:
-                lst_saved.append(p)
-        #print('lst_saved:',lst_saved)
-    
-    # 求めたサイトのうち単位胞内にあるサイトを選ぶ
-    lst_saved_new=[]
-    for vt in lst_saved:
-        vn=numerical_vector(vt)
-        if np.all(vn>=0):
-            lst_saved_new.append(vt)
-        else:
-            pass
-    return lst_saved_new
 
 def icosasymop3_array(flag=None):
     """
@@ -728,10 +718,9 @@ def icosasymop3_array(flag=None):
                         tmp=np.dot(tmp,s2)
                         tmp=np.dot(tmp,s1)
                         if flag=='axial':
-                            tmp=np.linalg.det(tmp)*tmp
+                            symop[num]=np.linalg.det(tmp)*tmp # det(AB)=det(A)*det(B)
                         else:
-                            pass
-                        symop[num]=tmp
+                            symop[num]=tmp
                         num+=1
     return symop
     
@@ -960,10 +949,12 @@ def similarity(m):
 if __name__ == '__main__':
     
     import random
-    from numericalc import (numerical_vectors,
+    from pyqcstrc.ico2.numericalc import (
+                            projection_par_numerical,
+                            numerical_vectors,
                             numerical_vector,
-                            numeric_value,)
-    
+                            numeric_value,
+                            )
     # test
     POS_V  = np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
     POS_C  = np.array([[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]],dtype=np.int64)
@@ -1004,6 +995,9 @@ if __name__ == '__main__':
     
     cen0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
     
+    #-----------------------------------------------
+    # TEST: symop_vec()
+    #-----------------------------------------------
     """
     print("TEST: symop_vec()")
     symop=icosasymop()
@@ -1036,11 +1030,11 @@ if __name__ == '__main__':
     print(svts)
     """
     
+    #-----------------------------------------------
+    # TEST: icosasymop_array and icosasymop3_array
+    ##-----------------------------------------------
+    """
     print('TEST: icosasymop_array and icosasymop3_array')
-    from pyqcstrc.ico2.numericalc import (
-                            projection_par_numerical,
-                            numerical_vector,
-                            )
     
     flag=None
     #flag='axial'
@@ -1066,8 +1060,31 @@ if __name__ == '__main__':
         print('ok')
     else:
         print('wrong!')
-    
     """
+        
+    ##-----------------------------------------------
+    # TEST: equivalent_positions()
+    ##-----------------------------------------------
+    """
+    #brv='p'
+    brv='f'
+    #brv='i'
+    #site=POS_V
+    #site=POS_C
+    site=POS_EC
+    
+    eqpos=equivalent_positions(site,brv)
+    for i,p in enumerate(eqpos):
+        print(i,numerical_vector(p))
+    print('len(eqpos):',len(eqpos))
+    """
+    
+    
+    
+    ##-----------------------------------------------
+    # TEST: site_symmetry_and_coset()
+    ##-----------------------------------------------
+    #"""
     print('TEST: site_symmetry_and_coset()')
     #site=POS_V
     #site=POS_C
@@ -1082,10 +1099,15 @@ if __name__ == '__main__':
     print('idx_ssym:',idx_ssym)
     print('idx_coset:',idx_coset)
     
-    
     print('F-type icosahedral lattice')
     brv='f'
     idx_ssym,idx_coset=site_symmetry_and_coset(site,brv,verbose=1)
     print('idx_ssym:',idx_ssym)
     print('idx_coset:',idx_coset)
-    """
+    
+    print('I-type icosahedral lattice')
+    brv='i'
+    idx_ssym,idx_coset=site_symmetry_and_coset(site,brv,verbose=1)
+    print('idx_ssym:',idx_ssym)
+    print('idx_coset:',idx_coset)
+    #"""
