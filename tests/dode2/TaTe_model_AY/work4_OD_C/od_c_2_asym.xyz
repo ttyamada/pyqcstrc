@@ -1,0 +1,19 @@
+12
+./work4_OD_C/od_c_2_asym.xyz
+Xx 0.683013 -0.183013 0.000000 #   0-the triangle 0-th vertex # -1 0 2 1 0 2 0 0 1 1 0 2 0 0 1 0 0 1
+Xx 0.598076 -0.232051 0.000000 #   0-the triangle 1-th vertex # -3 0 1 -1 0 1 0 0 1 2 0 1 0 0 1 0 0 1
+Xx 0.633975 -0.366025 0.000000 #   0-the triangle 2-th vertex # 1 0 1 2 0 1 1 0 1 1 0 1 0 0 1 0 0 1
+Xx 0.683013 -0.183013 0.000000 #   1-the triangle 0-th vertex # -1 0 2 1 0 2 0 0 1 1 0 2 0 0 1 0 0 1
+Xx 0.633975 -0.366025 0.000000 #   1-the triangle 1-th vertex # 1 0 1 2 0 1 1 0 1 1 0 1 0 0 1 0 0 1
+Xx 0.732051 -0.267949 0.000000 #   1-the triangle 2-th vertex # -2 0 1 -2 0 1 -3 0 1 -2 0 1 0 0 1 0 0 1
+Xx 0.683013 -0.183013 0.000000 #   2-the triangle 0-th vertex # -1 0 2 1 0 2 0 0 1 1 0 2 0 0 1 0 0 1
+Xx 0.732051 -0.267949 0.000000 #   2-the triangle 1-th vertex # -2 0 1 -2 0 1 -3 0 1 -2 0 1 0 0 1 0 0 1
+Xx 0.866025 -0.232051 0.000000 #   2-the triangle 2-th vertex # -1 0 1 1 0 1 1 0 1 2 0 1 0 0 1 0 0 1
+Xx 0.683013 -0.183013 0.000000 #   3-the triangle 0-th vertex # -1 0 2 1 0 2 0 0 1 1 0 2 0 0 1 0 0 1
+Xx 0.767949 -0.133975 0.000000 #   3-the triangle 1-th vertex # 2 0 1 2 0 1 0 0 1 -1 0 1 0 0 1 0 0 1
+Xx 0.866025 -0.232051 0.000000 #   3-the triangle 2-th vertex # -1 0 1 1 0 1 1 0 1 2 0 1 0 0 1 0 0 1
+volume = -19 22 2 (0.026279)
+  0-the triangle, -19 22 8 (0.006570)
+  1-the triangle, -19 22 8 (0.006570)
+  2-the triangle, -19 22 8 (0.006570)
+  3-the triangle, -19 22 8 (0.006570)

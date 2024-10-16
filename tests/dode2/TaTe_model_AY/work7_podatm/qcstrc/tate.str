@@ -1,0 +1,26 @@
+inpm=0 iphas=0
+title='TaTe ddQC'
+isys=5 a=5.5 c=10.0 eps1=0 eps2=0 eps3=0 eps4=0 eps5=0 eps6=0. ists=0 
+na=11 npod=11 ne=3 isim=0 imod=0
+flnm1='../dd_tate_asym.pod'
+flnm2='../dd_tate_asym.atm'
+itempf=0
+flnm3='./dummy.cnd'
+icont=0
+flnm4='./dummy.prm'
+111111000000
+iel=1 2 3 iel=2 3 1 iel=3 1 2 atp=0.62 0.19 0.19
+job=1 icase=1 ihmax=3 iatom=1 iwxy=0 ldev=2 inum=0   ! for 12-fold plot
+iel0=73 52 52   ! Ta(Z=73) Te(Z=53)
+icntsm= 1 1 1 0 0 0
+amag=1.00
+x0o= 0.02763 -0.19387  0.27360 -0.18371 -0.19892 -0.28178   ! position(3a)
+x0e= 0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+x0i= 0.00000  0.00000  0.00000  0.00000  0.00000  0.00000
+aorq='q' xmin=-60.0 xmax=60.0 ymin=-60.0 ymax=60.0 zmin=-60.0 zmax=60.0 shiftx=10.0 shifty=10.0
+ncp=0
+raplt=0.25 0.25 0.25 0.25
+icolor=15 35 55 75
+nbond=0
+nsl=0 no1=0 no2=0
+flnm5='dd_tate_asym'

@@ -1,0 +1,5 @@
+3
+./test2/od_2_sym.xyz
+Xx 1.000000 0.000000 0.000000 #   0-the triangle 0-th vertex # 0 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -0.077350 0.288675 0.000000 #   0-the triangle 1-th vertex # 0 2 3 3 -2 3 0 2 3 0 0 1 0 0 1 0 0 1
+Xx 0.133975 0.500000 0.000000 #   0-the triangle 2-th vertex # 1 0 1 1 0 1 1 0 1 0 0 1 0 0 1 0 0 1

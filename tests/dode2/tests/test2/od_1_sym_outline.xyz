@@ -1,0 +1,8 @@
+9
+./test2/od_1_sym_outline.xyz
+Xx 0.000000 0.000000 0.000000 #   0-the triangle 0-th vertex # 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.288675 1.077350 0.000000 #   0-the triangle 1-th vertex # 0 0 1 0 0 1 0 2 3 0 -2 3 0 0 1 0 0 1
+Xx 0.000000 0.000000 0.000000 #   1-the triangle 0-th vertex # 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.500000 0.866025 0.000000 #   1-the triangle 1-th vertex # 0 0 1 0 0 1 0 0 1 -1 0 1 0 0 1 0 0 1
+Xx 0.288675 1.077350 0.000000 #   2-the triangle 0-th vertex # 0 0 1 0 0 1 0 2 3 0 -2 3 0 0 1 0 0 1
+Xx 0.500000 0.866025 0.000000 #   2-the triangle 1-th vertex # 0 0 1 0 0 1 0 0 1 -1 0 1 0 0 1 0 0 1

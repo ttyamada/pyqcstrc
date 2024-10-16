@@ -1,0 +1,7 @@
+3
+./work2_OD_A/od_a_6_asym.xyz
+Xx 1.077350 0.288675 0.000000 #   0-the triangle 0-th vertex # 0 -2 3 0 2 3 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.066987 0.250000 0.000000 #   0-the triangle 1-th vertex # 1 0 2 3 0 2 1 0 2 0 0 1 0 0 1 0 0 1
+Xx 1.000000 0.267949 0.000000 #   0-the triangle 2-th vertex # 0 0 1 2 0 1 2 0 1 2 0 1 0 0 1 0 0 1
+volume = -45 52 24 (0.001388)
+  0-the triangle, -45 52 24 (0.001388)
