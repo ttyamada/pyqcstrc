@@ -22,8 +22,8 @@ pyqcstrc.egg-info/
 /src/pyqcstrc/ico/__pycache__
 
 /scripts
-/tests
-/xyz
+#/tests
+#/xyz
 
 *.zip
 # Log files etc
