@@ -1034,6 +1034,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
         \n 255 255 255 255\
         \n 128.000', file=f)
         return 0
+        
     else:
         return 1
     

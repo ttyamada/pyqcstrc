@@ -35,6 +35,9 @@ try:
                                         icosasymop_array,
                                         icosasymop3_array,
                                         )
+    from pyqcstrc.ico2.math1 import (mul_vector,
+                                     mul_vectors,
+                                     )
 except ImportError:
     print('import error in structure_factor\n')
 
@@ -58,12 +61,12 @@ def strc(aico,brv,model,nmax,oshift,verbose):
     
     """
     
-    #x1= np.array([0, 0, -1, 0, 0, 0],dtype=np.float64) #5f
-    #x2= np.array([0, 1, -1, 1, 0, 0],dtype=np.float64) #3f
-    #x3= np.array([0, 1, -1, 0, 0, 0],dtype=np.float64) #2f
-    x1= np.array([1, 0, 0, 0, 0, 0],dtype=np.float64) #5f
-    x2= np.array([1, 0,-1, 0,-1, 0],dtype=np.float64) #3f
-    x3= np.array([1, 0, 0, 0,-1, 0],dtype=np.float64) #2f
+    #x1=np.array([0, 0, -1, 0, 0, 0],dtype=np.float64) #5f
+    #x2=np.array([0, 1, -1, 1, 0, 0],dtype=np.float64) #3f
+    #x3=np.array([0, 1, -1, 0, 0, 0],dtype=np.float64) #2f
+    x1=np.array([1, 0, 0, 0, 0, 0],dtype=np.float64) #5f
+    x2=np.array([1, 0,-1, 0,-1, 0],dtype=np.float64) #3f
+    x3=np.array([1, 0, 0, 0,-1, 0],dtype=np.float64) #2f
     
     oshift=projection3_numerical(oshift)
     
@@ -79,10 +82,18 @@ def strc(aico,brv,model,nmax,oshift,verbose):
     lst_xe1=[]
     lst_xe2=[]
     lst_xe3=[]
+    lst_mxe1=[]
+    lst_mxe2=[]
+    lst_mxe3=[]
     lst_eshift=[]
     for i1,nod in enumerate(model):
         atom, pod, position, eshift, be, occ, rmax, mu = model[nod]
-        
+        obj=pod[1]
+        if brv=='s':
+            #obj=mul_vectors(obj,np.array([1,0,2]))
+            position=mul_vector(position,np.array([1,0,2]))
+        else:
+            pass
         indx_site_sym,indx_coset=site_symmetry_and_coset(position,brv,verbose)
         
         # generate positions of the symmetric occupation domain in Eperp.
@@ -94,7 +105,7 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                 print('    %3d:'%(i2+1),eqpos)
         else:
             pass
-        
+            
         if pod[0]=='polyhedron':
             if pod[2]==1: # asymmetric ODs
                 #
@@ -102,7 +113,7 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                 # here, each TAU-style value is transformed to numerical one.
                 #
                 #obj=generator_obj_symmetric_obj(pod[1],position)
-                obj=generator_obj_symmetric_obj_specific_symop(pod[1],V0,indx_site_sym)
+                obj=generator_obj_symmetric_obj_specific_symop(obj,V0,indx_site_sym)
                 # Spherical approximation of the OD (tmp) to a spherical OD.
                 #lst_sphere_radius.append(spherical_approximation_obj(obj))
                 #
@@ -132,7 +143,7 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                         for i4 in range(n3):
                             objs1_[i2][i3][i4]=get_internal_component_sets_numerical(objs1[i2][i3][i4])
                 #print('objs1_.shape',objs1_.shape)
-                #
+                
                 lst_shape.append(pod[0])
                 lst_objs.append(objs1_)
                 lst_pos.append(pos1)
@@ -141,44 +152,53 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                 lst_occ.append(occ)
                 lst_rmax.append(rmax)
                 lst_eshift.append(eshift)
-                #
                 lst_mu.append(mu)
+                
                 
                 #
                 # symmetry operation on x1,x2,x3 for each subdevided OD. 
+                # used for shift vector, i.e. xeshift
                 #
                 ve1=projection_sets_par_numerical_normalized(x1)
                 ve2=projection_sets_par_numerical_normalized(x2)
                 ve3=projection_sets_par_numerical_normalized(x3)
-                
+                #
                 # in the independent OD (obj)
-                #v1_=generator_obj_symmetric_vector_specific_symop(x1,V1,indx_site_sym) # 5f
-                #v2_=generator_obj_symmetric_vector_specific_symop(x2,V1,indx_site_sym) # 3f
-                #v3_=generator_obj_symmetric_vector_specific_symop(x3,V1,indx_site_sym) # 2f
-                v1_=generator_obj_symmetric_vector_specific_symop_1(ve1,V2,indx_site_sym) # 5f
-                v2_=generator_obj_symmetric_vector_specific_symop_1(ve2,V2,indx_site_sym) # 3f
-                v3_=generator_obj_symmetric_vector_specific_symop_1(ve3,V2,indx_site_sym) # 2f
+                v1_=generator_obj_symmetric_vector_specific_symop_1(ve1,V2,indx_site_sym,'normal') # 5f
+                v2_=generator_obj_symmetric_vector_specific_symop_1(ve2,V2,indx_site_sym,'normal') # 3f
+                v3_=generator_obj_symmetric_vector_specific_symop_1(ve3,V2,indx_site_sym,'normal') # 2f
                 #
                 # in the ODs at equivalent positions
-                #v1_=generator_obj_symmetric_vectors_specific_symop(v1_,V1,indx_coset)
-                #v2_=generator_obj_symmetric_vectors_specific_symop(v2_,V1,indx_coset)
-                #v3_=generator_obj_symmetric_vectors_specific_symop(v3_,V1,indx_coset)
-                v1_=generator_obj_symmetric_vectors_specific_symop_1(v1_,V2,indx_coset)
-                v2_=generator_obj_symmetric_vectors_specific_symop_1(v2_,V2,indx_coset)
-                v3_=generator_obj_symmetric_vectors_specific_symop_1(v3_,V2,indx_coset)
+                v1_=generator_obj_symmetric_vectors_specific_symop_1(v1_,V2,indx_coset,'normal') # 5f
+                v2_=generator_obj_symmetric_vectors_specific_symop_1(v2_,V2,indx_coset,'normal') # 3f
+                v3_=generator_obj_symmetric_vectors_specific_symop_1(v3_,V2,indx_coset,'normal') # 2f
                 #
-                #ve1=projection_sets_par_numerical_normalized(v1_)
-                #ve2=projection_sets_par_numerical_normalized(v2_)
-                #ve3=projection_sets_par_numerical_normalized(v3_)
-                #print('ve3.shape',ve3.shape)
-                #
-                #lst_xe1.append(ve1)
-                #lst_xe2.append(ve2)
-                #lst_xe3.append(ve3)
                 lst_xe1.append(v1_)
                 lst_xe2.append(v2_)
                 lst_xe3.append(v3_)
+                
                 #
+                # symmetry operation on x1,x2,x3 for each subdevided OD. 
+                # used for axial vector, i.e. magnetic moment
+                #
+                #ve1=projection_sets_par_numerical_normalized(x1)
+                #ve2=projection_sets_par_numerical_normalized(x2)
+                #ve3=projection_sets_par_numerical_normalized(x3)
+                #
+                # in the independent OD (obj)
+                v1_=generator_obj_symmetric_vector_specific_symop_1(ve1,V2,indx_site_sym,'axial') # 5f
+                v2_=generator_obj_symmetric_vector_specific_symop_1(ve2,V2,indx_site_sym,'axial') # 3f
+                v3_=generator_obj_symmetric_vector_specific_symop_1(ve3,V2,indx_site_sym,'axial') # 2f
+                #
+                # in the ODs at equivalent positions
+                v1_=generator_obj_symmetric_vectors_specific_symop_1(v1_,V2,indx_coset,'axial') # 5f
+                v2_=generator_obj_symmetric_vectors_specific_symop_1(v2_,V2,indx_coset,'axial') # 3f
+                v3_=generator_obj_symmetric_vectors_specific_symop_1(v3_,V2,indx_coset,'axial') # 2f
+                #
+                lst_mxe1.append(v1_)
+                lst_mxe2.append(v2_)
+                lst_mxe3.append(v3_)
+                
             else: # symmetric ODs
                 # WIP
                 pass
@@ -186,7 +206,7 @@ def strc(aico,brv,model,nmax,oshift,verbose):
             # WIP
             pass
             
-    print('generating structure...')
+    print('Generating atomic structure...')
     lst=[]
     for h1 in range(-nmax,nmax+1):
         if verbose>0:
@@ -198,7 +218,7 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                         for h6 in range(-nmax,nmax+1):
                             vn=projection_numerical(np.array([h1,h2,h3,h4,h5,h6],dtype=np.float64))
                             ve=vn[0:3]*aico*CONST1
-                            vi=vn[3:6] #*CONST1
+                            vi=vn[3:6]
                             #-------------------------------------
                             # i1-th independent occupation domain
                             #-------------------------------------
@@ -213,6 +233,10 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                                 xe2=lst_xe2[i1]
                                 xe3=lst_xe3[i1]
                                 #
+                                mxe1=lst_mxe1[i1]
+                                mxe2=lst_mxe2[i1]
+                                mxe3=lst_mxe3[i1]
+                                #
                                 pose=projection_sets_par_numerical(pos)
                                 posi=projection3_sets_numerical(pos)
                                 for i2,obj2 in enumerate(obj1):
@@ -223,6 +247,9 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                                         xe1_=xe1[i2][i3]
                                         xe2_=xe2[i2][i3]
                                         xe3_=xe3[i2][i3]
+                                        mxe1_=mxe1[i2][i3]
+                                        mxe2_=mxe2[i2][i3]
+                                        mxe3_=mxe3[i2][i3]
                                         counter=0
                                         for tetrahedron in obj3:
                                             # roughly check whether the v is inside the spherical OD or not.
@@ -235,11 +262,11 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                                                     #print('xeshift',xeshift)
                                                     #print('xeshift_',xeshift_)
                                                     if mu==0: # non-magnetic atom
-                                                        lst.append([element,ve+xeshift,i1,h1,h2,h3,h4,h5,h6,mu])
+                                                        lst.append([element,ve+we+xeshift,i1,h1,h2,h3,h4,h5,h6,mu])
                                                     else: # magnetic atom
                                                         # spin moment vector in Epar.
                                                         #mu_=np.array([mu[0]*xe1,mu[1]*xe2,mu[2]*xe3])
-                                                        mu_=np.array([xe1_,xe2_,xe3_])@mu
+                                                        mu_=np.array([mxe1_,mxe2_,mxe3_])@mu
                                                         #print('mu_',mu_)
                                                         lst.append([element,ve+we+xeshift_,i1,h1,h2,h3,h4,h5,h6,mu_])
                                                     counter+=1
@@ -253,7 +280,7 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                                         else:
                                             break
     return lst
-
+    
 def spherical_approximation_obj(obj):
     """
     this function approximates an occupation domain located at 'position' to a sphere.
@@ -271,7 +298,7 @@ def spherical_approximation_obj(obj):
         lst.append(dd)
     #return [max(lst),position]
     return [max(lst)]
-
+    
 def spherical_approximation_tetrahedron(tet):
     """
     this function approximates an tetrahedron to a sphere.
@@ -279,7 +306,7 @@ def spherical_approximation_tetrahedron(tet):
     """
     cen1=centroid(tetrahedron)
     dd1=ball_radius(tetrahedron,cen1)
-    
+    return cen1,dd1
     
 def inside_outside_shpere(point,radius,postion):
     p=point-postion

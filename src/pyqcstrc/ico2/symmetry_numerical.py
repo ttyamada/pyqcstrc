@@ -112,12 +112,12 @@ def generator_obj_symmetric_vector_specific_symop(vn,centre,list_of_symmetry_ope
         print('vn has an incorrect shape!')
         return
 
-def generator_obj_symmetric_vector_specific_symop_1(vn,centre,list_of_symmetry_operation_index):
+def generator_obj_symmetric_vector_specific_symop_1(vn,centre,list_of_symmetry_operation_index,flag):
     #
-    # for axial vector
+    # flag: 'normal' or 'axial'
     #
     if vn.ndim==1:
-        mop=icosasymop3_array('axial')
+        mop=icosasymop3_array(flag)
         symop=[]
         for i1 in list_of_symmetry_operation_index:
             symop.append(mop[i1])
@@ -148,13 +148,13 @@ def generator_obj_symmetric_vectors_specific_symop(vns,centre,list_of_symmetry_o
         print('vn has an incorrect shape!')
         return
 
-def generator_obj_symmetric_vectors_specific_symop_1(vns,centre,list_of_symmetry_operation_index):
+def generator_obj_symmetric_vectors_specific_symop_1(vns,centre,list_of_symmetry_operation_index,flag):
     #
-    # for axial vector
+    # flag: 'normal' or 'axial'
     #
     # using specific symmetry operations
     #mop=icosasymop()
-    mop=icosasymop3_array('axial')
+    mop=icosasymop3_array(flag)
     symop=[]
     ndim=vns.ndim
     if ndim==3:

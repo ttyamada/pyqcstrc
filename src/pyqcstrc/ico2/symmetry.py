@@ -24,8 +24,11 @@ import numpy as np
 
 PI=np.pi
 EPS=1e-6
-V0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
 TAU=(1+np.sqrt(5))/2.0
+V0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+POS_V  = V0
+POS_C  = np.array([[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]],dtype=np.int64)
+POS_EC = np.array([[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
 
 def symop_obj(symop,obj,centre):
     """ Apply a symmetric operation on an object around given centre. in TAU-style
@@ -334,7 +337,7 @@ def translation_new(brv,flag=0):
     if brv=='p':
         return tr
         
-    elif brv=='f':
+    elif brv=='f' or brv=='s':
         tc=np.array([[[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],\
                     [[1,0,2],[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],\
                     [[1,0,2],[0,0,1],[1,0,2],[0,0,1],[0,0,1],[0,0,1]],\
@@ -454,31 +457,6 @@ def site_symmetry_and_coset(site,brv,verbose=0):
             List of index of symmetry operators of the site symmetry group G (list):
                 The symmetry operators leaves xyz identical.
         """
-        POS_V  = np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
-        POS_C  = np.array([[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]],dtype=np.int64)
-        POS_EC = np.array([[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
-        
-        if np.all(site==POS_V):
-            a=[]
-            for i in range(120):
-                a.append(i)
-            return a
-        elif np.all(site==POS_EC):
-            if brv=='f':
-                a=[]
-                for i in range(120):
-                    a.append(i)
-            else:
-                a=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69]
-            return a
-        elif  np.all(site==POS_C):
-            a=[]
-            for i in range(120):
-                a.append(i)
-            return a
-        else:
-            pass
-        
         # サイト周りでvtgに対して点群m35の対称操作を施す。
         vtg=np.array([[1,0,3],[0,1,4],[1,0,5],[0,1,6],[1,0,7],[0,1,8]],dtype=np.int64)
         a=np.zeros((len(symop),6,3),dtype=np.int64)
@@ -487,7 +465,7 @@ def site_symmetry_and_coset(site,brv,verbose=0):
             
         if brv=='p':
             flag=1
-        elif brv=='f':
+        elif brv=='f' or brv=='s':
             flag=0
         traop=translation_new(brv,flag)
         lst=[]
@@ -600,10 +578,10 @@ def site_symmetry_and_coset(site,brv,verbose=0):
         for i,op in enumerate(symop):
             eqpos[i]=symop_vec(op,site,centre=V0)
         eqpos1=remove_doubling(eqpos) 
-    
+        
         # 求めた等価なサイトのうち、並進操作を施して同一なのであれば、どちらか片方を選ぶようにする。
         if len(eqpos1)==1:
-            pass
+            lst_saved=[site]
         else:
             lst_saved=[site]
             translation=translation_new(brv,flag=0)
@@ -635,23 +613,42 @@ def site_symmetry_and_coset(site,brv,verbose=0):
     if verbose>0:
         print(' site: %3.2f %3.2f %3.2f %3.2f %3.2f %3.2f'%(vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
         
-    symop=icosasymop_array()
-    idx_site=site_symmetry(site,symop,brv)
-    idx_coset=coset(site,symop,brv,idx_site)
-    #print(idx_coset)
+    if np.all(site==POS_V) or np.all(site==POS_C):
+        a=[]
+        for i in range(120):
+            a.append(i)
+        idx_site=a
+        idx_coset=[0]
+    elif np.all(site==POS_EC):
+        if brv=='f' or brv=='s':
+            a=[]
+            for i in range(120):
+                a.append(i)
+            b=[0]
+        else:
+            a=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69]
+            b=[0, 15, 50, 35, 20, 40]
+        idx_site=a
+        idx_coset=b
+    else:
+        symop=icosasymop_array()
+        idx_site=site_symmetry(site,symop,brv)
+        idx_coset=coset(site,symop,brv,idx_site)
+        #print(idx_coset)
     if verbose>0:
         print('  order of site symmetry:',len(idx_site))
         print('  number of equivalent positions:',len(idx_coset))
     #print('  idx_coset:',idx_coset)
     #print('  idx_site:',idx_site)
     return idx_site,idx_coset
-
-def icosasymop3_array(flag=None):
+    
+def icosasymop3_array(flag):
     """
     symmetry operation
     
     flag: 
         'axial': axial vector (e.g. classical spin)
+        'normal':
     """
     def _matrixpow(m,num):
         """
@@ -949,16 +946,12 @@ def similarity(m):
 if __name__ == '__main__':
     
     import random
-    from pyqcstrc.ico2.numericalc import (
-                            projection_par_numerical,
-                            numerical_vectors,
-                            numerical_vector,
-                            numeric_value,
-                            )
+    from pyqcstrc.ico2.numericalc import (projection_par_numerical,
+                                            numerical_vectors,
+                                            numerical_vector,
+                                            numeric_value,
+                                            )
     # test
-    POS_V  = np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
-    POS_C  = np.array([[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]],dtype=np.int64)
-    POS_EC = np.array([[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
     
     def generate_random_value():
         """ generate value in TAU-style
@@ -993,7 +986,7 @@ if __name__ == '__main__':
     def generate_random_tetrahedron():
         return generate_random_vectors(4)
     
-    cen0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
+    cen0=V0
     
     #-----------------------------------------------
     # TEST: symop_vec()
@@ -1084,7 +1077,7 @@ if __name__ == '__main__':
     ##-----------------------------------------------
     # TEST: site_symmetry_and_coset()
     ##-----------------------------------------------
-    #"""
+    """
     print('TEST: site_symmetry_and_coset()')
     #site=POS_V
     #site=POS_C
@@ -1110,4 +1103,4 @@ if __name__ == '__main__':
     idx_ssym,idx_coset=site_symmetry_and_coset(site,brv,verbose=1)
     print('idx_ssym:',idx_ssym)
     print('idx_coset:',idx_coset)
-    #"""
+    """

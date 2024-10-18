@@ -230,9 +230,10 @@ def mul_vectors(vts: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.i
         for i1,vt in enumerate(vts):
             for i2,v in enumerate(vt):
                 a[i1][i2]=mul_vector(v,coeff)
+        return a
     else:
         print('incorrect shape')
-        return
+        return 
 
 def outer_product(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int64]:
     """Outer product of two 3d vectors, v1 and v2 in TAU-style.
