@@ -12,6 +12,8 @@ import pyqcstrc.ico2.occupation_domain as od
 import pyqcstrc.ico2.two_occupation_domains as ods
 import pyqcstrc.ico2.symmetry as sym
 
+import pyqcstrc.ico2.utils as utils
+
 # Vertices of tetrahedron, v0,v1,v2,v3, which
 # defines the asymmetric part of OD
 v0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
@@ -78,3 +80,14 @@ for i1,idx in enumerate(idx_ssym):
 common_od_new3=common_od_new3.reshape((len(idx_ssym)*len(common_od_new2),4,6,3))
 od.write_vesta(common_od_new3, path='./example6', basename='common_od_new_sym', color='r')
 od.write_xyz(common_od_new3, path='./example6', basename='common_od_new_sym')
+
+
+
+# make symmetric OD@EC
+common_od_new2
+obj=utils.shift_object(common_od_new2,posEC)
+obj=sym.generator_obj_symmetric_obj_specific_symop(obj,posEC,idx_ssym)
+n1,n2,_,_,_=obj.shape
+obj=obj.reshape(n1*n2,4,6,3)
+od.write_vesta(obj, path='./example6', basename='common_od_new1_sym', color='r')
+od.write_xyz(obj, path='./example6', basename='common_od_new1_sym')
