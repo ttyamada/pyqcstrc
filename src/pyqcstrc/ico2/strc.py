@@ -37,10 +37,13 @@ try:
                                         icosasymop3_array,
                                         equivalent_sites_unit_cell,
                                         generator_equivalent_vec,
+                                        get_index_of_symmetry_operation_for_equivalent_vectors,
                                         )
     from pyqcstrc.ico2.math1 import (mul_vector,
                                      mul_vectors,
                                      )
+    from pyqcstrc.ico2.utils import (shift_object,
+                                    )
 except ImportError:
     print('import error in structure_factor\n')
 
@@ -100,9 +103,9 @@ def strc(aico,brv,model,nmax,oshift,verbose):
         indx_site_sym,indx_coset=site_symmetry_and_coset(position,brv,verbose)
         
         #========================================================================
-        # generate positions of the symmetric occupation domain in Eperp.
+        # generate positions of ODs necessary to generate atomic positions.
         #========================================================================
-        #"""
+        """
         vn=numerical_vector(position)
         pos1=generator_equivalent_numeric_vector_specific_symop(vn,indx_coset)
         if verbose>0:
@@ -113,16 +116,16 @@ def strc(aico,brv,model,nmax,oshift,verbose):
             pass
         #"""
         #========================================================================
-        # generate positions of the symmetric occupation domain in Eperp.
+        # generate positions of ODs necessary to generate atomic positions.
         #========================================================================
-        """
+        #"""
         #
         # OD位置を作り出した対称操作とOD自身に施す対称操作を同じにしないといけない。
         #
-        vts=generator_equivalent_vec(position,V0)
-        pos1=np.zeros((len(vts),6),dtype=np.float64)
-        for i1,vt in enumerate(vts):
-            pos1[i1]=numerical_vector(vt)
+        indx_coset=get_index_of_symmetry_operation_for_equivalent_vectors(position)
+        vn=numerical_vector(position)
+        #indx_coset=[0]
+        pos1=generator_equivalent_numeric_vector_specific_symop(vn,indx_coset)
         if verbose>0:
             print('  equivalent positions:')
             for i2,eqpos in enumerate(pos1):
@@ -162,17 +165,22 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                 # here, each TAU-style value is transformed to numerical one.
                 #
                 #obj=generator_obj_symmetric_obj(pod[1],position)
-                obj=generator_obj_symmetric_obj_specific_symop(obj,V0,indx_site_sym)
+                #
+                obj=shift_object(obj,position)
+                obj=generator_obj_symmetric_obj_specific_symop(obj,position,indx_site_sym)
+                #obj=generator_obj_symmetric_obj_specific_symop(obj,V0,indx_site_sym)
+                #
                 # Spherical approximation of the OD (tmp) to a spherical OD.
                 #lst_sphere_radius.append(spherical_approximation_obj(obj))
                 #
                 #num_tetrahedron=len(obj)
                 #num_coset=len(indx_coset)
                 #num_site_symm=len(indx_site_sym)
-                print('obj.shape',obj.shape)
+                #print('obj.shape',obj.shape)
                 #print('num_tetrahedron',num_tetrahedron)
                 #print('num_coset',num_coset)
                 #print('num_site_symm',num_site_symm)
+                #indx_coset=[0]
                 objs1=generator_obj_symmetric_obj_specific_symop(obj,V0,indx_coset)
                 #tshape=tmp.shape
                 #print('tmp.shape',tmp.shape)
@@ -191,7 +199,7 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                     for i3 in range(n2):
                         for i4 in range(n3):
                             objs1_[i2][i3][i4]=get_internal_component_sets_numerical(objs1[i2][i3][i4])
-                print('objs1_.shape',objs1_.shape)
+                #print('objs1_.shape',objs1_.shape)
                 
                 lst_shape.append(pod[0])
                 lst_objs.append(objs1_)
@@ -288,11 +296,13 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                                 #
                                 pose=projection_sets_par_numerical(pos)
                                 posi=projection3_sets_numerical(pos)
-                                for i2,obj2 in enumerate(obj1):
+                                #
+                                for i2,obj2 in enumerate(obj1): # ODs at equivalent positions
                                     we=pose[i2]*aico*CONST1
                                     wi=posi[i2]
-                                    point=vi-oshift-wi
-                                    for i3,obj3 in enumerate(obj2):
+                                    ####point=vi-wi-oshift
+                                    point=vi-oshift
+                                    for i3,obj3 in enumerate(obj2): # symmetric OD
                                         xe1_=xe1[i2][i3]
                                         xe2_=xe2[i2][i3]
                                         xe3_=xe3[i2][i3]
@@ -300,34 +310,27 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                                         mxe2_=mxe2[i2][i3]
                                         mxe3_=mxe3[i2][i3]
                                         counter=0
-                                        for tetrahedron in obj3:
+                                        for tetrahedron in obj3: # asymmetric units
                                             # roughly check whether the v is inside the spherical OD or not.
-                                            #print('tetrahedron:',tetrahedron)
                                             if inside_outside_tetrahedron_rough(point,tetrahedron): # inside
                                                 # check whether the v is inside the spherical OD or not.
                                                 if inside_outside_tetrahedron(point,tetrahedron): # inside
                                                     #xeshift_=np.array([xeshift[0]*xe1_,xeshift[1]*xe2_,xeshift[2]*xe3_])
                                                     xeshift_=np.array([xe1_,xe2_,xe3_])@xeshift
-                                                    #print('xeshift',xeshift)
-                                                    #print('xeshift_',xeshift_)
+                                                    xyz=ve-we+xeshift_
                                                     if mu==0: # non-magnetic atom
-                                                        lst.append([element,ve+we+xeshift,i1,h1,h2,h3,h4,h5,h6,mu])
+                                                        lst.append([element,xyz,i1,h1,h2,h3,h4,h5,h6,0])
                                                     else: # magnetic atom
                                                         # spin moment vector in Epar.
                                                         #mu_=np.array([mu[0]*xe1,mu[1]*xe2,mu[2]*xe3])
                                                         mu_=np.array([mxe1_,mxe2_,mxe3_])@mu
-                                                        #print('mu_',mu_)
-                                                        lst.append([element,ve+we+xeshift_,i1,h1,h2,h3,h4,h5,h6,mu_])
+                                                        lst.append([element,xyz,i1,h1,h2,h3,h4,h5,h6,mu_])
                                                     counter+=1
                                                     break
                                                 else:
                                                     pass
                                             else:
                                                 pass
-                                        if counter==0:
-                                            pass
-                                        else:
-                                            break
     return lst
     
 def spherical_approximation_obj(obj):
