@@ -30,6 +30,7 @@ POS_V  = V0
 POS_C1  = np.array([[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]],dtype=np.int64)
 POS_C2  = np.array([[3,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]],dtype=np.int64)
 POS_EC = np.array([[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+#POS_EC1= np.array([[1,0,1],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]],dtype=np.int64)
 
 def symop_obj(symop,obj,centre):
     """ Apply a symmetric operation on an object around given centre. in TAU-style
@@ -161,7 +162,22 @@ def generator_equivalent_vec(vector,centre):
     a=generator_obj_symmetric_obj(vector,centre)
     return remove_doubling_in_perp_space(a)
     #return remove_doubling(a)
-
+    
+def get_index_of_symmetry_operation_for_equivalent_vectors(vector):
+    symop=icosasymop_array()
+    a=generator_equivalent_vec(vector,V0)
+    out=[]
+    for a1 in a:
+        for i,op in enumerate(symop):
+            b=symop_vec(op,vector,V0)
+            if np.all(a1==b):
+                out.append(i)
+                break
+            else:
+                pass
+    l_sorted = sorted(out)
+    return l_sorted
+    
 def icosasymop():
     # icosahedral symmetry operations
     m1=np.array([[ 1, 0, 0, 0, 0, 0],\
@@ -620,7 +636,7 @@ def site_symmetry_and_coset(site,brv,verbose=0):
             a.append(i)
         idx_site=a
         idx_coset=[0]
-    elif np.all(site==POS_EC):
+    elif np.all(site==POS_EC): # or np.all(site==POS_EC1):
         if brv=='f' or brv=='s':
             a=[]
             for i in range(120):
@@ -1148,3 +1164,7 @@ if __name__ == '__main__':
     for i1,vt in enumerate(vts):
         vn=numerical_vector(vt)
         print(' %d site: %3.2f %3.2f %3.2f %3.2f %3.2f %3.2f'%(i1,vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
+        
+    
+    a=get_index_of_symmetry_operation_for_equivalent_vectors(site)
+    print(a)
