@@ -99,7 +99,7 @@ if __name__ == "__main__":
     #############################
     #   P-type AKN tiling
     model_name = 'pakn'
-    brv='s'
+    brv='p'
     aico = 5.0
     select='atom'
     #select='mag'
@@ -121,18 +121,49 @@ if __name__ == "__main__":
     mu=[0.75,0,0] # along 5f,3f,2f axces.
     #
     #
-    pos_ec= np.array([[1,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+    myModel = {}
+    #             element, [OD,  OD shape, symmetric or asymmetric],  coordinate,   eshift, be, rmax, mu(magnetic moment)
+    myModel[0] = [elm_A,['polyhedron', od0, flag_od],              POS_V,       xe0, be, occ, rmax, 0]
+    #"""
+    
+    #"""
+    #############################
+    #   P-type AKN tiling with edge centered atoms
+    model_name = 'pakn2'
+    brv='p'
+    aico = 5.0
+    select='atom'
+    #select='mag'
+    #############################
+    flag_od = 1  # asymmetric OD is used.
+    xyzpath='../../../xyz/ico'
+    # Kumazawa's OD for icosahedron shell
+    od0=od.read_xyz(path=xyzpath,basename='AKN_V_asymmeric',  select='tetrahedron',verbose=0)
+    od1=od.read_xyz(path=xyzpath,basename='AKN_EC_asymmeric',  select='tetrahedron',verbose=0)
+    #
+    elm_A = 'Yb'
+    elm_B = 'Cd'
+    #
+    occ = 1.0
+    rmax = 1.0
+    be = 1.519 # DW factor
+    # eshift:
+    xe0=[0,0,0]
+    # magnetic moment
+    mu=[0.75,0,0] # along 5f,3f,2f axces.
     #
     myModel = {}
     #             element, [OD,  OD shape, symmetric or asymmetric],  coordinate,   eshift, be, rmax, mu(magnetic moment)
     myModel[0] = [elm_A,['polyhedron', od0, flag_od],              POS_V,       xe0, be, occ, rmax, 0]
-    """
-
+    myModel[1] = [elm_B,['polyhedron', od1, flag_od],             POS_EC,       xe0, be, occ, rmax, 0]
     #"""
+
+    
+    """
     #############################
     #   F-type AKN tiling
     model_name = 'fakn'
-    brv='s'
+    brv='f'
     #aico = 5.0*2
     aico = 5.0
     select='atom'
@@ -156,7 +187,8 @@ if __name__ == "__main__":
     mu=[0.75,0,0] # along 5f,3f,2f axces.
     #
     #
-    pos_ec= np.array([[1,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+    #pos_ec= np.array([[1,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+    pos_ec= np.array([[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
     #
     myModel = {}
     #             element, [OD,  OD shape, symmetric or asymmetric],  coordinate,   eshift, be, rmax, mu(magnetic moment)

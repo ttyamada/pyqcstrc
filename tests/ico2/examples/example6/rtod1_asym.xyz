@@ -1,5 +1,5 @@
 56
-./example3/rtod1_asym.xyz
+./example6/rtod1_asym.xyz
 Xx 1.118034 0.000000 0.427051 #   0-the tetrahedron 0-th vertex # -4 3 4 4 -3 4 4 -3 4 -4 3 4 4 -3 4 4 -3 4
 Xx 2.618034 0.000000 0.000000 #   0-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 -1 0 2 0 0 1 -1 0 2 0 0 1
 Xx 2.618034 0.000000 1.000000 #   0-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2

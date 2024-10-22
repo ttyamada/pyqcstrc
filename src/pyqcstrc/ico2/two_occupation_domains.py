@@ -81,7 +81,7 @@ def intersection_convex(obj1,obj2,verbose=0):
 
     """
     if obj1.ndim==4 and obj2.ndim==4:
-        common=intsct.intersection_two_obj_convex(obj1,obj2)
+        common=intsct.intersection_two_obj_convex(obj1,obj2,verbose)
         if np.all(common==None):
             if verbose>0:
                 print('no common part')

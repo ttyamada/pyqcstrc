@@ -21,7 +21,8 @@ try:
                                           projection_sets_par_numerical,
                                           projection_sets_par_numerical_normalized,
                                           get_internal_component_numerical,
-                                          get_internal_component_sets_numerical
+                                          get_internal_component_sets_numerical,
+                                          length_numerical,
                                           )
     from pyqcstrc.ico2.symmetry_numerical import (generator_obj_symmetric_vector_specific_symop,
                                                   generator_obj_symmetric_vector_specific_symop_1,
@@ -34,6 +35,8 @@ try:
                                         site_symmetry_and_coset,
                                         icosasymop_array,
                                         icosasymop3_array,
+                                        equivalent_sites_unit_cell,
+                                        generator_equivalent_vec,
                                         )
     from pyqcstrc.ico2.math1 import (mul_vector,
                                      mul_vectors,
@@ -96,7 +99,10 @@ def strc(aico,brv,model,nmax,oshift,verbose):
             pass
         indx_site_sym,indx_coset=site_symmetry_and_coset(position,brv,verbose)
         
+        #========================================================================
         # generate positions of the symmetric occupation domain in Eperp.
+        #========================================================================
+        #"""
         vn=numerical_vector(position)
         pos1=generator_equivalent_numeric_vector_specific_symop(vn,indx_coset)
         if verbose>0:
@@ -105,7 +111,50 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                 print('    %3d:'%(i2+1),eqpos)
         else:
             pass
-            
+        #"""
+        #========================================================================
+        # generate positions of the symmetric occupation domain in Eperp.
+        #========================================================================
+        """
+        #
+        # OD位置を作り出した対称操作とOD自身に施す対称操作を同じにしないといけない。
+        #
+        vts=generator_equivalent_vec(position,V0)
+        pos1=np.zeros((len(vts),6),dtype=np.float64)
+        for i1,vt in enumerate(vts):
+            pos1[i1]=numerical_vector(vt)
+        if verbose>0:
+            print('  equivalent positions:')
+            for i2,eqpos in enumerate(pos1):
+                print('    %3d:'%(i2+1),eqpos)
+        else:
+            pass
+        #"""
+        #========================================================================
+        # generate positions of ODs necessary to generate atomic positions.
+        #========================================================================
+        """
+        if np.all(position==V0):
+            vn=numerical_vector(position)
+            pos1=generator_equivalent_numeric_vector_specific_symop(vn,indx_coset)
+        else:
+            vts=equivalent_sites_unit_cell(position,indx_coset,brv,1)
+            vns=get_internal_component_sets_numerical(vts)
+            tmp=np.zeros((len(vts),6),dtype=np.float64)
+            i3=0
+            for i2,vn in enumerate(vns):
+                if np.linalg.norm(vn)<=1.0:
+                    tmp[i3]=numerical_vector(vts[i2])
+                    i3+=1
+                else:
+                    pass
+            pos1=tmp[:i3]
+            if verbose>0:
+                print('  equivalent positions:')
+                for i2,eqpos in enumerate(pos1):
+                    print('    %3d:'%(i2+1),eqpos)
+        """
+        #========================================================================
         if pod[0]=='polyhedron':
             if pod[2]==1: # asymmetric ODs
                 #
@@ -120,7 +169,7 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                 #num_tetrahedron=len(obj)
                 #num_coset=len(indx_coset)
                 #num_site_symm=len(indx_site_sym)
-                #print('obj.shape',obj.shape)
+                print('obj.shape',obj.shape)
                 #print('num_tetrahedron',num_tetrahedron)
                 #print('num_coset',num_coset)
                 #print('num_site_symm',num_site_symm)
@@ -142,7 +191,7 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                     for i3 in range(n2):
                         for i4 in range(n3):
                             objs1_[i2][i3][i4]=get_internal_component_sets_numerical(objs1[i2][i3][i4])
-                #print('objs1_.shape',objs1_.shape)
+                print('objs1_.shape',objs1_.shape)
                 
                 lst_shape.append(pod[0])
                 lst_objs.append(objs1_)

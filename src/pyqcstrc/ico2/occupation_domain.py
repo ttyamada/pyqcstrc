@@ -1465,9 +1465,9 @@ def simple_hand_step1(obj, path, basename_tmp):
         for i1,b in enumerate(a):
             xyz=math1.projection3(b)
             f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-            (numericalc.numeric_value(xyz),\
-            numericalc.numeric_value(xyz),\
-            numericalc.numeric_value(xyz),\
+            (numericalc.numeric_value(xyz[0]),\
+            numericalc.numeric_value(xyz[1]),\
+            numericalc.numeric_value(xyz[2]),\
             i1,\
             b[0][0],b[0][1],b[0][2],\
             b[1][0],b[1][1],b[1][2],\

@@ -10,6 +10,7 @@ import sys
 import numpy as np
 import pyqcstrc.ico2.occupation_domain as od
 import pyqcstrc.ico2.two_occupation_domains as ods
+import pyqcstrc.ico2.utils as utils
 
 # Vertices of tetrahedron, v0,v1,v2,v3, which
 # defines the asymmetric part of OD
@@ -27,8 +28,7 @@ od.write_vesta(od1, path='./example3', basename='rtod1', color='r')
 od.write_xyz(od1, path='./example3', basename='rtod1')
 
 # coordinate of position_1
-pos1 = np.array([[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],
-                 [ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+pos1 = np.array([[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
 od2 = od.shift(od1,pos1)  # move to position_1
 od.write_vesta(od2, path='./example3', basename='rtod2', color='p')
 od.write_xyz(od2, path='./example3', basename='rtod2')

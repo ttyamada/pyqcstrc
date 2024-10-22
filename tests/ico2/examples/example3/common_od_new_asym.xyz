@@ -1,5 +1,5 @@
 692
-./example3/common_od_asym.xyz
+./example3/common_od_new_asym.xyz
 Xx 2.045085 -1.000000 0.163119 #   0-the tetrahedron 0-th vertex # -13 9 4 13 -9 4 13 -9 4 -9 5 4 13 -9 4 13 -9 4
 Xx 2.618034 -1.000000 0.000000 #   0-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 -1 0 2 1 -1 2 -1 0 2 1 -1 2
 Xx 2.618034 -1.000000 0.381966 #   0-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 -1 0 2 3 -2 2 -1 0 2 -1 0 2
