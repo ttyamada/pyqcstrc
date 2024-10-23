@@ -246,8 +246,7 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                     if len(tmp)!=0:
                         tmp1.append(tmp)
                 vnss=tmp1
-                
-                #print(vnss)
+                #
                 #
                 #
                 for i2,vts in enumerate(vtss):
