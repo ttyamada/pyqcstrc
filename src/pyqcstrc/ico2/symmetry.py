@@ -337,6 +337,8 @@ def translation_new(brv,flag=0):
         lst=[0,1]
     elif flag==-1:
         lst=[-1,0]
+    elif flag==-2:
+        lst=[0]
     else:
         lst=[-1,0,1]
         
@@ -738,27 +740,46 @@ def icosasymop3_array(flag):
                         num+=1
     return symop
     
-def equivalent_sites_unit_cell(site,idx_coset,brv,flag):
-    # equivalent sites inside unit cell.
+def equivalent_sites_in_unit_cell(site,brv,idx_coset):
+    """
+    generate equivalent sites inside unit cell.
+    
+    input:
+    site: ndarray, (6,3)
+    brv: string, 'p', 'f', 's', 'i'
+    idx_coset: list
+    
+    output
+    equivalent sites, ndarray(n1,n2,6,3)
+    """
     symop=icosasymop_array()
-    translation=translation_new(brv,flag=1)
-    vt=np.zeros((len(idx_coset)*len(translation),6,3),dtype=np.int64)
-    i1=0
-    for idx in idx_coset:
-        for tr in translation:
-            vt[i1]=add_vectors(symop_vec(symop[idx],site,V0),tr)
-            i1+=1
-    vt1=remove_doubling(vt)
-    vt2=np.zeros((len(vt1),6,3),dtype=np.int64)
-    i2=0
-    for i1,vt in enumerate(vt1):
-        vn=numerical_vector(vt)
-        if np.all(0.0<=vn) and np.all(vn<=1.0):
-            #print(' %d site: %3.2f %3.2f %3.2f %3.2f %3.2f %3.2f'%(i1,vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
-            vt2[i2]=vt
-            i2+=1
-    #print('number of euivalent site in unit cell:',len(vt2))
-    return vt2[:i2]
+    #translation=translation_new(brv,flag=1)
+    translation=translation_new(brv,flag=-2)
+    vtss=np.zeros((len(translation),len(idx_coset),6,3),dtype=np.int64)
+    for i1,tr in enumerate(translation):
+        for i2,idx in enumerate(idx_coset):
+            vtss[i1][i2]=add_vectors(symop_vec(symop[idx],site,V0),tr)
+    return vtss
+    """
+    lst=[]
+    counter=0
+    for vts in vtss:
+        vts_new=np.zeros((len(idx_coset),6,3),dtype=np.float64)
+        #vns=np.zeros((len(idx_coset),6),dtype=np.float64)
+        i1=0
+        counter=0
+        for vt in vts:
+            vn=numerical_vector(vt)
+            if np.all(0.0<=vn) and np.all(vn<=1.0):
+                #vns[i1]=vn
+                vts_new[i1]=vt
+                i1+=1
+                counter+=1
+        if counter!=0:
+            #lst.append(vns[:i1])
+            lst.append(vts_new[:i1])
+    return lst
+    """
     
 """ old
 def coset(site,brv):
@@ -1093,7 +1114,7 @@ if __name__ == '__main__':
     else:
         print('wrong!')
     """
-        
+    
     ##-----------------------------------------------
     # TEST: equivalent_positions()
     ##-----------------------------------------------
@@ -1130,12 +1151,15 @@ if __name__ == '__main__':
     print('site:')
     print(site)
     
+    """
     print('P-type icosahedral lattice')
     brv='p'
     idx_ssym,idx_coset=site_symmetry_and_coset(site,brv,verbose=1)
     print('idx_ssym:',idx_ssym)
     print('idx_coset:',idx_coset)
+    """
     
+    """
     flag=0
     eq_sites=equivalent_sites_unit_cell(site,idx_coset,brv,flag)
     print(len(eq_sites))
@@ -1143,7 +1167,7 @@ if __name__ == '__main__':
         vn=numerical_vector(vt)
         print(' %d site: %3.2f %3.2f %3.2f %3.2f %3.2f %3.2f'%(i1,vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
     print('number of euivalent site in unit cell:',len(eq_sites))
-    
+    """
     
     """
     print('F-type icosahedral lattice')
@@ -1160,6 +1184,7 @@ if __name__ == '__main__':
     
     """
     
+    """
     vts=generator_equivalent_vec(site,V0)
     for i1,vt in enumerate(vts):
         vn=numerical_vector(vt)
@@ -1168,3 +1193,11 @@ if __name__ == '__main__':
     
     a=get_index_of_symmetry_operation_for_equivalent_vectors(site)
     print(a)
+    """
+    
+    brv='p'
+    idx_ssym,idx_coset=site_symmetry_and_coset(site,brv,verbose=1)
+    print('idx_ssym:',idx_ssym)
+    print('idx_coset:',idx_coset)
+        
+        
