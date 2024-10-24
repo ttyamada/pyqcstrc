@@ -10,7 +10,9 @@ try:
     from pyqcstrc.ico2.numericalc import (numerical_vector,
                                           numerical_vectors,
                                           projection_numerical_par,
+                                          #inside_outside_obj,
                                           inside_outside_tetrahedron,
+                                          #inside_outside_tetrahedron_tau_v2,
                                           inside_outside_tetrahedron_rough,
                                           projection3_numerical,
                                           projection3_sets_numerical,
@@ -33,6 +35,8 @@ try:
                                         site_symmetry_and_coset,
                                         icosasymop_array,
                                         icosasymop3_array,
+                                        #equivalent_sites_unit_cell,
+                                        equivalent_sites_in_unit_cell,
                                         generator_equivalent_vec,
                                         get_index_of_symmetry_operation_for_equivalent_vectors,
                                         )
@@ -42,7 +46,7 @@ try:
     from pyqcstrc.ico2.utils import (shift_object,
                                     )
 except ImportError:
-    print('import error in strc\n')
+    print('import error in structure_factor\n')
 
 TAU=(1+np.sqrt(5))/2.0
 EPS=1e-6
@@ -89,6 +93,7 @@ def strc(aico,brv,model,nmax,oshift,verbose):
     lst_mxe2=[]
     lst_mxe3=[]
     lst_eshift=[]
+    #lst_sphere_radius=[]
     for i1,nod in enumerate(model):
         atom, pod, position, eshift, be, occ, rmax, mu = model[nod]
         obj=pod[1]
@@ -102,7 +107,7 @@ def strc(aico,brv,model,nmax,oshift,verbose):
         #========================================================================
         # generate positions of ODs necessary to generate atomic positions.
         #========================================================================
-        #"""
+        """
         vn=numerical_vector(position)
         pos1=generator_equivalent_numeric_vector_specific_symop(vn,indx_coset)
         if verbose>0:
@@ -112,12 +117,26 @@ def strc(aico,brv,model,nmax,oshift,verbose):
         else:
             pass
         #"""
+        #"""
+        vtss=equivalent_sites_in_unit_cell(position,brv,indx_coset)
+        n1,n2,_,_=vtss.shape
+        vnss=np.zeros((n1,n2,6),dtype=np.float64)
+        for i2,vts in enumerate(vtss):
+            vnss[i2]=numerical_vectors(vts)
+        if verbose>0:
+            print('  equivalent positions:')
+            for i2,vns in enumerate(vnss):
+                for i3,vn in enumerate(vns):
+                    print('    %d-%d:'%(i2+1,i3+1),vn)
+        else:
+            pass
+        #"""
         #========================================================================
         # generate positions of ODs necessary to generate atomic positions.
         #========================================================================
         """
-        #
-        # OD位置を作り出した対称操作とOD自身に施す対称操作を同じにしないといけない。
+        # V以外の位置にあるODについて、その位置と等価な位置を原点V周りで対称操作を施すことで得る。
+        # 辺中心に原子をおいたP型AKNタイリングを作る場合では、上で発生する位置のみでで十分であることを確認した。
         #
         indx_coset=get_index_of_symmetry_operation_for_equivalent_vectors(position)
         vn=numerical_vector(position)
@@ -168,7 +187,9 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                 obj=generator_obj_symmetric_obj_specific_symop(obj,V0,indx_site_sym)
                 #
                 # Spherical approximation of the OD (tmp) to a spherical OD.
-                #lst_sphere_radius.append(spherical_approximation_obj(obj))
+                radius_spherical_obj = spherical_approximation_obj(obj)
+                print('radius_spherical_obj:',radius_spherical_obj)
+                #lst_sphere_radius.append(rad_obj)
                 #
                 #num_tetrahedron=len(obj)
                 #num_coset=len(indx_coset)
@@ -200,7 +221,52 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                 
                 lst_shape.append(pod[0])
                 lst_objs.append(objs1_)
-                lst_pos.append(pos1)
+                
+                
+                
+                
+                
+                
+                
+                #lst_pos.append(pos1)
+                #
+                #
+                #
+                tmp1=[]
+                for vns in vnss:
+                    tmp=[]
+                    for vn in vns:
+                        vni=projection3_numerical(vn)
+                        dd=np.linalg.norm(vni)
+                        print('dd:',dd)
+                        if dd <= radius_spherical_obj:
+                            tmp.append(vn)
+                        else:
+                            pass
+                    if len(tmp)!=0:
+                        tmp1.append(tmp)
+                vnss=tmp1
+                #
+                #
+                #
+                for i2,vts in enumerate(vtss):
+                    vns=numerical_vectors(vts)
+                    for i3,vn in enumerate(vns):
+                        print('%d-%d:'%(i2+1,i3+1),vn)
+                else:
+                    pass
+                #
+                #
+                #
+                #
+                lst_pos.append(vnss)
+                
+                
+                
+                
+                
+                
+                
                 lst_atm.append(atom)
                 lst_be.append(be)
                 lst_occ.append(occ)
@@ -277,7 +343,7 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                             # i1-th independent occupation domain
                             #-------------------------------------
                             for i1,obj1 in enumerate(lst_objs): # i1-th atom.
-                                pos=lst_pos[i1]
+                                positions=lst_pos[i1]
                                 element=lst_atm[i1]
                                 #
                                 mu=lst_mu[i1]
@@ -291,43 +357,45 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                                 mxe2=lst_mxe2[i1]
                                 mxe3=lst_mxe3[i1]
                                 #
-                                pose=projection_sets_par_numerical(pos)
-                                posi=projection3_sets_numerical(pos)
                                 #
-                                for i2,obj2 in enumerate(obj1): # ODs at equivalent positions
-                                    we=pose[i2]*aico*CONST1
-                                    wi=posi[i2]
-                                    point=vi-wi-oshift
-                                    #point=vi-oshift
-                                    for i3,obj3 in enumerate(obj2): # symmetric OD
-                                        xe1_=xe1[i2][i3]
-                                        xe2_=xe2[i2][i3]
-                                        xe3_=xe3[i2][i3]
-                                        mxe1_=mxe1[i2][i3]
-                                        mxe2_=mxe2[i2][i3]
-                                        mxe3_=mxe3[i2][i3]
-                                        counter=0
-                                        for tetrahedron in obj3: # asymmetric units
-                                            # roughly check whether the v is inside the spherical OD or not.
-                                            if inside_outside_tetrahedron_rough(point,tetrahedron): # inside
-                                                # check whether the v is inside the spherical OD or not.
-                                                if inside_outside_tetrahedron(point,tetrahedron): # inside
-                                                    #xeshift_=np.array([xeshift[0]*xe1_,xeshift[1]*xe2_,xeshift[2]*xe3_])
-                                                    xeshift_=np.array([xe1_,xe2_,xe3_])@xeshift
-                                                    xyz=ve-we+xeshift_
-                                                    if mu==0: # non-magnetic atom
-                                                        lst.append([element,xyz,i1,h1,h2,h3,h4,h5,h6,0])
-                                                    else: # magnetic atom
-                                                        # spin moment vector in Epar.
-                                                        #mu_=np.array([mu[0]*xe1,mu[1]*xe2,mu[2]*xe3])
-                                                        mu_=np.array([mxe1_,mxe2_,mxe3_])@mu
-                                                        lst.append([element,xyz,i1,h1,h2,h3,h4,h5,h6,mu_])
-                                                    counter+=1
-                                                    break
+                                # equivalnts by centring
+                                for pos in positions:
+                                    pose=projection_sets_par_numerical(pos)
+                                    posi=projection3_sets_numerical(pos)
+                                    for i2,obj2 in enumerate(obj1): # ODs at equivalent positions
+                                        we=pose[i2]*aico*CONST1
+                                        wi=posi[i2]
+                                        point=vi-wi-oshift
+                                        ####point=vi-oshift
+                                        for i3,obj3 in enumerate(obj2): # symmetric OD
+                                            xe1_=xe1[i2][i3]
+                                            xe2_=xe2[i2][i3]
+                                            xe3_=xe3[i2][i3]
+                                            mxe1_=mxe1[i2][i3]
+                                            mxe2_=mxe2[i2][i3]
+                                            mxe3_=mxe3[i2][i3]
+                                            counter=0
+                                            for tetrahedron in obj3: # asymmetric units
+                                                # roughly check whether the v is inside the spherical OD or not.
+                                                if inside_outside_tetrahedron_rough(point,tetrahedron): # inside
+                                                    # check whether the v is inside the spherical OD or not.
+                                                    if inside_outside_tetrahedron(point,tetrahedron): # inside
+                                                        #xeshift_=np.array([xeshift[0]*xe1_,xeshift[1]*xe2_,xeshift[2]*xe3_])
+                                                        xeshift_=np.array([xe1_,xe2_,xe3_])@xeshift
+                                                        xyz=ve-we+xeshift_
+                                                        if mu==0: # non-magnetic atom
+                                                            lst.append([element,xyz,i1,h1,h2,h3,h4,h5,h6,0])
+                                                        else: # magnetic atom
+                                                            # spin moment vector in Epar.
+                                                            #mu_=np.array([mu[0]*xe1,mu[1]*xe2,mu[2]*xe3])
+                                                            mu_=np.array([mxe1_,mxe2_,mxe3_])@mu
+                                                            lst.append([element,xyz,i1,h1,h2,h3,h4,h5,h6,mu_])
+                                                        counter+=1
+                                                        break
+                                                    else:
+                                                        pass
                                                 else:
                                                     pass
-                                            else:
-                                                pass
     return lst
     
 def spherical_approximation_obj(obj):
@@ -346,7 +414,7 @@ def spherical_approximation_obj(obj):
         dd=np.sqrt(a[0]**2+a[1]**2+a[2]**2)
         lst.append(dd)
     #return [max(lst),position]
-    return [max(lst)]
+    return max(lst)
     
 def spherical_approximation_tetrahedron(tet):
     """

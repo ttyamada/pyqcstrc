@@ -187,16 +187,15 @@ if __name__ == "__main__":
     mu=[0.75,0,0] # along 5f,3f,2f axces.
     #
     #
-    #pos_n1= np.array([[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]],dtype=np.int64)
-    #pos_ec= np.array([[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
-    #pos_ec1= np.array([[1,0,1],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]],dtype=np.int64)
+    pos_n1= np.array([[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]],dtype=np.int64)
+    pos_ec1= np.array([[1,0,1],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]],dtype=np.int64)
     #
     myModel = {}
     #             element, [OD,  OD shape, symmetric or asymmetric],  coordinate,   eshift, be, rmax, mu(magnetic moment)
     myModel[0] = [elm_A,['polyhedron', od0, flag_od],              POS_V,       xe0, be, occ, rmax, 0]
-    myModel[1] = [elm_B,['polyhedron', od1, flag_od],             POS_EC,       xe0, be, occ, rmax, 0]
-    #myModel[2] = [elm_B,['polyhedron', od1, flag_od],            pos_ec1,       xe0, be, occ, rmax, 0]
-    #myModel[3] = [elm_A,['polyhedron', od0, flag_od],             pos_n1,       xe0, be, occ, rmax, 0]
+    myModel[1] = [elm_A,['polyhedron', od0, flag_od],             pos_n1,       xe0, be, occ, rmax, 0]
+    myModel[2] = [elm_B,['polyhedron', od1, flag_od],             POS_EC,       xe0, be, occ, rmax, 0]
+    myModel[3] = [elm_B,['polyhedron', od1, flag_od],            pos_ec1,       xe0, be, occ, rmax, 0]
     #"""
     
     ######################
