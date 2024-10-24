@@ -157,7 +157,36 @@ if __name__ == "__main__":
     myModel[0] = [elm_A,['polyhedron', od0, flag_od],              POS_V,       xe0, be, occ, rmax, 0]
     myModel[1] = [elm_B,['polyhedron', od1, flag_od],             POS_EC,       xe0, be, occ, rmax, 0]
     #"""
-
+    
+    """
+    #############################
+    #   I-type AKN tiling
+    model_name = 'iakn'
+    brv='i'
+    aico = 5.0
+    select='atom'
+    #select='mag'
+    #############################
+    flag_od = 1  # asymmetric OD is used.
+    xyzpath='../../../xyz/ico'
+    # Kumazawa's OD for icosahedron shell
+    od0=od.read_xyz(path=xyzpath,basename='AKN_V_asymmeric',  select='tetrahedron',verbose=0)
+    #
+    elm_A = 'Yb'
+    elm_B = 'Cd'
+    #
+    occ = 1.0
+    rmax = 1.0
+    be = 1.519 # DW factor
+    # eshift:
+    xe0=[0,0,0]
+    # magnetic moment
+    mu=[0.75,0,0] # along 5f,3f,2f axces.
+    #
+    myModel = {}
+    #             element, [OD,  OD shape, symmetric or asymmetric],  coordinate,   eshift, be, rmax, mu(magnetic moment)
+    myModel[0] = [elm_A,['polyhedron', od0, flag_od],              POS_V,       xe0, be, occ, rmax, 0]
+    #"""
     
     #"""
     #############################
@@ -193,9 +222,9 @@ if __name__ == "__main__":
     myModel = {}
     #             element, [OD,  OD shape, symmetric or asymmetric],  coordinate,   eshift, be, rmax, mu(magnetic moment)
     myModel[0] = [elm_A,['polyhedron', od0, flag_od],              POS_V,       xe0, be, occ, rmax, 0]
-    myModel[1] = [elm_A,['polyhedron', od0, flag_od],             pos_n1,       xe0, be, occ, rmax, 0]
-    myModel[2] = [elm_B,['polyhedron', od1, flag_od],             POS_EC,       xe0, be, occ, rmax, 0]
-    myModel[3] = [elm_B,['polyhedron', od1, flag_od],            pos_ec1,       xe0, be, occ, rmax, 0]
+    myModel[1] = [elm_B,['polyhedron', od1, flag_od],             POS_EC,       xe0, be, occ, rmax, 0]
+    #myModel[2] = [elm_A,['polyhedron', od0, flag_od],             pos_n1,       xe0, be, occ, rmax, 0]
+    #myModel[3] = [elm_B,['polyhedron', od1, flag_od],            pos_ec1,       xe0, be, occ, rmax, 0]
     #"""
     
     ######################
