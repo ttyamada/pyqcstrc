@@ -443,8 +443,8 @@ def translation_new(brv,flag=0):
     else:
         print('no lattice type selected.')
         return 
-        
-        
+    
+    
 ####### WIP ########
 ################ 
 # site symmetry
@@ -752,9 +752,21 @@ def equivalent_sites_in_unit_cell(site,brv,idx_coset):
     output
     equivalent sites, ndarray(n1,n2,6,3)
     """
+    _,idx_coset=site_symmetry_and_coset(site,'p',verbose=0)
+    
     symop=icosasymop_array()
     #translation=translation_new(brv,flag=1)
-    translation=translation_new(brv,flag=-2)
+    #translation=translation_new(brv,flag=-2)
+    if brv=='p':
+        translation=np.array([[[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]]])
+    elif brv=='f' or brv=='s':
+        translation=np.array([[[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],\
+                              [[-1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]]])
+    elif brv=='i':
+        translation=np.array([[[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],\
+                              [[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]]])
+    else:
+        pass
     vtss=np.zeros((len(translation),len(idx_coset),6,3),dtype=np.int64)
     for i1,tr in enumerate(translation):
         for i2,idx in enumerate(idx_coset):
