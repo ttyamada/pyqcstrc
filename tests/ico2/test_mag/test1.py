@@ -52,7 +52,7 @@ if __name__ == "__main__":
     """
     ######################
     #   Tsai-type iQC    #
-    model_name = 'ico'
+    model_name = 'pico'
     brv='p'
     aico = 5.689 # in Ang. CdYb
     #select='atom'
@@ -73,6 +73,7 @@ if __name__ == "__main__":
     #
     elm_A = 'Yb'
     elm_B = 'Cd'
+    elm_X = 'X'
     #
     occ = 1.0
     rmax = 1.0
@@ -92,8 +93,8 @@ if __name__ == "__main__":
     myModel[5] = [elm_A,['polyhedron', od6, flag_od],              POS_V,       xe0, be, occ, rmax, mu]
     myModel[6] = [elm_A,['polyhedron', od7, flag_od],              POS_V,       xe0, be, occ, rmax, mu]
     myModel[7] = [elm_A,['polyhedron', od8, flag_od],              POS_V,       xe0, be, occ, rmax, mu]
-    myModel[8] = [elm_B,['polyhedron', od0, flag_od],              POS_V,       xe0, be, occ, rmax, 0]
-    """
+    myModel[8] = [elm_X,['polyhedron', od0, flag_od],              POS_V,       xe0, be, occ, rmax, 0]
+    #"""
     
     """
     #############################
