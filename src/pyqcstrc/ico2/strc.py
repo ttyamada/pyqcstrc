@@ -36,7 +36,7 @@ try:
                                         icosasymop_array,
                                         icosasymop3_array,
                                         #equivalent_sites_unit_cell,
-                                        equivalent_sites_in_unit_cell,
+                                        equivalent_sites_with_centring,
                                         generator_equivalent_vec,
                                         get_index_of_symmetry_operation_for_equivalent_vectors,
                                         )
@@ -98,7 +98,7 @@ def strc(aico,brv,model,nmax,oshift,verbose):
         atom, pod, position, eshift, be, occ, rmax, mu = model[nod]
         obj=pod[1]
         if brv=='s':
-            #obj=mul_vectors(obj,np.array([1,0,2]))
+            obj=mul_vectors(obj,np.array([1,0,2]))
             position=mul_vector(position,np.array([1,0,2]))
         else:
             pass
@@ -118,7 +118,7 @@ def strc(aico,brv,model,nmax,oshift,verbose):
             pass
         #"""
         #"""
-        vtss=equivalent_sites_in_unit_cell(position,brv,indx_coset)
+        vtss=equivalent_sites_with_centring(position,brv,indx_coset)
         n1,n2,_,_=vtss.shape
         vnss=np.zeros((n1,n2,6),dtype=np.float64)
         for i2,vts in enumerate(vtss):
@@ -187,8 +187,9 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                 obj=generator_obj_symmetric_obj_specific_symop(obj,V0,indx_site_sym)
                 #
                 # Spherical approximation of the OD (tmp) to a spherical OD.
-                radius_spherical_obj = spherical_approximation_obj(obj)
-                print('radius_spherical_obj:',radius_spherical_obj)
+                if verbose>0:
+                    radius_spherical_obj = spherical_approximation_obj(obj)
+                    print('   radius of spherically approximated obj: %8.6f'%(radius_spherical_obj))
                 #lst_sphere_radius.append(rad_obj)
                 #
                 #num_tetrahedron=len(obj)
