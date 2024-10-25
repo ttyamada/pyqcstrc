@@ -193,8 +193,8 @@ if __name__ == "__main__":
     #   F-type AKN tiling
     model_name = 'fakn'
     brv='s'
-    aico = 5.0*2
-    #aico = 5.0
+    #brv='f'
+    aico = 5.0 # aico for basic lattice (brv='f)
     select='atom'
     #select='mag'
     #############################
