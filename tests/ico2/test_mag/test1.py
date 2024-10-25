@@ -158,7 +158,7 @@ if __name__ == "__main__":
     myModel[1] = [elm_B,['polyhedron', od1, flag_od],             POS_EC,       xe0, be, occ, rmax, 0]
     #"""
     
-    """
+    #"""
     #############################
     #   I-type AKN tiling
     model_name = 'iakn'
@@ -176,7 +176,7 @@ if __name__ == "__main__":
     elm_B = 'Cd'
     #
     occ = 1.0
-    rmax = 1.0
+    rmax = 1.0i
     be = 1.519 # DW factor
     # eshift:
     xe0=[0,0,0]
@@ -188,7 +188,7 @@ if __name__ == "__main__":
     myModel[0] = [elm_A,['polyhedron', od0, flag_od],              POS_V,       xe0, be, occ, rmax, 0]
     #"""
     
-    #"""
+    """
     #############################
     #   F-type AKN tiling
     model_name = 'fakn'
