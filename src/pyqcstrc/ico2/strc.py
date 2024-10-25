@@ -77,12 +77,13 @@ def strc(aico,brv,model,nmax,oshift,verbose):
     
     if brv=='s':
         aico=aico*2
-        oshift=mul_vector(oshift,np.array([1,0,2]))
     else:
         pass
         
     oshift=projection3_numerical(oshift)
-    
+    if brv=='s':
+        oshift=oshift/2
+        
     print('Generating nD structure:')
     lst_shape=[]
     lst_objs=[]
@@ -193,7 +194,7 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                 obj=generator_obj_symmetric_obj_specific_symop(obj,V0,indx_site_sym)
                 #
                 # Spherical approximation of the OD (tmp) to a spherical OD.
-                if verbose>0:
+                if verbose>1:
                     radius_spherical_obj = spherical_approximation_obj(obj)
                     print('   radius of spherically approximated obj: %8.6f'%(radius_spherical_obj))
                 #lst_sphere_radius.append(rad_obj)
@@ -225,56 +226,9 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                         for i4 in range(n3):
                             objs1_[i2][i3][i4]=get_internal_component_sets_numerical(objs1[i2][i3][i4])
                 #print('objs1_.shape',objs1_.shape)
-                
                 lst_shape.append(pod[0])
                 lst_objs.append(objs1_)
-                
-                
-                
-                
-                
-                
-                """
-                #lst_pos.append(pos1)
-                #
-                #
-                #
-                tmp1=[]
-                for vns in vnss:
-                    tmp=[]
-                    for vn in vns:
-                        vni=projection3_numerical(vn)
-                        dd=np.linalg.norm(vni)
-                        print('dd:',dd)
-                        if dd <= radius_spherical_obj:
-                            tmp.append(vn)
-                        else:
-                            pass
-                    if len(tmp)!=0:
-                        tmp1.append(tmp)
-                vnss=tmp1
-                #
-                #
-                #
-                for i2,vts in enumerate(vtss):
-                    vns=numerical_vectors(vts)
-                    for i3,vn in enumerate(vns):
-                        print('%d-%d:'%(i2+1,i3+1),vn)
-                else:
-                    pass
-                #
-                #
-                #
-                #
-                """
                 lst_pos.append(vnss)
-                
-                
-                
-                
-                
-                
-                
                 lst_atm.append(atom)
                 lst_be.append(be)
                 lst_occ.append(occ)
@@ -282,11 +236,10 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                 lst_eshift.append(eshift)
                 lst_mu.append(mu)
                 
-                
-                #
+                #-----------------------------------------------------------------------
                 # symmetry operation on x1,x2,x3 for each subdevided OD. 
-                # used for shift vector, i.e. xeshift
-                #
+                # used for shift vectors, i.e. xeshift
+                #-----------------------------------------------------------------------
                 ve1=projection_sets_par_numerical_normalized(x1)
                 ve2=projection_sets_par_numerical_normalized(x2)
                 ve3=projection_sets_par_numerical_normalized(x3)
@@ -305,24 +258,20 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                 lst_xe2.append(v2_)
                 lst_xe3.append(v3_)
                 
-                #
+                #-----------------------------------------------------------------------
                 # symmetry operation on x1,x2,x3 for each subdevided OD. 
-                # used for axial vector, i.e. magnetic moment
-                #
-                #ve1=projection_sets_par_numerical_normalized(x1)
-                #ve2=projection_sets_par_numerical_normalized(x2)
-                #ve3=projection_sets_par_numerical_normalized(x3)
-                #
+                # used for axial vectors, i.e. magnetic moment
+                #-----------------------------------------------------------------------
                 # in the independent OD (obj)
                 v1_=generator_obj_symmetric_vector_specific_symop_1(ve1,V2,indx_site_sym,'axial') # 5f
                 v2_=generator_obj_symmetric_vector_specific_symop_1(ve2,V2,indx_site_sym,'axial') # 3f
                 v3_=generator_obj_symmetric_vector_specific_symop_1(ve3,V2,indx_site_sym,'axial') # 2f
-                #
+                #-----------------------------------------------------------------------
                 # in the ODs at equivalent positions
                 v1_=generator_obj_symmetric_vectors_specific_symop_1(v1_,V2,indx_coset,'axial') # 5f
                 v2_=generator_obj_symmetric_vectors_specific_symop_1(v2_,V2,indx_coset,'axial') # 3f
                 v3_=generator_obj_symmetric_vectors_specific_symop_1(v3_,V2,indx_coset,'axial') # 2f
-                #
+                #-----------------------------------------------------------------------
                 lst_mxe1.append(v1_)
                 lst_mxe2.append(v2_)
                 lst_mxe3.append(v3_)
@@ -404,6 +353,8 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                                                         pass
                                                 else:
                                                     pass
+                                            if counter!=0:
+                                                break
     return lst
     
 def spherical_approximation_obj(obj):
