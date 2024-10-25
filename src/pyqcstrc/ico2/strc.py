@@ -75,6 +75,12 @@ def strc(aico,brv,model,nmax,oshift,verbose):
     x2=np.array([1, 0,-1, 0,-1, 0],dtype=np.float64) #3f
     x3=np.array([1, 0, 0, 0,-1, 0],dtype=np.float64) #2f
     
+    if brv=='s':
+        aico=aico*2
+        oshift=mul_vector(oshift,np.array([1,0,2]))
+    else:
+        pass
+        
     oshift=projection3_numerical(oshift)
     
     print('Generating nD structure:')
