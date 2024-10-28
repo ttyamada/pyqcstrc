@@ -492,8 +492,8 @@ def inside_outside_tetrahedron_tau_v2(point: NDArray[np.float64], tetrahedron: N
     #tetrahedron=numerical_vectors(tetrahedron)
     # 
     #point=get_internal_component_numerical(point)
-    tet=get_internal_component_sets_numerical(tetrahedron)
-    return inside_outside_tetrahedron(point,tet)
+    tetrahedron=get_internal_component_sets_numerical(tetrahedron)
+    return inside_outside_tetrahedron(point,tetrahedron)
 
 def inside_outside_tetrahedron(point: NDArray[np.float64], tetrahedron: NDArray[np.float64]) -> bool:
     """this function judges whether the point is inside a tetrahedron or not
@@ -918,3 +918,17 @@ if __name__ == '__main__':
     else:
         print(' outside')
     
+    point = np.array([ 0.03, -0.03, -0.03, 0.00, -0.03, -0.02])
+    # Vertices of tetrahedron, v0,v1,v2,v3, which
+    # defines the asymmetric part.
+    v0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+    v1 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2]])
+    v2 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2]])
+    v3 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[ 0, 0, 2],[-1, 0, 2],[ 0, 0, 2]])
+    tetrahedron = np.vstack([v0,v1,v2,v3]).reshape(4,6,3)
+    point = projection3_numerical(point)
+    if inside_outside_tetrahedron_tau_v2(point,tetrahedron):
+        print(' inside')
+    else:
+        print(' outside')
+    print(point)
