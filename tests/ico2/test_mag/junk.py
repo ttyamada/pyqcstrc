@@ -37,7 +37,7 @@ if __name__ == "__main__":
     objs = [od0,od1,od2,od3,od4,od5,od6,od7,od8]
     
     point = np.array([ -1.00, 0.00, 0.00, 0.00, 0.00, 0.00])
-    oshift = np.array([ 0.03, -0.03, -0.03, 0.00, -0.03, -0.02])
+    oshift = np.array([ 0.03, -0.03, -0.03, 0.00, -0.03, -0.02]) # inside asymmetric unit
     point = numericalc.projection3_numerical(point+oshift)
     
     idx=0
