@@ -49,7 +49,7 @@ if __name__ == "__main__":
     myModel[0] = [elm_A,['polyhedron', od0, flag_od],              POS_V,       xe0, be, occ, rmax, mu]
     """
     
-    """
+    #"""
     ######################
     #   Tsai-type iQC    #
     model_name = 'pico'
@@ -189,7 +189,7 @@ if __name__ == "__main__":
     myModel[0] = [elm_A,['polyhedron', od0, flag_od],              POS_V,       xe0, be, occ, rmax, 0]
     #"""
     
-    #"""
+    """
     #############################
     #   F-type AKN tiling
     model_name = 'fakn'
@@ -235,7 +235,8 @@ if __name__ == "__main__":
     nmax = 1
     #oshift=np.array([ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
     #oshift=np.array([ 0.5, 0.5, 0.5, 0.5, 0.5, 0.5])
-    oshift=np.array([ 0.01, -0.02, 0.03, -0.04, 0.05, 0.06])
+    #oshift=np.array([ 0.01, -0.02, 0.03, -0.04, 0.05, 0.06])
+    oshift=np.array([ 0.03, -0.03, -0.03, 0.00, -0.03, -0.02])
     #
     out=strc(aico,brv,myModel,nmax,oshift,verbose=1)
     od.write_vesta(out,path='.',basename='%s_nmax%d_%s'%(model_name,nmax,select),color='k',select=select,verbose=0)
