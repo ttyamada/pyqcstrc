@@ -71,9 +71,14 @@ def strc(aico,brv,model,nmax,oshift,verbose):
     #x1=np.array([0, 0, -1, 0, 0, 0],dtype=np.float64) #5f
     #x2=np.array([0, 1, -1, 1, 0, 0],dtype=np.float64) #3f
     #x3=np.array([0, 1, -1, 0, 0, 0],dtype=np.float64) #2f
-    x1=np.array([1, 0, 0, 0, 0, 0],dtype=np.float64) #5f
-    x2=np.array([1, 0,-1, 0,-1, 0],dtype=np.float64) #3f
-    x3=np.array([1, 0, 0, 0,-1, 0],dtype=np.float64) #2f
+    
+    #x1=np.array([1, 0, 0, 0, 0, 0],dtype=np.float64) #5f
+    #x2=np.array([1, 0,-1, 0,-1, 0],dtype=np.float64) #3f
+    #x3=np.array([1, 0, 0, 0,-1, 0],dtype=np.float64) #2f
+    
+    x1=np.array([-1.,  0.,  0.,  0.,  0.,  0.],dtype=np.float64) #5f
+    x2=np.array([-1.,  0.,  0.,  1.,  0.,  1.],dtype=np.float64) #3f
+    x3=np.array([-1.,  0.,  0.,  1.,  0.,  0.],dtype=np.float64) #2f
     
     if brv=='s':
         aico=aico*2
@@ -322,7 +327,7 @@ def strc(aico,brv,model,nmax,oshift,verbose):
                                     for i2,obj2 in enumerate(obj1): # ODs at equivalent positions
                                         we=pose[i2]*aico*CONST1
                                         wi=posi[i2]
-                                        point=vi+wi-oshift
+                                        point=vi+wi+oshift
                                         ####point=vi-oshift
                                         for i3,obj3 in enumerate(obj2): # symmetric OD
                                             xe1_=xe1[i2][i3]
