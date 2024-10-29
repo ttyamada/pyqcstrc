@@ -892,7 +892,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
         else:
             pass
         print(' 0 0 0 0 0', file=f)
-        print('VECTT', file=f) # color of arrows
+        print('VECTT', file=f) # r and color of arrows
         if select == 'mag':
             for i1,site in enumerate(obj):
                 mu=site[9]
