@@ -80,8 +80,8 @@ if __name__ == "__main__":
     be = 1.519 # DW factor
     # eshift:
     xe0=[0,0,0]
-    # magnetic moment
-    mu=[0.75,0,0] # along 5f,3f,2f axces.
+    # magnetic moment, mu
+    mu=[1.0, 0.0, 0.0] # along 5f,3f,2f axces.
     #
     myModel = {}
     #             element, [OD,  OD shape, symmetric or asymmetric],  coordinate,   eshift, be, rmax, mu(magnetic moment)
@@ -233,11 +233,26 @@ if __name__ == "__main__":
     #    COMMON
     ######################
     nmax = 1
-    #oshift=np.array([ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-    #oshift=np.array([ 0.5, 0.5, 0.5, 0.5, 0.5, 0.5])
-    #oshift=np.array([ 0.01, -0.02, 0.03, -0.04, 0.05, 0.06])
-    oshift=np.array([ 0.03, -0.03, -0.03, 0.00, -0.03, -0.02])
-    #
-    out=strc(aico,brv,myModel,nmax,oshift,verbose=1)
+    #oshift=[ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    #oshift=[ 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
+    #oshift=[ 0.01, -0.02, 0.03, -0.04, 0.05, 0.06]
+    oshift=[ 0.03, -0.03, -0.03, 0.00, -0.03, -0.02]
+    
+    
+    #=====================================
+    # three 6d vectors for eshift and mu
+    # corresponding to xe1,xe2,xe3 in QUASI
+    #=====================================
+    #xe1=[1, 0, 0, 0, 0, 0] #5f
+    xe1=[0, 1, 0, 0, 0, 0] #5f
+    #xe1=[0, 0, 1, 0, 0, 0] #5f
+    #xe1=[0, 0, 0, 1, 0, 0] #5f
+    #xe1=[0, 0, 0, 0, 1, 0] #5f
+    #xe1=[0, 0, 0, 0, 0, 1] #5f
+    xe2=[1, 0,-1, 0,-1, 0] #3f
+    xe3=[1, 0, 0, 0,-1, 0] #2f
+    
+    
+    out=strc(aico,brv,myModel,nmax,oshift,xe1,xe2,xe3,verbose=1)
     od.write_vesta(out,path='.',basename='%s_nmax%d_%s'%(model_name,nmax,select),color='k',select=select,verbose=0)
     
