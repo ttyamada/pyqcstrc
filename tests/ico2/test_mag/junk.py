@@ -20,6 +20,8 @@ POS_V  = np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int
 POS_C  = np.array([[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]],dtype=np.int64)
 POS_EC = np.array([[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
 
+V0 = np.array([ 0.00, 0.00, 0.00, 0.00, 0.00, 0.00])
+
 if __name__ == "__main__":
     
     xyzpath='../../../xyz/ico/kumazawa'
@@ -58,9 +60,9 @@ if __name__ == "__main__":
     x2=np.array([1, 0,-1, 0,-1, 0],dtype=np.float64) #3f
     x3=np.array([1, 0, 0, 0,-1, 0],dtype=np.float64) #2f
     
-    y1=symmetry_numerical.symop_vec(symop[idx],x1,centre=np.array([ 0.00, 0.00, 0.00, 0.00, 0.00, 0.00]))
-    y2=symmetry_numerical.symop_vec(symop[idx],x2,centre=np.array([ 0.00, 0.00, 0.00, 0.00, 0.00, 0.00]))
-    y3=symmetry_numerical.symop_vec(symop[idx],x3,centre=np.array([ 0.00, 0.00, 0.00, 0.00, 0.00, 0.00]))
+    y1=symmetry_numerical.symop_vec(symop[idx],x1,centre=V0)
+    y2=symmetry_numerical.symop_vec(symop[idx],x2,centre=V0)
+    y3=symmetry_numerical.symop_vec(symop[idx],x3,centre=V0)
     print(y1)
     print(y2)
     print(y3)
