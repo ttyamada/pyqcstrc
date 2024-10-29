@@ -692,7 +692,7 @@ def icosasymop3_array(flag):
         theta = -2.0*PI/fold
         cos = np.cos(theta)
         sin = np.sin(theta)
-    
+        
         # Rodrigues' rotation formula
         a11 = n1**2.0*(1.0-cos) +    cos
         a12 = n1*n2  *(1.0-cos) + n3*sin
