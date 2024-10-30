@@ -81,7 +81,7 @@ if __name__ == "__main__":
     # eshift:
     xe0=[0,0,0]
     # magnetic moment, mu
-    mu=[1.0, 0.0, 0.0] # along 5f,3f,2f axces.
+    #mu=[1.0, 0.0, 0.0] # along 5f,3f,2f axces.
     #
     myModel = {}
     #             element, [OD,  OD shape, symmetric or asymmetric],  coordinate,   eshift, be, rmax, mu(magnetic moment)
@@ -243,8 +243,8 @@ if __name__ == "__main__":
     # three 6d vectors for eshift and mu
     # corresponding to xe1,xe2,xe3 in QUASI
     #=====================================
-    #xe1=[1, 0, 0, 0, 0, 0] #5f
-    xe1=[0, 1, 0, 0, 0, 0] #5f
+    xe1=[1, 0, 0, 0, 0, 0] #5f
+    #xe1=[0, 1, 0, 0, 0, 0] #5f
     #xe1=[0, 0, 1, 0, 0, 0] #5f
     #xe1=[0, 0, 0, 1, 0, 0] #5f
     #xe1=[0, 0, 0, 0, 1, 0] #5f
