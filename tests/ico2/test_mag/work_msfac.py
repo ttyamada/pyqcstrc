@@ -91,11 +91,13 @@ if __name__ == "__main__":
     ofname='%s_nmax%d_step%3.2f'%(basename,nmax,qinterval)
     fnuc=open('%s/%s_nuc.out'%(wpath,ofname),'w')
     fmag=open('%s/%s_mag.out'%(wpath,ofname),'w')
-    z_nuc=np.zeros([2*nmax,2*nmax])
-    z_mag=np.zeros([2*nmax,2*nmax])
+    #z_nuc=np.zeros([2*nmax,2*nmax])
+    #z_mag=np.zeros([2*nmax,2*nmax])
     intensity_nuc_dict={}
     intensity_mag_dict={}
     intensity_tot_dict={}
+    z_nuc=[]
+    z_mag=[]
     for ix in range(-nmax,nmax+1):
         print(ix)
         for iy in range(-nmax,nmax+1):
@@ -111,7 +113,8 @@ if __name__ == "__main__":
                 
                 # magnetic form factor
                 flag2=1
-                mffac1=atm.magnetic_form_factor('Eu2+',q_par_len,flag2)
+                s=q_par_len/2.0 # sin(theta)/lambda in Ang^{-1}
+                mffac1=atm.magnetic_form_factor('Eu2+',s,flag2)
                 
                 val1=0.0+0.0*1j
                 val2=0.0+0.0*1j
@@ -120,22 +123,39 @@ if __name__ == "__main__":
                     spnvec=atom[2]
                     con1 = np.dot(qxyz,xyz)
                     tmp = cmath.exp(TWOPI*con1*1j)
-                    mu = np.dot(spnvec,qxyz)/(q_par_len**2*qxyz+1E-06) - np.array(spnvec) # 3d vector
+                    if ix==0 and iy==0 and iz==0:
+                        #mu = np.dot(spnvec,qxyz)/(q_par_len**2*qxyz+1E-06) - np.array(spnvec) # 3d vector
+                        mu=0.1
+                    else:
+                        mu = np.dot(spnvec,qxyz)/q_par_len**2*qxyz - np.array(spnvec) # 3d vector
+                    #print('tmp:',tmp)
+                    #print('mu:',mu)
                     val1 += tmp
                     val2 += mu*tmp
+                #print('val1:',val1)
+                #print('val2:',val2)
+                
                 sfc_nuc=affac*val1
-                int_nuc=sfc_nuc.real**2 + sfc_nuc.imag**2
+                #int_nuc=sfc_nuc.real**2 + sfc_nuc.imag**2
+                int_nuc=abs(sfc_nuc)**2
                 #
+                #print('mffac1:',mffac1)
+                #print('val2:',val2)
                 sfc_mag=mffac1*val2
-                tmp=sfc_mag.real**2 + sfc_mag.imag**2
-                int_mag=np.linalg.norm(tmp)
-                fnuc.write('%8.6f %8.6f %8.6f %8.6f'%(qxyz[0],qxyz[1],qxyz[2],int_nuc))
-                fmag.write('%8.6f %8.6f %8.6f %8.6f'%(qxyz[0],qxyz[1],qxyz[2],int_mag))
+                #print('sfc_mag:',sfc_mag)
+                #tmp=sfc_mag.real**2 + sfc_mag.imag**2
+                #int_mag=np.linalg.norm(tmp)
+                int_mag=np.linalg.norm(sfc_mag)**2
+                #print('int_mag:',int_mag)
+                fnuc.write('%8.6f %8.6f %8.6f %8.6f\n'%(qxyz[0],qxyz[1],qxyz[2],int_nuc))
+                fmag.write('%8.6f %8.6f %8.6f %8.6f\n'%(qxyz[0],qxyz[1],qxyz[2],int_mag))
                 #
                 #z_nuc[ix,iy]=np.log10(int_nuc)
                 #z_mag[ix,iy]=np.log10(int_mag)
-                z_nuc[ix,iy]=int_nuc
-                z_mag[ix,iy]=int_mag
+                #z_nuc[ix,iy]=int_nuc
+                #z_mag[ix,iy]=int_mag
+                z_mag.append(int_mag)
+                z_nuc.append(int_nuc)
                 
                 """
                 # for powder pattern
@@ -155,23 +175,55 @@ if __name__ == "__main__":
                 """
     fnuc.close
     fmag.close
+        
+    x = np.arange(-qrange, qrange+qinterval, qinterval)
+    y = np.arange(-qrange, qrange+qinterval, qinterval)
+    X, Y = np.meshgrid(x, y)
+    min_Z_mag=min(z_mag)
+    max_Z_mag=max(z_mag)
+    min_Z_nuc=min(z_nuc)
+    max_Z_nuc=max(z_nuc)
+    Z_mag = np.array(z_mag).reshape(len(x),len(y))
+    Z_nuc = np.array(z_nuc).reshape(len(x),len(y))
     
-    plt.subplot(121)
+    plt.figure(figsize=(8, 8))
+    
+    plt.subplot(221)
     plt.title('magnetic sfc')
-    plt.imshow(z_mag)
+    plt.pcolor(X,Y,Z_mag, cmap='binary', vmin=0.0, vmax=max_Z_mag)
     plt.colorbar ()
-    plt.xlabel('X')
-    plt.ylabel('Y')
+    plt.xlabel('Qx (1/Å)')
+    plt.ylabel('Qy (1/Å)')
+    plt.gca().set_aspect('equal')
     
-    plt.subplot(122)
-    plt.title('nuclear sfc')
-    plt.imshow(z_nuc)
+    plt.subplot(223)
+    plt.title('magnetic sfc log')
+    plt.pcolor(X,Y,np.log10(Z_mag), vmin=0.1, vmax=3,cmap='binary') #logスケール ver
     plt.colorbar ()
-    plt.xlabel('X')
-    plt.ylabel('Y')
+    plt.xlabel('Qx (1/Å)')
+    plt.ylabel('Qy (1/Å)')
+    plt.gca().set_aspect('equal')
+    
+    #"""
+    plt.subplot(222)
+    plt.title('nuclear sfc')
+    plt.pcolor(X,Y,Z_nuc, cmap='binary', vmin=0.0, vmax=max_Z_nuc)
+    plt.colorbar ()
+    plt.xlabel('Qx (1/Å)')
+    #plt.ylabel('Qy (1/Å)')
+    plt.gca().set_aspect('equal')
+    
+    plt.subplot(224)
+    plt.title('nuclear sfc log')
+    plt.pcolor(X,Y,np.log10(Z_nuc), vmin=3, vmax=7,cmap='binary') #logスケール ver
+    plt.colorbar ()
+    plt.xlabel('Qx (1/Å)')
+    #plt.ylabel('Qy (1/Å)')
+    plt.gca().set_aspect('equal')
+    
     
     plt.savefig('%s/%s.png'%(wpath,ofname), format="png", dpi=300)
-    
+    #"""
     """
     int_array = np.array([0.]*qrange*np.sqrt(3))
     intensity_max = max(intensity_tot_dict.values())
