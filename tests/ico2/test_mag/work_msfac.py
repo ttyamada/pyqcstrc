@@ -85,8 +85,9 @@ if __name__ == "__main__":
     
     print('calc: nuclear and magnetic structure factors')
     wvl=1.0 # in Ang.
-    qrange=5.0 # in Ang.^-1
-    qinterval=0.2 # in Ang.^-1
+    #qrange=5.0 # in Ang.^-1
+    qrange=2.5 # in Ang.^-1
+    qinterval=0.05 # in Ang.^-1
     nmax=int(qrange/qinterval)
     ofname='%s_nmax%d_step%3.2f'%(basename,nmax,qinterval)
     fnuc=open('%s/%s_nuc.out'%(wpath,ofname),'w')
@@ -124,8 +125,8 @@ if __name__ == "__main__":
                     con1 = np.dot(qxyz,xyz)
                     tmp = cmath.exp(TWOPI*con1*1j)
                     if ix==0 and iy==0 and iz==0:
-                        #mu = np.dot(spnvec,qxyz)/(q_par_len**2*qxyz+1E-06) - np.array(spnvec) # 3d vector
-                        mu=0.1
+                        # Q=(0,0,0)
+                        mu = -np.array(spnvec) # 3d vector
                     else:
                         mu = np.dot(spnvec,qxyz)/q_par_len**2*qxyz - np.array(spnvec) # 3d vector
                     #print('tmp:',tmp)
