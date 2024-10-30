@@ -856,14 +856,14 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
         \n  0.000000   0.000000   0.000000   0.000000   0.000000   0.000000', file=f)
         print('STRUC', file=f)
         for i1,site in enumerate(obj):
-            element,xyz,num_od,h1,h2,h3,h4,h5,h6,mu = site
+            element,xyz,num_od,h1234566,mu = site
             print('%d %s        %s%d  1.0000   %8.6f   %8.6f   %8.6f   1        -'%(\
                 i1+1,element,element,i1+1,xyz[0],xyz[1],xyz[2]), file=f)
             print('                                    0.000000   0.000000   0.000000  0.00', file=f)
         print('  0 0 0 0 0 0 0', file=f)
         print('THERI 1', file=f)
         for i1,site in enumerate(obj):
-            element,xyz,num_od,h1,h2,h3,h4,h5,h6,mu = site
+            element,xyz,num_od,h1234566,mu = site
             print('%d        %s%d -0.000000'%(i1+1,element,i1+1), file=f)
         print('  0 0 0', file=f)
         print('SHAPE', file=f)
@@ -875,13 +875,13 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
         print('  0 0 0 0', file=f)
         print('SITET', file=f)
         for i1,site in enumerate(obj):
-            element,xyz,num_od,h1,h2,h3,h4,h5,h6,mu = site
+            element,xyz,num_od,h1234566,mu = site
             print('%d        %s%d  0.8000  76  76  76  76  76  76 204  0'%(i1+1,element,i1+1), file=f)
         print('  0 0 0 0 0 0', file=f)
         print('VECTR', file=f)
         if select == 'mag':
             for i1,site in enumerate(obj):
-                mu=site[9]
+                mu=site[4]
                 if np.all(mu==0):
                     pass
                 else:
@@ -895,7 +895,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
         print('VECTT', file=f) # r and color of arrows
         if select == 'mag':
             for i1,site in enumerate(obj):
-                mu=site[9]
+                mu=site[4]
                 if np.all(mu==0):
                     pass
                 else:
