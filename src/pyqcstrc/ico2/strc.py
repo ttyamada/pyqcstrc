@@ -306,7 +306,8 @@ def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose):
                 for h4 in range(-nmax,nmax+1):
                     for h5 in range(-nmax,nmax+1):
                         for h6 in range(-nmax,nmax+1):
-                            vn=projection_numerical(np.array([h1,h2,h3,h4,h5,h6],dtype=np.float64))
+                            h123456=np.array([h1,h2,h3,h4,h5,h6],dtype=np.float64)
+                            vn=projection_numerical(h123456)
                             ve=vn[0:3]*aico*CONST1
                             vi=vn[3:6]
                             #-------------------------------------
@@ -391,7 +392,7 @@ def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose):
                                                         xeshift_=np.array([xe1_,xe2_,xe3_]).T@xeshift
                                                         xyz=ve+we-xeshift_
                                                         if np.all(mu==0.0): # non-magnetic atom
-                                                            lst.append([element,xyz,i1,h1,h2,h3,h4,h5,h6,0])
+                                                            lst.append([element,xyz,i1,h123456,0])
                                                         else: # magnetic atom
                                                             # spin moment vector in Epar.
                                                             #mu_=np.array([mu[0]*xe1,mu[1]*xe2,mu[2]*xe3])
@@ -399,7 +400,7 @@ def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose):
                                                             mu_=np.array([mxe1_,mxe2_,mxe3_]).T@mu
                                                             #print(' mu_:',mu_)
                                                             #print(' ',np.linalg.norm(mu_))
-                                                            lst.append([element,xyz,i1,h1,h2,h3,h4,h5,h6,mu_])
+                                                            lst.append([element,xyz,i1,h123456,mu_])
                                                         counter+=1
                                                         break
                                                         #"""
