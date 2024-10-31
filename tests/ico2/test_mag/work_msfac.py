@@ -46,12 +46,8 @@ def read_file(file):
             break
         line.append(a[:-1])
     return line
-
-if __name__ == "__main__":
     
-    wpath='./work_mag'
-    basename='mag'
-    #basename='T_10_m4_D10_L_mag'
+def sfc(path,basename,wvl,qrange,qinterval):
     
     # roatation matrces
     th1 = -np.arctan(1/TAU)
@@ -68,12 +64,12 @@ if __name__ == "__main__":
                    [    0,    0,    1]],dtype=np.float64)
     
     print('reading data')
-    aico=5.68930 # in Ang. CdYb
+    #aico=5.68930 # in Ang. CdYb
     a=read_file('%s/%s.mld'%(wpath,basename))
     lst_data=[]
     for i1 in range(2,len(a)):
         b=a[i1].split()
-        site=np.array([float(b[0]),float(b[1]),float(b[2])],dtype=np.float64)/aico
+        site=np.array([float(b[0]),float(b[1]),float(b[2])],dtype=np.float64)
         atom=z2atom(int(b[3]))
         spnvec=np.array([float(b[4]),float(b[5]),float(b[6])],dtype=np.float64)/2.0 # Note that the spin vectors were multiplied by two in the input data. back to the roginal ones.
         # roatation, x,y,z // twofold axes
@@ -84,12 +80,12 @@ if __name__ == "__main__":
     print('done')
     
     print('calc: nuclear and magnetic structure factors')
-    wvl=1.0 # in Ang.
+    #wvl=1.0 # in Ang.
     #qrange=5.0 # in Ang.^-1
-    qrange=2.5 # in Ang.^-1
-    qinterval=0.05 # in Ang.^-1
+    #qrange=2.5 # in Ang.^-1
+    #qinterval=0.05 # in Ang.^-1
     nmax=int(qrange/qinterval)
-    ofname='%s_nmax%d_step%3.2f'%(basename,nmax,qinterval)
+    ofname='%s_qrange%3.2f_step%3.2f'%(basename,qrange,qinterval)
     fnuc=open('%s/%s_nuc.out'%(wpath,ofname),'w')
     fmag=open('%s/%s_mag.out'%(wpath,ofname),'w')
     #z_nuc=np.zeros([2*nmax,2*nmax])
@@ -176,10 +172,50 @@ if __name__ == "__main__":
                 """
     fnuc.close
     fmag.close
+    return 0
+    
+if __name__ == "__main__":
+    
+    wpath='./work_mag'
+    aico=5.68930 # in Ang. CdYb
+    wvl=1.0 # in Ang.
+    
+    
+    
+    #basename='mag'
+    basename='T_10_m4_D10_L_mag'
+    
+    
+    qrange=5.0 # in Ang.^-1
+    qinterval=0.1 # in Ang.^-1
+    #
+    #qrange=2.5 # in Ang.^-1
+    #qinterval=0.05 # in Ang.^-1
+    
+    
+    # colormaps
+    # https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html
+    #cmap='binary'
+    cmap='jet'
+    
+    #sfc(wpath,basename,wvl,qrange,qinterval)
+    
+    nmax=int(qrange/qinterval)
+    ofname='%s_qrange%3.2f_step%3.2f'%(basename,qrange,qinterval)
+    data_nuc=read_file('%s/%s_nuc.out'%(wpath,ofname))
+    data_mag=read_file('%s/%s_mag.out'%(wpath,ofname))
+    z_nuc=[]
+    z_mag=[]
+    for a in data_nuc:
+        b=a.split()
+        z_nuc.append(float(b[3]))
+    for a in data_mag:
+        b=a.split()
+        z_mag.append(float(b[3]))
         
-    x = np.arange(-qrange, qrange+qinterval, qinterval)
-    y = np.arange(-qrange, qrange+qinterval, qinterval)
-    X, Y = np.meshgrid(x, y)
+    x = np.arange(-qrange, qrange+qinterval, qinterval)/aico/np.sqrt(2)*TWOPI
+    y = np.arange(-qrange, qrange+qinterval, qinterval)/aico/np.sqrt(2)*TWOPI
+    x_plot, y_plot = np.meshgrid(x, y)
     min_Z_mag=min(z_mag)
     max_Z_mag=max(z_mag)
     min_Z_nuc=min(z_nuc)
@@ -191,40 +227,40 @@ if __name__ == "__main__":
     
     plt.subplot(221)
     plt.title('magnetic sfc')
-    plt.pcolor(X,Y,Z_mag, cmap='binary', vmin=0.0, vmax=max_Z_mag)
+    plt.pcolor(x_plot,y_plot,Z_mag, cmap=cmap, vmin=0.0, vmax=max_Z_mag/10)
     plt.colorbar ()
-    plt.xlabel('Qx (1/Å)')
-    plt.ylabel('Qy (1/Å)')
+    plt.xlabel('Qx (r.l.u)')
+    plt.ylabel('Qy (r.l.u)')
     plt.gca().set_aspect('equal')
     
     plt.subplot(223)
     plt.title('magnetic sfc log')
-    plt.pcolor(X,Y,np.log10(Z_mag), vmin=0.1, vmax=3,cmap='binary') #logスケール ver
+    #plt.pcolor(x_plot,y_plot,np.log10(Z_mag),cmap='binary')
+    plt.pcolor(x_plot,y_plot,np.log10(Z_mag), vmin=0.1, vmax=3,cmap=cmap)
     plt.colorbar ()
-    plt.xlabel('Qx (1/Å)')
-    plt.ylabel('Qy (1/Å)')
+    plt.xlabel('Qx (r.l.u)')
+    plt.ylabel('Qy (r.l.u)')
     plt.gca().set_aspect('equal')
     
-    #"""
     plt.subplot(222)
     plt.title('nuclear sfc')
-    plt.pcolor(X,Y,Z_nuc, cmap='binary', vmin=0.0, vmax=max_Z_nuc)
+    plt.pcolor(x_plot,y_plot,Z_nuc, cmap=cmap, vmin=0.0, vmax=max_Z_nuc/10)
     plt.colorbar ()
-    plt.xlabel('Qx (1/Å)')
-    #plt.ylabel('Qy (1/Å)')
+    plt.xlabel('Qx (r.l.u)')
+    #plt.ylabel('Qy (r.l.u)')
     plt.gca().set_aspect('equal')
     
     plt.subplot(224)
     plt.title('nuclear sfc log')
-    plt.pcolor(X,Y,np.log10(Z_nuc), vmin=3, vmax=7,cmap='binary') #logスケール ver
+    #plt.pcolor(x_plot,y_plot,np.log10(Z_nuc),cmap='binary')
+    plt.pcolor(x_plot,y_plot,np.log10(Z_nuc), vmin=5, vmax=7,cmap=cmap)
     plt.colorbar ()
-    plt.xlabel('Qx (1/Å)')
-    #plt.ylabel('Qy (1/Å)')
+    plt.xlabel('Qx (r.l.u)')
+    #plt.ylabel('Qy (r.l.u)')
     plt.gca().set_aspect('equal')
     
-    
     plt.savefig('%s/%s.png'%(wpath,ofname), format="png", dpi=300)
-    #"""
+    
     """
     int_array = np.array([0.]*qrange*np.sqrt(3))
     intensity_max = max(intensity_tot_dict.values())
