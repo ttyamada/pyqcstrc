@@ -214,19 +214,8 @@ def translation(brv):
 ################ 
 # site symmetry
 ################
-
+"""
 def site_symmetry(site,brv):
-    """symmetry operators in the site symmetry group G.
-    
-    Args:
-        site (numpy.ndarray):
-            xyz coordinate of the site.
-            The shape is (6,3).
-            
-    Returns:
-        List of index of symmetry operators of the site symmetry group G (list):
-            The symmetry operators leaves xyz identical.
-    """
     
     #symop=icosasymop()
     symop=icosasymop_array()
@@ -249,8 +238,6 @@ def site_symmetry(site,brv):
     return remove_overlaps(list1)
 
 def coset(site,brv):
-    """coset
-    """
     #symop=icosasymop()
     symop=icosasymop_array()
     
@@ -401,7 +388,7 @@ def site_symmetry_and_coset(site,brv):
                 pass
     
     return list1_new,list5
-
+"""
 ############################
 # Similarity transformation
 ############################
