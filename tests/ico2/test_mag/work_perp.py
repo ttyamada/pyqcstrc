@@ -115,11 +115,12 @@ if __name__ == "__main__":
             vi=b[1]
             h=b[2]
             if np.allclose(xyz_data, xyz_ref, rtol=1e-03, atol=1e-06):
-                f.write('%d %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f %d %d %d %d %d %d'%(counter+1,-vi[0],-vi[1],-vi[2],spnvec[0],spnvec[1],spnvec[2],h[0],h[1],h[2],h[3],h[4],h[5]))
+                f.write('%d %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f %d %d %d %d %d %d\n'%(counter+1,-vi[0],-vi[1],-vi[2],spnvec[0],spnvec[1],spnvec[2],h[0],h[1],h[2],h[3],h[4],h[5]))
                 print('%d %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f %d %d %d %d %d %d'%(counter+1,-vi[0],-vi[1],-vi[2],spnvec[0],spnvec[1],spnvec[2],h[0],h[1],h[2],h[3],h[4],h[5]))
                 out.append([element,-vi,counter+1,b[2],spnvec])
                 counter+=1
                 break
+    f.close()
     print('done')
     
     print('generating output')

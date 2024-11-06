@@ -81,7 +81,7 @@ if __name__ == "__main__":
     # eshift:
     xe0=[0,0,0]
     # magnetic moment, mu
-    #mu=[1.0, 0.0, 0.0] # along 5f,3f,2f axces.
+    mu=[1.0, 0.0, 0.0] # along 5f,3f,2f axces.
     #
     myModel = {}
     #             element, [OD,  OD shape, symmetric or asymmetric],  coordinate,   eshift, be, rmax, mu(magnetic moment)
@@ -232,7 +232,7 @@ if __name__ == "__main__":
     ######################
     #    COMMON
     ######################
-    nmax = 1
+    nmax = 2
     #oshift=[ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     #oshift=[ 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
     #oshift=[ 0.01, -0.02, 0.03, -0.04, 0.05, 0.06]

@@ -10,6 +10,7 @@ try:
                                     )
     import pyqcstrc.ico2.occupation_domain as od
     import pyqcstrc.ico2.symmetry as symmetry
+    import pyqcstrc.ico2.math1 as math1
     import pyqcstrc.ico2.numericalc as numericalc
     import pyqcstrc.ico2.symmetry_numerical as symmetry_numerical
 except ImportError:
@@ -24,6 +25,41 @@ V0 = np.array([ 0.00, 0.00, 0.00, 0.00, 0.00, 0.00])
 
 if __name__ == "__main__":
     
+    op1=symmetry.icosasymop3_array('axial')
+    op2=symmetry.icosasymop3_array('normal')
+    
+    # three vectors that defines asymmetric unit
+    vt5=np.array([[1,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64) # 5f
+    vt3=np.array([[1,0,1],[0,0,1],[-1,0,1],[0,0,1],[-1,0,1],[0,0,1]],dtype=np.int64) # 3f
+    vt2=np.array([[1,0,1],[0,0,1],[0,0,1],[0,0,1],[-1,0,1],[0,0,1]],dtype=np.int64) # 2f
+    tmp=math1.add_vectors(vt5,vt3)
+    vt=math1.add_vectors(tmp,vt2)
+    
+    indx=symmetry.get_index_of_symmetry_operation_for_equivalent_vectors(vt)
+    print(indx)
+    
+    vn=numericalc.numerical_vector(vt)
+    vne=numericalc.projection_sets_par_numerical_normalized(vn)
+    V2=np.array([0,0,0],dtype=np.float64)
+    
+    # symmetry operation on axial vectors
+    vn1=symmetry_numerical.generator_obj_symmetric_vector_specific_symop_1(vne,V2,indx,'axial')
+    
+    # symmetry operation on vectors
+    vn2=symmetry_numerical.generator_obj_symmetric_vector_specific_symop_1(vne,V2,indx,'normal')
+    
+    
+    for i1 in range(len(vn1)):
+        v=vn1[i1]
+        w=vn2[i1]
+        if np.allclose(v,w):
+            print('%3d %8.5f %8.5f %8.5f | %8.5f %8.5f %8.5f (same)'%(i1,v[0],v[1],v[2],w[0],w[1],w[2]))
+        else:
+            print('%3d %8.5f %8.5f %8.5f | %8.5f %8.5f %8.5f (different)'%(i1,v[0],v[1],v[2],w[0],w[1],w[2]))
+            print(op1[i1]) 
+            print(op2[i1]) 
+    
+    """
     xyzpath='../../../xyz/ico/kumazawa'
     # Kumazawa's OD for icosahedron shell
     od0=od.read_xyz(path=xyzpath,basename='strt_aysmmetric',  select='tetrahedron',verbose=0)
@@ -66,3 +102,5 @@ if __name__ == "__main__":
     print(y1)
     print(y2)
     print(y3)
+    """
+    
