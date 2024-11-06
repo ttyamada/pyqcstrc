@@ -316,78 +316,37 @@ def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose):
                             for i1,obj1 in enumerate(lst_objs): # i1-th atom.
                                 positions=lst_pos[i1]
                                 element=lst_atm[i1]
-                                #
                                 mu=lst_mu[i1]
                                 xeshift=lst_eshift[i1] # shift of i1-th atom in Epar.
-                                #
                                 xe1=lst_xe1[i1]
                                 xe2=lst_xe2[i1]
                                 xe3=lst_xe3[i1]
-                                #
                                 mxe1=lst_mxe1[i1]
                                 mxe2=lst_mxe2[i1]
                                 mxe3=lst_mxe3[i1]
                                 #
-                                #
                                 # equivalnts by centring
-                                for pos in positions:
+                                for i2,pos in enumerate(positions):
                                     pose=projection_sets_par_numerical(pos)
                                     posi=projection3_sets_numerical(pos)
-                                    for i2,obj2 in enumerate(obj1): # ODs at equivalent positions
-                                        we=pose[i2]*aico*CONST1
-                                        wi=posi[i2]
-                                        #point=vi+wi-oshift
+                                    for i3,obj2 in enumerate(obj1): # ODs at equivalent positions
+                                        we=pose[i3]*aico*CONST1
+                                        wi=posi[i3]
                                         point=-vi-wi+oshift
-                                        for i3,obj3 in enumerate(obj2): # symmetric OD
-                                            #"""
-                                            xe1_=xe1[i2][i3]
-                                            xe2_=xe2[i2][i3]
-                                            xe3_=xe3[i2][i3]
-                                            mxe1_=mxe1[i2][i3]
-                                            mxe2_=mxe2[i2][i3]
-                                            mxe3_=mxe3[i2][i3]
-                                            #"""
-                                            # whether the 'point' is inside the OD or not.
+                                        for i4,obj3 in enumerate(obj2): # symmetric OD
+                                            xe1_=xe1[i3][i4]
+                                            xe2_=xe2[i3][i4]
+                                            xe3_=xe3[i3][i4]
+                                            mxe1_=mxe1[i3][i4]
+                                            mxe2_=mxe2[i3][i4]
+                                            mxe3_=mxe3[i3][i4]
+                                            # check whether the 'point' is inside the OD or not.
                                             counter=0
                                             for tetrahedron in obj3: # asymmetric units
                                                 # roughly check whether the v is inside the spherical OD or not.
                                                 if inside_outside_tetrahedron_rough(point,tetrahedron): # inside
                                                     # check whether the v is inside the spherical OD or not.
                                                     if inside_outside_tetrahedron(point,tetrahedron): # inside
-                                                        """
-                                                        # know where the cut space is passing through the OD(obj3).
-                                                        point2=-vi-wi+oshift
-                                                        counter3=0
-                                                        for i4,obj4 in enumerate(obj2):
-                                                            for tetrahedron4 in obj4: # asymmetric units
-                                                                if inside_outside_tetrahedron_rough(point2,tetrahedron4): # inside
-                                                                    if inside_outside_tetrahedron(point2,tetrahedron4): # inside
-                                                                        counter3+=1
-                                                                        break
-                                                            if counter3!=0:
-                                                                break
-                                                        if counter3!=0:
-                                                            xe1_=xe1[i2][i4]
-                                                            xe2_=xe2[i2][i4]
-                                                            xe3_=xe3[i2][i4]
-                                                            mxe1_=mxe1[i2][i4]
-                                                            mxe2_=mxe2[i2][i4]
-                                                            mxe3_=mxe3[i2][i4]
-                                                            
-                                                            xeshift_=np.array([xe1_,xe2_,xe3_])@xeshift
-                                                            xyz=ve+we-xeshift_
-                                                            if mu==0: # non-magnetic atom
-                                                                lst.append([element,xyz,i1,h1,h2,h3,h4,h5,h6,0])
-                                                            else: # magnetic atom
-                                                                # spin moment vector in Epar.
-                                                                #mu_=np.array([mu[0]*xe1,mu[1]*xe2,mu[2]*xe3])
-                                                                mu_=np.array([mxe1_,mxe2_,mxe3_])@mu
-                                                                lst.append([element,xyz,i1,h1,h2,h3,h4,h5,h6,mu_])
-                                                            counter+=1
-                                                            break
-                                                        """
-                                                        #
-                                                        #"""
                                                         #xeshift_=np.array([xeshift[0]*xe1_,xeshift[1]*xe2_,xeshift[2]*xe3_])
                                                         xeshift_=np.array([xe1_,xe2_,xe3_]).T@xeshift
                                                         xyz=ve+we-xeshift_
@@ -396,14 +355,10 @@ def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose):
                                                         else: # magnetic atom
                                                             # spin moment vector in Epar.
                                                             #mu_=np.array([mu[0]*xe1,mu[1]*xe2,mu[2]*xe3])
-                                                            #print('mu:',mu)
                                                             mu_=np.array([mxe1_,mxe2_,mxe3_]).T@mu
-                                                            #print(' mu_:',mu_)
-                                                            #print(' ',np.linalg.norm(mu_))
                                                             lst.append([element,xyz,i1,h123456,mu_])
                                                         counter+=1
                                                         break
-                                                        #"""
                                                     else:
                                                         pass
                                                 else:
