@@ -39,14 +39,17 @@ try:
                                         equivalent_sites_with_centring,
                                         generator_equivalent_vec,
                                         get_index_of_symmetry_operation_for_equivalent_vectors,
+                                        symmetry_operations_axial_vector,
+                                        symmetry_operations_axial_vectors,
                                         )
     from pyqcstrc.ico2.math1 import (mul_vector,
                                      mul_vectors,
+                                     projection,
                                      )
     from pyqcstrc.ico2.utils import (shift_object,
                                     )
 except ImportError:
-    print('import error in structure_factor\n')
+    print('import error in strc.py\n')
 
 TAU=(1+np.sqrt(5))/2.0
 EPS=1e-6
@@ -55,7 +58,7 @@ V1=np.array([0, 0, 0, 0, 0, 0],dtype=np.float64)
 V2=np.array([0, 0, 0],dtype=np.float64)
 CONST1 = 1/np.sqrt(2.0+TAU)
 
-def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose):
+def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose,test_flag):
     """
     this function generates atomic and magnetic structures in 3-d physical space.
     
@@ -69,7 +72,8 @@ def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose):
         [mu1,mu2,mu3], mu along 5-, 3-, 2-fold axis in Epar (xe1,xe2,xe3).
     x1,x2,x3, list
         three 6d vectors for eshift and mu, which corresponds to xe1,xe2,xe3 in QUASI.
-    
+    verbose, 
+    test_flag, for test
     """
     
     #x1=np.array([0, 0, -1, 0, 0, 0],dtype=np.float64) #5f
@@ -114,6 +118,17 @@ def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose):
     lst_mxe3=[]
     lst_eshift=[]
     #lst_sphere_radius=[]
+    
+    #### TEST ####
+    if test_flag==0:
+        pass
+    else:
+        lst_6dspin=[]
+        lst_mx1=[]
+        lst_mx2=[]
+        lst_mx3=[]
+    ##############
+    
     for i1,nod in enumerate(model):
         atom, pod, position, eshift, be, occ, rmax, mu = model[nod]
         obj=pod[1]
@@ -257,15 +272,16 @@ def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose):
                 ve2=projection_sets_par_numerical_normalized(x2)
                 ve3=projection_sets_par_numerical_normalized(x3)
                 #
+                flg='normal'
                 # in the independent OD (obj)
-                v1_=generator_obj_symmetric_vector_specific_symop_1(ve1,V2,indx_site_sym,'normal') # 5f
-                v2_=generator_obj_symmetric_vector_specific_symop_1(ve2,V2,indx_site_sym,'normal') # 3f
-                v3_=generator_obj_symmetric_vector_specific_symop_1(ve3,V2,indx_site_sym,'normal') # 2f
+                v1_=generator_obj_symmetric_vector_specific_symop_1(ve1,V2,indx_site_sym,flg) # 5f
+                v2_=generator_obj_symmetric_vector_specific_symop_1(ve2,V2,indx_site_sym,flg) # 3f
+                v3_=generator_obj_symmetric_vector_specific_symop_1(ve3,V2,indx_site_sym,flg) # 2f
                 #
                 # in the ODs at equivalent positions
-                v1_=generator_obj_symmetric_vectors_specific_symop_1(v1_,V2,indx_coset,'normal') # 5f
-                v2_=generator_obj_symmetric_vectors_specific_symop_1(v2_,V2,indx_coset,'normal') # 3f
-                v3_=generator_obj_symmetric_vectors_specific_symop_1(v3_,V2,indx_coset,'normal') # 2f
+                v1_=generator_obj_symmetric_vectors_specific_symop_1(v1_,V2,indx_coset,flg) # 5f
+                v2_=generator_obj_symmetric_vectors_specific_symop_1(v2_,V2,indx_coset,flg) # 3f
+                v3_=generator_obj_symmetric_vectors_specific_symop_1(v3_,V2,indx_coset,flg) # 2f
                 #
                 lst_xe1.append(v1_)
                 lst_xe2.append(v2_)
@@ -276,18 +292,45 @@ def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose):
                 # used for axial vectors, i.e. magnetic moment
                 #-----------------------------------------------------------------------
                 # in the independent OD (obj)
-                v1_=generator_obj_symmetric_vector_specific_symop_1(ve1,V2,indx_site_sym,'axial') # 5f
-                v2_=generator_obj_symmetric_vector_specific_symop_1(ve2,V2,indx_site_sym,'axial') # 3f
-                v3_=generator_obj_symmetric_vector_specific_symop_1(ve3,V2,indx_site_sym,'axial') # 2f
+                flg='axial'
+                #flg='normal'
+                v1_=generator_obj_symmetric_vector_specific_symop_1(ve1,V2,indx_site_sym,flg) # 5f
+                v2_=generator_obj_symmetric_vector_specific_symop_1(ve2,V2,indx_site_sym,flg) # 3f
+                v3_=generator_obj_symmetric_vector_specific_symop_1(ve3,V2,indx_site_sym,flg) # 2f
                 #-----------------------------------------------------------------------
                 # in the ODs at equivalent positions
-                v1_=generator_obj_symmetric_vectors_specific_symop_1(v1_,V2,indx_coset,'axial') # 5f
-                v2_=generator_obj_symmetric_vectors_specific_symop_1(v2_,V2,indx_coset,'axial') # 3f
-                v3_=generator_obj_symmetric_vectors_specific_symop_1(v3_,V2,indx_coset,'axial') # 2f
+                v1_=generator_obj_symmetric_vectors_specific_symop_1(v1_,V2,indx_coset,flg) # 5f
+                v2_=generator_obj_symmetric_vectors_specific_symop_1(v2_,V2,indx_coset,flg) # 3f
+                v3_=generator_obj_symmetric_vectors_specific_symop_1(v3_,V2,indx_coset,flg) # 2f
                 #-----------------------------------------------------------------------
                 lst_mxe1.append(v1_)
                 lst_mxe2.append(v2_)
                 lst_mxe3.append(v3_)
+                
+                if test_flag==0:
+                    pass
+                else:
+                    #-----------------------------------------------------------------------
+                    # symmetry operation on x1,x2,x3 for each subdevided OD. 
+                    # used for axial vectors, i.e. magnetic moment
+                    #-----------------------------------------------------------------------
+                    # in the independent OD (obj)
+                    flg='axial'
+                    #flg='normal'
+                    x1_=generator_obj_symmetric_vector_specific_symop_1(x1,V2,indx_site_sym,flg) # 5f
+                    x2_=generator_obj_symmetric_vector_specific_symop_1(x2,V2,indx_site_sym,flg) # 3f
+                    x3_=generator_obj_symmetric_vector_specific_symop_1(x3,V2,indx_site_sym,flg) # 2f
+                    # in the ODs at equivalent positions
+                    x1_=generator_obj_symmetric_vectors_specific_symop_1(x1_,V2,indx_coset,flg) # 5f
+                    x2_=generator_obj_symmetric_vectors_specific_symop_1(x2_,V2,indx_coset,flg) # 3f
+                    x3_=generator_obj_symmetric_vectors_specific_symop_1(x3_,V2,indx_coset,flg) # 2f
+                    #-----------------------------------------------------------------------
+                    lst_mx1.append(x1_)
+                    lst_mx2.append(x2_)
+                    lst_mx3.append(x3_)
+                    #tmp=symmetry_operations_axial_vector(mu6d,V0,indx_site_sym)
+                    #tmp=symmetry_operations_axial_vectors(tmp,V0,indx_coset)
+                    #lst_6dspin.append(tmp)
                 
             else: # symmetric ODs
                 # WIP
@@ -324,6 +367,11 @@ def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose):
                                 mxe1=lst_mxe1[i1]
                                 mxe2=lst_mxe2[i1]
                                 mxe3=lst_mxe3[i1]
+                                if test_flag==1:
+                                    #spin6d_=lst_6dspin[i1]
+                                    mx1=lst_mx1[i1]
+                                    mx2=lst_mx2[i1]
+                                    mx3=lst_mx3[i1]
                                 #
                                 # equivalnts by centring
                                 for i2,pos in enumerate(positions):
@@ -340,23 +388,32 @@ def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose):
                                             mxe1_=mxe1[i3][i4]
                                             mxe2_=mxe2[i3][i4]
                                             mxe3_=mxe3[i3][i4]
+                                            if test_flag==1:
+                                                #spin6d=spin6d_[i3][i4]
+                                                mx1_=mx1[i3][i4]
+                                                mx2_=mx2[i3][i4]
+                                                mx3_=mx3[i3][i4]
                                             # check whether the 'point' is inside the OD or not.
                                             counter=0
                                             for tetrahedron in obj3: # asymmetric units
-                                                # roughly check whether the v is inside the spherical OD or not.
+                                                # roughly check whether "point" is inside the spherical OD or not.
                                                 if inside_outside_tetrahedron_rough(point,tetrahedron): # inside
-                                                    # check whether the v is inside the spherical OD or not.
+                                                    # check whether "point" is inside the tetrahedral OD or not.
                                                     if inside_outside_tetrahedron(point,tetrahedron): # inside
                                                         #xeshift_=np.array([xeshift[0]*xe1_,xeshift[1]*xe2_,xeshift[2]*xe3_])
                                                         xeshift_=np.array([xe1_,xe2_,xe3_]).T@xeshift
                                                         xyz=ve+we-xeshift_
                                                         if np.all(mu==0.0): # non-magnetic atom
-                                                            lst.append([element,xyz,i1,h123456,0])
+                                                            lst.append([element,xyz,i1,h123456,0,i4])
                                                         else: # magnetic atom
                                                             # spin moment vector in Epar.
                                                             #mu_=np.array([mu[0]*xe1,mu[1]*xe2,mu[2]*xe3])
+                                                            if test_flag==1:
+                                                                mu_=np.array([mx1_,mx2_,mx3_]).T@mu
+                                                                tmp=projection(mu6d_)[0]
+                                                                mu_=numerical_vector(tmp)
                                                             mu_=np.array([mxe1_,mxe2_,mxe3_]).T@mu
-                                                            lst.append([element,xyz,i1,h123456,mu_])
+                                                            lst.append([element,xyz,i1,h123456,mu_,i4])
                                                         counter+=1
                                                         break
                                                     else:
