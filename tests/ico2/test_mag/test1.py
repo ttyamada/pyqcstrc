@@ -19,6 +19,7 @@ POS_EC = np.array([[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int
 
 if __name__ == "__main__":
     
+    verbose=1
     """
     ######################
     #        TEST        #
@@ -57,6 +58,7 @@ if __name__ == "__main__":
     aico = 5.689 # in Ang. CdYb
     #select='atom'
     select='mag'
+    test_flag=1
     ######################
     flag_od = 1  # asymmetric OD is used.
     xyzpath='../../../xyz/ico/kumazawa'
@@ -81,7 +83,7 @@ if __name__ == "__main__":
     # eshift:
     xe0=[0,0,0]
     # magnetic moment, mu
-    mu=[1.0, 0.0, 0.0] # along 5f,3f,2f axces.
+    mu=[-1.0, 0.0, 0.0] # along 5f,3f,2f axces.
     #
     myModel = {}
     #             element, [OD,  OD shape, symmetric or asymmetric],  coordinate,   eshift, be, rmax, mu(magnetic moment)
@@ -232,7 +234,7 @@ if __name__ == "__main__":
     ######################
     #    COMMON
     ######################
-    nmax = 2
+    nmax = 1
     #oshift=[ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     #oshift=[ 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
     #oshift=[ 0.01, -0.02, 0.03, -0.04, 0.05, 0.06]
@@ -251,8 +253,22 @@ if __name__ == "__main__":
     #xe1=[0, 0, 0, 0, 0, 1] #5f
     xe2=[1, 0,-1, 0,-1, 0] #3f
     xe3=[1, 0, 0, 0,-1, 0] #2f
+    #xe1=np.array([[1,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]]) #5f
+    #xe2=np.array([[1,0,1],[0,0,1],[-1,0,1],[0,0,1],[-1,0,1],[0,0,1]]) #3f
+    #xe3=np.array([[1,0,1],[0,0,1],[0,0,1],[0,0,1],[-1,0,1],[0,0,1]]) #2f
     
     
-    out=strc(aico,brv,myModel,nmax,oshift,xe1,xe2,xe3,verbose=1)
+    out=strc(aico,brv,myModel,nmax,oshift,xe1,xe2,xe3,verbose,test_flag)
+    for j,a in enumerate(out):
+        element=a[0]
+        xyz=a[1]
+        i1=a[2]
+        h123456=a[3]
+        mu=a[4]
+        i4=a[5]
+        if np.all(mu==0):
+            print('%d %s %8.6f %8.6f %8.6f %d %d '%(j+1,element,xyz[0],xyz[1],xyz[2],i1,i4))
+        else:
+            print('%d %s %8.6f %8.6f %8.6f %d %d %8.6f %8.6f %8.6f'%(j+1,element,xyz[0],xyz[1],xyz[2],i1,i4,mu[0],mu[1],mu[2]))
     od.write_vesta(out,path='.',basename='%s_nmax%d_%s'%(model_name,nmax,select),color='k',select=select,verbose=0)
     

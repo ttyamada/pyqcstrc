@@ -5,14 +5,19 @@
 #
 import sys
 import numpy as np
-from pyqcstrc.ico2.symmetry import (icosasymop,
-                                    icosasymop_array,
-                                    icosasymop3_array,
-                                    remove_overlaps,
-                                    find_overlaps,
-                                    similarity,
-                                    )
-
+try:
+    from pyqcstrc.ico2.symmetry import (icosasymop,
+                                        icosasymop_array,
+                                        icosasymop3_array,
+                                        icosasymop_array_2,
+                                        #icosasymop3_array_2,
+                                        remove_overlaps,
+                                        find_overlaps,
+                                        similarity,
+                                        )
+except ImportError:
+    print('import error in symmetry_numerical.py\n')
+    
 EPS=1e-6
 V0=np.array([0.,0.,0.,0.,0.,0.],dtype=np.float64)
 
@@ -112,12 +117,21 @@ def generator_obj_symmetric_vector_specific_symop(vn,centre,list_of_symmetry_ope
         print('vn has an incorrect shape!')
         return
 
-def generator_obj_symmetric_vector_specific_symop_1(vn,centre,list_of_symmetry_operation_index,flag):
+def generator_obj_symmetric_vector_specific_symop_1(vn,centre,list_of_symmetry_operation_index,flag,generator=None):
     #
     # flag: 'normal' or 'axial'
     #
     if vn.ndim==1:
-        mop=icosasymop3_array(flag)
+        if len(vn)==3: # 3d vector
+            if generator==1:
+                mop=icosasymop3_array_2(flag)
+            else:
+                mop=icosasymop3_array(flag)
+        else: # 6d vector
+            if generator==1:
+                mop=icosasymop_array_2(flag)
+            else:
+                mop=icosasymop_array(flag)
         symop=[]
         for i1 in list_of_symmetry_operation_index:
             symop.append(mop[i1])
@@ -148,20 +162,44 @@ def generator_obj_symmetric_vectors_specific_symop(vns,centre,list_of_symmetry_o
         print('vn has an incorrect shape!')
         return
 
-def generator_obj_symmetric_vectors_specific_symop_1(vns,centre,list_of_symmetry_operation_index,flag):
+def generator_obj_symmetric_vectors_specific_symop_1(vns,centre,list_of_symmetry_operation_index,flag,generator=None):
     #
     # flag: 'normal' or 'axial'
     #
     # using specific symmetry operations
     #mop=icosasymop()
-    mop=icosasymop3_array(flag)
     symop=[]
-    ndim=vns.ndim
-    if ndim==3:
+    if vns.ndim==3:
+        _,_,num=vns.shape
+        if num==3: # 3d vector
+            if generator==1:
+                mop=icosasymop3_array_2(flag)
+            else:
+                mop=icosasymop3_array(flag)
+        elif num==6: # 6d vector
+            if generator==1:
+                mop=icosasymop_array_2(flag)
+            else:
+                mop=icosasymop_array(flag)
+        else:
+            print('error in ndim3')
         for i1 in list_of_symmetry_operation_index:
             symop.append(mop[i1])
         return symop_obj(symop,vns,centre)
-    elif ndim==2:
+    elif vns.ndim==2:
+        _,num=vns.shape
+        if num==3: # 3d vector
+            if generator==1:
+                mop=icosasymop3_array_2(flag)
+            else:
+                mop=icosasymop3_array(flag)
+        elif num==6: # 6d vector
+            if generator==1:
+                mop=icosasymop_array_2(flag)
+            else:
+                mop=icosasymop_array(flag)
+        else:
+            print('error in ndim6')
         for i1 in list_of_symmetry_operation_index:
             symop.append(mop[i1])
         return symop_vecs(symop,vns,centre)
@@ -459,6 +497,9 @@ if __name__ == '__main__':
     cen0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
     
     
+    
+    
+    """
     print("TEST: symop_vec()")
     symop=icosasymop()
     vt=generate_random_vector()
@@ -488,3 +529,53 @@ if __name__ == '__main__':
     print(vts)
     svts=symop_vecs(symop[1],vts,cen0)
     print(svts)
+    """
+    
+    
+    ############################
+    # TEST symmetry operations
+    ############################
+    print('')
+    print('Symmetry operation on 6D axial vector\n')
+    print("TEST :generator_obj_symmetric_vector_specific_symop_1()")
+    flag='axial'
+    lst=[0,108,22,92,119,16,14,111,98,28,102,5]
+    vn=np.array([1,0,0,0,0,0])
+    vns=generator_obj_symmetric_vector_specific_symop_1(vn,V0,lst,flag)
+    for vn in vns:
+        print(vn)
+    """
+    print("TEST :generator_obj_symmetric_vectors_specific_symop_1()")
+    print('Identity')
+    lst=[0]
+    vnss=generator_obj_symmetric_vectors_specific_symop_1(vns,V0,lst,flag)
+    for vns in vnss:
+        for vn in vns:
+            print(vn)
+    print('Inversion')
+    lst=[60]
+    vnss=generator_obj_symmetric_vectors_specific_symop_1(vns,V0,lst,flag)
+    for vns in vnss:
+        for vn in vns:
+            print(vn)
+    """
+        
+    print('')
+    print('Symmetry operation on 3D axial vector\n')
+    V0=np.array([0.,0.,0.],dtype=np.float64)
+    print("TEST :generator_obj_symmetric_vector_specific_symop_1()")
+    flag='axial'
+    lst=[0,108,22,92,119,16,14,111,98,28,102,5]
+    vn=np.array([1.,1.618034,0.])
+    vns=generator_obj_symmetric_vector_specific_symop_1(vn,V0,lst,flag)
+    for i1,vn in enumerate(vns):
+        print('%d %8.6f %8.6f %8.6f'%(i1,vn[0],vn[1],vn[2]))
+    """
+    print("TEST :generator_obj_symmetric_vectors_specific_symop_1()")
+    lst=[0,60] # identity and inversion
+    vnss=generator_obj_symmetric_vectors_specific_symop_1(vns,V0,lst,flag)
+    for i1,vns in enumerate(vnss):
+        for i2,vn in enumerate(vns):
+            print('%d %d %8.6f %8.6f %8.6f'%(i1,i2,vn[0],vn[1],vn[2]))
+    """
+    
