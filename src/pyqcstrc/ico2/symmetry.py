@@ -23,6 +23,7 @@ from pyqcstrc.ico2.numericalc import (length_numerical,
 import numpy as np
 
 PI=np.pi
+TWOPI=2*PI
 EPS=1e-6
 TAU=(1+np.sqrt(5))/2.0
 V0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
@@ -76,7 +77,8 @@ def symop_vec(symop,vt,centre):
 def generator_obj_symmetric_obj(obj,centre):
     
     if obj.ndim==2 or obj.ndim==3 or obj.ndim==4:
-        mop=icosasymop()
+        #mop=icosasymop()
+        mop=icosasymop_array
         num=len(mop)
         shape=tuple([num])
         a=np.zeros(shape+obj.shape,dtype=np.int64)
@@ -101,7 +103,8 @@ def generator_obj_symmetric_tetrahedron(obj,centre):
 def generator_obj_symmetric_vector_specific_symop(vt,centre,list_of_symmetry_operation_index):
     # using specific symmetry operations
     if vt.ndim==2:
-        mop=icosasymop()
+        #mop=icosasymop()
+        mop=icosasymop_array
         shape=tuple([len(list_of_symmetry_operation_index)])
         a=np.zeros(shape+vt.shape,dtype=np.int64)
         for j0,i1 in enumerate(list_of_symmetry_operation_index):
@@ -114,7 +117,8 @@ def generator_obj_symmetric_vector_specific_symop(vt,centre,list_of_symmetry_ope
 def generator_obj_symmetric_tetrahedron_specific_symop(obj,centre,list_of_symmetry_operation_index):
     # using specific symmetry operations
     if obj.ndim==3 or obj.ndim==4:
-        mop=icosasymop()
+        #mop=icosasymop()
+        mop=icosasymop_array
         shape=tuple([len(list_of_symmetry_operation_index)])
         a=np.zeros(shape+obj.shape,dtype=np.int64)
         j0=0
@@ -128,7 +132,8 @@ def generator_obj_symmetric_tetrahedron_specific_symop(obj,centre,list_of_symmet
 
 def generator_obj_symmetric_obj_specific_symop(obj,centre,list_of_symmetry_operation_index):
     # using specific symmetry operations
-    mop=icosasymop()
+    #mop=icosasymop()
+    mop=icosasymop_array()
     shape=tuple([len(list_of_symmetry_operation_index)])
     a=np.zeros(shape+obj.shape,dtype=np.int64)
     #print('shape+obj.shape:',shape+obj.shape)
@@ -147,7 +152,8 @@ def generator_obj_symmetric_obj_specific_symop(obj,centre,list_of_symmetry_opera
 
 
 def generator_obj_symmetric_tetrahedron_0(obj,centre,symmetry_operation_index):
-    mop=icosasymop()
+    #mop=icosasymop()
+    mop=icosasymop_array()
     return symop_obj(mop[symmetry_operation_index],obj,centre)
 
 def generator_obj_symmetric_vec(vectors, centre):
@@ -186,14 +192,14 @@ def icosasymop():
                 [ 0, 0, 0, 0, 1, 0],\
                 [ 0, 0, 0, 0, 0, 1],\
                 [ 0, 1, 0, 0, 0, 0]],dtype=np.int64)
-    # mirror
+    # c2 (or c2')
     m2=np.array([[-1, 0, 0, 0, 0, 0],\
                 [ 0,-1, 0, 0, 0, 0],\
                 [ 0, 0, 0, 0, 0,-1],\
                 [ 0, 0, 0, 0,-1, 0],\
                 [ 0, 0, 0,-1, 0, 0],\
                 [ 0, 0,-1, 0, 0, 0]],dtype=np.int64)
-    # c2
+    # c2' (or c2)
     m3=np.array([[ 0, 0, 0, 0, 0,-1],\
                 [ 0,-1, 0, 0, 0, 0],\
                 [ 0, 0, 0, 1, 0, 0],\
@@ -208,12 +214,8 @@ def icosasymop():
                 [ 0, 0, 0,-1, 0, 0],\
                 [ 0, 0, 0, 0,-1, 0]],dtype=np.int64)
     # inversion
-    m5=np.array([[-1, 0, 0, 0, 0, 0],\
-                [ 0,-1, 0, 0, 0, 0],\
-                [ 0, 0,-1, 0, 0, 0],\
-                [ 0, 0, 0,-1, 0, 0],\
-                [ 0, 0, 0, 0,-1, 0],\
-                [ 0, 0, 0, 0, 0,-1]],dtype=np.int64)
+    m5=np.identity(6,dtype=np.int64)*(-1)
+    
     symop=[]
     for m in range(2):
         for l in range(3):
@@ -221,8 +223,8 @@ def icosasymop():
                 for j in range(2):
                     for i in range(5):
                         s1=matrixpow(m1,i) # c5
-                        s2=matrixpow(m2,j) # mirror
-                        s3=matrixpow(m3,k) # c2
+                        s2=matrixpow(m2,j) # c2 (or c2')
+                        s3=matrixpow(m3,k) # c2' (or c2)
                         s4=matrixpow(m4,l) # c3
                         s5=matrixpow(m5,m) # inversion
                         tmp=np.dot(s5,s4)
@@ -232,6 +234,7 @@ def icosasymop():
                         symop.append(tmp)
     return symop
 
+"""
 def icosasymop_array():
     # icosahedral symmetry operations
     m1=np.array([[ 1, 0, 0, 0, 0, 0],\
@@ -240,7 +243,7 @@ def icosasymop_array():
                 [ 0, 0, 0, 0, 1, 0],\
                 [ 0, 0, 0, 0, 0, 1],\
                 [ 0, 1, 0, 0, 0, 0]],dtype=np.int64)
-    # mirror
+    # c2'
     m2=np.array([[-1, 0, 0, 0, 0, 0],\
                 [ 0,-1, 0, 0, 0, 0],\
                 [ 0, 0, 0, 0, 0,-1],\
@@ -287,7 +290,161 @@ def icosasymop_array():
                         symop[num]=tmp
                         num+=1
     return symop
-
+"""
+def icosasymop_array(flag=None):
+    """
+    symmetry operation
+    
+    flag: 
+        'axial': axial vector (e.g. classical spin)
+        'normal':
+    """
+    # icosahedral symmetry operations
+    m1=np.array([[ 1, 0, 0, 0, 0, 0],\
+                [ 0, 0, 1, 0, 0, 0],\
+                [ 0, 0, 0, 1, 0, 0],\
+                [ 0, 0, 0, 0, 1, 0],\
+                [ 0, 0, 0, 0, 0, 1],\
+                [ 0, 1, 0, 0, 0, 0]],dtype=np.int64)
+    # c2 (or c2')
+    m2=np.array([[-1, 0, 0, 0, 0, 0],\
+                [ 0,-1, 0, 0, 0, 0],\
+                [ 0, 0, 0, 0, 0,-1],\
+                [ 0, 0, 0, 0,-1, 0],\
+                [ 0, 0, 0,-1, 0, 0],\
+                [ 0, 0,-1, 0, 0, 0]],dtype=np.int64)
+    # c2' (or c2)
+    m3=np.array([[ 0, 0, 0, 0, 0,-1],\
+                [ 0,-1, 0, 0, 0, 0],\
+                [ 0, 0, 0, 1, 0, 0],\
+                [ 0, 0, 1, 0, 0, 0],\
+                [ 0, 0, 0, 0,-1, 0],\
+                [-1, 0, 0, 0, 0, 0]],dtype=np.int64)
+    # c3
+    m4=np.array([[ 0, 1, 0, 0, 0, 0],\
+                [ 0, 0, 1, 0, 0, 0],\
+                [ 1, 0, 0, 0, 0, 0],\
+                [ 0, 0, 0, 0, 0, 1],\
+                [ 0, 0, 0,-1, 0, 0],\
+                [ 0, 0, 0, 0,-1, 0]],dtype=np.int64)
+    # inversion
+    m5=np.identity(6,dtype=np.int64)*(-1)
+    
+    symop=np.zeros((120,6,6),dtype=np.int64)
+    num=0
+    for m in range(2): # 2
+        for l in range(3): # 3
+            for k in range(2): # 2
+                for j in range(2): # 2
+                    for i in range(5): # 5
+                        s1=matrixpow(m1,i) # c5
+                        s2=matrixpow(m2,j) # c2 (or c2')
+                        s3=matrixpow(m3,k) # c2' (or c2)
+                        s4=matrixpow(m4,l) # c3
+                        s5=matrixpow(m5,m) # inversion
+                        tmp=np.dot(s5,s4)
+                        tmp=np.dot(tmp,s3)
+                        tmp=np.dot(tmp,s2)
+                        tmp=np.dot(tmp,s1)
+                        if flag=='axial':
+                            symop[num]=np.linalg.det(tmp)*tmp # det(AB)=det(A)*det(B)
+                        else:
+                            symop[num]=tmp
+                        num+=1
+    return symop
+    
+def icosasymop_array_2(flag=None):
+    """
+    # Eqs 24 and 25 in Yamamoto (1996) Acta crystallogr. A
+    
+    symmetry operation
+    
+    flag: 
+        'axial': axial vector (e.g. classical spin)
+        'normal':
+    """
+    # icosahedral symmetry operations
+    c5=np.array([[ 1, 0, 0, 0, 0, 0],\
+                [ 0, 0, 1, 0, 0, 0],\
+                [ 0, 0, 0, 1, 0, 0],\
+                [ 0, 0, 0, 0, 1, 0],\
+                [ 0, 0, 0, 0, 0, 1],\
+                [ 0, 1, 0, 0, 0, 0]],dtype=np.int64)
+    # c3
+    c3=np.array([[0, 0, 0, 0, 0, 1],\
+                [ 1, 0, 0, 0, 0, 0],\
+                [ 0, 0, 0, 0, 1, 0],\
+                [ 0, 0,-1, 0, 0, 0],\
+                [ 0, 0, 0,-1, 0, 0],\
+                [ 0, 1, 0, 0, 0, 0]],dtype=np.int64)
+    # c2
+    c2=c3@c5
+    # c2'
+    c2d=matrixpow(c3,2)@c5
+    # inversion
+    inv=np.identity(6,dtype=np.int64)*(-1)
+    
+    symop=np.zeros((120,6,6),dtype=np.int64)
+    num=0
+    for i in range(5):
+        for j in range(2):
+            for k in range(2):
+                for l in range(3):
+                    for m in range(2):
+                        s1=matrixpow(c5,i) # c5
+                        s2=matrixpow(c2,j) # c2
+                        s3=matrixpow(c2d,k) # c2'
+                        s4=matrixpow(c3,l) # c3
+                        s5=matrixpow(inv,m) # inversion
+                        tmp=s1@s2@s3@s4@s5
+                        if flag=='axial':
+                            symop[num]=np.linalg.det(tmp)*tmp # det(AB)=det(A)*det(B)
+                        else:
+                            symop[num]=tmp
+                        num+=1
+    """
+    symop=np.zeros((15,6,6),dtype=np.int64)
+    num=0
+    for i in range(5):
+        for j in range(3):
+            s1=matrixpow(c5,i) # c5
+            s4=matrixpow(c3,j) # c3
+            tmp=s1@s4
+            if flag=='axial':
+                symop[num]=np.linalg.det(tmp)*tmp # det(AB)=det(A)*det(B)
+            else:
+                symop[num]=tmp
+            num+=1
+    """
+    return symop
+    
+def symmetry_operations_axial_vector(vt,centre,list_of_symmetry_operation_index):
+    # applying specific symmetry operations on axial vector
+    if vt.ndim==2:
+        mop=icosasymop_array_1('axial')
+        shape=tuple([len(list_of_symmetry_operation_index)])
+        a=np.zeros(shape+vt.shape,dtype=np.int64)
+        for j0,i1 in enumerate(list_of_symmetry_operation_index):
+            a[j0]=symop_obj(mop[i1],vt,centre)
+        return a
+    else:
+        print('vt has an incorrect shape!')
+        return 
+        
+def symmetry_operations_axial_vectors(vts,centre,list_of_symmetry_operation_index):
+    # applying specific symmetry operations on a set of axial vectors
+    if vts.ndim==3:
+        mop=icosasymop_array_1('axial')
+        shape=tuple([len(list_of_symmetry_operation_index)])
+        a=np.zeros(shape+vts.shape,dtype=np.int64)
+        for j0,i1 in enumerate(list_of_symmetry_operation_index):
+            for j1,vt in enumerate(vts):
+                a[j0][j1]=symop_obj(mop[i1],vt,centre)
+        return a
+    else:
+        print('vts has an incorrect shape!')
+        return 
+    
 def translation(brv,flag=0):
     """translational symmetry
     
@@ -663,7 +820,7 @@ def site_symmetry_and_coset(site,brv,verbose=0):
     
 def icosasymop3_array(flag):
     """
-    symmetry operation
+    symmetry operation in Par-space that corresponds to icosasymop_array()
     
     flag: 
         'axial': axial vector (e.g. classical spin)
@@ -673,9 +830,10 @@ def icosasymop3_array(flag):
         """
         do rotational operation num times
         """
-        m0=np.array([[1.0, 0.0, 0.0],\
-                     [0.0, 1.0, 0.0],\
-                     [0.0, 0.0, 1.0]],dtype=np.float64)
+        m0=np.identity(3,dtype=np.float64)
+        #m0=np.array([[1.0, 0.0, 0.0],\
+        #             [0.0, 1.0, 0.0],\
+        #             [0.0, 0.0, 1.0]],dtype=np.float64)
         for _ in range(num):
             m0 = np.dot(m0,m)
         return m0
@@ -689,7 +847,7 @@ def icosasymop3_array(flag):
         int n:
         """ 
         n1, n2, n3 = axis/np.linalg.norm(axis)
-        theta = -2.0*PI/fold
+        theta = -TWOPI/fold
         cos = np.cos(theta)
         sin = np.sin(theta)
         
@@ -710,12 +868,13 @@ def icosasymop3_array(flag):
                          
     # matrix of symmetry operation
     m1=_genmatrix(np.array([    1.0,  TAU,   0.0],dtype=np.float64), 5) # c5
-    m2=_genmatrix(np.array([   -TAU, +1.0, TAU+1],dtype=np.float64), 2) # mirror
-    m3=_genmatrix(np.array([   -TAU, -1.0, TAU+1],dtype=np.float64), 2) # c2
+    m2=_genmatrix(np.array([   -TAU, +1.0, TAU+1],dtype=np.float64), 2) # c2 (or c2')
+    m3=_genmatrix(np.array([   -TAU, -1.0, TAU+1],dtype=np.float64), 2) # c2' (or c2)
     m4=_genmatrix(np.array([2*TAU+1,  TAU,   0.0],dtype=np.float64), 3) # c3
-    m5=np.array([[-1.0, 0.0, 0.0],\
-                 [ 0.0,-1.0, 0.0],\
-                 [ 0.0, 0.0,-1.0]],dtype=np.float64) # inverse
+    m5=np.identity(3,dtype=np.float64)*(-1)
+    #m5=np.array([[-1.0, 0.0, 0.0],\
+    #             [ 0.0,-1.0, 0.0],\
+    #             [ 0.0, 0.0,-1.0]],dtype=np.float64) # inverse
                 
     symop=np.zeros((120,3,3),dtype=np.float64)
     num=0
@@ -738,6 +897,97 @@ def icosasymop3_array(flag):
                         else:
                             symop[num]=tmp
                         num+=1
+    return symop
+    
+def icosasymop3_array_2(flag):
+    """
+    symmetry operation in Par-space that corresponds to icosasymop_array_2()
+    
+    flag: 
+        'axial': axial vector (e.g. classical spin)
+        'normal':
+    """
+    def _matrixpow(m,num):
+        """
+        do rotational operation num times
+        """
+        m0=np.identity(3,dtype=np.float64)
+        #m0=np.array([[1.0, 0.0, 0.0],\
+        #             [0.0, 1.0, 0.0],\
+        #             [0.0, 0.0, 1.0]],dtype=np.float64)
+        for _ in range(num):
+            m0 = np.dot(m0,m)
+        return m0
+        
+    def _genmatrix(axis,fold):
+        """
+        generate matrix for n-fold roatational symmetry, Cn
+        
+        input
+        ndarray axis: roatational axis
+        int n:
+        """ 
+        n1, n2, n3 = axis/np.linalg.norm(axis)
+        theta = -TWOPI/fold
+        cos = np.cos(theta)
+        sin = np.sin(theta)
+        
+        # Rodrigues' rotation formula
+        a11 = n1**2.0*(1.0-cos) +    cos
+        a12 = n1*n2  *(1.0-cos) + n3*sin
+        a13 = n1*n3  *(1.0-cos) - n2*sin
+        a21 = n1*n2  *(1.0-cos) - n3*sin
+        a22 = n2**2.0*(1.0-cos) +    cos
+        a23 = n2*n3  *(1.0-cos) + n1*sin
+        a31 = n1*n3  *(1.0-cos) + n2*sin
+        a32 = n2*n3  *(1.0-cos) - n1*sin
+        a33 = n3**2.0*(1.0-cos) +    cos
+        
+        return np.array([[a11, a21, a31],\
+                         [a12, a22, a32],\
+                         [a13, a23, a33]], dtype=np.float64)
+                         
+    # matrix of symmetry operation
+    m1=_genmatrix(np.array([    1.0,  TAU,   0.0],dtype=np.float64), 5) # c5
+    m4=_genmatrix(np.array([    1.0,  1.0,   1.0],dtype=np.float64), 3) # c3
+    m2=m4@m1
+    m3=m4@m4@m1
+    #m2=_genmatrix(np.array([   -TAU, +1.0, TAU+1],dtype=np.float64), 2) # c2 (or c2')
+    #m3=_genmatrix(np.array([   -TAU, -1.0, TAU+1],dtype=np.float64), 2) # c2' (or c2)
+    m5=np.identity(3,dtype=np.float64)*(-1)
+    
+    symop=np.zeros((120,3,3),dtype=np.float64)
+    num=0
+    for i in range(5): # c5
+        for j in range(2): # c2
+            for k in range(2): # c2
+                for l in range(3): # c3
+                    for m in range(2): # inversion
+                        s1=_matrixpow(m1,i) # c5
+                        s2=_matrixpow(m2,j) # c2 (or c2')
+                        s3=_matrixpow(m3,k) # c2' (or c2)
+                        s4=_matrixpow(m4,l) # c3
+                        s5=_matrixpow(m5,m) # inversion
+                        tmp=s1@s2@s3@s4@s5
+                        if flag=='axial':
+                            symop[num]=np.linalg.det(tmp)*tmp # det(AB)=det(A)*det(B)
+                        else:
+                            symop[num]=tmp
+                        num+=1
+    """
+    symop=np.zeros((15,3,3),dtype=np.float64)
+    num=0
+    for i in range(5):
+        for j in range(3):
+            s1=_matrixpow(m1,i) # c5
+            s2=_matrixpow(m4,j) # c3
+            tmp=s1@s2
+            if flag=='axial':
+                symop[num]=np.linalg.det(tmp)*tmp # det(AB)=det(A)*det(B)
+            else:
+                symop[num]=tmp
+            num+=1
+    """
     return symop
     
 def equivalent_sites_with_centring(site,brv,idx_coset):
@@ -1055,6 +1305,8 @@ if __name__ == '__main__':
                                             numerical_vector,
                                             numeric_value,
                                             )
+    from pyqcstrc.ico2.math1 import (projection,
+                                    )
     # test
     
     def generate_random_value():
@@ -1182,7 +1434,7 @@ if __name__ == '__main__':
     ##-----------------------------------------------
     # TEST: site_symmetry_and_coset()
     ##-----------------------------------------------
-    #"""
+    """
     
     symop=icosasymop_array()
     
@@ -1194,7 +1446,7 @@ if __name__ == '__main__':
     
     print('site:')
     print(site)
-    
+    """
     """
     print('P-type icosahedral lattice')
     brv='p'
@@ -1239,9 +1491,118 @@ if __name__ == '__main__':
     print(a)
     """
     
+    """
     brv='p'
     idx_ssym,idx_coset=site_symmetry_and_coset(site,brv,verbose=1)
     print('idx_ssym:',idx_ssym)
     print('idx_coset:',idx_coset)
+    """
+    
+    ##-----------------------------------------------
+    # TEST: icosasymop3_array()
+    ##-----------------------------------------------
+    
+    """
+    vt=np.array([[1,0,1],[0,1,2],[-1,0,3],[0,-1,4],[1,0,5],[0,1,6]]) 
+    tmp=projection(vt)[0]
+    vn=numerical_vector(tmp)
+    lst=[]
+    for i in range(120):
+        lst.append(i)
+    """
+    
+    """
+    counter=0
+    for m in range(2): # 2, inversion
+        for l in range(3): # 3, c3
+            for k in range(2): # 2, c2
+                for j in range(2): # 2, mirror
+                    for i in range(5): # 5, c5
+                        print('(%d)'%counter,m,l,k,j,i)
+                        counter+=1
+    """
+    
+    """
+    vt=np.array([[-1,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]]) # along 5fold axis
+    tmp=projection(vt)[0]
+    vn=numerical_vector(tmp)
+    lst=[0,108,22,92,119,16,14,111,98,28,102,5]
+    """
+    """
+    # symmetry operation on normal vectors
+    flag='normal'
+    ops=icosasymop3_array(flag)
+    ops6=icosasymop_array_1(flag)
+    print(flag)
+    for i,j in enumerate(lst):
+        vn1=ops[j]@vn
+        vt1=symop_vec(ops6[j],vt,V0)
+        vt2=projection(vt1)[0]
+        vn2=numerical_vector(vt2)
+        if np.allclose(vn1,vn2):
+            print('%d %8.6f %8.6f %8.6f'%(i,vn1[0],vn1[1],vn1[2]))
+        else:
+            print('%d %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f'%(i,vn1[0],vn1[1],vn1[2],vn2[0],vn2[1],vn2[2]))
         
-        
+    
+    # symmetry operation on axial vectors
+    flag='axial'
+    ops=icosasymop3_array(flag)
+    ops6=icosasymop_array_1(flag)
+    print(flag)
+    for i,j in enumerate(lst):
+        vn1=ops[j]@vn
+        vt1=symop_vec(ops6[j],vt,V0)
+        vt2=projection(vt1)[0]
+        vn2=numerical_vector(vt2)
+        if np.allclose(vn1,vn2):
+            print('%d %8.6f %8.6f %8.6f'%(i,vn1[0],vn1[1],vn1[2]))
+        else:
+            print('%d %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f'%(i,vn1[0],vn1[1],vn1[2],vn2[0],vn2[1],vn2[2]))
+    
+    vts=symmetry_operations_axial_vector(vt,V0,lst)
+    for i,v in enumerate(vts):
+        tmp=projection(v)[0]
+        vn1=numerical_vector(tmp)
+        print('%d %8.6f %8.6f %8.6f'%(i,vn1[0],vn1[1],vn1[2]))
+    
+    lst=[0,1]
+    vtss=symmetry_operations_axial_vectors(vts,V0,lst)
+    for i1,vts in enumerate(vtss):
+        for i2,v in enumerate(vts):
+            tmp=projection(v)[0]
+            vn1=numerical_vector(tmp)
+            print('%d %d %8.6f %8.6f %8.6f'%(i1,i2,vn1[0],vn1[1],vn1[2]))
+    """
+    """
+    #-----------------------------------------------
+    # TEST: icosasymop_array_2 and icosasymop3_array_2
+    ##-----------------------------------------------
+    
+    print('TEST: icosasymop_array and icosasymop3_array')
+    
+    flag=None
+    #flag='axial'
+    op3 = icosasymop3_array_2(flag)
+    op6 = icosasymop_array_2()
+    vt=np.array([[1,0,3],[0,1,4],[1,0,5],[0,1,6],[1,0,7],[0,1,8]],dtype=np.int64)
+    vn=numerical_vector(vt)
+    vn=projection_par_numerical(vn)
+    counter=0
+    for i1 in range(120):
+        a=op3[i1]@vn
+        b=symop_vec(op6[i1],vt,cen0)
+        bn=numerical_vector(b)
+        bn=projection_par_numerical(bn)
+        print('%d'%(i1))
+        print(' a:',a/np.linalg.norm(a))
+        print(' b:',bn/np.linalg.norm(bn))
+        if np.allclose(a,bn):
+            pass
+        else:
+            counter+=1
+    if counter==0:
+        print('ok')
+    else:
+        print('wrong!')
+    """
