@@ -62,7 +62,8 @@ def gen_reference(nmax,size,verbose=0):
 if __name__ == "__main__":
     
     wpath='./work_mag'
-    basename='mag'
+    #basename='mag'
+    basename='T_10_m4_D10_L_mag'
     
     print('generating reference list')
     nmax=5
@@ -93,7 +94,9 @@ if __name__ == "__main__":
         b=a[i1].split()
         site=np.array([float(b[0]),float(b[1]),float(b[2])],dtype=np.float64)/aico
         atom=z2atom(int(b[3]))
-        spnvec=np.array([float(b[4]),float(b[5]),float(b[6])],dtype=np.float64)/2.0 # Note that the spin vectors were multiplied by two in the input data. back to the roginal ones.
+        spnvec=np.array([float(b[4]),float(b[5]),float(b[6])],dtype=np.float64)/2.0 
+        # Note that the spin vectors were multiplied by two in the input data. back to the roginal ones.
+        
         # roatation, x,y,z // twofold axes
         site=rotx@rotz@site
         spnvec=rotx@rotz@spnvec

@@ -10,6 +10,7 @@ try:
     from pyqcstrc.ico2.numericalc import (numerical_vector,
                                           numerical_vectors,
                                           projection_numerical_par,
+                                          projection_par_numerical,
                                           #inside_outside_obj,
                                           inside_outside_tetrahedron,
                                           #inside_outside_tetrahedron_tau_v2,
@@ -274,14 +275,14 @@ def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose,test_flag):
                 #
                 flg='normal'
                 # in the independent OD (obj)
-                v1_=generator_obj_symmetric_vector_specific_symop_1(ve1,V2,indx_site_sym,flg) # 5f
-                v2_=generator_obj_symmetric_vector_specific_symop_1(ve2,V2,indx_site_sym,flg) # 3f
-                v3_=generator_obj_symmetric_vector_specific_symop_1(ve3,V2,indx_site_sym,flg) # 2f
+                v1_=generator_obj_symmetric_vector_specific_symop_1(ve1,indx_site_sym,flg) # 5f
+                v2_=generator_obj_symmetric_vector_specific_symop_1(ve2,indx_site_sym,flg) # 3f
+                v3_=generator_obj_symmetric_vector_specific_symop_1(ve3,indx_site_sym,flg) # 2f
                 #
                 # in the ODs at equivalent positions
-                v1_=generator_obj_symmetric_vectors_specific_symop_1(v1_,V2,indx_coset,flg) # 5f
-                v2_=generator_obj_symmetric_vectors_specific_symop_1(v2_,V2,indx_coset,flg) # 3f
-                v3_=generator_obj_symmetric_vectors_specific_symop_1(v3_,V2,indx_coset,flg) # 2f
+                v1_=generator_obj_symmetric_vectors_specific_symop_1(v1_,indx_coset,flg) # 5f
+                v2_=generator_obj_symmetric_vectors_specific_symop_1(v2_,indx_coset,flg) # 3f
+                v3_=generator_obj_symmetric_vectors_specific_symop_1(v3_,indx_coset,flg) # 2f
                 #
                 lst_xe1.append(v1_)
                 lst_xe2.append(v2_)
@@ -294,14 +295,14 @@ def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose,test_flag):
                 # in the independent OD (obj)
                 flg='axial'
                 #flg='normal'
-                v1_=generator_obj_symmetric_vector_specific_symop_1(ve1,V2,indx_site_sym,flg) # 5f
-                v2_=generator_obj_symmetric_vector_specific_symop_1(ve2,V2,indx_site_sym,flg) # 3f
-                v3_=generator_obj_symmetric_vector_specific_symop_1(ve3,V2,indx_site_sym,flg) # 2f
+                v1_=generator_obj_symmetric_vector_specific_symop_1(ve1,indx_site_sym,flg) # 5f
+                v2_=generator_obj_symmetric_vector_specific_symop_1(ve2,indx_site_sym,flg) # 3f
+                v3_=generator_obj_symmetric_vector_specific_symop_1(ve3,indx_site_sym,flg) # 2f
                 #-----------------------------------------------------------------------
                 # in the ODs at equivalent positions
-                v1_=generator_obj_symmetric_vectors_specific_symop_1(v1_,V2,indx_coset,flg) # 5f
-                v2_=generator_obj_symmetric_vectors_specific_symop_1(v2_,V2,indx_coset,flg) # 3f
-                v3_=generator_obj_symmetric_vectors_specific_symop_1(v3_,V2,indx_coset,flg) # 2f
+                v1_=generator_obj_symmetric_vectors_specific_symop_1(v1_,indx_coset,flg) # 5f
+                v2_=generator_obj_symmetric_vectors_specific_symop_1(v2_,indx_coset,flg) # 3f
+                v3_=generator_obj_symmetric_vectors_specific_symop_1(v3_,indx_coset,flg) # 2f
                 #-----------------------------------------------------------------------
                 lst_mxe1.append(v1_)
                 lst_mxe2.append(v2_)
@@ -317,13 +318,13 @@ def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose,test_flag):
                     # in the independent OD (obj)
                     flg='axial'
                     #flg='normal'
-                    x1_=generator_obj_symmetric_vector_specific_symop_1(x1,V2,indx_site_sym,flg) # 5f
-                    x2_=generator_obj_symmetric_vector_specific_symop_1(x2,V2,indx_site_sym,flg) # 3f
-                    x3_=generator_obj_symmetric_vector_specific_symop_1(x3,V2,indx_site_sym,flg) # 2f
+                    x1_=generator_obj_symmetric_vector_specific_symop_1(x1,indx_site_sym,flg) # 5f
+                    x2_=generator_obj_symmetric_vector_specific_symop_1(x2,indx_site_sym,flg) # 3f
+                    x3_=generator_obj_symmetric_vector_specific_symop_1(x3,indx_site_sym,flg) # 2f
                     # in the ODs at equivalent positions
-                    x1_=generator_obj_symmetric_vectors_specific_symop_1(x1_,V2,indx_coset,flg) # 5f
-                    x2_=generator_obj_symmetric_vectors_specific_symop_1(x2_,V2,indx_coset,flg) # 3f
-                    x3_=generator_obj_symmetric_vectors_specific_symop_1(x3_,V2,indx_coset,flg) # 2f
+                    x1_=generator_obj_symmetric_vectors_specific_symop_1(x1_,indx_coset,flg) # 5f
+                    x2_=generator_obj_symmetric_vectors_specific_symop_1(x2_,indx_coset,flg) # 3f
+                    x3_=generator_obj_symmetric_vectors_specific_symop_1(x3_,indx_coset,flg) # 2f
                     #-----------------------------------------------------------------------
                     lst_mx1.append(x1_)
                     lst_mx2.append(x2_)
@@ -410,8 +411,7 @@ def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose,test_flag):
                                                             #mu_=np.array([mu[0]*xe1,mu[1]*xe2,mu[2]*xe3])
                                                             if test_flag==1:
                                                                 mu_=np.array([mx1_,mx2_,mx3_]).T@mu
-                                                                tmp=projection(mu6d_)[0]
-                                                                mu_=numerical_vector(tmp)
+                                                                mu_=projection_par_numerical(mu_)
                                                             mu_=np.array([mxe1_,mxe2_,mxe3_]).T@mu
                                                             lst.append([element,xyz,i1,h123456,mu_,i4])
                                                         counter+=1

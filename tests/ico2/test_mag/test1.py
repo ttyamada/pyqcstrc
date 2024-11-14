@@ -58,7 +58,8 @@ if __name__ == "__main__":
     aico = 5.689 # in Ang. CdYb
     #select='atom'
     select='mag'
-    test_flag=1
+    test_flag=0 # using 3x3 symmetry operators for magnetic moments
+    #test_flag=1 # using 6x6 symmetry operators for magnetic moments
     ######################
     flag_od = 1  # asymmetric OD is used.
     xyzpath='../../../xyz/ico/kumazawa'
