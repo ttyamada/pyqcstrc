@@ -49,7 +49,9 @@ def read_file(file):
 if __name__ == "__main__":
     
     wpath='./work_mag'
-    basename='mag'
+    #basename='mag'
+    basename='T_10_m4_D10_L_mag'
+    
     nmax=5
     
     ofname='%s/%s_nmax%d.out'%(wpath,basename,nmax)
