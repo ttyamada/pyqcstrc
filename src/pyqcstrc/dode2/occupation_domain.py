@@ -1390,10 +1390,11 @@ def write_podatm(obj, position, vlist=[0], path='.', basename='tmp', shift=[0., 
                 #(b[5][0]+b[5][1]*TAU)/(b[5][2])-(a[5][0]+a[5][1]*TAU)/(a[5][2])))
                 b=math1.sub_vectors(b,a)
                 b=numericalc.numerical_vector(b)
+                """ 5次元ベクトルから7次元ベクトルへの変換　一意に決まらない!?
+                
                 fpod.write('ej=  %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f\n'%(\
                 #b[0],b[1],b[2],b[3],b[4],b[5]))
                 
-                """ 5次元ベクトルから7次元ベクトルへの変換　一意に決まらない!?
                 if b[1]>0.0 and b[3]>0.0:
                     if b[1]-b[3]>0.0:
                         e3=b[3]
@@ -1414,6 +1415,7 @@ def write_podatm(obj, position, vlist=[0], path='.', basename='tmp', shift=[0., 
                         e3=b[1]
                 """
                 
+                fpod.write('ej=  %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f\n'%(\
                 b[1],b[0]+b[2],b[1]+b[3],b[2],b[3],-b[0],b[4]))
                 
                 """
