@@ -25,9 +25,11 @@ v2=np.array([[ 0, 0, 1],[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
 od_asym=np.vstack([v0,v1,v2]).reshape(1,3,6,3)
 od.write(obj=od_asym, path=opath, basename='od_1_asym', format='xyz')
 
+pg='-12m2'
+
 # make symmetric OD
 pos0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]]) # 0,0,0,0,0
-od_sym_1=od.symmetric(obj=od_asym, centre=pos0)
+od_sym_1=od.symmetric(obj=od_asym, centre=pos0, pg=pg)
 od.write(obj=od_sym_1, path=opath, basename='od_1_sym', format='vesta', color='r',select='normal')
 od.write(obj=od_sym_1, path=opath, basename='od_1_sym', format='xyz')
 # Outline of OBJ_1

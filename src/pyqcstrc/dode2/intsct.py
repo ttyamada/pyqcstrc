@@ -228,22 +228,26 @@ def intersection_two_segment(segment_1: NDArray[np.int64], segment_2: NDArray[np
         tmp4=mul(tmp1,tmp2)
         bunbo=sub(tmp3,tmp4)
         
-        # bunshi=dot_product(vecAC,vecCD)*dot_product(vecCD,vecAB)-dot_product(vecCD,vecCD)*dot_product(vecAC,vecAB)
-        tmp1=dot_product(vecAC,vecCD)
-        tmp2=dot_product(vecCD,vecAB)
-        tmp3=mul(tmp1,tmp2)
-        #
-        tmp1=dot_product(vecCD,vecCD)
-        tmp2=dot_product(vecAC,vecAB)
-        tmp4=mul(tmp1,tmp2)
-        bunshi=sub(tmp3,tmp4)
+        if bunbo[0]==0 and bunbo[1]==bunbo:
+            return 
+        else:
+            # bunshi=dot_product(vecAC,vecCD)*dot_product(vecCD,vecAB)-dot_product(vecCD,vecCD)*dot_product(vecAC,vecAB)
+            tmp1=dot_product(vecAC,vecCD)
+            tmp2=dot_product(vecCD,vecAB)
+            tmp3=mul(tmp1,tmp2)
+            #
+            tmp1=dot_product(vecCD,vecCD)
+            tmp2=dot_product(vecAC,vecAB)
+            tmp4=mul(tmp1,tmp2)
+            bunshi=sub(tmp3,tmp4)
         
-        # s=bunshi/bunbo
-        s=div(bunshi,bunbo)
-        #
-        # OP = OA + s*AB
-        tmp=mul_vector(vecAB_6d,s)
-        return add_vectors(segment_1[0],tmp)
+            # s=bunshi/bunbo
+            s=div(bunshi,bunbo)
+            #
+            # OP = OA + s*AB
+            tmp=mul_vector(vecAB_6d,s)
+            return add_vectors(segment_1[0],tmp)
+            
     else: # no intersection
         return 
 
@@ -685,7 +689,7 @@ def intersection_two_obj_convex(obj1: NDArray[np.int64], obj2: NDArray[np.int64]
         if counter==0:
             return 
         else:
-            point1=remove_doubling_in_perp_space(p)
+            point1=remove_doubling_in_perp_space(p.reshape(int(len(p)/6),6,3))
             #
             # (3) Sum point A, point B and Intersections --->>> common part
             #
