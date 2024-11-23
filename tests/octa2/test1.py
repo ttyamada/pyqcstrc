@@ -4,7 +4,7 @@
 # PyQCstrc - Python library for Quasi-Crystal structure
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 
-#import timeit
+#import time
 import os
 import sys
 import numpy as np
@@ -44,6 +44,7 @@ od_sym_1_1=od.outline(od_sym_1)
 od.write(obj=od_sym_1_1,path=opath,basename='od_1_sym_outline',format='vesta',color='r',select='egdes')
 od.write(obj=od_sym_1_1,path=opath,basename='od_1_sym_outline',format='xyz',select='egdes')
 
+
 #============================================
 # OBJ_2 at (1,1,0,0)
 #============================================
@@ -56,7 +57,6 @@ od.write(obj=od_sym_2, path=opath, basename='od_2_sym', format='xyz')
 od_sym_2_1=od.outline(od_sym_2)
 od.write(obj=od_sym_2_1,path=opath,basename='od_2_sym_outline',format='vesta',color='b',select='egdes')
 od.write(obj=od_sym_2_1,path=opath,basename='od_2_sym_outline',format='xyz',select='egdes')
-
 
 
 #============================================
@@ -75,7 +75,6 @@ od.write(obj=od_common_1_smpl,path=opath,basename='od_common_simpl',format='xyz'
 od_common_1_smpl_outline=od.outline(od_common_1_smpl)
 od.write(obj=od_common_1_smpl_outline,path=opath,basename='od_common_simpl_outline',format='vesta',color='g',select='egdes')
 od.write(obj=od_common_1_smpl_outline,path=opath,basename='od_common_simpl_outline',format='xyz',select='egdes')
-
 
 
 
