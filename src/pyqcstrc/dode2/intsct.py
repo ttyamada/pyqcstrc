@@ -45,6 +45,7 @@ from pyqcstrc.dode2.utils import (remove_doubling_in_perp_space,
                                 generator_unique_edges,
                                 triangulation_points,
                                 generate_convex_hull,
+                                surface_cleaner,
                                 )
 
 TAU=np.sqrt(3)/2.0
@@ -591,8 +592,10 @@ def intersection_two_obj_convex(obj1: NDArray[np.int64], obj2: NDArray[np.int64]
     
     obj1_surf=obj1
     obj2_surf=obj2
-    obj1_edge=generator_unique_edges(obj1_surf)
-    obj2_edge=generator_unique_edges(obj2_surf)
+    #obj1_edge=generator_unique_edges(obj1_surf)
+    #obj2_edge=generator_unique_edges(obj2_surf)
+    obj1_edge=surface_cleaner(obj1)
+    obj2_edge=surface_cleaner(obj2)
     
     if verbose>1:
         print("         num. of unique triangles in obj1:",len(obj1_surf))
@@ -714,15 +717,15 @@ def subtraction_two_obj(obj1: NDArray[np.int64], obj2: NDArray[np.int64], verbos
 
     Parameters
     ----------
-    obj1: array,(number of tetrahedra, 4, 6, 3)
+    obj1: array,(number of triangles, 3, 6, 3)
         Object A to be subtracted.
-    obj2: array, (number of tetrahedra, 4, 6, 3)
-        Object B that subtracts the tetrahedron.
+    obj2: array, (number of triangles, 3, 6, 3)
+        Object B that subtracts the triangle.
     verbose: int
-
+    
     Returns
     -------
-    obj: array, (number of tetrahedra, 4, 6, 3)
+    obj: array, (number of triangles, 3, 6, 3)
     
     """
     
@@ -730,7 +733,7 @@ def subtraction_two_obj(obj1: NDArray[np.int64], obj2: NDArray[np.int64], verbos
         print('      generating surface_obj2')
         start=time.time()
     #
-    surface_obj2=generator_surface_1(obj2,verbose-1)
+    #surface_obj2=generator_surface_1(obj2,verbose-1)
     #
     if verbose>0:
         end=time.time()
@@ -745,10 +748,10 @@ def subtraction_two_obj(obj1: NDArray[np.int64], obj2: NDArray[np.int64], verbos
     flag=0
     out=None
     counter1=0
-    for tetrahedron in obj1:
+    for triangle in obj1:
         if verbose>0:
-            print('       %d-th tetrahedron in obj1'%(counter1))
-        a=tetrahedron_not_obj_1(tetrahedron.reshape(1,4,6,3),obj2,surface_obj2,verbose)
+            print('       %d-th triangle in obj1'%(counter1))
+        a=triangle_not_obj_1(triangle.reshape(1,3,6,3),obj2,verbose)
         if np.all(a==None):
             out=None
             flag=1
@@ -767,22 +770,22 @@ def subtraction_two_obj(obj1: NDArray[np.int64], obj2: NDArray[np.int64], verbos
             print('         ends in %4.3f sec'%time_diff)
     return out
 
-def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64], surface_obj: NDArray[np.int64], verbose: int=0) -> NDArray[np.int64]:
-    """Operate tetrahedron not object = tetrahedron not (tetrahedron and object).
+def triangle_not_obj_1(triangle: NDArray[np.int64], obj: NDArray[np.int64], verbose: int=0) -> NDArray[np.int64]:
+    """Operate tetrahedron not object = tetrahedron not (triangle and object).
     
     Parameters
     ----------
-    tetrahedron: array, (1, 4, 6, 3)
-        Tetrahedron to be subtracted.
-    obj: array, (number of tetrahedra, 4, 6, 3)
-        Object that subtracts the tetrahedron.
+    triangle: array, (1, 4, 6, 3)
+        Triangle to be subtracted.
+    obj: array, (number of triangles, 3, 6, 3)
+        Object that subtracts the triangle.
     surface_obj: array, (number of triangles, 3, 6, 3)
         Surface trianges of the object.
     verbose: int
     
     Returns
     -------
-    obj: array, (number of tetrahedra, 4, 6, 3)
+    obj: array, (number of triangles, 3, 6, 3)
     
     Note
     ----
@@ -790,37 +793,35 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
     
     """
     
-    #print('        tetrahedron_not_obj()')
+    #print('        triangle_not_obj_1()')
         
-    # surface triangles of obj
-    #surface_obj=generator_surface_1(obj)
-    
     # surface triangles and vertices of common
     #print('         intersection_two_obj_1()')
     #start=time.time()
-    common=intersection_two_obj_1(tetrahedron,obj)
+    common=intersection_two_obj_1(triangle,obj)
     #end=time.time()
     #time_diff=end-start
     #print('          ends in %4.3f sec'%time_diff)
-    surface_common=generator_surface_1(common,verbose-1)
+    #surface_common=generator_surface_1(common,verbose-1)=
+    surface_common=common
     #vertx_common=remove_doubling_in_perp_space(surface_common)
     
-    vol0=obj_volume_6d(tetrahedron)
+    vol0=obj_volume_6d(triangle)
     vol1=obj_volume_6d(common)
     vol2=sub(vol0,vol1)
     if verbose>0:
-        print('        tetrahedron volume:',vol0,numeric_value(vol0))
+        print('        triangle volume:',vol0,numeric_value(vol0))
         print('        common volume:',vol1,numeric_value(vol1))
-        print('        tetrahedron NOT obj:',vol2,numeric_value(vol2))
+        print('        triangle NOT obj:',vol2,numeric_value(vol2))
     
     out=None
     
     # get surface triangles of common part which are on the surface of obj
     ################################################
     # 問題点
-    # ここではtetrahedron NOT objは以下の2点からなると想定している。
-    # (1) objに含まれないtetrahedron頂点と、
-    # (2) tetrahedron AND objの表面にある三角形のうち、objの表面にある三角形
+    # ここではtriangle NOT objは以下の2点からなると想定している。
+    # (1) objに含まれないtriangle頂点と、
+    # (2) triangle AND objの三角形のうち、objの表面にある三角形
     # しかし、tetrahedron AND objがobj自身である場合など、tetrahedronとobjが
     # ほとんど重なっている場合、必ずしも上記(2)が求めたい頂点のみを含むとは限らず、
     # 余計なもまで作ってしまう。
@@ -845,7 +846,6 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
             pass
     triangle_common=tmp
     #print('triangle_common.shape',triangle_common.shape)
-    
     
     # get vertices of tetrahedron which are NOT inside obj
     counter2=0
