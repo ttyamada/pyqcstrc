@@ -17,7 +17,7 @@ try:
 except FileExistsError:
     pass
     
-# Three 6D vectors which define the asymmetric part of the occupation domain of Amman-Binker octagonal tiling.
+# Three 6D vectors which define the asymmetric part of the occupation domain of Ammann–Beenker octagonal tiling.
 # Note that 5-th and 6-th components of each 6D vectors are dummy, and they correspond to Z coordinate in Epar and Eperp, respectively.
 v0=np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
 v1=np.array([[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]]) # (1,0,0,0)
