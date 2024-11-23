@@ -45,6 +45,7 @@ from pyqcstrc.octa2.utils import (remove_doubling_in_perp_space,
                                 generator_unique_edges,
                                 triangulation_points,
                                 generate_convex_hull,
+                                surface_cleaner,
                                 )
 
 TAU=np.sqrt(2)
@@ -622,10 +623,13 @@ def intersection_two_obj_convex(obj1: NDArray[np.int64], obj2: NDArray[np.int64]
     if verbose>0:
         print("       start: intersection_two_obj_convex()")
     
+    
     obj1_surf=obj1
     obj2_surf=obj2
-    obj1_edge=generator_unique_edges(obj1_surf)
-    obj2_edge=generator_unique_edges(obj2_surf)
+    #obj1_edge=generator_unique_edges(obj1_surf)
+    #obj2_edge=generator_unique_edges(obj2_surf)
+    obj1_edge=surface_cleaner(obj1)
+    obj2_edge=surface_cleaner(obj2)
     
     if verbose>1:
         print("         num. of unique triangles in obj1:",len(obj1_surf))
