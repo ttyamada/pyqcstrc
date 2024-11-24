@@ -44,6 +44,9 @@ od_sym_1_1=od.outline(od_sym_1)
 od.write(obj=od_sym_1_1,path=opath,basename='od_1_sym_outline',format='vesta',color='r',select='egdes')
 od.write(obj=od_sym_1_1,path=opath,basename='od_1_sym_outline',format='xyz',select='egdes')
 
+area=od.volume(od_sym_1)
+print('area=', area)
+
 
 #============================================
 # OBJ_2 at (1,1,0,0)
