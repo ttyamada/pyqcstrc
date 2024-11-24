@@ -3,23 +3,30 @@
 
 # PyQCstrc - Python library for Quasi-Crystal structure
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
+import os
 import sys
-sys.path.append('../')
+#sys.path.append('../')
 import numpy as np
 import time
 
 try:
-    import occupation_domain as od
-    import two_occupation_domains as tod
-    import intsct
-    import utils
+    import pyqcstrc.ico2.occupation_domain as od
+    import pyqcstrc.ico2.two_occupation_domains as tod
+    import pyqcstrc.ico2.intsct as intsct
+    import pyqcstrc.ico2.utils as utils
 except ImportError:
     print('import error\n')
 
 
 if __name__ == "__main__":
     
-    opath='./output'
+    opath='./test2'
+    try:
+        os.makedirs(opath)
+    except FileExistsError:
+        pass
+    
+    xyzpath='../../../xyz/ico'
     
     """
     # generate asymmetric part of RT OD(occupation domain) located at origin,0,0,0,0,0,0.
@@ -115,7 +122,7 @@ if __name__ == "__main__":
     """
     
     # TEST tetrahedron_not_obj()
-    strt_aysmmetric=od.read_xyz(path='../../xyz',basename='strt_aysmmetric',select='tetrahedron',verbose=0)
+    strt_aysmmetric=od.read_xyz(path=xyzpath,basename='strt_aysmmetric',select='tetrahedron',verbose=0)
     od.write(obj=strt_aysmmetric[0].reshape(1,4,6,3), path=opath, basename='strt_aysmmetric', format='vesta')
     
     # generat STRT OD located at 0,0,0,0,0,0 by symmetric operations (m-3-5).

@@ -3,29 +3,35 @@
 
 # PyQCstrc - Python library for Quasi-Crystal structure
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
+import os
 import sys
-sys.path.append('../')
+#sys.path.append('../')
 import numpy as np
 import time
 
 try:
-    import occupation_domain as od
-    import two_occupation_domains as tod
-    import utils
-    import numericalc
+    import pyqcstrc.ico2.occupation_domain as od
+    import pyqcstrc.ico2.two_occupation_domains as tod
+    import pyqcstrc.ico2.utils as utils
+    #import pyqcstrc.ico2.numericalc as numericalc
 except ImportError:
     print('import error\n')
     
     
 if __name__ == "__main__":
     
-    opath='.'
-    xyzpath='../../xyz'
+    opath='./test1'
+    try:
+        os.makedirs(opath)
+    except FileExistsError:
+        pass
+    
+    xyzpath='../../../xyz/ico'
     #--------------
     # Object A
     #--------------
     strt_aysmmetric=od.read_xyz(path=xyzpath,basename='strt_aysmmetric',select='tetrahedron',verbose=0)
-    #od.write(obj=strt_aysmmetric, path=opath, basename='strt_aysmmetric', format='vesta')
+    od.write(obj=strt_aysmmetric, path=opath, basename='strt_aysmmetric', format='vesta')
     #obj_surface=utils.generator_surface_1(strt_aysmmetric)
     
     #strt_aysmmetric_convex_hull=utils.generate_convex_hull(strt_aysmmetric)
@@ -41,8 +47,9 @@ if __name__ == "__main__":
     # move STRT OD to a position 1 0 0 0 0 0.
     POS_B1=np.array([[ 1, 0, 1],[ 1, 0, 1],[ 1, 0, 1],[ 0, 0, 1],[-1, 0, 1],[ 0, 0, 1]]) # b_1
     strt_sym_pos1=od.shift(strt_sym,POS_B1)
-    #od.write(obj=strt_sym_pos1, path=opath, basename='obj_strt1', format='xyz')
-    #od.write(obj=strt_sym_pos1, path=opath, basename='obj_strt1', format='vesta')
+    od.write(obj=strt_sym_pos1, path=opath, basename='obj_strt1', format='xyz')
+    od.write(obj=strt_sym_pos1, path=opath, basename='obj_strt1', format='vesta')
+    
     
     #--------------
     # A AND B = C
@@ -63,11 +70,12 @@ if __name__ == "__main__":
     start=time.time()
     ###
     common_simple=od.simplification(common)
-    od.write(obj=common_simple, path=opath, basename='common_simplified', format='vesta')
+    od.write(obj=common_simple, path=opath, basename='common_smpl', format='vesta')
     ###
     end=time.time()
     time_diff=end-start
     print('     ends in %4.3f sec'%time_diff)
+    
     
     #--------------
     # A NOT B
