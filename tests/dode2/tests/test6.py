@@ -11,7 +11,7 @@ import numpy as np
 import pyqcstrc.dode2.occupation_domain as od
 import pyqcstrc.dode2.symmetry as sym
 import pyqcstrc.dode2.numericalc as numericalc
-
+CONST1=2/np.sqrt(6)
 opath='./test6'
 xyzpath='../../../xyz/dode'
 
@@ -67,9 +67,15 @@ u11=0
 u12=0
 u21=0
 u22=0
-verbose=1
 
-od.qcstrc(mystrc,\
+#point group
+pg='-12m2'
+
+apar=1/CONST1
+cpar=1
+od.qcstrc(apar=apar,\
+        cpar=cpar,\
+        mystrc=mystrc,\
         path=opath,\
         basename='%s_hmax%d'%(basename,h1max),\
         phason_matrix= np.array([\
@@ -78,6 +84,8 @@ od.qcstrc(mystrc,\
                         ]),\
         n1max=h1max,\
         n5max=h5max,\
-        origin_shift=oshift,
-        option=2,
-        verbose=verbose)
+        origin_shift=oshift,\
+        option=2,\
+        pg=pg,\
+        verbose=1)
+        
