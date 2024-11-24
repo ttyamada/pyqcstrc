@@ -613,7 +613,10 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             return 0
         else:
             # get independent edges
-            edges = utils.generator_obj_edge(obj, verbose)
+            #edges = utils.generator_obj_edge(obj, verbose)
+            #edges = utils.generator_all_edges(obj)
+            edges = utils.generator_unique_edges(obj)
+            
             # get independent vertices of the edges
             vertices = utils.remove_doubling_in_perp_space(edges)
             # get bond pairs, [[distance, XXX, YYY],...]
@@ -1163,7 +1166,7 @@ def write_xyz(obj,path='.',basename='tmp',select='tetrahedron',verbose=0):
         f.closed
         return 0
     
-    def generator_xyz_dim4_vertex(obj, filename):
+    def generator_xyz_dim3_vertex(obj, filename):
         """
         Generate object (set of vertexs) object in XYZ format.
     
@@ -1198,31 +1201,44 @@ def write_xyz(obj,path='.',basename='tmp',select='tetrahedron',verbose=0):
     if np.all(obj==None):
         print('empty obj')
         return 
-    elif obj.ndim!=4:
-        print('object has an incorrect shape!')
-        return 
     else:
         file_name='%s/%s.xyz'%(path,basename)
         if select=='tetrahedron':
-            generator_xyz_dim4_tetrahedron(obj, file_name)
-            if verbose>0:
-                print('    written in %s/%s.xyz'%(path,basename))
-            return 0
+            if obj.ndim!=4:
+                print('object has an incorrect shape!')
+                return 
+            else:
+                generator_xyz_dim4_tetrahedron(obj, file_name)
+                if verbose>0:
+                    print('    written in %s/%s.xyz'%(path,basename))
+                return 0
         elif select=='triangle':
-            generator_xyz_dim4_triangle(obj, file_name)
-            if verbose>0:
-                print('    written in %s/%s.xyz'%(path,basename))
-            return 0
+            if obj.ndim!=4:
+                print('object has an incorrect shape!')
+                return 
+            else:
+                generator_xyz_dim4_triangle(obj, file_name)
+                if verbose>0:
+                    print('    written in %s/%s.xyz'%(path,basename))
+                return 0
         elif select=='edge':
-            generator_xyz_dim4_edge(obj, file_name)
-            if verbose>0:
-                print('    written in %s/%s.xyz'%(path,basename))
-            return 0
+            if obj.ndim!=4:
+                print('object has an incorrect shape!')
+                return 
+            else:
+                generator_xyz_dim4_edge(obj, file_name)
+                if verbose>0:
+                    print('    written in %s/%s.xyz'%(path,basename))
+                return 0
         elif select=='vertex':
-            generator_xyz_dim4_vertex(obj, file_name)
-            if verbose>0:
-                print('    written in %s/%s.xyz'%(path,basename))
-            return 0
+            if obj.ndim!=3:
+                print('object has an incorrect shape!')
+                return 
+            else:
+                generator_xyz_dim3_vertex(obj, file_name)
+                if verbose>0:
+                    print('    written in %s/%s.xyz'%(path,basename))
+                    return 0
         else:
             if verbose>0:
                 print('    error')
@@ -1324,9 +1340,12 @@ def simplification(obj,verbose=0):
         return 
     else:
         vol0=utils.obj_volume_6d(obj)
+        if verbose>0:
+            print('    obj volume:',vol0)
         obj_convex_hull=utils.generate_convex_hull(obj)
-        obj_tmp=intsct.intersection_two_obj_1(obj_convex_hull,obj)
-        vol1=utils.obj_volume_6d(obj_tmp)
+        vol1=utils.obj_volume_6d(obj_convex_hull)
+        #obj_tmp=intsct.intersection_two_obj_1(obj_convex_hull,obj)
+        #vol1=utils.obj_volume_6d(obj_tmp)
         if np.all(vol0==vol1):
             if verbose>0:
                 print('      simplification succeed:')
@@ -1547,7 +1566,7 @@ def write_podatm(obj, position, vlist, path='.', basename='tmp', shift=[0.0,0.0,
     else:
         pass
     
-    if obj==None:
+    if np.all(obj==None):
         print('no volume obj')
         return 0
     else:
