@@ -679,7 +679,7 @@ def site_symmetry_and_coset(site,brv,pg,verbose=0):
         idx_coset=[0]
     else:
         idx_site=site_symmetry(site,symop,brv)
-        idx_coset=coset(site,symop,brv,idx_site)
+        idx_coset=coset(site,symop,brv,pg,idx_site)
         #print(idx_coset)
     if verbose>0:
         print('  order of site symmetry:',len(idx_site))
