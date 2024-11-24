@@ -964,7 +964,7 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
         #---------------------------------------
         num=len(triangle_common)
         #print('len(triangle_common)',num)
-        dd=np.zeros(num,dtype=np.float_)
+        dd=np.zeros(num,dtype=np.float64)
         i1=0
         for triangle in triangle_common:
             vt=centroid(triangle)

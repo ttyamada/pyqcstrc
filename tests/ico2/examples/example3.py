@@ -48,6 +48,6 @@ od.write_vesta(common_od, path='./example3', basename='common_od_asym', color='r
 od.write_xyz(common_od, path='./example3', basename='common_od_asym')
 
 # Simplification of object
-common_od_smpl=od.simplification(obj=common_od,verbose=1)
+common_od_smpl=od.simplification_convex(obj=common_od,verbose=1)
 od.write_vesta(common_od_smpl, path='./example3', basename='common_od_asym_smpl', color='r')
 od.write_xyz(common_od_smpl, path='./example3', basename='common_od_asym_smpl')

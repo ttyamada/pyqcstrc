@@ -1343,6 +1343,46 @@ def simplification(obj,verbose=0):
         if verbose>0:
             print('    obj volume:',vol0)
         obj_convex_hull=utils.generate_convex_hull(obj)
+        obj_tmp=intsct.intersection_two_obj_1(obj_convex_hull,obj)
+        vol1=utils.obj_volume_6d(obj_tmp)
+        if np.all(vol0==vol1):
+            if verbose>0:
+                print('      simplification succeed:')
+                print('      num of tetrahedra: %d --> %d'%(len(obj),len(obj_convex_hull)))
+            return obj_convex_hull
+        else:
+            if verbose>0:
+                print('      simplification: fail')
+            return obj
+
+def simplification_convex(obj,verbose=0):
+    """
+    Simplification of occupation domains.
+    
+    Args:
+        obj (numpy.ndarray): the occupation domain
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+        num_cycle (int): numbre of cycles
+        verbose (int)
+            verbose = 0 (silent, default)
+            verbose = 1 (normal)
+            verbose > 2 (detail)
+    
+    Returns:
+    
+        Simplified occupation domains (numpy.ndarray)
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+    
+    """
+    if np.all(obj==None):
+        if verbose>0:
+            print('    zero volume')
+        return 
+    else:
+        vol0=utils.obj_volume_6d(obj)
+        if verbose>0:
+            print('    obj volume:',vol0)
+        obj_convex_hull=utils.generate_convex_hull(obj)
         vol1=utils.obj_volume_6d(obj_convex_hull)
         #obj_tmp=intsct.intersection_two_obj_1(obj_convex_hull,obj)
         #vol1=utils.obj_volume_6d(obj_tmp)
