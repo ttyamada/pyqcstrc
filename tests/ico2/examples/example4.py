@@ -8,13 +8,30 @@ import timeit
 import os
 import sys
 import numpy as np
-import pyqcstrc.ico.occupation_domain as od
-import pyqcstrc.ico.two_occupation_domains as ods
+import pyqcstrc.ico2.occupation_domain as od
+import pyqcstrc.ico2.two_occupation_domains as ods
 
 V0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
 BC = np.array([[ 1, 0, 2],[ 1, 0, 2],[ 1, 0, 2],[ 1, 0, 2],[ 1, 0, 2],[ 1, 0, 2]])
 EC = np.array([[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
 
+common_od_asym=od.read_xyz(path='./example3', basename='common_od_asym_smpl')
+# back to the origin
+v4 = np.array([[-1, 0, 2],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+common_od_asym=od.shift(common_od_asym,v4)
+
+vtx=od.write_vesta(obj=common_od_asym, path='./example4', basename='common_od_asym', color = 'k', select = 'podatm')
+od.write_xyz(obj=vtx, path='./example4', basename='common_od_asym', select='vertex')
+
+# Generate atm and pod files
+vlst=[\
+[1,5,6,7,3,6,7,3,4,6,2,3,7],\
+]
+
+vtx=od.read_xyz(path='./example4', basename='common_od_asym', select ='vertex')
+od.write_podatm(obj=vtx, position=EC, vlist=vlst, path='./example4', basename='common_od_asym', verbose=1)
+
+"""
 common_od_asym=od.read_xyz(path='./example3', basename='common_od_asym')
 # back to the origin
 v4 = np.array([[-1, 0, 2],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
@@ -30,4 +47,4 @@ vlst=[\
 
 vtx=od.read_xyz(path='./example4', basename='common_od_asym', select ='vertex')
 od.write_podatm(obj=vtx, position=EC, vlist=vlst, path='./example4', basename='common_od_asym', verbose=1)
-
+"""

@@ -10,7 +10,6 @@ import sys
 import numpy as np
 import pyqcstrc.ico2.occupation_domain as od
 import pyqcstrc.ico2.two_occupation_domains as ods
-import pyqcstrc.ico2.utils as utils
 
 # Vertices of tetrahedron, v0,v1,v2,v3, which
 # defines the asymmetric part of OD
@@ -47,3 +46,8 @@ od.write_xyz(od1_asym, path='./example3', basename='rtod1_asym')
 common_od = ods.intersection(od1_asym, od2, verbose=0)
 od.write_vesta(common_od, path='./example3', basename='common_od_asym', color='r')
 od.write_xyz(common_od, path='./example3', basename='common_od_asym')
+
+# Simplification of object
+common_od_smpl=od.simplification(obj=common_od,verbose=1)
+od.write_vesta(common_od_smpl, path='./example3', basename='common_od_asym_smpl', color='r')
+od.write_xyz(common_od_smpl, path='./example3', basename='common_od_asym_smpl')

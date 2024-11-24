@@ -1,0 +1,28 @@
+20
+./example3/common_od_asym_smpl.xyz
+Xx 2.118034 1.618034 0.809017 #   0-the tetrahedron 0-th vertex # 1 0 2 0 0 1 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 2.118034 1.618034 0.000000 #   0-the tetrahedron 1-th vertex # 1 0 2 -1 0 4 -1 0 4 1 0 2 -1 0 2 1 0 2
+Xx 2.618034 0.000000 1.000000 #   0-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 2.618034 1.618034 0.000000 #   0-the tetrahedron 3-th vertex # 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 2.118034 1.618034 0.000000 #   1-the tetrahedron 0-th vertex # 1 0 2 -1 0 4 -1 0 4 1 0 2 -1 0 2 1 0 2
+Xx 2.618034 0.000000 1.000000 #   1-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 2.618034 -1.618034 0.000000 #   1-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 0.809017 -0.500000 0.000000 #   1-the tetrahedron 3-th vertex # -1 1 4 1 -1 4 1 -1 4 1 -1 4 1 -1 4 1 -1 4
+Xx 2.118034 1.618034 0.000000 #   2-the tetrahedron 0-th vertex # 1 0 2 -1 0 4 -1 0 4 1 0 2 -1 0 2 1 0 2
+Xx 2.618034 0.000000 1.000000 #   2-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 2.618034 1.618034 0.000000 #   2-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 2.618034 -1.618034 0.000000 #   2-the tetrahedron 3-th vertex # 1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2 -1 0 2
+Xx 2.118034 1.618034 0.809017 #   3-the tetrahedron 0-th vertex # 1 0 2 0 0 1 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 2.118034 1.618034 0.000000 #   3-the tetrahedron 1-th vertex # 1 0 2 -1 0 4 -1 0 4 1 0 2 -1 0 2 1 0 2
+Xx 2.618034 0.000000 1.000000 #   3-the tetrahedron 2-th vertex # 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 0.809017 -0.500000 0.000000 #   3-the tetrahedron 3-th vertex # -1 1 4 1 -1 4 1 -1 4 1 -1 4 1 -1 4 1 -1 4
+Xx 2.118034 1.618034 0.809017 #   4-the tetrahedron 0-th vertex # 1 0 2 0 0 1 -1 0 2 1 0 2 -1 0 2 1 0 2
+Xx 2.618034 0.000000 1.000000 #   4-the tetrahedron 1-th vertex # 1 0 2 -1 0 2 -1 0 2 1 0 2 -1 0 2 -1 0 2
+Xx 1.868034 1.213525 1.463525 #   4-the tetrahedron 2-th vertex # 1 0 2 1 0 4 -1 0 2 1 0 2 -1 0 2 1 0 4
+Xx 0.809017 -0.500000 0.000000 #   4-the tetrahedron 3-th vertex # -1 1 4 1 -1 4 1 -1 4 1 -1 4 1 -1 4 1 -1 4
+volume = 1 2 2 (2.118034)
+  0-the tetrahedron, 1 1 24 (0.109085)
+  1-the tetrahedron, 5 10 24 (0.882514)
+  2-the tetrahedron, 0 1 6 (0.269672)
+  3-the tetrahedron, 2 3 16 (0.428381)
+  4-the tetrahedron, 2 3 16 (0.428381)
