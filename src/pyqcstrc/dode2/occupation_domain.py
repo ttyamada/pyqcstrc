@@ -1580,10 +1580,11 @@ def qcstrc(apar,cpar,mystrc,path,basename,phason_matrix,n1max,n5max,origin_shift
         obj,wsite,atom,shift=strc
         wsiten=numericalc.numerical_vector(wsite)
         print('   wsite: %4.3f %4.3f %4.3f %4.3f %4.3f'%(wsiten[0],wsiten[1],wsiten[2],wsiten[3],wsiten[4]))
-        num_stsym=symmetry.site_symmetry(wsite,dim,pg)
-        print('    num_sisym:',num_stsym)
-        num_coset=symmetry.coset(wsite,dim,pg)
+        #num_stsym=symmetry.site_symmetry(wsite,dim,pg)
+        #num_coset=symmetry.coset(wsite,dim,pg)
+        num_stsym,num_coset=symmetry.site_symmetry_and_coset(site=wsite,brv='p',pg=pg,verbose=0)
         #num_coset=symmetry.coset_a(wsite,dim,pg)
+        print('    num_sisym:',num_stsym)
         print('    num_coset:',num_coset)
         #num_coset=num_coset[17]
         #num_equiv=symmetry.equivalent_positions(wsite,dim,pg)
