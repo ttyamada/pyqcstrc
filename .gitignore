@@ -23,7 +23,7 @@ pyqcstrc.egg-info/
 /test/ico2/test_mag/
 
 /scripts
-#/tests
+/tests/ico2/test_mag/
 #/xyz
 
 *.zip
