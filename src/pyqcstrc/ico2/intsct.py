@@ -6,7 +6,7 @@
 #import sys
 import numpy as np
 from numpy.typing import NDArray
-#import time # in subtraction_two_obj
+import time # in subtraction_two_obj
 import itertools
 
 from pyqcstrc.ico2.math1 import (projection3,
@@ -822,7 +822,7 @@ def subtraction_two_obj(obj1: NDArray[np.int64], obj2: NDArray[np.int64], verbos
     for tetrahedron in obj1:
         if verbose>0:
             print('       %d-th tetrahedron in obj1'%(counter1))
-        a=tetrahedron_not_obj_1(tetrahedron.reshape(1,4,6,3),obj2,surface_obj2,verbose)
+        a=tetrahedron_not_obj_1(tetrahedron,obj2,surface_obj2,verbose)
         if np.all(a==None):
             out=None
             flag=1
@@ -846,7 +846,7 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
     
     Parameters
     ----------
-    tetrahedron: array, (1, 4, 6, 3)
+    tetrahedron: array, (4, 6, 3)
         Tetrahedron to be subtracted.
     obj: array, (number of tetrahedra, 4, 6, 3)
         Object that subtracts the tetrahedron.
@@ -870,25 +870,35 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
     #surface_obj=generator_surface_1(obj)
     
     # surface triangles and vertices of common
-    #print('         intersection_two_obj_1()')
-    #start=time.time()
-    common=intersection_two_obj_1(tetrahedron,obj)
-    #end=time.time()
-    #time_diff=end-start
-    #print('          ends in %4.3f sec'%time_diff)
+    print('         intersection_two_obj_1()')
+    start=time.time()
+    common=intersection_two_obj_1(tetrahedron.reshape([1,4,6,3]),obj)
+    end=time.time()
+    time_diff=end-start
+    print('          ends in %4.3f sec'%time_diff)
+    
+    
+    print('         generator_surface_1()')
+    start=time.time()
     surface_common=generator_surface_1(common,verbose-1)
+    end=time.time()
+    time_diff=end-start
+    print('          ends in %4.3f sec'%time_diff)
     #vertx_common=remove_doubling_in_perp_space(surface_common)
     
     vol0=obj_volume_6d(tetrahedron)
     vol1=obj_volume_6d(common)
     vol2=sub(vol0,vol1)
     if verbose>0:
-        print('        tetrahedron volume:',vol0,numeric_value(vol0))
-        print('        common volume:',vol1,numeric_value(vol1))
-        print('        tetrahedron NOT obj:',vol2,numeric_value(vol2))
+        print('         tetrahedron volume: %8.6f'%(numeric_value(vol0)),vol0)
+        print('              common volume: %8.6f'%(numeric_value(vol1)),vol1)
+        print('        tetrahedron NOT obj: %8.6f'%(numeric_value(vol2)),vol2)
     
     out=None
     
+    print('         step1')
+    start=time.time()
+    #
     # get surface triangles of common part which are on the surface of obj
     ################################################
     # 問題点
@@ -919,8 +929,14 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
             pass
     triangle_common=tmp
     #print('triangle_common.shape',triangle_common.shape)
+    end=time.time()
+    time_diff=end-start
+    print('          ends in %4.3f sec'%time_diff)
     
     
+    print('         step2')
+    start=time.time()
+    #
     # get vertices of tetrahedron which are NOT inside obj
     counter2=0
     tetrahedron=tetrahedron.reshape(4,6,3)
@@ -944,6 +960,9 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
             pass
     vrtx1_out=tmp
     #print('vrtx1_out.shape',vrtx1_out.shape)
+    end=time.time()
+    time_diff=end-start
+    print('          ends in %4.3f sec'%time_diff)
     
     
     
@@ -1158,7 +1177,7 @@ def tetrahedron_not_obj_2(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
     
     Parameters
     ----------
-    tetrahedron: array, (1, 4, 6, 3)
+    tetrahedron: array, (4, 6, 3)
         Tetrahedron to be subtracted.
     obj: array, (number of tetrahedra, 4, 6, 3)
         Object that subtracts the tetrahedron.
@@ -1172,6 +1191,7 @@ def tetrahedron_not_obj_2(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
     Under development.
     
     """
+    tetrahedron=tetrahedron.reshape(1,4,6,3)
     
     vol0=obj_volume_6d(tetrahedron)
     print('tetrahedron volume:',vol0,numeric_value(vol0))

@@ -136,17 +136,31 @@ if __name__ == "__main__":
     od.write(obj=strt_sym_pos1, path=opath, basename='obj_strt1', format='vesta')
     
     
+    # Test tetrahedron_not_obj()
     print('    tetrahedron_not_obj starts')
     start=time.time()
-    ###
-    tetrahedron=strt_aysmmetric[0].reshape(1,4,6,3)
-    #a=intsct.tetrahedron_not_obj_1(tetrahedron,strt_sym_pos1)
-    #obj=strt_aysmmetric
-    #a=tod.object_subtraction(obj,strt_sym_pos1)
-    od.write(obj=a, path=opath, basename='test', format='xyz')
-    od.write(obj=a, path=opath, basename='test', format='vesta')
-    ###
+    #
+    tetrahedron=strt_aysmmetric[0]
+    surface_obj=utils.generator_surface_1(strt_sym_pos1)
+    a=intsct.tetrahedron_not_obj_1(tetrahedron,strt_sym_pos1,surface_obj,verbose=1)
+    od.write(obj=a, path=opath, basename='test1', format='xyz')
+    od.write(obj=a, path=opath, basename='test1', format='vesta')
+    #
     end=time.time()
     time_diff=end-start
     print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
+    
+    # Test subtraction()
+    print('    subtraction starts')
+    start=time.time()
+    #
+    obj=strt_aysmmetric
+    a=tod.subtraction(obj,strt_sym_pos1,verbose=1)
+    od.write(obj=a, path=opath, basename='test2', format='xyz')
+    od.write(obj=a, path=opath, basename='test2', format='vesta')
+    #
+    end=time.time()
+    time_diff=end-start
+    print('                 ends in %4.3f sec'%time_diff)  # 処理にかかった時間データ
+    
     
