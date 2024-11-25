@@ -11,12 +11,13 @@ pip install pyqcstrc
 
 or in local:
 ```
-conda create -n pyqc python=3.10 pip
+conda create -n pyqc python=3.10
 conda activate pyqc
 gh repo clone ttyamada/pyqcstrc
 cd pyqcstrc
 python3 setup.py bdist_wheel
-pip3 install ./dist/pyqcstrc-XXX.whl
+pip install ./dist/pyqcstrc-XXX.whl
+pip install -e .
 ```
 
 Fro more information, see [Docs](https://www.rs.tus.ac.jp/tsunetomo.yamada/pyqcstrc/).
