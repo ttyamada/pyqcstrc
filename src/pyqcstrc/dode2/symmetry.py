@@ -70,7 +70,7 @@ def generator_obj_symmetric_obj(obj,centre,pg='-12m2'):
         if np.all(centre==V0):
             mop=dodesymop_array(pg)
         else:
-            lst_site_symmetry=site_symmetry(centre)
+            lst_site_symmetry,__=site_symmetry_and_coset(centre,'p',pg,verbose)
             mop=[]
             tmp=dodesymop_array(pg)
             for i in lst_site_symmetry:
