@@ -25,7 +25,7 @@ import numpy as np
 EPS=1e-6
 V0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
 
-def symop_obj(symop,obj,centre):
+def symop_obj(symop,obj,centre=V0):
     """ Apply a symmetric operation on an object around given centre. in TAU-style
     
     """
@@ -45,7 +45,7 @@ def symop_obj(symop,obj,centre):
         print('object has an incorrect shape!')
         return 
 
-def symop_vecs(symop,vts,centre):
+def symop_vecs(symop,vts,centre=V0):
     """ Apply a symmetric operation on set of vectors around given centre. in TAU-style
     
     """
@@ -56,21 +56,21 @@ def symop_vecs(symop,vts,centre):
         i+=1
     return out
 
-def symop_vec(symop,vt,centre):
+def symop_vec(symop,vt,centre=V0):
     """ Apply a symmetric operation on a vector around given centre. in TAU-style
     """
     vt=sub_vectors(vt,centre)
     vt=dot_product_1(symop,vt)
     return add_vectors(vt,centre)
 
-def generator_obj_symmetric_obj(obj,centre,pg='-12m2'):
+def generator_obj_symmetric_obj(obj,centre=V0,pg='-12m2'):
     """
     """
     if obj.ndim==3 or obj.ndim==4:
         if np.all(centre==V0):
             mop=dodesymop_array(pg)
         else:
-            lst_site_symmetry,__=site_symmetry_and_coset(centre,'p',pg,verbose)
+            lst_site_symmetry,__=site_symmetry_and_coset(centre,'p',pg,verbose=0)
             mop=[]
             tmp=dodesymop_array(pg)
             for i in lst_site_symmetry:
@@ -88,7 +88,7 @@ def generator_obj_symmetric_obj(obj,centre,pg='-12m2'):
         print('object has an incorrect shape!')
         return
 
-def generator_obj_symmetric_triangle(obj,centre,pg='-12m2'):
+def generator_obj_symmetric_triangle(obj,centre=V0,pg='-12m2'):
     """
     """
     return generator_obj_symmetric_obj(obj,centre,pg)
@@ -461,7 +461,6 @@ def translation_new(brv,flag=0):
     
     if brv=='p':
         return tr
-    
     else:
         print('no lattice type selected.')
         return 
@@ -524,6 +523,8 @@ def site_symmetry_and_coset(site,brv,pg,verbose=0):
             
         if brv=='p':
             flag=1
+        else:
+            pass
         traop=translation_new(brv,flag)
         lst=[]
         for i1,a1 in enumerate(a):
@@ -533,7 +534,7 @@ def site_symmetry_and_coset(site,brv,pg,verbose=0):
             for op in symop:
                 tmp1=symop_vec(op,vtg,V0)
                 if np.all(a1==tmp1):
-                    counter1+=1
+                    counter1=1
                     #print('      tmp1:',numerical_vector(tmp1))
                     break
                 else:
@@ -541,13 +542,13 @@ def site_symmetry_and_coset(site,brv,pg,verbose=0):
                     for tr in traop:
                         b=add_vectors(tmp1,tr)
                         if np.all(a1==b):
-                            flag1+=1
+                            flag1=1
                             #print('         b:',numerical_vector(b))
                             break
                         else:
                             pass
                     if flag1==1:
-                        counter1+=1
+                        counter1=1
                         break
                     else:
                         pass
@@ -561,9 +562,6 @@ def site_symmetry_and_coset(site,brv,pg,verbose=0):
     def coset(site,symop,brv,pg,idx_site):
         """
         """
-        #print('coset():')
-        #idx_site=site_symmetry(site,brv)
-        
         # coordinate of equivalent sites
         pos_equiv=equivalent_positions(site,brv,pg)
         #print('  number of equivalent positions:',len(pos_equiv))
@@ -1220,13 +1218,13 @@ if __name__ == '__main__':
     plt.show()
     """
     
-    pg='12/mmm'
+    #pg='12/mmm'
     #pg='12mm'
     #pg='-12m2'
     #pg='-12'
-    #pg='12'
-    #symop=dodesymop()
+    pg='12'
     symop=dodesymop_array(pg)
+    #print(len(symop))
     
     ########################################
     # 生成元から作った集合が群をなすかどうかを確認
@@ -1243,16 +1241,55 @@ if __name__ == '__main__':
     
     # Symmetric positions, P\bar{12}m2(12^5mm)
     V_1a =np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]]) # ( 0,  0,  0,  0,  0) # \bar{12}m2(12^5mm)
-    V_2a =np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[1,0,4],[0,0,1]]) # ( 0,  0,  0,  0, u1) # 6mm(6^5mm)
-    V_4a =np.array([[0,0,1],[2,0,3],[0,0,1],[1,0,3],[1,0,4],[0,0,1]]) # ( 0,2/3,  0,1/3, u2) # 3m(3^2m)
-    V_6a =np.array([[0,0,1],[1,0,2],[0,0,1],[0,0,1],[1,0,4],[0,0,1]]) # ( 0,1/2,  0,  0, u3) # mm2(mm1)
-    V_6b =np.array([[0,0,1],[1,0,2],[1,0,2],[0,0,1],[1,0,4],[0,0,1]]) # ( 0,1/2,1/2,  0, u4) # mm2(mm1)
-    V_12a=np.array([[0,0,1],[1,0,2],[1,0,3],[0,0,1],[1,0,4],[0,0,1]]) # ( 0,1/2,  z,  0, u5) # m11(m11)
-    site=V_1a
+    V_2a =np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[1,0,7],[0,0,1]]) # ( 0,  0,  0,  0, u1) # 6mm(6^5mm)
+    V_4a =np.array([[0,0,1],[2,0,3],[0,0,1],[1,0,3],[1,0,7],[0,0,1]]) # ( 0,2/3,  0,1/3, u2) # 3m(3^2m)
+    V_6a =np.array([[0,0,1],[1,0,2],[0,0,1],[0,0,1],[1,0,7],[0,0,1]]) # ( 0,1/2,  0,  0, u3) # mm2(mm1)
+    V_6b =np.array([[0,0,1],[1,0,2],[1,0,2],[0,0,1],[1,0,7],[0,0,1]]) # ( 0,1/2,1/2,  0, u4) # mm2(mm1)
+    V_12a=np.array([[0,0,1],[1,0,2],[1,0,7],[0,0,1],[1,0,7],[0,0,1]]) # ( 0,1/2,  z,  0, u5) # m11(m11)
+    #site=V_1a
     #site=V_2a
     #site=V_4a
     #site=V_6a
     #site=V_6b
-    #site=V_12a
+    site=V_12a
     
-    site_symmetry_and_coset(site,'p',pg,verbose=1)
+    lst=[]
+    for i in range(len(symop)):
+        lst.append(i)
+    #print(lst)
+    
+    idx_ssym,idx_coset=site_symmetry_and_coset(site,'p',pg,verbose=1)
+    print('idx_ssym:',idx_ssym)
+    print('idx_coset:',idx_coset)
+    
+    lst_tmp=[]
+    for i1 in lst:
+        counter=0
+        for i2 in idx_ssym:
+            if i1==i2:
+                counter=1
+                break
+            else:
+                pass
+        if counter==0:
+            lst_tmp.append(i1)
+    print('idx_else:',lst_tmp)
+    
+    vn=numerical_vector(site)
+    #print('%6.4f %6.4f %6.4f %6.4f %6.4f'%(vn[0],vn[1],vn[2],vn[3],vn[4]))
+    
+    print('site symmetry:')
+    for i1 in idx_ssym:
+        vn1=symop[i1]@vn
+        print('%d %6.4f %6.4f %6.4f %6.4f %6.4f'%(i1,vn1[0],vn1[1],vn1[2],vn1[3],vn1[4]))
+    
+    print('idx_coset:')
+    for i1 in idx_coset:
+        vn1=symop[i1]@vn
+        print('%d %6.4f %6.4f %6.4f %6.4f %6.4f'%(i1,vn1[0],vn1[1],vn1[2],vn1[3],vn1[4]))
+    
+    print('idx_else:')
+    for i1 in lst_tmp:
+        vn1=symop[i1]@vn
+        print('%d %6.4f %6.4f %6.4f %6.4f %6.4f'%(i1,vn1[0],vn1[1],vn1[2],vn1[3],vn1[4]))
+    
