@@ -10,7 +10,7 @@ import platform
 from setuptools import setup, find_packages, Extension
 from numpy import get_include
 
-VERSION="0.0.2a11"
+VERSION="0.0.2a12"
 
 # Package meta-data.
 NAME = "pyqcstrc"
