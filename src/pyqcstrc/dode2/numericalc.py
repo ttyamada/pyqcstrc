@@ -840,6 +840,15 @@ def inside_outside_triangle_numerical(triangle,point):
 def strc(objs,positions,pmatrx,n1max,n5max,eshift,oshift,verbose):
     """
     """
+    print()
+    print('len(objs):',len(objs))
+    for tmp in objs:
+        print('tmp.shape:',tmp.shape)
+    print('len(positions):',len(positions))
+    for tmp in positions:
+        print('tmp.shape:',tmp.shape)
+    
+    
     if np.any(pmatrx)!=0:  # under uniform phason strain
         orgshft=projection_numerical_phason(oshift,pmatrx)
         flg=1
@@ -867,6 +876,11 @@ def strc(objs,positions,pmatrx,n1max,n5max,eshift,oshift,verbose):
                         for i1,obj1 in enumerate(objs):
                             pos=numerical_vectors(positions[i1])
                             xe=numerical_vector(eshift[i1])
+                            print('   i1:',i1)
+                            print('    pos',pos)
+                            print('    len(obj1):',len(obj1))
+                            print('    len(pos):',len(pos))
+                            
                             #print('eshift[i1]:',eshift[i1])
                             #if flg==0:
                             #    shfte=projection_numerical(xe)
