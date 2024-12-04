@@ -456,7 +456,9 @@ def inside_outside_obj(point: NDArray[np.float64], obj: NDArray[np.float64]) -> 
         if inside_outside_tetrahedron(point,tetrahedron):
             flg+=1
             break
-    if flg==0:
+        else:
+            pass
+    if flg==1:
         return True # inside
     else:
         return False # outside
@@ -755,18 +757,21 @@ def projection3_sets_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
         set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
     """
     if vns.ndim==3:
-        num=len(vns)
-        m=np.zeros((num,3),dtype=np.float64)
-        for i in range(num):
-            m[i]=projection3_numerical(vns[i])
-        return m
-    elif vns.ndim==4:
-        n1,n2,_,_=vns.shape
+        n1,n2,_=vns.shape
         m=np.zeros((n1,n2,3),dtype=np.float64)
         for i1 in range(n1):
             for i2 in range(n2):
                 m[i1][i2]=projection3_numerical(vns[i1][i2])
-            
+        return m
+    #elif vns.ndim==4:
+    #    n1,n2,_,_=vns.shape
+    #    m=np.zeros((n1,n2,3),dtype=np.float64)
+    #    for i1 in range(n1):
+    #        for i2 in range(n2):
+    #            m[i1][i2]=projection3_numerical(vns[i1][i2])
+    #    return m
+    else:
+        return 
 
 #########
 #  WIP  #
