@@ -1582,30 +1582,61 @@ def qcstrc(apar,cpar,mystrc,path,basename,phason_matrix,n1max,n5max,origin_shift
         print('   wsite: %4.3f %4.3f %4.3f %4.3f %4.3f'%(wsiten[0],wsiten[1],wsiten[2],wsiten[3],wsiten[4]))
         #num_stsym=symmetry.site_symmetry(wsite,dim,pg)
         #num_coset=symmetry.coset(wsite,dim,pg)
-        num_stsym,num_coset=symmetry.site_symmetry_and_coset(site=wsite,brv='p',pg=pg,verbose=0)
+        #num_stsym,num_coset=symmetry.site_symmetry_and_coset(site=wsite,brv='p',pg=pg,verbose=0)
+        num_stsym=symmetry.site_symmetry(site=wsite,brv='p',pg=pg)
+        eqposs,lst_idx_eqposs=symmetry.equivalent_positions_in_unit_cell(site=wsite,brv='p',pg=pg,vervose=1)
         #num_coset=symmetry.coset_a(wsite,dim,pg)
         print('    num_sisym:',num_stsym)
-        print('    num_coset:',num_coset)
+        print('     lst_idx_eqposs',lst_idx_eqposs)
+        print('     eqposs.shape:',eqposs.shape)
+        #print('    num_coset:',num_coset)
         #num_coset=num_coset[17]
         #num_equiv=symmetry.equivalent_positions(wsite,dim,pg)
         #print('   num_equiv:',num_equiv)
+        
+        
+        
+        #-----------------------------------------------------------------------
+        # generate independent occupation domains from their asymmetric units
+        #-----------------------------------------------------------------------
+        obj1=symmetry.generator_obj_symmetric_obj_specific_symop(obj,wsite,num_stsym,pg)
+        for i2,pos2 in enumerate(eqposs):
+        #for i2 in num_equiv:
+            #--------------------------------------------------------------------------------
+            # place the independent occupation domain at each position equivalent to "wsite"
+            #--------------------------------------------------------------------------------
+            obj2=symmetry.generator_obj_symmetric_obj_specific_symop(obj1,v0,[lst_idx_eqposs[i2]],pg)
+            print('obj2.shape:',obj2.shape)
+            print('pos2.shape:',pos2.shape)
+            #pos2=symmetry.generator_obj_symmetric_vector_specific_symop(wsite,v0,[i2],pg)
+            #
+            objs.append(obj2.reshape(1,len(obj2),3,6,3))
+            #objs.append(obj2)
+            pos.append(pos2)
+            atm.append(atom)
+            eshift.append(shift)
+        
+        """
         for i1 in num_stsym:
             #-----------------------------------------------------------------------
             # generate independent occupation domains from their asymmetric units
             #-----------------------------------------------------------------------
             obj1=symmetry.generator_obj_symmetric_obj_specific_symop(obj,wsite,[i1],pg)
-            for i2 in num_coset:
+            for i2,pos2 in enumerate(eqposs):
             #for i2 in num_equiv:
                 #--------------------------------------------------------------------------------
                 # place the independent occupation domain at each position equivalent to "wsite"
                 #--------------------------------------------------------------------------------
-                obj2=symmetry.generator_obj_symmetric_obj_specific_symop(obj1,v0,[i2],pg)
-                pos2=symmetry.generator_obj_symmetric_vector_specific_symop(wsite,v0,[i2],pg)
+                obj2=symmetry.generator_obj_symmetric_obj_specific_symop(obj1,v0,[lst_idx_eqposs[i2]],pg)
+                print('obj2.shape:',obj2.shape)
+                print('pos2.shape:',pos2.shape)
+                #pos2=symmetry.generator_obj_symmetric_vector_specific_symop(wsite,v0,[i2],pg)
                 #
                 objs.append(obj2.reshape(1,len(obj2),3,6,3))
                 pos.append(pos2)
                 atm.append(atom)
                 eshift.append(shift)
+        """
     ########## To HERE ##########
     """
     ########## To HERE ##########
