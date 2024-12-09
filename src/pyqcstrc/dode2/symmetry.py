@@ -883,6 +883,8 @@ def equivalent_positions_in_unit_cell_dev(site,brv,pg,vervose=0):
     
     
     
+    
+    
     print('lst_symop_unit_cell:',lst_symop_unit_cell)
     _lst_symop_unit_cell=[]
     for a in lst_symop_unit_cell:
