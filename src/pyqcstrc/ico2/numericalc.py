@@ -431,7 +431,7 @@ def triangle_area_numerical(a: NDArray[np.float64]) -> float:
     v3=np.cross(v2,v1) # cross product
     return np.sqrt(np.sum(np.abs(v3**2)))/2.0
 
-def inside_outside_obj_tau(point: NDArray[np.int64], obj: NDArray[np.int64]) -> bool:
+def inside_outside_obj_tau(point: NDArray[np.int64], obj: NDArray[np.int64], eps=EPS) -> bool:
     
     # TAU-style to Float
     point=numerical_vector(point)
@@ -439,9 +439,9 @@ def inside_outside_obj_tau(point: NDArray[np.int64], obj: NDArray[np.int64]) -> 
     # 
     point=get_internal_component_numerical(ln)
     obj=get_internal_component_sets_numerical(obj)
-    return inside_outside_obj(point,obj)
+    return inside_outside_obj(point,obj,eps)
     
-def inside_outside_obj(point: NDArray[np.float64], obj: NDArray[np.float64]) -> bool:
+def inside_outside_obj(point: NDArray[np.float64], obj: NDArray[np.float64], eps=EPS) -> bool:
     """this function judges whether the point is inside an object (set of tetrahedra) or not
         
     Parameters
@@ -453,7 +453,7 @@ def inside_outside_obj(point: NDArray[np.float64], obj: NDArray[np.float64]) -> 
     """
     flg=0
     for tetrahedron in obj:
-        if inside_outside_tetrahedron(point,tetrahedron):
+        if inside_outside_tetrahedron(point,tetrahedron,eps):
             flg+=1
             break
         else:
@@ -463,7 +463,7 @@ def inside_outside_obj(point: NDArray[np.float64], obj: NDArray[np.float64]) -> 
     else:
         return False # outside
 
-def inside_outside_tetrahedron_tau(point: NDArray[np.int64], tetrahedron: NDArray[np.int64]) -> bool:
+def inside_outside_tetrahedron_tau(point: NDArray[np.int64], tetrahedron: NDArray[np.int64], eps=EPS) -> bool:
     """this function judges whether the point is inside a tetrahedron or not
         
     Parameters
@@ -478,9 +478,9 @@ def inside_outside_tetrahedron_tau(point: NDArray[np.int64], tetrahedron: NDArra
     # 
     point=get_internal_component_numerical(point)
     tetrahedron=get_internal_component_sets_numerical(tetrahedron)
-    return inside_outside_tetrahedron(point,tetrahedron)
+    return inside_outside_tetrahedron(point,tetrahedron,eps)
 
-def inside_outside_tetrahedron_tau_v2(point: NDArray[np.float64], tetrahedron: NDArray[np.int64]) -> bool:
+def inside_outside_tetrahedron_tau_v2(point: NDArray[np.float64], tetrahedron: NDArray[np.int64], eps=EPS) -> bool:
     """this function judges whether the point is inside a tetrahedron or not
         
     Parameters
@@ -495,9 +495,9 @@ def inside_outside_tetrahedron_tau_v2(point: NDArray[np.float64], tetrahedron: N
     # 
     #point=get_internal_component_numerical(point)
     tetrahedron=get_internal_component_sets_numerical(tetrahedron)
-    return inside_outside_tetrahedron(point,tetrahedron)
+    return inside_outside_tetrahedron(point,tetrahedron,eps)
 
-def inside_outside_tetrahedron(point: NDArray[np.float64], tetrahedron: NDArray[np.float64]) -> bool:
+def inside_outside_tetrahedron(point: NDArray[np.float64], tetrahedron: NDArray[np.float64], eps=EPS) -> bool:
     """this function judges whether the point is inside a tetrahedron or not
         
     Parameters
@@ -536,8 +536,8 @@ def inside_outside_tetrahedron(point: NDArray[np.float64], tetrahedron: NDArray[
     tet4=small_tetrahedron(3,point,tetrahedron)
     vol4=tetrahedron_volume_numerical(tet4)
     
-    #if abs(vol0-vol1-vol2-vol3-vol4)<EPS*vol0:
-    if abs(vol0-vol1-vol2-vol3-vol4)<EPS:
+    #if abs(vol0-vol1-vol2-vol3-vol4)<eps*vol0:
+    if abs(vol0-vol1-vol2-vol3-vol4)<eps:
         #print(' Inside')
         return True # inside
     else:
@@ -762,6 +762,12 @@ def projection3_sets_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
         for i1 in range(n1):
             for i2 in range(n2):
                 m[i1][i2]=projection3_numerical(vns[i1][i2])
+        return m
+    elif vns.ndim==2:
+        n1,_=vns.shape
+        m=np.zeros((n1,3),dtype=np.float64)
+        for i1 in range(n1):
+            m[i1]=projection3_numerical(vns[i1])
         return m
     #elif vns.ndim==4:
     #    n1,n2,_,_=vns.shape
