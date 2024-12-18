@@ -381,7 +381,7 @@ def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose,test_flag):
                                     for i3,obj2 in enumerate(obj1): # ODs at equivalent positions
                                         we=pose[i3]*aico*CONST1
                                         wi=posi[i3]
-                                        point=-vi-wi+oshift
+                                        point=vi+wi-oshift # oshift: shift of cut space along Eperp space
                                         for i4,obj3 in enumerate(obj2): # symmetric OD
                                             xe1_=xe1[i3][i4]
                                             xe2_=xe2[i3][i4]
@@ -403,7 +403,8 @@ def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose,test_flag):
                                                     if inside_outside_tetrahedron(point,tetrahedron): # inside
                                                         #xeshift_=np.array([xeshift[0]*xe1_,xeshift[1]*xe2_,xeshift[2]*xe3_])
                                                         xeshift_=np.array([xe1_,xe2_,xe3_]).T@xeshift
-                                                        xyz=ve+we-xeshift_
+                                                        xyz=ve+we+xeshift_
+                                                        point_cut=point*(-1) # intersecting point between OD and cut space
                                                         if np.all(mu==0.0): # non-magnetic atom
                                                             lst.append([element,xyz,i1,h123456,0,i4,point])
                                                         else: # magnetic atom
@@ -413,7 +414,7 @@ def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose,test_flag):
                                                                 mu_=np.array([mx1_,mx2_,mx3_]).T@mu
                                                                 mu_=projection_par_numerical(mu_)
                                                             mu_=np.array([mxe1_,mxe2_,mxe3_]).T@mu
-                                                            lst.append([element,xyz,i1,h123456,mu_,i4,point])
+                                                            lst.append([element,xyz,i1,h123456,mu_,i4,point_cut])
                                                         counter+=1
                                                         break
                                                     else:
