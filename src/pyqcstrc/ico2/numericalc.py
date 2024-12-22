@@ -624,6 +624,27 @@ def tetrahedron_volume_numerical(tetrahedron: NDArray[np.float64]) -> float:
 
 
 
+def get_parallel_component_numerical(vt: NDArray[np.int64]) -> NDArray[np.float64]:
+    """
+    Parameters
+    ----------
+    vn: array
+        6-dimensional vector, xyzuvw.
+    """
+    vn=numerical_vector(vt)
+    return projection_par_numerical(vn)
+
+def get_parallel_component_sets_numerical(vts: NDArray[np.int64]) -> NDArray[np.float64]:
+    """parallel and perpendicular components of a 6D lattice vector in direct space.
+    
+    Parameters
+    ----------
+    vsn: array
+        set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
+    """
+    vns=numerical_vectors(vts)
+    return projection_sets_numerical(vns)
+
 def get_internal_component_numerical(vt: NDArray[np.int64]) -> NDArray[np.float64]:
     """
     Parameters
