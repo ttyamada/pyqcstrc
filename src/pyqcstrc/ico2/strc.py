@@ -404,9 +404,12 @@ def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose,test_flag):
                                                         #xeshift_=np.array([xeshift[0]*xe1_,xeshift[1]*xe2_,xeshift[2]*xe3_])
                                                         xeshift_=np.array([xe1_,xe2_,xe3_]).T@xeshift
                                                         xyz=ve+we+xeshift_
-                                                        point_cut=point*(-1) # intersecting point between OD and cut space
+                                                        #
+                                                        #point_cut=point*(-1) # intersecting point between OD and cut space
+                                                        point_cut=point
+                                                        #
                                                         if np.all(mu==0.0): # non-magnetic atom
-                                                            lst.append([element,xyz,i1,h123456,0,i4,point])
+                                                            lst.append([element,xyz,i1+1,h123456,0,i4+1,point_cut])
                                                         else: # magnetic atom
                                                             # spin moment vector in Epar.
                                                             #mu_=np.array([mu[0]*xe1,mu[1]*xe2,mu[2]*xe3])
@@ -414,7 +417,7 @@ def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose,test_flag):
                                                                 mu_=np.array([mx1_,mx2_,mx3_]).T@mu
                                                                 mu_=projection_par_numerical(mu_)
                                                             mu_=np.array([mxe1_,mxe2_,mxe3_]).T@mu
-                                                            lst.append([element,xyz,i1,h123456,mu_,i4,point_cut])
+                                                            lst.append([element,xyz,i1+1,h123456,mu_,i4+1,point_cut])
                                                         counter+=1
                                                         break
                                                     else:
