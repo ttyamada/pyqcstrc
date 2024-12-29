@@ -11,7 +11,7 @@ import numpy as np
 import pyqcstrc.octa2.occupation_domain as od
 import pyqcstrc.octa2.two_occupation_domains as ods
 
-opath='./test1'
+opath='./test2'
 try:
     os.makedirs(opath)
 except FileExistsError:

@@ -10,7 +10,9 @@ from numpy.typing import NDArray
 #from numericalc import coplanar_check_numeric_tau
 from pyqcstrc.dode2.numericalc import coplanar_check_numeric_tau
 
-SIN=np.sqrt(3)/2
+#SIN=np.sqrt(3)/2
+SQRT3=np.sqrt(3)
+N=3
 
 def add(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     """
@@ -39,6 +41,35 @@ def add(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
         return np.array([-c1,-c2,-c3])
     else:
         return np.array([c1,c2,c3])
+    
+def sub(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
+    """
+    # summation (a+b) in SIN-style
+    
+    Parameters
+    ----------
+    a: array
+        value in SIN-style
+    b: array
+        value in SIN-style
+    
+    Returns
+    -------
+    array
+    """
+    c1=a[0]*b[2]-b[0]*a[2]
+    c2=a[1]*b[2]-b[1]*a[2]
+    c3=a[2]*b[2]
+    x=np.array([c1,c2,c3],dtype=np.int64)
+    g=np.gcd.reduce(x)
+    c1=int(c1/g)
+    c2=int(c2/g)
+    c3=int(c3/g)
+    if c3<0:
+        return np.array([-c1,-c2,-c3])
+    else:
+        return np.array([c1,c2,c3])
+    
 
 def mul(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     """
@@ -55,9 +86,9 @@ def mul(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     -------
     array
     """
-    c1=4*a[0]*b[0]+3*a[1]*b[1]
-    c2=4*(a[0]*b[1]+a[1]*b[0])
-    c3=4*a[2]*b[2]
+    c1=a[0]*b[0]+N*a[1]*b[1]
+    c2=a[0]*b[1]+a[1]*b[0]
+    c3=a[2]*b[2]
     x=np.array([c1,c2,c3],dtype=np.int64)
     g=np.gcd.reduce(x)
     c1=int(c1/g)
@@ -67,26 +98,7 @@ def mul(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
         return np.array([-c1,-c2,-c3])
     else:
         return np.array([c1,c2,c3])
-
-def sub(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
-    """
-    # subtraction (a/b) in SIN-style
     
-    Parameters
-    ----------
-    a: array
-        value in SIN-style
-    b: array
-        value in SIN-style
-    
-    Returns
-    -------
-    array
-    """
-    c=np.array([-1,0,1],dtype=np.int64)
-    b=mul(c,b)
-    return add(a,b)
-
 def div(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     """
     # division (a/b) in SIN-style
@@ -94,52 +106,126 @@ def div(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     Parameters
     ----------
     a: array
-        value in SIN-style
+        value in SQRT3
     b: array
-        value in SIN-style
-    
+        value in SQRT3
+    c: array
+        inverse of b
     Returns
     -------
     array
     """
-    if np.all(b[:2]==0):
+    c1=b[0]*b[2]
+    c2=-b[1]*b[2]
+    c3=b[0]*b[0]-N*b[1]*b[1]
+    #c=[c1,c2,c3]
+    c=np.array([c1,c2,c3],dtype=np.int64)
+    if c3==0:
         print('ERROR_1:division error')
-        return 
-    else:
-        if np.all(a[:2]==0):
-            return np.array([0,0,1],dtype=np.int64)
-        else:
-            if b[1]!=0:
-                if b[0]!=0:
-                    if 4*b[0]**2-3*b[1]**2!=0:
-                        c1=b[2]*(4*a[0]*b[0]-3*a[1]*b[1])
-                        c2=-4*b[2]*(a[0]*b[1]-a[1]*b[0])
-                        c3=a[2]*(4*b[0]**2-3*b[1]**2)
-                    else:
-                        c1=3*a[1]*b[2]
-                        c2=4*a[0]*b[2]
-                        c3=6*a[2]*b[1]
-                else:
-                    c1=3*a[1]*b[2]
-                    c2=4*a[0]*b[2]
-                    c3=3*a[2]*b[1]
-            else:
-                c1=a[0]*b[2]
-                c2=a[1]*b[2]
-                c3=b[0]*a[2]
-            x=np.array([c1,c2,c3],dtype=np.int64)
-            g=np.gcd.reduce(x)
-            if g!=0:
-                c1=int(c1/g)
-                c2=int(c2/g)
-                c3=int(c3/g)
-                if c3<0:
-                    return np.array([-c1,-c2,-c3],dtype=np.int64)
-                else:
-                    return np.array([c1,c2,c3],dtype=np.int64)
-            else:
-                print('ERROR_2:division error')
-                return 
+        return
+    return mul(a,c)
+    
+
+#def mul(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
+#    """
+#    # multiplication (a*b) in SIN-style
+#    
+#    Parameters
+#    ----------
+#    a: array
+#        value in SIN-style
+#    b: array
+#        value in SIN-style
+#    
+#    Returns
+#    -------
+#    array
+#    """
+#    c1=4*a[0]*b[0]+3*a[1]*b[1]
+#    c2=4*(a[0]*b[1]+a[1]*b[0])
+#    c3=4*a[2]*b[2]
+#    x=np.array([c1,c2,c3],dtype=np.int64)
+#    g=np.gcd.reduce(x)
+#    c1=int(c1/g)
+#    c2=int(c2/g)
+#    c3=int(c3/g)
+#    if c3<0:
+#        return np.array([-c1,-c2,-c3])
+#    else:
+#        return np.array([c1,c2,c3])
+
+#def sub(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
+#    """
+#    # subtraction (a/b) in SIN-style
+#    
+#    Parameters
+#    ----------
+#    a: array
+#        value in SIN-style
+#    b: array
+#        value in SIN-style
+#    
+#    Returns
+#    -------
+#    array
+#    """
+#    c=np.array([-1,0,1],dtype=np.int64)
+#    b=mul(c,b)
+#    return add(a,b)
+
+#def div(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
+#    """
+#    # division (a/b) in SIN-style
+#    
+#    Parameters
+#    ----------
+#    a: array
+#        value in SIN-style
+#    b: array
+#        value in SIN-style
+#    
+#    Returns
+#    -------
+#    array
+#    """
+#    if np.all(b[:2]==0):
+#        print('ERROR_1:division error')
+#        return 
+#    else:
+#        if np.all(a[:2]==0):
+#            return np.array([0,0,1],dtype=np.int64)
+#        else:
+#            if b[1]!=0:
+#                if b[0]!=0:
+#                    if 4*b[0]**2-3*b[1]**2!=0:
+#                        c1=b[2]*(4*a[0]*b[0]-3*a[1]*b[1])
+#                        c2=-4*b[2]*(a[0]*b[1]-a[1]*b[0])
+#                        c3=a[2]*(4*b[0]**2-3*b[1]**2)
+#                    else:
+#                        c1=3*a[1]*b[2]
+#                        c2=4*a[0]*b[2]
+#                        c3=6*a[2]*b[1]
+#                else:
+#                    c1=3*a[1]*b[2]
+#                    c2=4*a[0]*b[2]
+#                    c3=3*a[2]*b[1]
+#            else:
+#                c1=a[0]*b[2]
+#                c2=a[1]*b[2]
+#                c3=b[0]*a[2]
+#            x=np.array([c1,c2,c3],dtype=np.int64)
+#            g=np.gcd.reduce(x)
+#            if g!=0:
+#                c1=int(c1/g)
+#                c2=int(c2/g)
+#                c3=int(c3/g)
+#                if c3<0:
+#                    return np.array([-c1,-c2,-c3],dtype=np.int64)
+#                else:
+#                    return np.array([c1,c2,c3],dtype=np.int64)
+#            else:
+#                print('ERROR_2:division error')
+#                return 
 
 def add_vectors(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int64]:
     """Composition of two vectors, v1+v2
@@ -455,8 +541,10 @@ def projection(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     M2=np.array([-1, 0, 1])
     M3=np.array([ 1, 0, 2])
     M4=np.array([-1, 0, 2])
-    M5=np.array([ 0, 1, 1])
-    M6=np.array([ 0,-1, 1])
+    #M5=np.array([ 0, 1, 1])
+    #M6=np.array([ 0,-1, 1])
+    M5=np.array([ 0, 1, 2])
+    M6=np.array([ 0,-1, 2])
     v1e=mtrixcal(M5,M1,M0,M4,M0,M0,vt) # sin,1,0,-0.5,0,0
     v2e=mtrixcal(M4,M0,M1,M5,M0,M0,vt) # -0.5,0,1,sin,0,0
     v1i=mtrixcal(M6,M1,M0,M4,M0,M0,vt) # -sin,1,0,-0.5,0,0
@@ -485,8 +573,10 @@ def projection3(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     M2=np.array([-1, 0, 1])
     M3=np.array([ 1, 0, 2])
     M4=np.array([-1, 0, 2])
-    M5=np.array([ 0, 1, 1])
-    M6=np.array([ 0,-1, 1])
+    M5=np.array([ 0, 1, 2])
+    M6=np.array([ 0,-1, 2])
+    #M5=np.array([ 0, 1, 1])
+    #M6=np.array([ 0,-1, 1])
     #v1e=mtrixcal(M5,M1,M0,M4,M0,M0,vt) # sin,1,0,-0.5,0,0
     #v2e=mtrixcal(M4,M0,M1,M5,M0,M0,vt) # -0.5,0,1,sin,0,0
     v1i=mtrixcal(M6,M1,M0,M4,M0,M0,vt) # -sin,1,0,-0.5,0,0
@@ -704,13 +794,13 @@ if __name__ == '__main__':
     import numericalc
     """
     from numericalc import (numeric_value,
-                                        numerical_vector,
-                                        numerical_vectors,
-                                        get_internal_component_numerical,
-                                        get_internal_component_sets_numerical,
-                                        point_on_segment,
-                                        coplanar_check_numeric_tau,
-                                        )
+                            numerical_vector,
+                            numerical_vectors,
+                            get_internal_component_numerical,
+                            get_internal_component_sets_numerical,
+                            point_on_segment,
+                            coplanar_check_numeric_tau,
+                            )
     """
     ncycle=20
     eps=1e-3

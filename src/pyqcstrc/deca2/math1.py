@@ -10,19 +10,19 @@ from numpy.typing import NDArray
 #from numericalc import coplanar_check_numeric_tau
 from pyqcstrc.octa2.numericalc import coplanar_check_numeric_tau
 
-SQRT2=np.sqrt(2)
-N=2
+SQRT5=np.sqrt(5)
+N=5
 
 def add(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     """
-    # summation (a+b) in SQRT2-style
+    # summation (a+b) in SQRT5-style
     
     Parameters
     ----------
     a: array
-        value in SQRT2-style
+        value in SQRT5-style
     b: array
-        value in SQRT2-style
+        value in SQRT5-style
     
     Returns
     -------
@@ -104,19 +104,19 @@ def div(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     Parameters
     ----------
     a: array
-        value in SQRT3
+        value in SQRT5
     b: array
-        value in SQRT3
+        value in SQRT5
     c: array
         inverse of b
     Returns
     -------
     array
     """
-    c1=b[0]*b[2]
-    c2=-b[1]*b[2]
+    c1=b[0]*b[1]*b[2]
+    c2=-b[1]*b[1]*b[2]
     c3=b[0]*b[0]-N*b[1]*b[1]
-    c=np.array([c1,c2,c3],dtype=np.int64)
+    c=[c1,c2,c3]
     if c3==0:
         print('ERROR_1:division error')
         return
@@ -215,13 +215,13 @@ def add_vectors(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int
     Parameters
     ----------
     vt1: array
-        a vector in SQRT2-style
+        a vector in SQRT5-style
     vt2: array,
-        a scalar in SQRT2-style
+        a scalar in SQRT5-style
     
     Returns
     -------
-    Composition of two vectors: array in SQRT2-style
+    Composition of two vectors: array in SQRT5-style
     
     """
     a=np.zeros(vt1.shape,dtype=np.int64)
@@ -235,13 +235,13 @@ def sub_vectors(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int
     Parameters
     ----------
     vt1: array
-        a vector in SQRT2-style
+        a vector in SQRT5-style
     vt2: array,
-        a scalar in SQRT2-style
+        a scalar in SQRT5-style
     
     Returns
     -------
-    Subtraction of two vectors: array in SQRT2-style
+    Subtraction of two vectors: array in SQRT5-style
     """
     if vt1.ndim==2 and vt2.ndim==2:
         const=np.array([-1,0,1],dtype=np.int64)
@@ -252,18 +252,18 @@ def sub_vectors(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int
         return
 
 def mul_vector(vt: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.int64]:
-    """Multiplying a vector by a scalar in SQRT2-style.
+    """Multiplying a vector by a scalar in SQRT5-style.
     
     Parameters
     ----------
     vt: array
-        a vector in SQRT2-style
+        a vector in SQRT5-style
     coeff: array,
-        a scalar in SQRT2-style
+        a scalar in SQRT5-style
     
     Returns
     -------
-    Multiplied vector: array in SQRT2-style
+    Multiplied vector: array in SQRT5-style
     """
     if vt.ndim==2:
         a=np.zeros(vt.shape,dtype=np.int64)
@@ -275,18 +275,18 @@ def mul_vector(vt: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.int
         return
 
 def mul_vectors(vts: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.int64]:
-    """multiplying a set of vectors by a scalar in SQRT2-style.
+    """multiplying a set of vectors by a scalar in SQRT5-style.
     
     Parameters
     ----------
     vts: array
-        a set of vectors in SQRT2-style
+        a set of vectors in SQRT5-style
     coeff: array,
-        a scalar in SQRT2-style
+        a scalar in SQRT5-style
     
     Returns
     -------
-    Multiplied vectors: array in SQRT2-style
+    Multiplied vectors: array in SQRT5-style
     """
     if vts.ndim==3:
         a=np.zeros(vts.shape,dtype=np.int64)
@@ -303,18 +303,18 @@ def mul_vectors(vts: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.i
         return
 
 def shift_vectors(vts: NDArray[np.int64], vt: NDArray[np.int64]) -> NDArray[np.int64]:
-    """Shift a set of vectors by adding a vector in SQRT2-style.
+    """Shift a set of vectors by adding a vector in SQRT5-style.
     
     Parameters
     ----------
     vts: array
-        a set of vectors in SQRT2-style
+        a set of vectors in SQRT5-style
     coeff: array,
-        a scalar in SQRT2-style
+        a scalar in SQRT5-style
     
     Returns
     -------
-    Multiplied vectors: array in SQRT2-style
+    Multiplied vectors: array in SQRT5-style
     """
     if vts.ndim==3:
         a=np.zeros(vts.shape,dtype=np.int64)
@@ -332,18 +332,18 @@ def shift_vectors(vts: NDArray[np.int64], vt: NDArray[np.int64]) -> NDArray[np.i
     
     
 def outer_product(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int64]:
-    """Outer product of two 3d vectors, v1 and v2 in SQRT2-style.
+    """Outer product of two 3d vectors, v1 and v2 in SQRT5-style.
 
     Parameters
     ----------
     v1: array
-        3-dimensional vector in SQRT2-style
+        3-dimensional vector in SQRT5-style
     v2: array,
-        3-dimensional vector in SQRT2-style
+        3-dimensional vector in SQRT5-style
 
     Returns
     -------
-    Outer product: array in SQRT2-style
+    Outer product: array in SQRT5-style
     """
     a=mul(vt1[1],vt2[2])
     b=mul(vt1[2],vt2[1])
@@ -360,18 +360,18 @@ def outer_product(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.i
     return np.array([c1,c2,c3],dtype=np.int64)
 
 def inner_product(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int64]:
-    """Inner product of two vectors, v1 and v2 in SQRT2-style.
+    """Inner product of two vectors, v1 and v2 in SQRT5-style.
 
     Parameters
     ----------
     vt1: array
-        vector in SQRT2-style
+        vector in SQRT5-style
     vt2: array,
-         vector in SQRT2-style
+         vector in SQRT5-style
 
     Returns
     -------
-    Inner product: array in SQRT2-style
+    Inner product: array in SQRT5-style
     """
     s1,_=vt1.shape
     s2,_=vt2.shape
@@ -391,13 +391,13 @@ def dot_product(mat1: NDArray[np.int64], mat2:NDArray[np.int64]) -> NDArray[np.i
     Parameters
     ----------
     mat1: ndarray
-        (s,t) in SQRT2-style
+        (s,t) in SQRT5-style
     mat2: ndarray
-        (t,u) in SQRT2-style
+        (t,u) in SQRT5-style
 
     Returns
     -------
-    Inner product: array in SQRT2-style
+    Inner product: array in SQRT5-style
     """
     ndim1=mat1.ndim
     ndim2=mat2.ndim
@@ -447,13 +447,13 @@ def dot_product_1(mat1: NDArray[np.int64], mat2:NDArray[np.int64]) -> NDArray[np
     Parameters
     ----------
     mat1: ndarray
-        (s,t) in "NOT" SQRT2-style
+        (s,t) in "NOT" SQRT5-style
     mat2: ndarray
-        (t,u) in SQRT2-style
+        (t,u) in SQRT5-style
 
     Returns
     -------
-    Inner product: array in SQRT2-style
+    Inner product: array in SQRT5-style
     """
     ndim1=mat1.ndim
     ndim2=mat2.ndim
@@ -504,7 +504,7 @@ def dot_product_1(mat1: NDArray[np.int64], mat2:NDArray[np.int64]) -> NDArray[np
 
 
 def projection(vt: NDArray[np.int64]) -> NDArray[np.int64]:
-    """projection of a 6d vector onto Epar and Eperp in "SQRT2-style"
+    """projection of a 6d vector onto Epar and Eperp in "SQRT5-style"
     NOTE: coefficient (alpha) of the projection matrix is set to be 1.
     alpha = a/np.sqrt(2)
     see Yamamoto ActaCrystal (1997)
@@ -512,17 +512,17 @@ def projection(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     Parameters
     ----------
     vt: array
-        6-dimensional vector in SQRT2-style
+        6-dimensional vector in SQRT5-style
     
     Returns
     -------
-    array containing two 3d vectors projected onto Epar and Eperp in SQRT2-style.
+    array containing two 3d vectors projected onto Epar and Eperp in SQRT5-style.
     """
     M0=np.array([ 0, 0, 1]) #  0
     M1=np.array([ 1, 0, 1]) #  1
     M2=np.array([-1, 0, 1]) # -1
-    M3=np.array([ 0, 1, 1]) #  sqrt(2)
-    M4=np.array([ 0,-1, 1]) # -sqrt(2)
+    M3=np.array([ 0, 1, 1]) #  sqrt(5)
+    M4=np.array([ 0,-1, 1]) # -sqrt(5)
     v1e=mtrixcal(M2,M1,M0,M2,M0,M0,vt) #
     v2e=mtrixcal(M0,M1,M3,M1,M0,M0,vt) #
     v1i=mtrixcal(M3,M2,M0,M1,M0,M0,vt) #
@@ -532,7 +532,7 @@ def projection(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     return np.array([[v1e,v2e,v3e],[v1i,v2i,v3i]],dtype=np.int64)
 
 def projection3(vt: NDArray[np.int64]) -> NDArray[np.int64]:
-    """projection of a 6d vector onto Eperp in "SQRT2-style"
+    """projection of a 6d vector onto Eperp in "SQRT5-style"
     NOTE: coefficient (alpha) of the projection matrix is set to be 1.
     alpha = a/np.sqrt(2)
     see Yamamoto ActaCrystal (1997)
@@ -540,17 +540,17 @@ def projection3(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     Parameters
     ----------
     vt: array
-        6-dimensional vector in SQRT2-style
+        6-dimensional vector in SQRT5-style
     
     Returns
     -------
-    3d vectors projected onto Eperp in SQRT2-style.
+    3d vectors projected onto Eperp in SQRT5-style.
     """
     M0=np.array([ 0, 0, 1]) #  0
     M1=np.array([ 1, 0, 1]) #  1
     M2=np.array([-1, 0, 1]) # -1
-    M3=np.array([ 0, 1, 1]) #  sqrt(2)
-    M4=np.array([ 0,-1, 1]) # -sqrt(2)
+    M3=np.array([ 0, 1, 1]) #  sqrt(5)
+    M4=np.array([ 0,-1, 1]) # -sqrt(5)
     #v1e=mtrixcal(M2,M1,M0,M2,M0,M0,vt) #
     #v2e=mtrixcal(M0,M1,M3,M1,M0,M0,vt) #
     v1i=mtrixcal(M3,M2,M0,M1,M0,M0,vt) #
@@ -568,11 +568,11 @@ def mtrixcal(m1: NDArray[np.int64],m2: NDArray[np.int64],m3: NDArray[np.int64],m
     ----------
     m1,m2,m3,m4,m5,m6:array for projection materix
     v: array
-        6-dimensional vector in SQRT2-style
+        6-dimensional vector in SQRT5-style
 
     Returns
     -------
-    6d vectors projected onto Eperp in SQRT2-style.
+    6d vectors projected onto Eperp in SQRT5-style.
     """
     a1=mul(m1,v[0])
     a2=mul(m2,v[1])
@@ -588,16 +588,16 @@ def mtrixcal(m1: NDArray[np.int64],m2: NDArray[np.int64],m3: NDArray[np.int64],m
     return a1
 
 def centroid(obj: NDArray[np.int64]) -> NDArray[np.int64]:
-    """geometric center, centroid of tetrahedron, triangle or edge, in SQRT2-style.
+    """geometric center, centroid of tetrahedron, triangle or edge, in SQRT5-style.
 
     Parameters
     ----------
     obj: array
-        6-dimensional vector in SQRT2-style
+        6-dimensional vector in SQRT5-style
     
     Returns
     -------
-    centroid: array in SQRT2-style
+    centroid: array in SQRT5-style
     """
     
     num=len(obj)
@@ -720,16 +720,16 @@ def matrixpow(ma: NDArray[np.int64], n: int) -> NDArray[np.int64]:
         return 
 
 def det_matrix(mtx: NDArray[np.int64]) -> NDArray[np.int64]:
-    """Determinant of 3x3 matrix, mtx, in SQRT2 style
+    """Determinant of 3x3 matrix, mtx, in SQRT5 style
     
     Parameters
     ----------
     mtx: array
-        3x3 matrix in SQRT2-style
+        3x3 matrix in SQRT5-style
 
     Returns
     -------
-    6d vectors projected onto Eperp in SQRT2-style.
+    6d vectors projected onto Eperp in SQRT5-style.
     """
     
     t3=mul(mtx[0][0],mtx[1][1])
@@ -783,7 +783,7 @@ if __name__ == '__main__':
     eps=1e-3
     
     def math_check(a,b):
-        """checking basic arithmetic operations in SQRT2-style.
+        """checking basic arithmetic operations in SQRT5-style.
         """
         flg=0
         a1=numericalc.numeric_value(a)
@@ -1011,4 +1011,3 @@ if __name__ == '__main__':
     v=projection(v)
     ve=v[0]
     vi=v[1]
-    

@@ -419,7 +419,7 @@ def intersection_two_triangles(triangle_1: NDArray[np.int64], triangle_2: NDArra
             else:
                 tmp=np.vstack([tmp,vtx]) # intersecting points
             counter+=1
-    tmp=tmp.reshape(int(len(tmp)/6),6,3)
+            tmp=tmp.reshape(int(len(tmp)/6),6,3) # tab added
     #print('len(tmp):',len(tmp))
     
     # get vertces of triangle_1 that are inside triangle_2

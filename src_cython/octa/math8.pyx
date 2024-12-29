@@ -4,172 +4,75 @@
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 #
 import sys
-import numpy as np
+cimport numpy as np
+cimport cython
+
 from numpy.typing import NDArray
 #sys.path.append('.')
 #from numericalc import coplanar_check_numeric_tau
 from pyqcstrc.octa2.numericalc import coplanar_check_numeric_tau
 
 SQRT2=np.sqrt(2)
-N=2
+cdef np.inr64 N=2
 
-def add(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
-    """
-    # summation (a+b) in SQRT2-style
-    
-    Parameters
-    ----------
-    a: array
-        value in SQRT2-style
-    b: array
-        value in SQRT2-style
-    
-    Returns
-    -------
-    array
-    """
-    c1=a[0]*b[2]+b[0]*a[2]
-    c2=a[1]*b[2]+b[1]*a[2]
-    c3=a[2]*b[2]
-    x=np.array([c1,c2,c3],dtype=np.int64)
-    g=np.gcd.reduce(x)
-    c1=int(c1/g)
-    c2=int(c2/g)
-    c3=int(c3/g)
-    if c3<0:
-        return np.array([-c1,-c2,-c3])
+cpdef list add(DTYPE_int_t p1,DTYPE_int_t p2,DTYPE_int_t p3,DTYPE_int_t q1,DTYPE_int_t q2,DTYPE_int_t q3): # A+B
+    cdef DTYPE_int_t c1,c2,c3,gcd
+    cdef np.ndarray[DTYPE_int_t,ndim=1] x
+    c1=p1*q3+q1*p3
+    c2=p2*q3+q2*p3
+    c3=p3*q3
+    x=np.array([c1,c2,c3])
+    gcd=np.gcd.reduce(x)
+    if c3/gcd<0:
+        return [int(-c1/gcd),int(-c2/gcd),int(-c3/gcd)]
     else:
-        return np.array([c1,c2,c3])
-    
-def sub(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
-    """
-    # summation (a+b) in SIN-style
-    
-    Parameters
-    ----------
-    a: array
-        value in SIN-style
-    b: array
-        value in SIN-style
-    
-    Returns
-    -------
-    array
-    """
-    c1=a[0]*b[2]-b[0]*a[2]
-    c2=a[1]*b[2]-b[1]*a[2]
-    c3=a[2]*b[2]
-    x=np.array([c1,c2,c3],dtype=np.int64)
-    g=np.gcd.reduce(x)
-    c1=int(c1/g)
-    c2=int(c2/g)
-    c3=int(c3/g)
-    if c3<0:
-        return np.array([-c1,-c2,-c3])
+        return [int(c1/gcd),int(c2/gcd),int(c3/gcd)]
+
+cpdef list sub(DTYPE_int_t p1,DTYPE_int_t p2,DTYPE_int_t p3,DTYPE_int_t q1,DTYPE_int_t q2,DTYPE_int_t q3): # A-B
+    cdef DTYPE_int_t c1,c2,c3,gcd
+    cdef np.ndarray[DTYPE_int_t,ndim=1] x
+    c1=p1*q3-q1*p3
+    c2=p2*q3-q2*p3
+    c3=p3*q3
+    x=np.array([c1,c2,c3])
+    gcd=np.gcd.reduce(x)
+    if c3/gcd<0:
+        return [int(-c1/gcd),int(-c2/gcd),int(-c3/gcd)]
     else:
-        return np.array([c1,c2,c3])
-    
-def mul(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
-    """
-    # multiplication (a*b) in SIN-style
-    
-    Parameters
-    ----------
-    a: array
-        value in SIN-style
-    b: array
-        value in SIN-style
-    
-    Returns
-    -------
-    array
-    """
-    c1=a[0]*b[0]+N*a[1]*b[1]
-    c2=a[0]*b[1]+a[1]*b[0]
-    c3=a[2]*b[2]
-    x=np.array([c1,c2,c3],dtype=np.int64)
-    g=np.gcd.reduce(x)
-    c1=int(c1/g)
-    c2=int(c2/g)
-    c3=int(c3/g)
-    if c3<0:
-        return np.array([-c1,-c2,-c3])
+        return [int(c1/gcd),int(c2/gcd),int(c3/gcd)]
+
+cpdef list mul(DTYPE_int_t p1,DTYPE_int_t p2,DTYPE_int_t p3,DTYPE_int_t q1,DTYPE_int_t q2,DTYPE_int_t q3): # A*B
+    cdef DTYPE_int_t c1,c2,c3,gcd
+    cdef np.ndarray[DTYPE_int_t,ndim=1] x
+    #c1=4*p1*q1+3*p2*q2
+    #c2=4*(p1*q2+p2*q1)
+    #c3=4*p3*q3
+    #c3=4*p3*q3
+    c1=p1*q1+3*p2*q2
+    c2=p1*q2+p2*q1
+    c3=p3*q3
+    x=np.array([c1,c2,c3])
+    gcd=np.gcd.reduce(x)
+    #print('c1,c2,c3,gcd = %d %d %d %d'%(c1,c2,c3,gcd))
+    if c3/gcd<0:
+        return [int(-c1/gcd),int(-c2/gcd),int(-c3/gcd)]
     else:
-        return np.array([c1,c2,c3])
-    
-def div(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
-    """
-    # division (a/b) in SIN-style
-    
-    Parameters
-    ----------
-    a: array
-        value in SQRT3
-    b: array
-        value in SQRT3
-    c: array
-        inverse of b
-    Returns
-    -------
-    array
-    """
-    c1=b[0]*b[2]
-    c2=-b[1]*b[2]
-    c3=b[0]*b[0]-N*b[1]*b[1]
+        return [int(c1/gcd),int(c2/gcd),int(c3/gcd)]
+
+cdef divDTYPE_int_t p1,DTYPE_int_t p2,DTYPE_int_t p3,DTYPE_int_t q1,DTYPE_int_t q2,DTYPE_int_t q3):
+    cdef DTYPE_int_t c1,c2,c3,gcd
+    c1=q1*q3
+    c2=-q2*q3
+    c3=q1*q1-N*q2*q2
+    #c=[c1,c2,c3]
+
     c=np.array([c1,c2,c3],dtype=np.int64)
     if c3==0:
         print('ERROR_1:division error')
         return
     return mul(a,c)
-    
-#def mul(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
-#    """
-#    # multiplication (a*b) in SQRT2-style
-#    
-#    Parameters
-#    ----------
-#    a: array
-#        value in SQRT2-style
-#    b: array
-#        value in SQRT2-style
-#    
-#    Returns
-#    -------
-#    array
-#    """
-#    c1=a[0]*b[0]+N*a[1]*b[1]
-#    c2=a[0]*b[1]+a[1]*b[0]
-#    c3=a[2]*b[2]
-#    x=np.array([c1,c2,c3],dtype=np.int64)
-#    g=np.gcd.reduce(x)
-#    c1=int(c1/g)
-#    c2=int(c2/g)
-#    c3=int(c3/g)
-#    if c3<0:
-#        return np.array([-c1,-c2,-c3])
-#    else:
-#        return np.array([c1,c2,c3])
 
-#def sub(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
-#    """
-#    # subtraction (a/b) in SQRT2-style
-#    
-#    Parameters
-#    ----------
-#    a: array
-#        value in SQRT2-style
-#    b: array
-#        value in SQRT2-style
-#    
-#    Returns
-#    -------
-#    array
-#    """
-#    c=np.array([-1,0,1],dtype=np.int64)
-#    b=mul(c,b)
-#    return add(a,b)
-
-#def div(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
+#cdef div(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
 #    """
 #    # division (a/b) in SQRT2-style
 #    
@@ -209,7 +112,7 @@ def div(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
 #                print('ERROR_3:division error')
 #                return 
 
-def add_vectors(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int64]:
+cdef add_vectors(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int64]:
     """Composition of two vectors, v1+v2
     
     Parameters
@@ -229,7 +132,7 @@ def add_vectors(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int
         a[i]=add(vt1[i],vt2[i])
     return a
 
-def sub_vectors(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int64]:
+cdef sub_vectors(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int64]:
     """Subtraction of two vectors, v1-v2
     
     Parameters
@@ -251,7 +154,7 @@ def sub_vectors(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int
         print('incorrect shape')
         return
 
-def mul_vector(vt: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.int64]:
+cdef mul_vector(vt: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.int64]:
     """Multiplying a vector by a scalar in SQRT2-style.
     
     Parameters
@@ -274,7 +177,7 @@ def mul_vector(vt: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.int
         print('incorrect shape')
         return
 
-def mul_vectors(vts: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.int64]:
+cdef mul_vectors(vts: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.int64]:
     """multiplying a set of vectors by a scalar in SQRT2-style.
     
     Parameters
@@ -302,7 +205,7 @@ def mul_vectors(vts: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.i
         print('incorrect shape')
         return
 
-def shift_vectors(vts: NDArray[np.int64], vt: NDArray[np.int64]) -> NDArray[np.int64]:
+cdef shift_vectors(vts: NDArray[np.int64], vt: NDArray[np.int64]) -> NDArray[np.int64]:
     """Shift a set of vectors by adding a vector in SQRT2-style.
     
     Parameters
@@ -331,7 +234,7 @@ def shift_vectors(vts: NDArray[np.int64], vt: NDArray[np.int64]) -> NDArray[np.i
         return
     
     
-def outer_product(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int64]:
+cdef outer_product(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int64]:
     """Outer product of two 3d vectors, v1 and v2 in SQRT2-style.
 
     Parameters
@@ -359,7 +262,7 @@ def outer_product(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.i
     #
     return np.array([c1,c2,c3],dtype=np.int64)
 
-def inner_product(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int64]:
+cdef inner_product(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int64]:
     """Inner product of two vectors, v1 and v2 in SQRT2-style.
 
     Parameters
@@ -385,7 +288,7 @@ def inner_product(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.i
             a=add(a,b)
         return a
 
-def dot_product(mat1: NDArray[np.int64], mat2:NDArray[np.int64]) -> NDArray[np.int64]:
+cdef dot_product(mat1: NDArray[np.int64], mat2:NDArray[np.int64]) -> NDArray[np.int64]:
     """product of two matrices, mat1*mat2.
     
     Parameters
@@ -441,7 +344,7 @@ def dot_product(mat1: NDArray[np.int64], mat2:NDArray[np.int64]) -> NDArray[np.i
         print('incorrect shape found in dot_product')
         return 
 
-def dot_product_1(mat1: NDArray[np.int64], mat2:NDArray[np.int64]) -> NDArray[np.int64]:
+cdef dot_product_1(mat1: NDArray[np.int64], mat2:NDArray[np.int64]) -> NDArray[np.int64]:
     """product of two matrices, mat1*mat2.
     
     Parameters
@@ -503,7 +406,7 @@ def dot_product_1(mat1: NDArray[np.int64], mat2:NDArray[np.int64]) -> NDArray[np
 
 
 
-def projection(vt: NDArray[np.int64]) -> NDArray[np.int64]:
+cdef projection(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     """projection of a 6d vector onto Epar and Eperp in "SQRT2-style"
     NOTE: coefficient (alpha) of the projection matrix is set to be 1.
     alpha = a/np.sqrt(2)
@@ -531,7 +434,7 @@ def projection(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     v3i=mtrixcal(M0,M0,M0,M0,M0,M0,vt) # 0,0,0,0,0,0
     return np.array([[v1e,v2e,v3e],[v1i,v2i,v3i]],dtype=np.int64)
 
-def projection3(vt: NDArray[np.int64]) -> NDArray[np.int64]:
+cdef projection3(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     """projection of a 6d vector onto Eperp in "SQRT2-style"
     NOTE: coefficient (alpha) of the projection matrix is set to be 1.
     alpha = a/np.sqrt(2)
@@ -559,7 +462,7 @@ def projection3(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     v3i=mtrixcal(M0,M0,M0,M0,M0,M0,vt) # 0,0,0,0,0,0
     return np.array([v1i,v2i,v3i],dtype=np.int64)
 
-def mtrixcal(m1: NDArray[np.int64],m2: NDArray[np.int64],m3: NDArray[np.int64],m4: NDArray[np.int64],m5: NDArray[np.int64],m6: NDArray[np.int64],v: NDArray[np.int64]) -> NDArray[np.int64]:
+cdef mtrixcal(m1: NDArray[np.int64],m2: NDArray[np.int64],m3: NDArray[np.int64],m4: NDArray[np.int64],m5: NDArray[np.int64],m6: NDArray[np.int64],v: NDArray[np.int64]) -> NDArray[np.int64]:
     """function used in projection()
                         projection3()
                         projection_perp()
@@ -587,7 +490,7 @@ def mtrixcal(m1: NDArray[np.int64],m2: NDArray[np.int64],m3: NDArray[np.int64],m
     a1=add(a1,a6)
     return a1
 
-def centroid(obj: NDArray[np.int64]) -> NDArray[np.int64]:
+cdef centroid(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     """geometric center, centroid of tetrahedron, triangle or edge, in SQRT2-style.
 
     Parameters
@@ -614,7 +517,7 @@ def centroid(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     return v0
 
 # needless???
-def centroid_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
+cdef centroid_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     """geometric center, centroid of tetrahedron, in TAU-style.
 
     Parameters
@@ -635,7 +538,7 @@ def centroid_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
         tmp=add_vectors(tmp,p)
     return mul_vector(tmp,np.array([1,0,len(obj)]))
 
-def coplanar_check(p: NDArray[np.int64],num_iteration: int=5) -> bool:
+cdef coplanar_check(p: NDArray[np.int64],num_iteration: int=5) -> bool:
     """Check whether a given set of points (in TAU-style) is coplanar or not.
     
     メモ：xyz1とxyz2の選び方次第で、outer_product(v1,v2)が小さくなりcoplanarと間違って判定する場合がある。
@@ -695,7 +598,7 @@ def coplanar_check(p: NDArray[np.int64],num_iteration: int=5) -> bool:
     """
     return coplanar_check_numeric_tau(p,num_iteration)
 
-def matrixpow(ma: NDArray[np.int64], n: int) -> NDArray[np.int64]:
+cdef matrixpow(ma: NDArray[np.int64], n: int) -> NDArray[np.int64]:
     """
     """
     (mx,my)=ma.shape
@@ -719,7 +622,7 @@ def matrixpow(ma: NDArray[np.int64], n: int) -> NDArray[np.int64]:
         print('matrix has not regular shape')
         return 
 
-def det_matrix(mtx: NDArray[np.int64]) -> NDArray[np.int64]:
+cdef det_matrix(mtx: NDArray[np.int64]) -> NDArray[np.int64]:
     """Determinant of 3x3 matrix, mtx, in SQRT2 style
     
     Parameters
@@ -782,7 +685,7 @@ if __name__ == '__main__':
     ncycle=20
     eps=1e-3
     
-    def math_check(a,b):
+    cdef math_check(a,b):
         """checking basic arithmetic operations in SQRT2-style.
         """
         flg=0
@@ -827,7 +730,7 @@ if __name__ == '__main__':
             print(a,b)
             return 1
     
-    def generate_random_value():
+    cdef generate_random_value():
         """ generate value in TAU-style
         """
         nmax=10
@@ -837,7 +740,7 @@ if __name__ == '__main__':
         v[2]=random.randrange(1,nmax) # c in (a+b*TAU)/c.
         return v
         
-    def generate_random_vector(ndim=6):
+    cdef generate_random_vector(ndim=6):
         """ generate ndim vector in TAU-style
         ndim: dimension of vectors
         """
@@ -847,7 +750,7 @@ if __name__ == '__main__':
             v[i1]=generate_random_value()
         return v
         
-    def generate_random_vectors(n,ndim=6):
+    cdef generate_random_vectors(n,ndim=6):
         """
         num: number of generated vectors.
         ndim: dimension of vectors

@@ -8,6 +8,8 @@ from numpy.typing import NDArray
 import random
 
 TAU=np.sqrt(3)/2.0
+SQRT3=np.sqrt(3)
+N=3
 EPS=1e-6 # tolerance
 
 def coplanar_check_numeric_tau(pts: NDArray[np.int64], num_iteration: int=5) -> bool:
@@ -172,7 +174,8 @@ def numeric_value(t: NDArray[np.int64]) -> float:
     -------
     float
     """
-    return (t[0]+t[1]*TAU)/t[2]
+    #return (t[0]+t[1]*TAU)/t[2]
+    return (t[0]+t[1]*SQRT3)/t[2]
 
 def numerical_vector(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     """Numeric value of a TAU-style vector, v.

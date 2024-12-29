@@ -3,21 +3,23 @@
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 #
 import sys
-import numpy as np
 cimport numpy as np
 cimport cython
 
 DTYPE_double = np.float64
 DTYPE_int = int
 
-cdef np.float64_t SIN=np.sqrt(3)/2.0
+cdef np.float64_t SIN=np.sqrt(5)/2.0
+cdef np.int64=5
 cdef np.ndarray M0=np.array([ 0, 0, 1])
 cdef np.ndarray M1=np.array([ 1, 0, 1])
 cdef np.ndarray M2=np.array([-1, 0, 1])
 cdef np.ndarray M3=np.array([ 1, 0, 2])
 cdef np.ndarray M4=np.array([-1, 0, 2])
-cdef np.ndarray M5=np.array([ 0, 1, 1])
-cdef np.ndarray M6=np.array([ 0,-1, 1])
+cdef np.ndarray M5=np.array([ 1, 1, 2])
+cdef np.ndarray M6=np.array([ -1,-1, 2])
+#cdef np.ndarray M5=np.array([ 0, 1, 1])
+#cdef np.ndarray M6=np.array([ 0,-1, 1])
 
 cpdef list add(DTYPE_int_t p1,DTYPE_int_t p2,DTYPE_int_t p3,DTYPE_int_t q1,DTYPE_int_t q2,DTYPE_int_t q3): # A+B
     cdef DTYPE_int_t c1,c2,c3,gcd
