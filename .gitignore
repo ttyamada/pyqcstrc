@@ -42,3 +42,9 @@ pyqcstrc.egg-info/
 *.atm
 *.pod
 
+tests/dode2/tests/test1/*.xyz
+tests/octa2/test1/*.xyz
+examples/example1/*.xyz
+.gitignore
+
+
