@@ -1,0 +1,6 @@
+4
+./d_star0_asym_simple.xyz
+Xx 0.000000 0.000000 0.000000 #   0-the tetrahedron 0-th vertex # 5 -3 2 -1 1 2 -5 3 2 1 -1 2 -5 3 2 -1 1 2
+Xx 0.618034 -0.381966 0.000000 #   5-the tetrahedron 1-th vertex # -3 2 2 3 -2 2 3 -2 2 3 -2 2 3 -2 2 3 -2 2
+Xx 1.236068 0.000000 0.000000 #   6-the tetrahedron 3-th vertex # -1 1 2 5 -3 2 1 -1 2 1 -1 2 1 -1 2 -1 1 2
+Xx 1.618034 0.000000 0.618034 #   9-the tetrahedron 2-th vertex # -1 1 2 1 -1 2 1 -1 2 -1 1 2 1 -1 2 1 -1 2
