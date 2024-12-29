@@ -562,11 +562,11 @@ def projection3(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     Parameters
     ----------
     vt: array
-        6-dimensional vector in TAU-style
+        6-dimensional vector in SQRT3-style
     
     Returns
     -------
-    3d vectors projected onto Eperp in TAU-style.
+    3d vectors projected onto Eperp in SQRT3-style.
     """
     M0=np.array([ 0, 0, 1])
     M1=np.array([ 1, 0, 1])
@@ -594,11 +594,11 @@ def mtrixcal(m1: NDArray[np.int64],m2: NDArray[np.int64],m3: NDArray[np.int64],m
     ----------
     m1,m2,m3,m4,m5,m6:array for projection materix
     v: array
-        6-dimensional vector in TAU-style
+        6-dimensional vector in SQRT3-style
 
     Returns
     -------
-    6d vectors projected onto Eperp in TAU-style.
+    6d vectors projected onto Eperp in SQRT3-style.
     """
     a1=mul(m1,v[0])
     a2=mul(m2,v[1])
@@ -614,16 +614,16 @@ def mtrixcal(m1: NDArray[np.int64],m2: NDArray[np.int64],m3: NDArray[np.int64],m
     return a1
 
 def centroid(obj: NDArray[np.int64]) -> NDArray[np.int64]:
-    """geometric center, centroid of tetrahedron, triangle or edge, in TAU-style.
+    """geometric center, centroid of tetrahedron, triangle or edge, in SQRT3-style.
 
     Parameters
     ----------
     obj: array
-        6-dimensional vector in TAU-style
+        6-dimensional vector in SQRT3-style
     
     Returns
     -------
-    centroid: array in TAU-style
+    centroid: array in SQRT3-style
     """
     
     num=len(obj)
@@ -640,16 +640,16 @@ def centroid(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     return v0
 
 def centroid_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
-    """geometric center, centroid of tetrahedron, in TAU-style.
+    """geometric center, centroid of tetrahedron, in SQRT3-style.
 
     Parameters
     ----------
     tetrahedron: array
-        6-dimensional vector in TAU-style
+        6-dimensional vector in SQRT3-style
     
     Returns
     -------
-    centroid: array in TAU-style
+    centroid: array in SQRT3-style
     """
     #print('centroid_obj')
     
@@ -661,7 +661,7 @@ def centroid_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     return mul_vector(tmp,np.array([1,0,len(obj)]))
 
 def coplanar_check(p: NDArray[np.int64],num_iteration: int=5) -> bool:
-    """Check whether a given set of points (in TAU-style) is coplanar or not.
+    """Check whether a given set of points (in SQRT3-style) is coplanar or not.
     
     メモ：xyz1とxyz2の選び方次第で、outer_product(v1,v2)が小さくなりcoplanarと間違って判定する場合がある。
     これを避けるために適切なxyz1とxyz2の選び方が必要。以下では、ランダムにxyz1とxyz2の選ぶ。
@@ -669,7 +669,7 @@ def coplanar_check(p: NDArray[np.int64],num_iteration: int=5) -> bool:
     Parameters
     ----------
     p: array
-        a set of pointsin TAU-style.
+        a set of pointsin SQRT3-style.
 
     Returns
     -------
@@ -748,11 +748,11 @@ def det_matrix(mtx: NDArray[np.int64]) -> NDArray[np.int64]:
     Parameters
     ----------
     mtx: array
-        3x3 matrix in TAU-style
+        3x3 matrix in SQRT3-style
 
     Returns
     -------
-    6d vectors projected onto Eperp in TAU-style.
+    6d vectors projected onto Eperp in SQRT3-style.
     """
     
     t3=mul(mtx[0][0],mtx[1][1])
@@ -806,7 +806,7 @@ if __name__ == '__main__':
     eps=1e-3
     
     def math_check(a,b):
-        """checking basic arithmetic operations in TAU-style.
+        """checking basic arithmetic operations in SQRT3-style.
         """
         flg=0
         a1=numericalc.numeric_value(a)
@@ -851,7 +851,7 @@ if __name__ == '__main__':
             return 1
     
     def generate_random_value():
-        """ generate value in TAU-style
+        """ generate value in SQRT3-style
         """
         nmax=10
         v=np.zeros((3),dtype=np.int64)
@@ -861,7 +861,7 @@ if __name__ == '__main__':
         return v
         
     def generate_random_vector(ndim=6):
-        """ generate ndim vector in TAU-style
+        """ generate ndim vector in SQRT3-style
         ndim: dimension of vectors
         """
         nmax=10

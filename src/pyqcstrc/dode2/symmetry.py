@@ -26,7 +26,7 @@ EPS=1e-6
 V0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
 
 def symop_obj(symop,obj,centre=V0):
-    """ Apply a symmetric operation on an object around given centre. in TAU-style
+    """ Apply a symmetric operation on an object around given centre. in SQRT3-style
     
     """
     ndim=obj.ndim
@@ -46,7 +46,7 @@ def symop_obj(symop,obj,centre=V0):
         return 
 
 def symop_vecs(symop,vts,centre=V0):
-    """ Apply a symmetric operation on set of vectors around given centre. in TAU-style
+    """ Apply a symmetric operation on set of vectors around given centre. in SQRT3-style
     
     """
     out=np.zeros(vts.shape,dtype=np.int64)
@@ -57,7 +57,7 @@ def symop_vecs(symop,vts,centre=V0):
     return out
 
 def symop_vec(symop,vt,centre=V0):
-    """ Apply a symmetric operation on a vector around given centre. in TAU-style
+    """ Apply a symmetric operation on a vector around given centre. in SQRT3-style
     """
     vt=sub_vectors(vt,centre)
     vt=dot_product_1(symop,vt)
@@ -1351,7 +1351,7 @@ if __name__ == '__main__':
                             numeric_value,)
                             
     def generate_random_value():
-        """ generate value in TAU-style
+        """ generate value in SQRT3-style
         """
         nmax=10
         v=np.zeros((3),dtype=np.int64)
@@ -1361,7 +1361,7 @@ if __name__ == '__main__':
         return v
         
     def generate_random_vector(ndim=6):
-        """ generate ndim vector in TAU-style
+        """ generate ndim vector in SQRT3-style
         ndim: dimension of vectors
         """
         nmax=10

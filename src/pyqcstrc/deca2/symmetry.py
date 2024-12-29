@@ -5,17 +5,17 @@
 #
 import sys
 #sys.path.append('.')
-from pyqcstrc.dode2.math1 import (add, 
+from pyqcstrc.deca2.math1 import (add, 
                                 matrixpow, 
                                 dot_product, 
                                 dot_product_1, 
                                 sub_vectors, 
                                 add_vectors,
                                 )
-from pyqcstrc.dode2.utils import (remove_doubling_in_perp_space, 
+from pyqcstrc.deca2.utils import (remove_doubling_in_perp_space, 
                                 remove_doubling,
                                 )
-from pyqcstrc.dode2.numericalc import (projection_numerical,
+from pyqcstrc.deca2.numericalc import (projection_numerical,
                                 projection3_numerical,
                                 numerical_vector,
                                 length_numerical,
@@ -26,7 +26,7 @@ EPS=1e-6
 V0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
 
 def symop_obj(symop,obj,centre):
-    """ Apply a symmetric operation on an object around given centre. in TAU-style
+    """ Apply a symmetric operation on an object around given centre. in SQRT5-style
     
     """
     ndim=obj.ndim
@@ -46,7 +46,7 @@ def symop_obj(symop,obj,centre):
         return 
 
 def symop_vecs(symop,vts,centre):
-    """ Apply a symmetric operation on set of vectors around given centre. in TAU-style
+    """ Apply a symmetric operation on set of vectors around given centre. in SQRT5-style
     
     """
     out=np.zeros(vts.shape,dtype=np.int64)
@@ -57,7 +57,7 @@ def symop_vecs(symop,vts,centre):
     return out
 
 def symop_vec(symop,vt,centre):
-    """ Apply a symmetric operation on a vector around given centre. in TAU-style
+    """ Apply a symmetric operation on a vector around given centre. in SQRT5-style
     """
     vt=sub_vectors(vt,centre)
     vt=dot_product_1(symop,vt)
@@ -68,11 +68,11 @@ def generator_obj_symmetric_obj(obj,centre):
     """
     if obj.ndim==3 or obj.ndim==4:
         if np.all(centre==V0):
-            mop=dodesymop_array()
+            mop=decasymop_array()
         else:
             lst_site_symmetry=site_symmetry(centre)
             mop=[]
-            tmp=dodesymop_array()
+            tmp=decasymop_array()
             for i in lst_site_symmetry:
                 mop.append(tmp[i])
         num=len(mop)
@@ -103,7 +103,7 @@ def generator_obj_symmetric_vector_specific_symop(obj,centre,index_of_symmetry_o
     """
     # using specific symmetry operations
     if obj.ndim==2:
-        mop=dodesymop()
+        mop=decasymop()
         shape=tuple([len(index_of_symmetry_operation)])
         a=np.zeros(shape+obj.shape,dtype=np.int64)
         j=0
@@ -122,7 +122,7 @@ def generator_obj_symmetric_triangle_specific_symop(obj,centre,index_of_symmetry
     """
     # using specific symmetry operations
     if obj.ndim==3:
-        mop=dodesymop()
+        mop=decasymop()
         shape=tuple([len(index_of_symmetry_operation)])
         a=np.zeros(shape+obj.shape,dtype=np.int64)
         j=0
@@ -141,7 +141,7 @@ def generator_obj_symmetric_obj_specific_symop(obj,centre,index_of_symmetry_oper
     """
     # using specific symmetry operations
     if obj.ndim==4:
-        mop=dodesymop()
+        mop=decasymop()
         shape=tuple([len(index_of_symmetry_operation)])
         a=np.zeros(shape+obj.shape,dtype=np.int64)
         j=0
@@ -158,7 +158,7 @@ def generator_obj_symmetric_obj_specific_symop(obj,centre,index_of_symmetry_oper
 def generator_obj_symmetric_triangle_0(obj,centre,symmetry_operation_index):
     """
     """
-    mop=dodesymop()
+    mop=decasymop()
     return symop_obj(mop[symmetry_operation_index],obj,centre)
 
 def generator_obj_symmetric_vec(vectors, centre):
@@ -178,10 +178,10 @@ def generator_equivalent_vec(vector,centre):
     a=generator_obj_symmetric_obj(vector,centre)
     return remove_doubling(a)
 
-def dodesymop():
+def decasymop():
     """
     """
-    # dodecagonal symmetry operations
+    # decacagonal symmetry operations
     # c12
     m1=np.array([[ 0, 1, 0, 0, 0, 0],\
                 [ 0, 0, 1, 0, 0, 0],\
@@ -205,10 +205,10 @@ def dodesymop():
             symop.append(tmp)
     return symop
 
-def dodesymop_array():
+def decasymop_array():
     """
     """
-    # dodecagonal symmetry operations
+    # decacagonal symmetry operations
     # c12
     m1=np.array([[ 0, 1, 0, 0, 0, 0],\
                 [ 0, 0, 1, 0, 0, 0],\
@@ -234,8 +234,8 @@ def dodesymop_array():
             num+=1
     return symop
 
-def mattrix_dode_sym():
-    # dodecagonal symmetry operations
+def mattrix_deca_sym():
+    # decacagonal symmetry operations
     # c12
     m1=np.array([[ 0, 1, 0, 0, 0, 0],\
                 [ 0, 0, 1, 0, 0, 0],\
@@ -264,7 +264,7 @@ def mattrix_dode_sym():
     return symop
 
 def generator_symmetric_vec_specific_symop(vector,centre,index_of_symmetry_operation):
-    mop=dodesymop()
+    mop=decasymop()
     #a=np.zeros(len(index_of_symmetry_operation))
     return symop_vec(mop[symmetry_operation_index],vector,centre)
 
@@ -297,14 +297,14 @@ def translation(ndim):
 # numeric
 ################
 def generator_equivalent_numeric_vector_specific_symop(vn,index_of_symmetry_operation):
-    mop=dodesymop_array()
+    mop=decasymop_array()
     out=np.zeros((len(index_of_symmetry_operation),6),dtype=np.float64)
     for i1 in index_of_symmetry_operation:
         out[i1]=mop[i1]@vn
     return out
     
 def generator_equivalent_numeric_vectors_specific_symop(vns,index_of_symmetry_operation):
-    mop=dodesymop_array()
+    mop=decasymop_array()
     num1=len(index_of_symmetry_operation)
     out=np.zeros((num1,len(vns),6),dtype=np.float64)
     for i1 in range(num1):
@@ -331,7 +331,7 @@ def site_symmetry(site,ndim=5):
             The symmetry operators leaves xyz identical.
     """
     
-    symop=dodesymop_array()
+    symop=decasymop_array()
     traop=translation(ndim)
     
     list1=[]
@@ -351,7 +351,7 @@ def site_symmetry(site,ndim=5):
 def coset(site,ndim=5):
     """coset
     """
-    symop=dodesymop_array()
+    symop=decasymop_array()
     
     
     list1=site_symmetry(site,ndim)
@@ -428,7 +428,7 @@ def site_symmetry_and_coset(site,ndim,verbose):
     #    List of index of symmetry operators in the left coset representatives of the poibt group G (list):
     #        The symmetry operators generates equivalent positions of the site xyz.
     
-    symop=dodesymop_array()
+    symop=decasymop_array()
     traop=translation(ndim)
     
     # List of index of symmetry operators of the site symmetry group G.
@@ -614,7 +614,7 @@ def similarity_vec(vt,m):
     return dot_product_1(op,vt)
     
 def similarity(m):
-    """Similarity transformation of Dodecagonal QC
+    """Similarity transformation of decacagonal QC
     """
     m1=np.array([[ 1, 0, 0, -1, 0, 0],\
                 [ 1, 1, 0, 0, 0, 0],\
@@ -634,7 +634,7 @@ if __name__ == '__main__':
                             numeric_value,)
                             
     def generate_random_value():
-        """ generate value in TAU-style
+        """ generate value in SQRT5-style
         """
         nmax=10
         v=np.zeros((3),dtype=np.int64)
@@ -644,7 +644,7 @@ if __name__ == '__main__':
         return v
         
     def generate_random_vector(ndim=6):
-        """ generate ndim vector in TAU-style
+        """ generate ndim vector in SQRT5-style
         ndim: dimension of vectors
         """
         nmax=10
@@ -670,7 +670,7 @@ if __name__ == '__main__':
     
     
     print("TEST: symop_vec()")
-    symop=dodesymop()
+    symop=decasymop()
     vt=generate_random_vector()
     counter=0
     for sop in symop:
