@@ -21,6 +21,13 @@ except ImportError:
 
 TAU=(1+np.sqrt(5))/2.0
 
+def position(vt1,vt2):
+    # parameters
+    # vt1: 6d vector.
+    # vt2: 6d vector being projected onto Eperp.
+    vt2e=math1.projection_perp(vt2) # 6d vector projected onto Eperp.
+    return math1.add_vectors(vt1,vt2e)
+    
 def volume(obj):
     return utils.obj_volume_6d(obj)
     
