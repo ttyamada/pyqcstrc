@@ -12,7 +12,7 @@ import pyqcstrc.dode2.occupation_domain as od
 import pyqcstrc.dode2.symmetry as sym
 
 opath='./test7'
-xyzpath='../../../xyz/dode'
+xyzpath='./test7'
 
 # see T. Yamada, Acta Cryst. (2022). B78, 247–252
 

@@ -13,7 +13,7 @@ import pyqcstrc.dode2.symmetry as sym
 import pyqcstrc.dode2.numericalc as numericalc
 
 opath='./test5'
-xyzpath='../../../xyz/dode'
+xyzpath='./test5'
 
 # import asymmetric part of OD(occupation domain)
 od_1_asym=od.read_xyz(path=xyzpath,basename='OD_local_env_1')

@@ -13,7 +13,7 @@ import pyqcstrc.dode2.symmetry as sym
 import pyqcstrc.dode2.numericalc as numericalc
 
 opath='./test5'
-xyzpath='../../../xyz/dode'
+xyzpath='./test5'
 myName='local_env_vertex'
 
 # Generate vertices of NG tiling with 4 local envs.

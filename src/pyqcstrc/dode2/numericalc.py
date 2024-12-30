@@ -10,6 +10,7 @@ import random
 TAU=np.sqrt(3)/2.0
 SQRT3=np.sqrt(3)
 N=3
+
 EPS=1e-6 # tolerance
 
 def coplanar_check_numeric_tau(pts: NDArray[np.int64], num_iteration: int=5) -> bool:

@@ -11,7 +11,7 @@ import numpy as np
 import pyqcstrc.dode2.occupation_domain as od
 
 opath='./test3'
-xyzpath='../../../xyz/dode'
+xyzpath='./test1'
 
 # import asymmetric part of OD(occupation domain) located at origin, 0,0,0,0,0,0.
 od_asym=od.read_xyz(path=xyzpath,basename='od_1_asym')

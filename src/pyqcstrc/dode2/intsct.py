@@ -8,12 +8,7 @@ import numpy as np
 from numpy.typing import NDArray
 import time # in object_subtraction_dev1, tetrahedron_not_obj
 import itertools
-from pyqcstrc.dode2.math1 import (projection3,
-                                centroid, 
-                                centroid_obj,
-                                coplanar_check,
-                                det_matrix,
-                                dot_product,
+from pyqcstrc.qnclass.qnmath import (dot_product,
                                 inner_product,
                                 outer_product,
                                 add,
@@ -24,6 +19,29 @@ from pyqcstrc.dode2.math1 import (projection3,
                                 add_vectors, 
                                 mul_vector,
                                 )
+from pyqcstrc.dode2.math1 import (projection3,
+                                centroid, 
+                                centroid_obj,
+                                coplanar_check,
+                                det_matrix,
+                                )
+
+#from pyqcstrc.dode2.math1 import (projection3,
+#                                centroid, 
+#                                centroid_obj,
+#                                coplanar_check,
+#                                det_matrix,
+#                                dot_product,
+#                                inner_product,
+#                                outer_product,
+#                                add,
+#                                sub,
+#                                mul,
+#                                div,
+#                                sub_vectors,
+#                                add_vectors, 
+#                                mul_vector,
+#                                )
 from pyqcstrc.dode2.numericalc import (numeric_value,
                                     numerical_vector,
                                     length_numerical,

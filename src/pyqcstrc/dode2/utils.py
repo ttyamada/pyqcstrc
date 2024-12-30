@@ -4,8 +4,7 @@
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 #
 import sys
-from pyqcstrc.dode2.math1 import (projection3,
-                                add,
+from pyqcstrc.qnclass.qnmath import (add,
                                 sub,
                                 mul,
                                 div,
@@ -13,9 +12,23 @@ from pyqcstrc.dode2.math1 import (projection3,
                                 sub_vectors,
                                 outer_product,
                                 inner_product,
+                                )
+from pyqcstrc.dode2.math1 import (projection3,
                                 centroid,
                                 coplanar_check,
                                 )
+#from pyqcstrc.dode2.math1 import (projection3,
+#                                add,
+#                                sub,
+#                                mul,
+#                                div,
+#                                add_vectors,
+#                                sub_vectors,
+#                                outer_product,
+#                                inner_product,
+#                                centroid,
+#                                coplanar_check,
+#                                )
 from pyqcstrc.dode2.numericalc import (numeric_value,
                                     numerical_vector,
                                     numerical_vectors,

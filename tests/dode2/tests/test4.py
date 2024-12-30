@@ -13,7 +13,7 @@ import pyqcstrc.dode2.symmetry as sym
 import pyqcstrc.dode2.numericalc as numericalc
 
 opath='./test4'
-xyzpath='../../../xyz/dode'
+xyzpath='./test4'
 
 # Generate a simple decoration model
 # see T. Yamada, Acta Cryst. (2022). B78, 247–252

@@ -9,7 +9,8 @@ import os
 import sys
 import numpy as np
 try:
-    import pyqcstrc.dode2.math1 as math1
+    #import pyqcstrc.dode2.math1 as math1
+    import pyqcstrc.qnclass.qnmath12 as math1
     import pyqcstrc.dode2.intsct as intsct
     import pyqcstrc.dode2.numericalc as numericalc
     import pyqcstrc.dode2.symmetry as symmetry
