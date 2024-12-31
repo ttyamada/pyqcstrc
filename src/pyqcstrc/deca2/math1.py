@@ -497,61 +497,61 @@ from pyqcstrc.octa2.numericalc import coplanar_check_numeric_tau
 #        return 
 #
 
-def projection(vt: NDArray[np.int64]) -> NDArray[np.int64]:
-    """projection of a 6d vector onto Epar and Eperp in "SQRT5-style"
-    NOTE: coefficient (alpha) of the projection matrix is set to be 1.
-    alpha = a/np.sqrt(2)
-    see Yamamoto ActaCrystal (1997)
-    
-    Parameters
-    ----------
-    vt: array
-        6-dimensional vector in SQRT5-style
-    
-    Returns
-    -------
-    array containing two 3d vectors projected onto Epar and Eperp in SQRT5-style.
-    """
-    M0=np.array([ 0, 0, 1]) #  0
-    M1=np.array([ 1, 0, 1]) #  1
-    M2=np.array([-1, 0, 1]) # -1
-    M3=np.array([ 0, 1, 1]) #  sqrt(5)
-    M4=np.array([ 0,-1, 1]) # -sqrt(5)
-    v1e=mtrixcal(M2,M1,M0,M2,M0,M0,vt) #
-    v2e=mtrixcal(M0,M1,M3,M1,M0,M0,vt) #
-    v1i=mtrixcal(M3,M2,M0,M1,M0,M0,vt) #
-    v2i=mtrixcal(M0,M1,M4,M1,M0,M0,vt) #
-    v3e=mtrixcal(M0,M0,M0,M0,M0,M0,vt) # 0,0,0,0,0,0 
-    v3i=mtrixcal(M0,M0,M0,M0,M0,M0,vt) # 0,0,0,0,0,0
-    return np.array([[v1e,v2e,v3e],[v1i,v2i,v3i]],dtype=np.int64)
-
-def projection3(vt: NDArray[np.int64]) -> NDArray[np.int64]:
-    """projection of a 6d vector onto Eperp in "SQRT5-style"
-    NOTE: coefficient (alpha) of the projection matrix is set to be 1.
-    alpha = a/np.sqrt(2)
-    see Yamamoto ActaCrystal (1997)
-    
-    Parameters
-    ----------
-    vt: array
-        6-dimensional vector in SQRT5-style
-    
-    Returns
-    -------
-    3d vectors projected onto Eperp in SQRT5-style.
-    """
-    M0=np.array([ 0, 0, 1]) #  0
-    M1=np.array([ 1, 0, 1]) #  1
-    M2=np.array([-1, 0, 1]) # -1
-    M3=np.array([ 0, 1, 1]) #  sqrt(5)
-    M4=np.array([ 0,-1, 1]) # -sqrt(5)
-    #v1e=mtrixcal(M2,M1,M0,M2,M0,M0,vt) #
-    #v2e=mtrixcal(M0,M1,M3,M1,M0,M0,vt) #
-    v1i=mtrixcal(M3,M2,M0,M1,M0,M0,vt) #
-    v2i=mtrixcal(M0,M1,M4,M1,M0,M0,vt) #
-    #v3e=mtrixcal(M0,M0,M0,M0,M0,M0,vt) # 0,0,0,0,0,0 
-    v3i=mtrixcal(M0,M0,M0,M0,M0,M0,vt) # 0,0,0,0,0,0
-    return np.array([v1i,v2i,v3i],dtype=np.int64)
+#def projection(vt: NDArray[np.int64]) -> NDArray[np.int64]:
+#    """projection of a 6d vector onto Epar and Eperp in "SQRT5-style"
+#    NOTE: coefficient (alpha) of the projection matrix is set to be 1.
+#    alpha = a/np.sqrt(2)
+#    see Yamamoto ActaCrystal (1997)
+#    
+#    Parameters
+#    ----------
+#    vt: array
+#        6-dimensional vector in SQRT5-style
+#    
+#    Returns
+#    -------
+#    array containing two 3d vectors projected onto Epar and Eperp in SQRT5-style.
+#    """
+#    M0=np.array([ 0, 0, 1]) #  0
+#    M1=np.array([ 1, 0, 1]) #  1
+#    M2=np.array([-1, 0, 1]) # -1
+#    M3=np.array([ 0, 1, 1]) #  sqrt(5)
+#    M4=np.array([ 0,-1, 1]) # -sqrt(5)
+#    v1e=mtrixcal(M2,M1,M0,M2,M0,M0,vt) #
+#    v2e=mtrixcal(M0,M1,M3,M1,M0,M0,vt) #
+#    v1i=mtrixcal(M3,M2,M0,M1,M0,M0,vt) #
+#    v2i=mtrixcal(M0,M1,M4,M1,M0,M0,vt) #
+#    v3e=mtrixcal(M0,M0,M0,M0,M0,M0,vt) # 0,0,0,0,0,0 
+#    v3i=mtrixcal(M0,M0,M0,M0,M0,M0,vt) # 0,0,0,0,0,0
+#    return np.array([[v1e,v2e,v3e],[v1i,v2i,v3i]],dtype=np.int64)
+#
+#def projection3(vt: NDArray[np.int64]) -> NDArray[np.int64]:
+#    """projection of a 6d vector onto Eperp in "SQRT5-style"
+#    NOTE: coefficient (alpha) of the projection matrix is set to be 1.
+#    alpha = a/np.sqrt(2)
+#    see Yamamoto ActaCrystal (1997)
+#    
+#    Parameters
+#    ----------
+#    vt: array
+#        6-dimensional vector in SQRT5-style
+#    
+#    Returns
+#    -------
+#    3d vectors projected onto Eperp in SQRT5-style.
+#    """
+#    M0=np.array([ 0, 0, 1]) #  0
+#    M1=np.array([ 1, 0, 1]) #  1
+#    M2=np.array([-1, 0, 1]) # -1
+#    M3=np.array([ 0, 1, 1]) #  sqrt(5)
+#    M4=np.array([ 0,-1, 1]) # -sqrt(5)
+#    #v1e=mtrixcal(M2,M1,M0,M2,M0,M0,vt) #
+#    #v2e=mtrixcal(M0,M1,M3,M1,M0,M0,vt) #
+#    v1i=mtrixcal(M3,M2,M0,M1,M0,M0,vt) #
+#    v2i=mtrixcal(M0,M1,M4,M1,M0,M0,vt) #
+#    #v3e=mtrixcal(M0,M0,M0,M0,M0,M0,vt) # 0,0,0,0,0,0 
+#    v3i=mtrixcal(M0,M0,M0,M0,M0,M0,vt) # 0,0,0,0,0,0
+#    return np.array([v1i,v2i,v3i],dtype=np.int64)
 
 def mtrixcal(m1: NDArray[np.int64],m2: NDArray[np.int64],m3: NDArray[np.int64],m4: NDArray[np.int64],m5: NDArray[np.int64],m6: NDArray[np.int64],v: NDArray[np.int64]) -> NDArray[np.int64]:
     """function used in projection()

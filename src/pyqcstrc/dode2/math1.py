@@ -519,69 +519,69 @@ from pyqcstrc.dode2.numericalc import coplanar_check_numeric_tau
 #        return 
 #
 #
-def projection(vt: NDArray[np.int64]) -> NDArray[np.int64]:
-    """projection of a 6d vector onto Epar and Eperp in "SIN-style"
-    NOTE: coefficient (alpha) of the projection matrix is set to be 1.
-    alpha = 2*a/np.sqrt(6)
-    see Yamamoto ActaCrystal (1997)
-    
-    Parameters
-    ----------
-    vt: array
-        6-dimensional vector in SIN-style
-    
-    Returns
-    -------
-    array containing two 3d vectors projected onto Epar and Eperp in SIN-style.
-    """
-    M0=np.array([ 0, 0, 1])
-    M1=np.array([ 1, 0, 1])
-    M2=np.array([-1, 0, 1])
-    M3=np.array([ 1, 0, 2])
-    M4=np.array([-1, 0, 2])
-    #M5=np.array([ 0, 1, 1])
-    #M6=np.array([ 0,-1, 1])
-    M5=np.array([ 0, 1, 2])
-    M6=np.array([ 0,-1, 2])
-    v1e=mtrixcal(M5,M1,M0,M4,M0,M0,vt) # sin,1,0,-0.5,0,0
-    v2e=mtrixcal(M4,M0,M1,M5,M0,M0,vt) # -0.5,0,1,sin,0,0
-    v1i=mtrixcal(M6,M1,M0,M4,M0,M0,vt) # -sin,1,0,-0.5,0,0
-    v2i=mtrixcal(M4,M0,M1,M6,M0,M0,vt) # -0.5,0,1,-sin,0,0
-    v3e=mtrixcal(M0,M0,M0,M0,M1,M0,vt) # 0,0,0,0,1,0
-    v3i=mtrixcal(M0,M0,M0,M0,M0,M1,vt) # 0,0,0,0,0,1
-    return np.array([[v1e,v2e,v3e],[v1i,v2i,v3i]],dtype=np.int64)
-
-def projection3(vt: NDArray[np.int64]) -> NDArray[np.int64]:
-    """projection of a 6d vector onto Eperp in "SIN-style"
-    NOTE: coefficient (alpha) of the projection matrix is set to be 1.
-    alpha = 2*a/np.sqrt(6)
-    see Yamamoto ActaCrystal (1997)
-    
-    Parameters
-    ----------
-    vt: array
-        6-dimensional vector in SQRT3-style
-    
-    Returns
-    -------
-    3d vectors projected onto Eperp in SQRT3-style.
-    """
-    M0=np.array([ 0, 0, 1])
-    M1=np.array([ 1, 0, 1])
-    M2=np.array([-1, 0, 1])
-    M3=np.array([ 1, 0, 2])
-    M4=np.array([-1, 0, 2])
-    M5=np.array([ 0, 1, 2])
-    M6=np.array([ 0,-1, 2])
-    #M5=np.array([ 0, 1, 1])
-    #M6=np.array([ 0,-1, 1])
-    #v1e=mtrixcal(M5,M1,M0,M4,M0,M0,vt) # sin,1,0,-0.5,0,0
-    #v2e=mtrixcal(M4,M0,M1,M5,M0,M0,vt) # -0.5,0,1,sin,0,0
-    v1i=mtrixcal(M6,M1,M0,M4,M0,M0,vt) # -sin,1,0,-0.5,0,0
-    v2i=mtrixcal(M4,M0,M1,M6,M0,M0,vt) # -0.5,0,1,-sin,0,0
-    #v3e=mtrixcal(M0,M0,M0,M0,M1,M0,vt) # 0,0,0,0,1,0
-    v3i=mtrixcal(M0,M0,M0,M0,M0,M1,vt) # 0,0,0,0,0,1
-    return np.array([v1i,v2i,v3i],dtype=np.int64)
+#def projection(vt: NDArray[np.int64]) -> NDArray[np.int64]:
+#    """projection of a 6d vector onto Epar and Eperp in "SIN-style"
+#    NOTE: coefficient (alpha) of the projection matrix is set to be 1.
+#    alpha = 2*a/np.sqrt(6)
+#    see Yamamoto ActaCrystal (1997)
+#    
+#    Parameters
+#    ----------
+#    vt: array
+#        6-dimensional vector in SIN-style
+#    
+#    Returns
+#    -------
+#    array containing two 3d vectors projected onto Epar and Eperp in SIN-style.
+#    """
+#    M0=np.array([ 0, 0, 1])
+#    M1=np.array([ 1, 0, 1])
+#    M2=np.array([-1, 0, 1])
+#    M3=np.array([ 1, 0, 2])
+#    M4=np.array([-1, 0, 2])
+#    #M5=np.array([ 0, 1, 1])
+#    #M6=np.array([ 0,-1, 1])
+#    M5=np.array([ 0, 1, 2])
+#    M6=np.array([ 0,-1, 2])
+#    v1e=mtrixcal(M5,M1,M0,M4,M0,M0,vt) # sin,1,0,-0.5,0,0
+#    v2e=mtrixcal(M4,M0,M1,M5,M0,M0,vt) # -0.5,0,1,sin,0,0
+#    v1i=mtrixcal(M6,M1,M0,M4,M0,M0,vt) # -sin,1,0,-0.5,0,0
+#    v2i=mtrixcal(M4,M0,M1,M6,M0,M0,vt) # -0.5,0,1,-sin,0,0
+#    v3e=mtrixcal(M0,M0,M0,M0,M1,M0,vt) # 0,0,0,0,1,0
+#    v3i=mtrixcal(M0,M0,M0,M0,M0,M1,vt) # 0,0,0,0,0,1
+#    return np.array([[v1e,v2e,v3e],[v1i,v2i,v3i]],dtype=np.int64)
+#
+#def projection3(vt: NDArray[np.int64]) -> NDArray[np.int64]:
+#    """projection of a 6d vector onto Eperp in "SIN-style"
+#    NOTE: coefficient (alpha) of the projection matrix is set to be 1.
+#    alpha = 2*a/np.sqrt(6)
+#    see Yamamoto ActaCrystal (1997)
+#    
+#    Parameters
+#    ----------
+#    vt: array
+#        6-dimensional vector in SQRT3-style
+#    
+#    Returns
+#    -------
+#    3d vectors projected onto Eperp in SQRT3-style.
+#    """
+#    M0=np.array([ 0, 0, 1])
+#    M1=np.array([ 1, 0, 1])
+#    M2=np.array([-1, 0, 1])
+#    M3=np.array([ 1, 0, 2])
+#    M4=np.array([-1, 0, 2])
+#    M5=np.array([ 0, 1, 2])
+#    M6=np.array([ 0,-1, 2])
+#    #M5=np.array([ 0, 1, 1])
+#    #M6=np.array([ 0,-1, 1])
+#    #v1e=mtrixcal(M5,M1,M0,M4,M0,M0,vt) # sin,1,0,-0.5,0,0
+#    #v2e=mtrixcal(M4,M0,M1,M5,M0,M0,vt) # -0.5,0,1,sin,0,0
+#    v1i=mtrixcal(M6,M1,M0,M4,M0,M0,vt) # -sin,1,0,-0.5,0,0
+#    v2i=mtrixcal(M4,M0,M1,M6,M0,M0,vt) # -0.5,0,1,-sin,0,0
+#    #v3e=mtrixcal(M0,M0,M0,M0,M1,M0,vt) # 0,0,0,0,1,0
+#    v3i=mtrixcal(M0,M0,M0,M0,M0,M1,vt) # 0,0,0,0,0,1
+#    return np.array([v1i,v2i,v3i],dtype=np.int64)
 
 def mtrixcal(m1: NDArray[np.int64],m2: NDArray[np.int64],m3: NDArray[np.int64],m4: NDArray[np.int64],m5: NDArray[np.int64],m6: NDArray[np.int64],v: NDArray[np.int64]) -> NDArray[np.int64]:
     """function used in projection()
@@ -598,17 +598,17 @@ def mtrixcal(m1: NDArray[np.int64],m2: NDArray[np.int64],m3: NDArray[np.int64],m
     -------
     6d vectors projected onto Eperp in SQRT3-style.
     """
-    a1=mul(m1,v[0])
-    a2=mul(m2,v[1])
-    a3=mul(m3,v[2])
-    a4=mul(m4,v[3])
-    a5=mul(m5,v[4])
-    a6=mul(m6,v[5])
-    a1=add(a1,a2)
-    a1=add(a1,a3)
-    a1=add(a1,a4)
-    a1=add(a1,a5)
-    a1=add(a1,a6)
+    a1=m1*v[0]  #mul(m1,v[0])
+    a2=m2*v[1]  #mul(m2,v[1])
+    a3=m3*v[2]  #mul(m3,v[2])
+    a4=m4*v[3]  #mul(m4,v[3])
+    a5=m5*v[4]  #mul(m5,v[4])
+    a6=m6*v[5]  #mul(m6,v[5])
+    a1=a1+a2    #add(a1,a2)
+    a1=a1+a3    #add(a1,a3)
+    a1=a1+a4    #add(a1,a4)
+    a1=a1+a5    #add(a1,a5)
+    a1=a1+a6  #add(a1,a6)
     return a1
 
 def centroid(obj: NDArray[np.int64]) -> NDArray[np.int64]:
@@ -631,9 +631,9 @@ def centroid(obj: NDArray[np.int64]) -> NDArray[np.int64]:
         v2=v0[i2]
         i1=0
         for i1 in range(num):
-            v2=add(v2,obj[i1][i2])
+            v2=v2+obj[i1][i2]          #add(v2,obj[i1][i2])
             i1+=1
-        v0[i2]=mul(v2,np.array([1,0,num]))
+        v0[i2]=v2*np.array([1,0,num])  #mul(v2,np.array([1,0,num]))
         i2+=1
     return v0
 
@@ -753,33 +753,33 @@ def det_matrix(mtx: NDArray[np.int64]) -> NDArray[np.int64]:
     6d vectors projected onto Eperp in SQRT3-style.
     """
     
-    t3=mul(mtx[0][0],mtx[1][1])
-    t1=mul(t3,mtx[2][2])
+    t3=mtx[0][0]*mtx[1][1]  #mul(mtx[0][0],mtx[1][1])
+    t1=t3*mtx[2][2]         #mul(t3,mtx[2][2])
     #
-    t3=mul(mtx[0][2],mtx[1][0])
-    t2=mul(t3,c[1])
+    t3=mtx[0][2]*mtx[1][0]  #mul(mtx[0][2],mtx[1][0])
+    t2=t3*c[1]              #mul(t3,c[1])
     #
-    t1=add(t1,t2)
+    t1=t1+t2                #add(t1,t2)
     
-    t3=mul(mtx[0][1],mtx[1][2])
-    t3=mul(t3,mtx[2][0])
+    t3=mtx[0][1]*mtx[1][2]  #mul(mtx[0][1],mtx[1][2])
+    t3=t3*mtx[2][0]         #mul(t3,mtx[2][0])
     #
-    t1=add(t1,t3)
+    t1=t1+t3                #add(t1,t3)
     
-    t3=mul(mtx[0][2],mtx[1][1])
-    t2=mul(t3,mtx[2][0])
+    t3=mtx[0][2]*mtx[1][1]  #mul(mtx[0][2],mtx[1][1])
+    t2=t3*mtx[2][0]         #mul(t3,mtx[2][0])
     #
-    t1=sub(t1,t2)
+    t1=t1-t2                #sub(t1,t2)
     
-    t3=mul(mtx[0][1],mtx[1][0])
-    t2=mul(t3,mtx[2][2])
+    t3=mtx[0][1]*mtx[1][0]  #mul(mtx[0][1],mtx[1][0])
+    t2=t3*mtx[2][2]         #mul(t3,mtx[2][2])
     #
-    t1=sub(t1,t2)
+    t1=t1-t2                #sub(t1,t2)
     
-    t3=mul(mtx[0][0],mtx[1][2])
-    t2=mul(t3,mtx[2][1])
+    t3=mtx[0][0]*mtx[1][2]  #mul(mtx[0][0],mtx[1][2])
+    t2=t3*mtx[2][1]         #mul(t3,mtx[2][1])
     #
-    t1=sub(t1,t2)
+    t1=t1-t2                #sub(t1,t2)
     #
     return t1
 
@@ -818,7 +818,7 @@ if __name__ == '__main__':
         else:
             print('+')
             
-        c=sub(a,b)
+        c=a-b    #sub(a,b)
         c1=numericalc.numeric_value(c)
         c2=a1-b1
         if abs(c1-c2)<eps:
@@ -826,7 +826,7 @@ if __name__ == '__main__':
         else:
             print('-')
             
-        c=mul(a,b)
+        c=a*b    #mul(a,b)
         c1=numericalc.numeric_value(c)
         c2=a1*b1
         if abs(c1-c2)<eps:
@@ -834,7 +834,7 @@ if __name__ == '__main__':
         else:
             print('*')
             
-        c=div(a,b)
+        c=a/b    #div(a,b)
         c1=numericalc.numeric_value(c)
         c2=a1/b1
         if abs(c1-c2)<eps:
