@@ -8,8 +8,10 @@
 #import os
 import sys
 import numpy as np
+import pyqcstrc.qnclass.qnmath12 as qnmath
 import pyqcstrc.dode2.symmetry as sym
 import pyqcstrc.dode2.numericalc as numcalc
+import pyqcstrc.dode2.projection12 as proj
 
 verbose=0
 #verbose=1
