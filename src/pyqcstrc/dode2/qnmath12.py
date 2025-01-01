@@ -1,4 +1,4 @@
-from pyqcstrc.qnmath import Qnmath 
-class Qnmath12(Qnmath):
+from pyqcstrc.qnclass.qnmath import qnmath 
+class qnmath12(qnmath):
     def __init__(self):
         super().__init__(3) # use N=3 SQRTN=np.sqrt(3)

@@ -5,6 +5,7 @@
 #
 import sys
 import itertools
+
 #from pyqcstrc.dode2.math1 import (add, 
 from pyqcstrc.qnclass.qnmath import (add, 
                                 matrixpow, 
@@ -16,9 +17,9 @@ from pyqcstrc.qnclass.qnmath import (add,
 from pyqcstrc.dode2.utils import (remove_doubling_in_perp_space, 
                                 remove_doubling,
                                 )
-from pyqcstrc.dode2.numericalc import (projection_numerical,
-                                projection3_numerical,
-                                numerical_vector,
+from pyqcstrc.dode2.projection import (projection_numerical,
+                                projection3_numerical)
+from pyqcstrc.dode2.numericalc import (numerical_vector,
                                 length_numerical,
                                 )
 import numpy as np

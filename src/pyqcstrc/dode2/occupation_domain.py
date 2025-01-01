@@ -15,6 +15,7 @@ try:
     import pyqcstrc.dode2.numericalc as numericalc
     import pyqcstrc.dode2.symmetry as symmetry
     import pyqcstrc.dode2.intsct as intsct
+    import pyqcstrc.dode2.projection12 as proj
 except ImportError:
     print('import error\n')
 
@@ -885,7 +886,7 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         i1=0
         for i1,triangle in enumerate(obj):
             for i2,vt in enumerate(triangle):
-                v=math1.projection3(vt)
+                v=proj.projection3(vt)
                 f.write('Xx %8.6f %8.6f %8.6f # %3d-the triangle %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
                 (numericalc.numeric_value(v[0]),\
                 numericalc.numeric_value(v[1]),\
