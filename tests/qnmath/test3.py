@@ -40,3 +40,5 @@ qnv2=qnvec.Qnvec(v2,4) # qnvector for vec2
 print("qnv1",qnvec.qnv2npa(qnv1))
 print("qnv2",qnvec.qnv2npa(qnv2))
 chkop(qnv1,qnv2)
+
+# create qnmat here for checking ma1*v1 etc

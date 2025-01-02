@@ -6,7 +6,7 @@ class Qnnum:
     def __init__(self, n: NDArray[np.int64], N: np.int64):
         self.n=n
         self.N=N # 2 5 3 for octagonal, decagonal and dodecagonal Qnnumber   
-
+    
     def __add__(a, b):
         return add(a,b)
     
@@ -18,7 +18,7 @@ class Qnnum:
     
     def __truediv__(a, b):
         return div(a,b)
-   
+
 def add(a, b):
     #print("a1",a.n[0],"a2",a.n[1],"a3",a.n[2])
     #print("b1",b.n[0],"b2",b.n[1],"b3",b.n[2])
