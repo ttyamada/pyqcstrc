@@ -1,23 +1,20 @@
 import sys
 import numpy as np
 from numpy.typing import NDArray
-#sys.path.append('.')
-#from numericalc import coplanar_check_numeric_tau
-from pyqcstrc.dode2.numericalc import coplanar_check_numeric_tau
+#from pyqcstrc.qnvec import qnvec
     
 class Qnvec:
-    def __init__(self,a: Qnnum,shape:np.int64):
-        for i in range(shape):
-            self.a[i]=a[i]
+    def __init__(self,vt: Qnvec,shape:np.int64):
+        self.vt=vt
         self.shape = shape  #dimension of a vector a
 
-    def add_vectors(vt1:Qnvec, vt2:Qnvec) -> Qnvec:
+    def add(vt1:Qnvec, vt2:Qnvec) -> Qnvec:
 	    a=np.zeros(vt1.shape,dtype=np.int64)
 	    for i in range(len(vt1)):
 	        a[i]=vt1[i]+vt2[i]  #add(vt1[i],vt2[i])
 	    return a
 
-    def sub_vectors(vt1: Qnvec, vt2:Qnvec) -> Qnvec:
+    def sub(vt1: Qnvec, vt2:Qnvec) -> Qnvec:
 	    if vt1.ndim==2 and vt2.ndim==2:
 	        return vt1-vt2  #add_vectors(vt1,vt2)
 	    else:
@@ -177,4 +174,10 @@ class Qnvec:
 	        print('incorrect shape found in dot_product')
 	        return 
 
+    def __add__(a, b):
+        return add(a,b)
+    
+    def __sub__(a, b):
+        return sub(a,b)
+  
     

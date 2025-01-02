@@ -97,7 +97,10 @@ def projection3(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     v3i=mtrixcal(M0,M0,M0,M0,M0,M1,vt) # 0,0,0,0,0,1
     return np.array([v1i,v2i,v3i],dtype=np.int64)
 
-def mtrixcal(m1: NDArray[np.int64],m2: NDArray[np.int64],m3: NDArray[np.int64],m4: NDArray[np.int64],m5: NDArray[np.int64],m6: NDArray[np.int64],v: NDArray[np.int64]) -> NDArray[np.int64]:
+def mtrixcal(m1: NDArray[np.int64],m2: NDArray[np.int64],m3: NDArray[np.int64],
+             m4: NDArray[np.int64],m5: NDArray[np.int64],m6: NDArray[np.int64],
+             v: NDArray[np.int64]) -> NDArray[np.int64]:
+#def mtrixcal(m: np.matrix ,v: NDArray[np.int64]) -> NDArray[np.int64]:
     """function used in projection()
                         projection3()
                         projection_perp()

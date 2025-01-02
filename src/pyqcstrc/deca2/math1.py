@@ -10,7 +10,463 @@ from numpy.typing import NDArray
 #from numericalc import coplanar_check_numeric_tau
 from pyqcstrc.octa2.numericalc import coplanar_check_numeric_tau
 
-#SQRT5=np.sqrt(5)
+# equivalent to matmul(ma1,v)
+def mtrixcal(m1: NDArray[np.int64],m2: NDArray[np.int64],m3: NDArray[np.int64],
+             m4: NDArray[np.int64],m5: NDArray[np.int64],m6: NDArray[np.int64],
+             v: NDArray[np.int64]) -> NDArray[np.int64]:
+    """function used in projection()
+                        projection3()
+                        projection_perp()
+    
+    Parameters
+    ----------
+    m1,m2,m3,m4,m5,m6:array for projection materix
+    v: array
+        6-dimensional vector in SQRT5-style
+
+    Returns
+    -------
+    6d vectors projected onto Eperp in SQRT5-style.
+    """
+    a1=mul(m1,v[0])
+    a2=mul(m2,v[1])
+    a3=mul(m3,v[2])
+    a4=mul(m4,v[3])
+    a5=mul(m5,v[4])
+    a6=mul(m6,v[5])
+    a1=add(a1,a2)
+    a1=add(a1,a3)
+    a1=add(a1,a4)
+    a1=add(a1,a5)
+    a1=add(a1,a6)
+    return a1
+
+def centroid(obj: NDArray[np.int64]) -> NDArray[np.int64]:
+    """geometric center, centroid of tetrahedron, triangle or edge, in SQRT5-style.
+
+    Parameters
+    ----------
+    obj: array
+        6-dimensional vector in SQRT5-style
+    
+    Returns
+    -------
+    centroid: array in SQRT5-style
+    """
+    
+    num=len(obj)
+    v0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+    i2=0
+    for i2 in range(6):
+        v2=v0[i2]
+        i1=0
+        for i1 in range(num):
+            v2=add(v2,obj[i1][i2])
+            i1+=1
+        v0[i2]=mul(v2,np.array([1,0,num]))
+        i2+=1
+    return v0
+
+# needless???
+def centroid_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
+    """geometric center, centroid of tetrahedron, in TAU-style.
+
+    Parameters
+    ----------
+    tetrahedron: array
+        6-dimensional vector in TAU-style
+    
+    Returns
+    -------
+    centroid: array in TAU-style
+    """
+    #print('centroid_obj')
+    
+    #  geometric center, centroid of OBJ
+    tmp=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+    for tetrahedron in obj:
+        p=centroid(tetrahedron)
+        tmp=add_vectors(tmp,p)
+    return mul_vector(tmp,np.array([1,0,len(obj)]))
+
+def coplanar_check(p: NDArray[np.int64],num_iteration: int=5) -> bool:
+    """Check whether a given set of points (in TAU-style) is coplanar or not.
+    
+    メモ：xyz1とxyz2の選び方次第で、outer_product(v1,v2)が小さくなりcoplanarと間違って判定する場合がある。
+    これを避けるために適切なxyz1とxyz2の選び方が必要。以下では、ランダムにxyz1とxyz2の選ぶ。
+    
+    Parameters
+    ----------
+    p: array
+        a set of pointsin TAU-style.
+
+    Returns
+    -------
+    int
+    #bool
+    """
+    
+    """
+    num=len(p)
+    if num>3:
+        flag=0
+        lst0=[i for i in range(num)]
+        for _ in range(num_iteration):
+            lst3=random.sample(lst0, 3)
+            xyz0i=projection3(p[lst3[0]])
+            xyz1i=projection3(p[lst3[1]])
+            xyz2i=projection3(p[lst3[2]])
+            v1=sub_vectors(xyz1i,xyz0i)
+            v2=sub_vectors(xyz2i,xyz0i)
+            v3=outer_product(v1,v2)
+            flag=0
+            if np.all(d[:2])==0):
+                pass
+            else:
+                flag=1
+                break
+        if flag==1:
+            counter=0
+            lst=list(filter(lambda x: x not in lst3, lst0))
+            for i in lst:
+                xyz3i=projection3(p[i])
+                v4=sub_vectors(xyz3i,xyz0i)
+                d=inner_product(v3,v4)
+                if np.all(d[:2])==0:
+                    pass
+                else:
+                    counter=1
+                    break
+            if counter==0:
+                return True # coplanar
+            else:
+                return False
+        else:
+            'error in coplanar_check_numeric. increase num_iteration.'
+            return 
+    else:
+        return True # coplanar
+    """
+    return coplanar_check_numeric_tau(p,num_iteration)
+
+#def matrixpow(ma: NDArray[np.int64], n: int) -> NDArray[np.int64]:
+#    """
+#    """
+#    (mx,my)=ma.shape
+#    if mx==my:
+#        if n==0:
+#            return np.identity(mx)
+#        elif n<0:
+#            tmp=np.identity(mx)
+#            inva = np.linalg.inv(ma)
+#            for i in range(-n):
+#                #tmp=np.dot(tmp,inva)
+#                tmp=tmp@inva
+#            return tmp
+#        else:
+#            tmp=np.identity(mx)
+#            for i in range(n):
+#                #tmp=np.dot(tmp,ma)
+#                tmp=tmp@ma
+#            return tmp
+#    else:
+#        print('matrix has not regular shape')
+#        return 
+
+#def det_matrix(mtx: NDArray[np.int64]) -> NDArray[np.int64]:
+#    """Determinant of 3x3 matrix, mtx, in SQRT5 style
+#    
+#    Parameters
+#    ----------
+#    mtx: array
+#        3x3 matrix in SQRT5-style
+#
+#    Returns
+#    -------
+#    6d vectors projected onto Eperp in SQRT5-style.
+#    """
+#    
+#    t3=mul(mtx[0][0],mtx[1][1])
+#    t1=mul(t3,mtx[2][2])
+#    #
+#    t3=mul(mtx[0][2],mtx[1][0])
+#    t2=mul(t3,c[1])
+#    #
+#    t1=add(t1,t2)
+#    
+#    t3=mul(mtx[0][1],mtx[1][2])
+#    t3=mul(t3,mtx[2][0])
+#    #
+#    t1=add(t1,t3)
+#    
+#    t3=mul(mtx[0][2],mtx[1][1])
+#    t2=mul(t3,mtx[2][0])
+#    #
+#    t1=sub(t1,t2)
+#    
+#    t3=mul(mtx[0][1],mtx[1][0])
+#    t2=mul(t3,mtx[2][2])
+#    #
+#    t1=sub(t1,t2)
+#    
+#    t3=mul(mtx[0][0],mtx[1][2])
+#    t2=mul(t3,mtx[2][1])
+#    #
+#    t1=sub(t1,t2)
+#    #
+#    return t1
+
+if __name__ == '__main__':
+    
+    # test
+    
+    import random
+    sys.path.append('.')
+    import numericalc
+    """
+    from numericalc import (numeric_value,
+                            numerical_vector,
+                            numerical_vectors,
+                            get_internal_component_numerical,
+                            get_internal_component_sets_numerical,
+                            point_on_segment,
+                            coplanar_check_numeric_tau,
+                            )
+    """
+    ncycle=20
+    eps=1e-3
+    
+    def math_check(a,b):
+        """checking basic arithmetic operations in SQRT5-style.
+        """
+        flg=0
+        a1=numericalc.numeric_value(a)
+        b1=numericalc.numeric_value(b)
+        
+        c=add(a,b)
+        c1=numericalc.numeric_value(c)
+        c2=a1+b1
+        if abs(c1-c2)<eps:
+            flg+=1
+        else:
+            print('+')
+            
+        c=sub(a,b)
+        c1=numericalc.numeric_value(c)
+        c2=a1-b1
+        if abs(c1-c2)<eps:
+            flg+=1
+        else:
+            print('-')
+            
+        c=mul(a,b)
+        c1=numericalc.numeric_value(c)
+        c2=a1*b1
+        if abs(c1-c2)<eps:
+            flg+=1
+        else:
+            print('*')
+            
+        c=div(a,b)
+        c1=numericalc.numeric_value(c)
+        c2=a1/b1
+        if abs(c1-c2)<eps:
+            flg+=1
+        else:
+            print('/')
+            
+        if flg==4:
+            return 0
+        else:
+            print(a,b)
+            return 1
+    
+    def generate_random_value():
+        """ generate value in TAU-style
+        """
+        nmax=10
+        v=np.zeros((3),dtype=np.int64)
+        for i1 in range(2):
+            v[i1]=random.randrange(-nmax,nmax) # a and b in (a+b*TAU)/c.
+        v[2]=random.randrange(1,nmax) # c in (a+b*TAU)/c.
+        return v
+        
+    def generate_random_vector(ndim=6):
+        """ generate ndim vector in TAU-style
+        ndim: dimension of vectors
+        """
+        nmax=10
+        v=np.zeros((ndim,3), dtype=np.int64)
+        for i1 in range(ndim):
+            v[i1]=generate_random_value()
+        return v
+        
+    def generate_random_vectors(n,ndim=6):
+        """
+        num: number of generated vectors.
+        ndim: dimension of vectors
+        """
+        v=np.zeros((n,ndim,3), dtype=np.int64)
+        for i1 in range(n):
+            v[i1]=generate_random_vector(ndim)
+        return v
+    
+    #-----------------------------------
+    # check basic arithmetic operations
+    #-----------------------------------
+    flg=0
+    for _ in range(ncycle):
+        a=generate_random_value()
+        b=generate_random_value()
+        flg+=math_check(a,b)
+    if flg==0:
+        print('math_check: Correct!')
+    else:
+        print('math_check: Wrong')
+    
+    #-----------------------------------
+    # check operations on vectors
+    #-----------------------------------
+    
+    # 積：定数xベクトル
+    flg=0
+    const=np.array([1,1,2])
+    nconst=numericalc.numeric_value(const)
+    for _ in range(ncycle):
+        v1=generate_random_vector()
+        nv1=numericalc.numerical_vector(v1)
+        a=nv1*nconst
+        v=mul_vector(v1,const)
+        b=numericalc.numerical_vector(v)
+        if np.allclose(a,b):
+            pass
+        else:
+            flg+=0
+    if flg==0:
+        print('mul_vector: Correct!')
+    else:
+        print('mul_vector: Wrong')
+        
+    # 積：定数xベクトルのセット
+    nset=5
+    flg=0
+    const=np.array([1,1,2])
+    nconst=numericalc.numeric_value(const)
+    for _ in range(ncycle):
+        vs=generate_random_vectors(nset)
+        mvs=mul_vectors(vs,const)
+        for i in range(len(vs)):
+            nv1=numericalc.numerical_vector(vs[i])
+            a=nv1*nconst
+            b=numericalc.numerical_vector(mvs[i])
+            if np.allclose(a,b):
+                pass
+            else:
+                flg+=0
+    if flg==0:
+        print('mul_vectors: Correct!')
+    else:
+        print('mul_vectors: Wrong')
+    
+    # ベクトル合成
+    flg=0
+    for _ in range(ncycle):
+        v1=generate_random_vector()
+        v2=generate_random_vector()
+        #
+        n1=numericalc.numerical_vector(v1)
+        n2=numericalc.numerical_vector(v2)
+        a=n1+n2
+        #
+        v=add_vectors(v1,v2)
+        b=numericalc.numerical_vector(v)
+        #print(b)
+        if np.allclose(a,b):
+            pass
+        else:
+            flg+=0
+    if flg==0:
+        print('add_vectors: Correct!')
+    else:
+        print('add_vectors: Wrong')
+    
+    # ベクトルの差
+    flg=0
+    for _ in range(ncycle):
+        v1=generate_random_vector()
+        v2=generate_random_vector()
+        #
+        n1=numericalc.numerical_vector(v1)
+        n2=numericalc.numerical_vector(v2)
+        a=n1-n2
+        #
+        v=sub_vectors(v1,v2)
+        b=numericalc.numerical_vector(v)
+        #print(b)
+        if np.allclose(a,b):
+            pass
+        else:
+            flg+=0
+    if flg==0:
+        print('sub_vectors: Correct!')
+    else:
+        print('sub_vectors: Wrong')
+    
+    # 外積
+    flg=0
+    for _ in range(ncycle):
+        v1=generate_random_vector(3)
+        v2=generate_random_vector(3)
+        #
+        n1=numericalc.numerical_vector(v1)
+        n2=numericalc.numerical_vector(v2)
+        a=np.cross(n1,n2)
+        #
+        v=outer_product(v1,v2)
+        b=numericalc.numerical_vector(v)
+        #print(b)
+        if np.allclose(a,b):
+            pass
+        else:
+            flg+=0
+    if flg==0:
+        print('outer_product: Correct!')
+    else:
+        print('outer_product: Wrong')
+
+    # 内積
+    flg=0
+    for _ in range(ncycle):
+        v1=generate_random_vector(3)
+        v2=generate_random_vector(3)
+        #
+        n1=numericalc.numerical_vector(v1)
+        n2=numericalc.numerical_vector(v2)
+        a=np.dot(n1,n2)
+        #
+        v=inner_product(v1,v2)
+        b=numericalc.numeric_value(v)
+        #print(b)
+        if abs(a-b)<eps:
+            pass
+        else:
+            flg+=0
+    if flg==0:
+        print('inner_product: Correct!')
+    else:
+        print('inner_product: Wrong')
+    
+    
+    #-----------------------------------
+    # check: projection
+    #-----------------------------------
+    
+    v=generate_random_vector()
+    v=projection(v)
+    ve=v[0]
+    vi=v[1]
+    
+    #SQRT5=np.sqrt(5)
 #N=5
 #
 #def add(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
@@ -553,455 +1009,3 @@ from pyqcstrc.octa2.numericalc import coplanar_check_numeric_tau
 #    v3i=mtrixcal(M0,M0,M0,M0,M0,M0,vt) # 0,0,0,0,0,0
 #    return np.array([v1i,v2i,v3i],dtype=np.int64)
 
-def mtrixcal(m1: NDArray[np.int64],m2: NDArray[np.int64],m3: NDArray[np.int64],m4: NDArray[np.int64],m5: NDArray[np.int64],m6: NDArray[np.int64],v: NDArray[np.int64]) -> NDArray[np.int64]:
-    """function used in projection()
-                        projection3()
-                        projection_perp()
-    
-    Parameters
-    ----------
-    m1,m2,m3,m4,m5,m6:array for projection materix
-    v: array
-        6-dimensional vector in SQRT5-style
-
-    Returns
-    -------
-    6d vectors projected onto Eperp in SQRT5-style.
-    """
-    a1=mul(m1,v[0])
-    a2=mul(m2,v[1])
-    a3=mul(m3,v[2])
-    a4=mul(m4,v[3])
-    a5=mul(m5,v[4])
-    a6=mul(m6,v[5])
-    a1=add(a1,a2)
-    a1=add(a1,a3)
-    a1=add(a1,a4)
-    a1=add(a1,a5)
-    a1=add(a1,a6)
-    return a1
-
-def centroid(obj: NDArray[np.int64]) -> NDArray[np.int64]:
-    """geometric center, centroid of tetrahedron, triangle or edge, in SQRT5-style.
-
-    Parameters
-    ----------
-    obj: array
-        6-dimensional vector in SQRT5-style
-    
-    Returns
-    -------
-    centroid: array in SQRT5-style
-    """
-    
-    num=len(obj)
-    v0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
-    i2=0
-    for i2 in range(6):
-        v2=v0[i2]
-        i1=0
-        for i1 in range(num):
-            v2=add(v2,obj[i1][i2])
-            i1+=1
-        v0[i2]=mul(v2,np.array([1,0,num]))
-        i2+=1
-    return v0
-
-# needless???
-def centroid_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
-    """geometric center, centroid of tetrahedron, in TAU-style.
-
-    Parameters
-    ----------
-    tetrahedron: array
-        6-dimensional vector in TAU-style
-    
-    Returns
-    -------
-    centroid: array in TAU-style
-    """
-    #print('centroid_obj')
-    
-    #  geometric center, centroid of OBJ
-    tmp=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
-    for tetrahedron in obj:
-        p=centroid(tetrahedron)
-        tmp=add_vectors(tmp,p)
-    return mul_vector(tmp,np.array([1,0,len(obj)]))
-
-def coplanar_check(p: NDArray[np.int64],num_iteration: int=5) -> bool:
-    """Check whether a given set of points (in TAU-style) is coplanar or not.
-    
-    メモ：xyz1とxyz2の選び方次第で、outer_product(v1,v2)が小さくなりcoplanarと間違って判定する場合がある。
-    これを避けるために適切なxyz1とxyz2の選び方が必要。以下では、ランダムにxyz1とxyz2の選ぶ。
-    
-    Parameters
-    ----------
-    p: array
-        a set of pointsin TAU-style.
-
-    Returns
-    -------
-    int
-    #bool
-    """
-    
-    """
-    num=len(p)
-    if num>3:
-        flag=0
-        lst0=[i for i in range(num)]
-        for _ in range(num_iteration):
-            lst3=random.sample(lst0, 3)
-            xyz0i=projection3(p[lst3[0]])
-            xyz1i=projection3(p[lst3[1]])
-            xyz2i=projection3(p[lst3[2]])
-            v1=sub_vectors(xyz1i,xyz0i)
-            v2=sub_vectors(xyz2i,xyz0i)
-            v3=outer_product(v1,v2)
-            flag=0
-            if np.all(d[:2])==0):
-                pass
-            else:
-                flag=1
-                break
-        if flag==1:
-            counter=0
-            lst=list(filter(lambda x: x not in lst3, lst0))
-            for i in lst:
-                xyz3i=projection3(p[i])
-                v4=sub_vectors(xyz3i,xyz0i)
-                d=inner_product(v3,v4)
-                if np.all(d[:2])==0:
-                    pass
-                else:
-                    counter=1
-                    break
-            if counter==0:
-                return True # coplanar
-            else:
-                return False
-        else:
-            'error in coplanar_check_numeric. increase num_iteration.'
-            return 
-    else:
-        return True # coplanar
-    """
-    return coplanar_check_numeric_tau(p,num_iteration)
-
-def matrixpow(ma: NDArray[np.int64], n: int) -> NDArray[np.int64]:
-    """
-    """
-    (mx,my)=ma.shape
-    if mx==my:
-        if n==0:
-            return np.identity(mx)
-        elif n<0:
-            tmp=np.identity(mx)
-            inva = np.linalg.inv(ma)
-            for i in range(-n):
-                #tmp=np.dot(tmp,inva)
-                tmp=tmp@inva
-            return tmp
-        else:
-            tmp=np.identity(mx)
-            for i in range(n):
-                #tmp=np.dot(tmp,ma)
-                tmp=tmp@ma
-            return tmp
-    else:
-        print('matrix has not regular shape')
-        return 
-
-def det_matrix(mtx: NDArray[np.int64]) -> NDArray[np.int64]:
-    """Determinant of 3x3 matrix, mtx, in SQRT5 style
-    
-    Parameters
-    ----------
-    mtx: array
-        3x3 matrix in SQRT5-style
-
-    Returns
-    -------
-    6d vectors projected onto Eperp in SQRT5-style.
-    """
-    
-    t3=mul(mtx[0][0],mtx[1][1])
-    t1=mul(t3,mtx[2][2])
-    #
-    t3=mul(mtx[0][2],mtx[1][0])
-    t2=mul(t3,c[1])
-    #
-    t1=add(t1,t2)
-    
-    t3=mul(mtx[0][1],mtx[1][2])
-    t3=mul(t3,mtx[2][0])
-    #
-    t1=add(t1,t3)
-    
-    t3=mul(mtx[0][2],mtx[1][1])
-    t2=mul(t3,mtx[2][0])
-    #
-    t1=sub(t1,t2)
-    
-    t3=mul(mtx[0][1],mtx[1][0])
-    t2=mul(t3,mtx[2][2])
-    #
-    t1=sub(t1,t2)
-    
-    t3=mul(mtx[0][0],mtx[1][2])
-    t2=mul(t3,mtx[2][1])
-    #
-    t1=sub(t1,t2)
-    #
-    return t1
-
-if __name__ == '__main__':
-    
-    # test
-    
-    import random
-    sys.path.append('.')
-    import numericalc
-    """
-    from numericalc import (numeric_value,
-                            numerical_vector,
-                            numerical_vectors,
-                            get_internal_component_numerical,
-                            get_internal_component_sets_numerical,
-                            point_on_segment,
-                            coplanar_check_numeric_tau,
-                            )
-    """
-    ncycle=20
-    eps=1e-3
-    
-    def math_check(a,b):
-        """checking basic arithmetic operations in SQRT5-style.
-        """
-        flg=0
-        a1=numericalc.numeric_value(a)
-        b1=numericalc.numeric_value(b)
-        
-        c=add(a,b)
-        c1=numericalc.numeric_value(c)
-        c2=a1+b1
-        if abs(c1-c2)<eps:
-            flg+=1
-        else:
-            print('+')
-            
-        c=sub(a,b)
-        c1=numericalc.numeric_value(c)
-        c2=a1-b1
-        if abs(c1-c2)<eps:
-            flg+=1
-        else:
-            print('-')
-            
-        c=mul(a,b)
-        c1=numericalc.numeric_value(c)
-        c2=a1*b1
-        if abs(c1-c2)<eps:
-            flg+=1
-        else:
-            print('*')
-            
-        c=div(a,b)
-        c1=numericalc.numeric_value(c)
-        c2=a1/b1
-        if abs(c1-c2)<eps:
-            flg+=1
-        else:
-            print('/')
-            
-        if flg==4:
-            return 0
-        else:
-            print(a,b)
-            return 1
-    
-    def generate_random_value():
-        """ generate value in TAU-style
-        """
-        nmax=10
-        v=np.zeros((3),dtype=np.int64)
-        for i1 in range(2):
-            v[i1]=random.randrange(-nmax,nmax) # a and b in (a+b*TAU)/c.
-        v[2]=random.randrange(1,nmax) # c in (a+b*TAU)/c.
-        return v
-        
-    def generate_random_vector(ndim=6):
-        """ generate ndim vector in TAU-style
-        ndim: dimension of vectors
-        """
-        nmax=10
-        v=np.zeros((ndim,3), dtype=np.int64)
-        for i1 in range(ndim):
-            v[i1]=generate_random_value()
-        return v
-        
-    def generate_random_vectors(n,ndim=6):
-        """
-        num: number of generated vectors.
-        ndim: dimension of vectors
-        """
-        v=np.zeros((n,ndim,3), dtype=np.int64)
-        for i1 in range(n):
-            v[i1]=generate_random_vector(ndim)
-        return v
-    
-    #-----------------------------------
-    # check basic arithmetic operations
-    #-----------------------------------
-    flg=0
-    for _ in range(ncycle):
-        a=generate_random_value()
-        b=generate_random_value()
-        flg+=math_check(a,b)
-    if flg==0:
-        print('math_check: Correct!')
-    else:
-        print('math_check: Wrong')
-    
-    #-----------------------------------
-    # check operations on vectors
-    #-----------------------------------
-    
-    # 積：定数xベクトル
-    flg=0
-    const=np.array([1,1,2])
-    nconst=numericalc.numeric_value(const)
-    for _ in range(ncycle):
-        v1=generate_random_vector()
-        nv1=numericalc.numerical_vector(v1)
-        a=nv1*nconst
-        v=mul_vector(v1,const)
-        b=numericalc.numerical_vector(v)
-        if np.allclose(a,b):
-            pass
-        else:
-            flg+=0
-    if flg==0:
-        print('mul_vector: Correct!')
-    else:
-        print('mul_vector: Wrong')
-        
-    # 積：定数xベクトルのセット
-    nset=5
-    flg=0
-    const=np.array([1,1,2])
-    nconst=numericalc.numeric_value(const)
-    for _ in range(ncycle):
-        vs=generate_random_vectors(nset)
-        mvs=mul_vectors(vs,const)
-        for i in range(len(vs)):
-            nv1=numericalc.numerical_vector(vs[i])
-            a=nv1*nconst
-            b=numericalc.numerical_vector(mvs[i])
-            if np.allclose(a,b):
-                pass
-            else:
-                flg+=0
-    if flg==0:
-        print('mul_vectors: Correct!')
-    else:
-        print('mul_vectors: Wrong')
-    
-    # ベクトル合成
-    flg=0
-    for _ in range(ncycle):
-        v1=generate_random_vector()
-        v2=generate_random_vector()
-        #
-        n1=numericalc.numerical_vector(v1)
-        n2=numericalc.numerical_vector(v2)
-        a=n1+n2
-        #
-        v=add_vectors(v1,v2)
-        b=numericalc.numerical_vector(v)
-        #print(b)
-        if np.allclose(a,b):
-            pass
-        else:
-            flg+=0
-    if flg==0:
-        print('add_vectors: Correct!')
-    else:
-        print('add_vectors: Wrong')
-    
-    # ベクトルの差
-    flg=0
-    for _ in range(ncycle):
-        v1=generate_random_vector()
-        v2=generate_random_vector()
-        #
-        n1=numericalc.numerical_vector(v1)
-        n2=numericalc.numerical_vector(v2)
-        a=n1-n2
-        #
-        v=sub_vectors(v1,v2)
-        b=numericalc.numerical_vector(v)
-        #print(b)
-        if np.allclose(a,b):
-            pass
-        else:
-            flg+=0
-    if flg==0:
-        print('sub_vectors: Correct!')
-    else:
-        print('sub_vectors: Wrong')
-    
-    # 外積
-    flg=0
-    for _ in range(ncycle):
-        v1=generate_random_vector(3)
-        v2=generate_random_vector(3)
-        #
-        n1=numericalc.numerical_vector(v1)
-        n2=numericalc.numerical_vector(v2)
-        a=np.cross(n1,n2)
-        #
-        v=outer_product(v1,v2)
-        b=numericalc.numerical_vector(v)
-        #print(b)
-        if np.allclose(a,b):
-            pass
-        else:
-            flg+=0
-    if flg==0:
-        print('outer_product: Correct!')
-    else:
-        print('outer_product: Wrong')
-
-    # 内積
-    flg=0
-    for _ in range(ncycle):
-        v1=generate_random_vector(3)
-        v2=generate_random_vector(3)
-        #
-        n1=numericalc.numerical_vector(v1)
-        n2=numericalc.numerical_vector(v2)
-        a=np.dot(n1,n2)
-        #
-        v=inner_product(v1,v2)
-        b=numericalc.numeric_value(v)
-        #print(b)
-        if abs(a-b)<eps:
-            pass
-        else:
-            flg+=0
-    if flg==0:
-        print('inner_product: Correct!')
-    else:
-        print('inner_product: Wrong')
-    
-    
-    #-----------------------------------
-    # check: projection
-    #-----------------------------------
-    
-    v=generate_random_vector()
-    v=projection(v)
-    ve=v[0]
-    vi=v[1]
