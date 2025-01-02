@@ -105,6 +105,25 @@ class Qnmat:
     
     def __matmul__(ma1:Qnmat, ma2:Qnmat) -> Qnmat:  #  for ma1@ma2
         return matmul(ma1,ma2)
+    
+    def qnm2npa(a):
+        # Qnmatrix to np.array converter
+        la=len(a)
+        b=np.zeros(la,la,3) #la x la qnnum matrix 
+        for i in range(la):
+            for j in range(la):
+                b[i][j]=[a[i][j].n[0],a[i][j].n[1],a[i][j].n[2]]
+        return b
+    
+    def qnm2flt(a):
+        la=len(a)
+        b=np.zeros(la,la,3)  #la x la qnnum matrix 
+        N=a[0].N
+        for i in range(la):
+            for j in range(la):
+                b[i][j]=(a[i][j].n[0]+a[i][j].n[1]*np.sqrt(N))/a[i][j].n[2]
+        return b
+    
         
 
 	if __name__ == '__main__':

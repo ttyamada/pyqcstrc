@@ -31,7 +31,7 @@ class Qnvec:
 	        print('incorrect shape')
 	        return
 
-    def mul_vectors(vts: Qnvec, coeff:Qnvec) -> Qnvec:
+    def mul_vectors(vts: Qnvec, coeff:Qnnum) -> Qnvec:
 	    if vts.ndim==3:
 	        a=np.zeros(vts.shape,dtype=np.int64)
 	        for i,vt in enumerate(vts):
@@ -173,7 +173,23 @@ class Qnvec:
 	    else:
 	        print('incorrect shape found in dot_product')
 	        return 
-
+    
+    def qnv2npa(a):
+        # Qnvector to np.array converter
+        la=len(a)
+        b=np.zeros(la,3)
+        for i in range(la):
+            b[i]=[a[i].n[0],a[i].n[1],a[i].n[2]]
+        return b
+    
+    def qnv2flt(a):
+        la=len(a)
+        b=np.zeros(la)
+        N=a[0].N
+        for i in range(la):
+            b[i]=(a[i].n[0]+a[i].n[1]*np.sqrt(N))/a[i].n[2]
+        return b
+    
     def __add__(a, b):
         return add(a,b)
     

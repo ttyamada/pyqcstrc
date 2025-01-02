@@ -77,7 +77,7 @@ def div(a, b):
     c=Qnnum(np.array([c1,c2,c3]),a.N)
     return mul(a,c)
     
-    # Qnnumber to np.array converter
+# Qnnumber to np.array converter
 def qn2npa(a):
     return np.array([a.n[0],a.n[1],a.n[2]])
 
