@@ -34,6 +34,8 @@ def matmul(ma1: Qnmat, ma2: Qnmat) -> Qnmat:
                 ma3[i]=ma3[i]+ma1[j]*ma2[j][i]
         return ma3
                 
+# for similarity transformation
+# not confirmed yet
 def matrixpow(ma: Qnmat, n: int) -> Qnmat:
     """
     """
