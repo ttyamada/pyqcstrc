@@ -5,11 +5,26 @@ from pyqcstrc.qnnum import qnnum
 from pyqcstrc.qnvec import qnvec
 
 def chkop(qnv1,qnv2):
-    print("qnv1+qnv2",qnvec.qnv2npa(qnv1+qnv2))
-    print("qnv1+qnv2",qnvec.qnv2flt(qnv1+qnv2),qnvec.qnv2flt(qnv1)+qnvec.qnv2flt(qnv2))
-    print("qnv1-qnv2",qnvec.qnv2npa(qnv2-qnv1))
-    print("qnv1-qnv2",qnvec.qnv2flt(qnv1-qnv2),qnvec.qnv2flt(qnv1)-qnvec.qnv2flt(qnv2))
+    qnvec.printqnv("qnv1+qnv2",qnvec.qnv2npa(qnv1+qnv2))
+    qnvec.printqnv("qnv1+qnv2",qnvec.qnv2flt(qnv1+qnv2))
+    qnvec.printqnv("qnv1+qnv2",qnvec.qnv2flt(qnv1)+qnvec.qnv2flt(qnv2))
+    qnvec.printqnv("qnv1-qnv2",qnvec.qnv2npa(qnv2-qnv1))
+    qnvec.printqnv("qnv1-qnv2",qnvec.qnv2flt(qnv1-qnv2))
+    qnvec.printqnv("qnv1-qnv2",qnvec.qnv2flt(qnv1)-qnvec.qnv2flt(qnv2))
 
+def printqnv(str,qnv1):
+    print(str,"[",end=" ")
+    for i in qnv1:
+        print(i,end=" ")
+    print("]")
+
+def printqnv2(str,qnv1,qnv2):
+    print(str,"[",end=" ")
+    for i in qnv1:
+        print(i,end=" ")
+    print("] [",end="")
+    for i in qnv2:
+        print(i,end="]")
 
 np1=np.array([1,2,3])
 np2=np.array([4,5,6])
@@ -23,7 +38,7 @@ print("np4",np4)
 
 # octagonal qnnumber
 print("octagonal")
-qn1=qnnum.Qnnum(np1,2)
+qn1=qnnum.Qnnum(np1,2) # sqrt(2) type qnnumber
 qn2=qnnum.Qnnum(np2,2)
 qn3=qnnum.Qnnum(np3,2)
 qn4=qnnum.Qnnum(np4,2)
@@ -37,6 +52,7 @@ v1=np.array([qn1,qn2,qn3,qn4],qnnum.Qnnum) #Qnnum array
 v2=np.array([qn2,qn1,qn4,qn3],qnnum.Qnnum) #Qnnum array
 qnv1=qnvec.Qnvec(v1,4) # qnvector for vec1
 qnv2=qnvec.Qnvec(v2,4) # qnvector for vec2
-print("qnv1",qnvec.qnv2npa(qnv1))
-print("qnv2",qnvec.qnv2npa(qnv2))
+
+qnvec.printqnv("qnv1",qnvec.qnv2npa(qnv1))
+qnvec.printqnv("qnv2",qnvec.qnv2npa(qnv2))
 chkop(qnv1,qnv2)
