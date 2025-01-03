@@ -141,9 +141,9 @@ def dot_product_1(vec1, vec2):
 def qnv2npa(a):
     # Qnvector to np.array converter
     la=a.shape
-    print("la",la)
+    #print("la",la)
     b=np.zeros((la,3), dtype=np.int64)
-    print("b",b)
+    #print("b",b)
     for i in range(la):
         ai=a.vt[i]
         b[i]=[ai.n[0],ai.n[1],ai.n[2]]
@@ -152,10 +152,24 @@ def qnv2npa(a):
 def qnv2flt(a):
     la=a.shape
     b=np.zeros(la, dtype=np.float64)
-    print("b",b)
+    #print("b",b)
     N=a.vt[0].N
     for i in range(la):
         ai=a.vt[i]
         b[i]=(ai.n[0]+ai.n[1]*np.sqrt(N))/ai.n[2]
     return b
+
+def printqnv(str,qnv1):
+    print(str,"[",end=" ")
+    for i in qnv1:
+        print(i,end=" ")
+    print("]")
+
+def printqnv2(str,qnv1,qnv2):
+    print(str,"[",end=" ")
+    for i in qnv1:
+        print(i,end=" ")
+    print("] [",end="")
+    for i in qnv2:
+        print(i,end="]")
     

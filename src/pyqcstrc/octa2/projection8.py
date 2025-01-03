@@ -81,7 +81,7 @@ def projection3(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     M4=np.array([ 0,-1, 1]) # -sqrt(2)
     #v1e=mtrixcal(M2,M1,M0,M2,M0,M0,vt) #
     #v2e=mtrixcal(M0,M1,M3,M1,M0,M0,vt) #
-    v1i=mtrixcal(M3,M2,M0,M1,M0,M0,vt) #
+    v1i=mtrixcal(M3,M2,M0,M1,M0,M0,vt) # inner product of M3,,M0 and vt
     v2i=mtrixcal(M0,M1,M4,M1,M0,M0,vt) #
     #v3e=mtrixcal(M0,M0,M0,M0,M0,M0,vt) # 0,0,0,0,0,0 
     v3i=mtrixcal(M0,M0,M0,M0,M0,M0,vt) # 0,0,0,0,0,0
