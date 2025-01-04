@@ -5,11 +5,11 @@ from pyqcstrc.qnnum import qnnum
 #from pyqcstrc.qnvec import qnvec
     
 class Qnvec:
-    #def __init__(self, vt:NDArray[qnnum], shape:np.int64):
-    def __init__(self, vt:np.ndarray[qnnum], shape:np.int64):
+    #def __init__(self, vt:np.ndarray[qnnum], shape:np.array):
+    def __init__(self, vt:np.ndarray[qnnum]):
         self.vt=vt
-        self.shape = shape  #dimension of a vector a
-        
+        self.shape = vt.shape  #dimension of a vector a
+        self.ndim = vt.ndim
     def __add__(a, b):
         return add(a,b)
     
@@ -18,20 +18,23 @@ class Qnvec:
 
 def add(v1:Qnvec, v2:Qnvec) -> Qnvec:
     a=np.empty(v1.shape, dtype=qnnum.Qnnum)
-    for i in range(v1.shape):
+    la=v1.shape
+    for i in range(la[0]):
         a[i]=v1.vt[i]+v2.vt[i]  #add(v1[i],v2[i])
-    return Qnvec(a,v1.shape)
+    return Qnvec(a)
 
 def sub(v1:Qnvec, v2:Qnvec)-> Qnvec:
     a=np.empty(v1.shape, dtype=qnnum.Qnnum)
-    for i in range(v1.shape):
+    la=v1.shape
+    for i in range(la[0]):
         a[i]=v1.vt[i]-v2.vt[i]  #add(v1[i],v2[i])
-    return Qnvec(a,v1.shape)
+    return Qnvec(a)
 
 def mul_vector(v:Qnvec, coeff):
     if v.ndim==2:
         a=np.zeros(v.shape,dtype=np.int64)
-        for i,v in enumerate(v):
+        la=v.shape
+        for i,v in range(la[0]):
             a[i]=v*coeff  #mul(v,coeff)
         return a
     else:
@@ -41,7 +44,8 @@ def mul_vector(v:Qnvec, coeff):
 def mul_vectors(vs, coeff):
     if vs.ndim==3:
         a=np.zeros(vs.shape,dtype=np.int64)
-        for i,v in enumerate(vs):
+        la=v.shape
+        for i,v in range(la[0]):
             a[i]=mul_vector(v,coeff)
         return a
     elif vs.ndim==4:
@@ -56,7 +60,8 @@ def mul_vectors(vs, coeff):
 def shift_vectors(vs, v):
     if vs.ndim==3:
         a=np.zeros(vs.shape,dtype=np.int64)
-        for i,v1 in enumerate(vs):
+        la=vs.shape
+        for i,v1 in range(la[0]):
             a[i]=add_vectors(v1,v)
         return a
     elif vs.ndim==4:
@@ -142,9 +147,11 @@ def qnv2npa(a):
     # Qnvector to np.array converter
     la=a.shape
     #print("la",la)
-    b=np.zeros((la,3), dtype=np.int64)
-    #print("b",b)
-    for i in range(la):
+    print("la",la,"la[0]",la[0],"range(la[0])",range(la[0]))
+    
+    b=np.empty((la[0],3),dtype=np.int64)
+    print("b",b)
+    for i in range(la[0]):
         ai=a.vt[i]
         b[i]=[ai.n[0],ai.n[1],ai.n[2]]
     return b
@@ -154,22 +161,28 @@ def qnv2flt(a):
     b=np.zeros(la, dtype=np.float64)
     #print("b",b)
     N=a.vt[0].N
-    for i in range(la):
+    for i in range(la[0]):
         ai=a.vt[i]
         b[i]=(ai.n[0]+ai.n[1]*np.sqrt(N))/ai.n[2]
     return b
 
 def printqnv(str,qnv1):
     print(str,"[",end=" ")
-    for i in qnv1:
-        print(i,end=" ")
+    la=qnv1.shape
+    for i in range(la[0]):
+        j=qnv1.vt[i]
+        print(qnnum.qn2npa(j),end=" ")
     print("]")
 
 def printqnv2(str,qnv1,qnv2):
     print(str,"[",end=" ")
-    for i in qnv1:
-        print(i,end=" ")
+    la1=qnv1.shape
+    for i in range(la[0]):
+        j=qnv1.vt[i]
+        print(qnnum.qn2npa(j),end=" ")
     print("] [",end="")
+    la2=qnv2.shape
     for i in qnv2:
-        print(i,end="]")
+        j=qnv1.vt[i]
+        print(qnnum.qn2npa(j),end="]")
     

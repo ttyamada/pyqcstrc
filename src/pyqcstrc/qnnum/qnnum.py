@@ -5,13 +5,20 @@ from numpy.typing import NDArray
 class Qnnum:
     def __init__(self, n: NDArray[np.int64], N: np.int64):
         self.n=n
-        self.N=N # 2 5 3 for octagonal, decagonal and dodecagonal Qnnumber   
+        #self.N=N # 2 5 3 for octagonal, decagonal and dodecagonal Qnnumber   
+        self.N=N
     
     def __add__(a, b):
         return add(a,b)
     
     def __sub__(a, b):
         return sub(a,b)
+    
+    def __iadd__(self, b):
+        return iadd(self,b)
+    
+    def __isub__(self, b):
+        return isub(self,b)
     
     def __mul__(a, b):
         return mul(a,b)
@@ -37,6 +44,10 @@ def add(a, b):
     else:
         return Qnnum(np.array([c1,c2,c3]),a.N)
 
+def iadd(self, b):
+    self=add(self,b)
+    return self
+
 def sub(a, b):
     c1=a.n[0]*b.n[2]-b.n[0]*a.n[2]
     c2=a.n[1]*b.n[2]-b.n[1]*a.n[2]
@@ -50,6 +61,10 @@ def sub(a, b):
         return Qnnum(np.array([-c1,-c2,-c3]),a.N)
     else:
         return Qnnum(np.array([c1,c2,c3]),a.N)
+
+def isub(self, b):
+    self=sub(self,b)
+    return self
 
 def mul(a, b):
     c1=a.n[0]*b.n[0]+a.N*a.n[1]*b.n[1]

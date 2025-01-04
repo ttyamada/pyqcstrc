@@ -7,12 +7,12 @@ from pyqcstrc.qnmat import qnmat
 from pyqcstrc.prjop import prjop
 
 def chkop(qnv1,qnv2):
-    qnvec.printqnv("qnv1+qnv2",qnvec.qnv2npa(qnv1+qnv2))
-    qnvec.printqnv("qnv1+qnv2",qnvec.qnv2flt(qnv1+qnv2))
-    qnvec.printqnv("qnv1+qnv2",qnvec.qnv2flt(qnv1)+qnvec.qnv2flt(qnv2))
-    qnvec.printqnv("qnv1-qnv2",qnvec.qnv2npa(qnv2-qnv1))
-    qnvec.printqnv("qnv1-qnv2",qnvec.qnv2flt(qnv1-qnv2))
-    qnvec.printqnv("qnv1-qnv2",qnvec.qnv2flt(qnv1)-qnvec.qnv2flt(qnv2))
+    qnvec.printqnv("qnv1+qnv2",qnv1+qnv2)
+    print("qnv1+qnv2",qnvec.qnv2flt(qnv1+qnv2))
+    #qnvec.printqnv("qnv1+qnv2",qnvec.qnv2flt(qnv1)+qnvec.qnv2flt(qnv2))
+    qnvec.printqnv("qnv1-qnv2",qnv2-qnv1)
+    print("qnv1-qnv2",qnvec.qnv2flt(qnv1-qnv2))
+    #qnvec.printqnv("qnv1-qnv2",qnvec.qnv2flt(qnv1)-qnvec.qnv2flt(qnv2))
 
 np0=np.array([0,0,1])
 np1=np.array([1,2,3])
@@ -43,22 +43,45 @@ print("qn4",qnnum.qn2npa(qn4))
 
 v1=np.array([qn1,qn2,qn3,qn4,qn0,qn0],qnnum.Qnnum) #Qnnum array
 v2=np.array([qn2,qn1,qn4,qn3,qn0,qn0],qnnum.Qnnum) #Qnnum array
-qnv1=qnvec.Qnvec(v1,6) # qnvector for vec1
-qnv2=qnvec.Qnvec(v2,6) # qnvector for vec2
+qnv1=qnvec.Qnvec(v1) # qnvector for vec1
+qnv2=qnvec.Qnvec(v2) # qnvector for vec2
+qnm1=qnmat.Qnmat(v1) # 1D qnmatrix
+qnm2=qnmat.Qnmat(v2) # 2D qnmatrix
+print("qnv1",type(qnv1))
+print("qnm1",type(qnm1))
 
-qnvec.printqnv("qnv1",qnvec.qnv2npa(qnv1))
-qnvec.printqnv("qnv2",qnvec.qnv2npa(qnv2))
+qnvec.printqnv("qnv1",qnv1)
+qnvec.printqnv("qnv2",qnv2)
 chkop(qnv1,qnv2)
 
 # for octagonal
-cls=prjop.octa()
-qnmat.printqnm("qnnum projection matrix for octaglnal lattice",cls.mt)
+prj=prjop.Octa()
+prjm=prj.mt
+print("prj",type(prj))
+print("prjm",type(prjm))
+qnmat.printqnm("projection matrix for octaglnal lattice",prjm)
+qnmat.printqnm("qnm1",qnm1)
+qnm3=prjm@qnm1 # qnv3=cls.mt@qnv1.vt
+#print("qnv3",qnv3)
+qnmat.printqnm("qnv3 for octaglnal lattice",qnm3)
+#qnvec.printqnm("cls.mt@qnv1 for octaglnal lattice",cls.mt@qnv1)
+
 
 # for deagonal
-cls=prjop.deca()
-qnmat.printqnm("qnnum projection matrix for decagonal lattice",cls.mt)
+prj=prjop.Deca()
+prjm=prj.mt
+qnmat.printqnm("projection matrix for decagonal lattice",prjm)
+qnm3=prjm@qnm1
+qnmat.printqnm("qnv3 for decagonal lattice",qnm3)
+#qnvec.printqnm("cls.mt@qnv1 for decagonal lattice",prj.mt@qnv1)
 
 # for deagonal
-cls=prjop.dode()
-qnmat.printqnm("qnnum projection matrix for dodecaglnal lattice",cls.mt)
+prj=prjop.Dode()
+prjm=prj.mt
+qnmat.printqnm("projection matrix for dodecaglnal lattice",prjm)
+qnv3=prj.mt@qnm1
+qnvec.printqnm("qnv3 for dodecagonal lattice",qnv3)
+#qnvec.printqnm("cls.mt@qnv1 for dodecagonal lattice",cls.mt@qnv1)
+
+
 

@@ -5,33 +5,73 @@ from pyqcstrc.qnvec import qnvec
 from numpy.typing import NDArray
 
 class Qnmat:
-    def __init__(self, mt:np.ndarray[qnnum], shape:np.array):
+    #def __init__(self, mt:np.ndarray[qnnum], shape:np.array):
+    def __init__(self, mt:np.ndarray[qnnum]):
         self.mt=mt
-        self.shape = shape  #dimension of a vector a
+        self.shape=mt.shape
+        self.ndim=mt.ndim
+        
+    def __add__(ma1, ma2):  #  for ma1+ma2
+        return add(ma1,ma2)
+    
+    def __iadd__(ma1, ma2):  #  for ma1+ma2
+        return iadd(ma1,ma2)
+    
+    def __isub__(ma1, ma2):  #  for ma+=ma2
+        return isub(ma1,ma2)
         
     def __matmul__(ma1, ma2):  #  for ma1@ma2
         return matmul(ma1,ma2)
-
-# for ma1@ma2 (ma1 and ma2 should be qnvec or qnmat)
-def matmul(ma1: Qnmat, ma2: Qnmat) -> Qnmat: 
+    
+def add(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
+    a=np.empty(mat1.shape, dtype=qnnum.Qnnum)
+    la1=ma1.shape
+    la2=ma2.shape
     n1=ma1.ndim
     n2=ma2.ndim
-    if(n1==1 & n2==1): # inner product of qnvec
-        sum=0
-        for i in range(len(ma1)):
-            sum=sum+ma1[i]*ma2[i]
+    if(n1==1 and n2==1):
+        for i in range(la[0]):
+            a[i]=ma1.mt[i]+ma2.mt[i]  #add(v1[i],v2[i])
+        return Qnmat(a)
+    elif(n1==2 and n2==2):
+        for i in range(la[0]):
+            for j in range(la[1]):
+                a[i][j]=ma1.mt[i][j]+ma2.mt[i][j]  #add(v1[i],v2[i])
+        return Qnmat(a) 
+    
+def iadd(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
+    ma1=add(ma1,ma2)
+    return ma1
+
+def isub(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
+    ma1=sub(ma1,ma2)
+    return ma1
+    
+# for ma1@ma2 (ma1 and ma2 should be qnvec or qnmat)
+def matmul(ma1: Qnmat, ma2: Qnmat) -> Qnmat: 
+    la1=ma1.shape
+    la2=ma2.shape
+    n1=ma1.ndim
+    n2=ma2.ndim
+    print("la1",la1,"la2",la2,"n1",n1,"n2",n2)
+    if(n1==1 and n2==1): # inner product of qnvec
+        sum=Qnnum([0,0,1])
+        for i in range(la1[0]):
+            sum=sum+ma1.mt[i]*ma2.mt[i]
             return sum
-    elif(n1==2 & n2==1): # qnmat*qnvec
-        ma3=np.zeros(len(ma1))
-        for i in range(len(ma1)):
-            for j in range(len(ma1[0])):
-                ma3[i]=ma3[i][j]+ma1[i][j]*ma2[j]
+    elif(n1==2 and n2==1): # qnmat@qnvec
+        m3=np.zeros(la1[0]) # zero vector
+        ma3=Qnmat(m3)
+        for i in range(la1[0]):
+            for j in range(la1[1]):
+                ma3.mt[i]+=ma1.mt[i][j]*ma2.mt[j]
         return ma3
-    elif(n1==1 & n2==2): # qnvec*qnmat
-        ma3=np.zeros(len(ma1))
-        for i in range(len(ma1)):
-            for j in range(len(ma1[0])):
-                ma3[i]=ma3[i]+ma1[j]*ma2[j][i]
+    elif(n1==1 and n2==2): # qnvec@qnmat
+        m3=np.zeros(la1[0]) # this should be qnvec
+        ma3=Qnmat(v3)
+        for i in range(la2[0]):
+            for j in range(la2[1]):
+                ma3.mt[i]+=ma1.mt[j]*ma2.mt[j][i]
         return ma3
                 
 # for similarity transformation
@@ -103,16 +143,16 @@ def det_matrix(mtx: Qnmat) -> Qnmat:
     
 def qnm2npa(a):
     # Qnmatrix to np.array converter
-    la=len(a)
-    b=np.zeros(la,la,3) #la x la qnnum matrix 
-    for i in range(la):
-        for j in range(la):
+    la=a.shape #len(a)
+    b=np.zeros(la[0],la[1],3) #la x la qnnum matrix 
+    for i in range(la[0]):
+        for j in range(la[1]):
             b[i][j]=[a[i][j].n[0],a[i][j].n[1],a[i][j].n[2]]
     return b
 
 def qnm2flt(a):
-    la=len(a)
-    b=np.zeros(la,la,3)  #la x la qnnum matrix 
+    la=a.shape #len(a)
+    b=np.zeros(la[0],la[1],3)  #la x la qnnum matrix 
     N=a[0].N
     for i in range(la):
         for j in range(la):
@@ -121,12 +161,19 @@ def qnm2flt(a):
         
 def printqnm(str,qnm):
     print(str)
-    for i in range(qnm.shape[0]):
-        print("[",end=" ")
-        for j in range(qnm.shape[1]):
-            print(qnnum.qn2npa(qnm.mt[i][j]),end=" ")
+    n1=qnm.ndim
+    if n1==1:
+        for i in range(qnm.shape[0]):
+            print("[",end=" ")
+            print(qnnum.qn2npa(qnm.mt[i]),end=" ")
         print("]")
-    print("]")
+    elif n1==2:
+        for i in range(qnm.shape[0]):
+            print("[",end=" ")
+            for j in range(qnm.shape[1]):
+                print(qnnum.qn2npa(qnm.mt[i][j]),end=" ")
+            print("]")
+        print("]")
 
 if __name__ == '__main__':
     # test
