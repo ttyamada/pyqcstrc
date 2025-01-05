@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 from numpy.typing import NDArray
-from pyqcstrc.qnnum import qnnum
+import pyqcstrc.qnnum.qnnum as qnn
 #from pyqcstrc.qnvec import qnvec
     
 class Qnvec:
@@ -16,25 +16,25 @@ class Qnvec:
     def __sub__(a, b):
         return sub(a,b)
     
-def zerov(qnzero:qnnum.Qnnum,n:np.int64): # qnnumber zero vector
+def zerov(qnzero:qnn.Qnnum,n:np.int64): # qnnumber zero vector
     qnv=Qnvec(np.full(n,qnzero))
     return qnv
 
 def add(v1:Qnvec, v2:Qnvec) -> Qnvec:
-    a=np.empty(v1.shape, dtype=qnnum.Qnnum)
+    a=np.empty(v1.shape, dtype=qnn.Qnnum)
     la=v1.shape
     for i in range(la[0]):
         a[i]=v1.vt[i]+v2.vt[i]  #add(v1[i],v2[i])
     return Qnvec(a)
 
 def sub(v1:Qnvec, v2:Qnvec)-> Qnvec:
-    a=np.empty(v1.shape, dtype=qnnum.Qnnum)
+    a=np.empty(v1.shape, dtype=qnn.Qnnum)
     la=v1.shape
     for i in range(la[0]):
         a[i]=v1.vt[i]-v2.vt[i]  #add(v1[i],v2[i])
     return Qnvec(a)
 
-def mul_vector(v:Qnvec, coeff:qnnum.Qnnum):
+def mul_vector(v:Qnvec, coeff:qnn.Qnnum):
     if v.ndim==2:
         a=np.zeros(v.shape,dtype=np.int64)
         la=v.shape
@@ -45,7 +45,7 @@ def mul_vector(v:Qnvec, coeff:qnnum.Qnnum):
         print('incorrect shape')
         return
 
-def mul_vectors(vs:Qnvec, coeff:qnnum.Qnnum):
+def mul_vectors(vs:Qnvec, coeff:qnn.Qnnum):
     if vs.ndim==3:
         a=np.zeros(vs.shape,dtype=np.int64)
         la=v.shape
@@ -62,7 +62,7 @@ def mul_vectors(vs:Qnvec, coeff:qnnum.Qnnum):
         print('incorrect shape')
         return
 
-def shift_vectors(vs:Qnvec, v:Qnvec):
+def shift_vectors(vs:Qnvec, v:Qnvec) -> Qnvec:
     if vs.ndim==3:
         a=np.zeros(vs.shape,dtype=np.int64)
         la=vs.shape
@@ -77,8 +77,24 @@ def shift_vectors(vs:Qnvec, v:Qnvec):
     else:
         print('incorrect shape')
         return
+    
+# cros == outer_product (cross product) 
+def cros(v1:Qnvec, v2:Qnvec) -> Qnvec:
+    a=v1[1]*v2[2] #mul(v1[1],v2[2])
+    b=v1[2]*v2[1] #mul(v1[2],v2[1])
+    c1=a-b        #sub(a,b)
+    #
+    a=v1[2]*v2[0] #mul(v1[2],v2[0])
+    b=v1[0]*v2[2] #mul(v1[0],v2[2])
+    c2=a-b        #sub(a,b)
+    #
+    a=v1[0]*v2[1] #mul(v1[0],v2[1])
+    b=v1[1]*v2[0] #mul(v1[1],v2[0])
+    c3=a-b        #sub(a,b)
+    #return np.array([c1,c2,c3],dtype=qnn.Qnnumber)
+    return Qnvec([c1,c2,c3])
 
-def outer_product(v1:Qnvec, v2:Qnvec):
+def outer_product(v1:Qnvec, v2:Qnvec)-> Qnvec:
     a=v1[1]*v2[2] #mul(v1[1],v2[2])
     b=v1[2]*v2[1] #mul(v1[2],v2[1])
     c1=a-b          #sub(a,b)
@@ -90,10 +106,10 @@ def outer_product(v1:Qnvec, v2:Qnvec):
     a=v1[0]*v2[1] #mul(v1[0],v2[1])
     b=v1[1]*v2[0] #mul(v1[1],v2[0])
     c3=a-b          #sub(a,b)
-    #
-    return np.array([c1,c2,c3],dtype=np.int64)
+    #return np.array([c1,c2,c3],dtype=qnn.Qnnumber)
+    return Qnvec([c1,c2,c3])
 
-def inner_product(v1:Qnvec, v2:Qnvec):
+def inner_product(v1:Qnvec, v2:Qnvec) -> qnn.Qnnum:
     s1,_=v1.shape
     s2,_=v2.shape
     if s1!=s2:
@@ -176,7 +192,7 @@ def printqnv(str:str,qnv1:Qnvec):
     la=qnv1.shape
     for i in range(la[0]):
         j=qnv1.vt[i]
-        print(qnnum.qn2npa(j),end=" ")
+        print(qnn.qn2npa(j),end=" ")
     print("]")
 
 def printqnv2(str:str,qnv1:Qnvec,qnv2:Qnvec):
@@ -184,10 +200,10 @@ def printqnv2(str:str,qnv1:Qnvec,qnv2:Qnvec):
     la1=qnv1.shape
     for i in range(la[0]):
         j=qnv1.vt[i]
-        print(qnnum.qn2npa(j),end=" ")
+        print(qnn.qn2npa(j),end=" ")
     print("] [",end="")
     la2=qnv2.shape
     for i in qnv2:
         j=qnv1.vt[i]
-        print(qnnum.qn2npa(j),end="]")
+        print(qnn.qn2npa(j),end="]")
     

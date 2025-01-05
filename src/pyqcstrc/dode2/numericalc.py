@@ -163,6 +163,7 @@ def on_out_surface(point: NDArray[np.int64], triangle: NDArray[np.int64]) -> boo
     else:
         return False
 
+# qnnum version => qnnum.qnn2flt
 def numeric_value(t: NDArray[np.int64]) -> float:
     """Numeric value of a TAU-style value, a.
 
@@ -178,6 +179,7 @@ def numeric_value(t: NDArray[np.int64]) -> float:
     #return (t[0]+t[1]*TAU)/t[2]
     return (t[0]+t[1]*SQRT3)/t[2]
 
+# qnnum version => qnnum.qnn2flt
 def numerical_vector(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     """Numeric value of a TAU-style vector, v.
 

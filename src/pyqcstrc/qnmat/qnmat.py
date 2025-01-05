@@ -1,7 +1,7 @@
 import sys
 import numpy as np
-from pyqcstrc.qnnum import qnnum
-from pyqcstrc.qnvec import qnvec
+import pyqcstrc.qnnum.qnnum as qnn
+import pyqcstrc.qnvec.qnvec as qnv
 from numpy.typing import NDArray
 
 class Qnmat:
@@ -23,12 +23,12 @@ class Qnmat:
     def __matmul__(ma1, ma2):  #  for ma1@ma2
         return matmul(ma1,ma2)
     
-def zerov(qnzero:qnnum.Qnnum, n:np.int64):
+def zerov(qnzero:qnn.Qnnum, n:np.int64):
     qnm=Qnmat(np.full(n,qnzero))
     return qnm
     
 def add(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
-    a=np.empty(mat1.shape, dtype=qnnum.Qnnum)
+    a=np.empty(mat1.shape, dtype=qnn.Qnnum)
     la1=ma1.shape
     la2=ma2.shape
     n1=ma1.ndim
@@ -60,14 +60,14 @@ def matmul(ma1: Qnmat, ma2: Qnmat) -> Qnmat:
     print("la1",la1,"la2",la2,"n1",n1,"n2",n2)
     if(n1==1 and n2==1): # inner product of qnvec
         N=ma1.mt[0].N
-        qnzero=qnnum.Qnnum([0,0,1],N) # qnnumber zero
+        qnzero=qnn.Qnnum([0,0,1],N) # qnnumber zero
         sum=qnzero
         for i in range(la1[0]):
             sum=sum+ma1.mt[i]*ma2.mt[i]
             return sum
     elif(n1==2 and n2==1): # qnmat@qnvec
         N=ma2.mt[0].N
-        qnzero=qnnum.Qnnum([0,0,1],N) # qnnumber zero
+        qnzero=qnn.Qnnum([0,0,1],N) # qnnumber zero
         ma3=zerov(qnzero,la1[0]) #"qnnumber zero vector"
         for i in range(la1[0]):
             for j in range(la1[1]):
@@ -76,7 +76,7 @@ def matmul(ma1: Qnmat, ma2: Qnmat) -> Qnmat:
         return ma3
     elif(n1==1 and n2==2): # qnvec@qnmat
         N=ma1.mt[0].N
-        qnzero=qnnum.Qnnum([0,0,1],N) # qnnumber zero
+        qnzero=qnn.Qnnum([0,0,1],N) # qnnumber zero
         ma3=zerov(qnzero,la1[0]) #"qnnumber zero vector"
         for i in range(la2[0]):
             for j in range(la2[1]):
@@ -175,13 +175,13 @@ def printqnm(str,qnm):
     if n1==1:
         for i in range(qnm.shape[0]):
             print("[",end=" ")
-            print(qnnum.qn2npa(qnm.mt[i]),end=" ")
+            print(qnn.qn2npa(qnm.mt[i]),end=" ")
         print("]")
     elif n1==2:
         for i in range(qnm.shape[0]):
             print("[",end=" ")
             for j in range(qnm.shape[1]):
-                print(qnnum.qn2npa(qnm.mt[i][j]),end=" ")
+                print(qnn.qn2npa(qnm.mt[i][j]),end=" ")
             print("]")
         print("]")
 

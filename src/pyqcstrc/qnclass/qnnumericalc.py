@@ -6,9 +6,9 @@
 import numpy as np
 from numpy.typing import NDArray
 import random
-from pyqcstrc.qnnum import qnnum
-from pyqcstrc.qnvec import qnvec
-from pyqcstrc.qnmat import qnmat
+import pyqcstrc.qnnum.qnnum as qnn
+import pyqcstrc.qnvec.qnvec as qnv
+import pyqcstrc.qnmat.qnmat as qnm
 
 def coplanar_check_numeric_tau(pts: NDArray[np.int64], num_iteration: int=5) -> bool:
     """check the points (pts) are in coplanar or not
@@ -160,6 +160,7 @@ def on_out_surface(point: NDArray[np.int64], triangle: NDArray[np.int64]) -> boo
     else:
         return False
         
+# t:qnnum version => qnnum.qnn2flt
 def numeric_value(t: NDArray[np.int64]) -> float:
     """Numeric value of a TAU-style value, a.
     
@@ -175,6 +176,7 @@ def numeric_value(t: NDArray[np.int64]) -> float:
     #return (t[0]+t[1]*TAU)/t[2]
     return (t[0]+t[1]*SQRT3)/t[2]
     
+# vt:qnvec version => qnnum.qnv2flt
 def numerical_vector(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     """Numeric value of a TAU-style vector, v.
     
@@ -193,6 +195,7 @@ def numerical_vector(vt: NDArray[np.int64]) -> NDArray[np.int64]:
         w[i]=numeric_value(vt[i])
     return w
     
+# vts: qnmat version => qnmat.qnm2flt
 def numerical_vectors(vts: NDArray[np.int64]) -> NDArray[np.int64]:
     """Numeric value of a TAU-style vector, v.
     
