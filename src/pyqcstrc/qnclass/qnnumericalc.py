@@ -7,6 +7,8 @@ import numpy as np
 from numpy.typing import NDArray
 import random
 from pyqcstrc.qnnum import qnnum
+from pyqcstrc.qnvec import qnvec
+from pyqcstrc.qnmat import qnmat
 
 def coplanar_check_numeric_tau(pts: NDArray[np.int64], num_iteration: int=5) -> bool:
     """check the points (pts) are in coplanar or not
