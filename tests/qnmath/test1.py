@@ -12,8 +12,16 @@ def chkop(qn1,qn2):
     print("qn1*qn2",qnnum.qn2flt(qn1*qn2),qnnum.qn2flt(qn1)*qnnum.qn2flt(qn2))
     print("qn1/qn2",qnnum.qn2npa(qn1/qn2))
     print("qn1/qn2",qnnum.qn2flt(qn1/qn2),qnnum.qn2flt(qn1)/qnnum.qn2flt(qn2))
-    print("qn1+=qn2",qnnum.qn2npa(qn1 += qn2))
-    print("qn1-=qn2",qnnum.qn2npa(qn1 -= qn2))
+    #print("qn1+=qn2",qnnum.qn2npa(qn1 += qn2))
+    #print("qn1-=qn2",qnnum.qn2npa(qn1 -= qn2))
+    qn12=qn1-qn2
+    print("qn1-qn2",qn12)
+    print("qn12==qn12", qn12==qn12)
+    print("qn1<qn2",qn1<qn2)
+    print("qn1<qn2",qnnum.qn2flt(qn1)<qnnum.qn2flt(qn2))
+    print("qn1>qn2",qn1>qn2)
+    print("qn1>qn2",qnnum.qn2flt(qn1)>qnnum.qn2flt(qn2))
+    
 
 
 np1=np.array([1,2,3])

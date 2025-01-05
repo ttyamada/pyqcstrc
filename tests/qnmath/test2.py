@@ -7,10 +7,10 @@ from pyqcstrc.qnvec import qnvec
 def chkop(qnv1,qnv2):
     qnvec.printqnv("qnv1+qnv2",qnv1+qnv2)
     print("qnv1+qnv2",qnvec.qnv2flt(qnv1+qnv2))
-    #qnvec.printqnv("qnv1+qnv2",qnvec.qnv2flt(qnv1)+qnvec.qnv2flt(qnv2))
+    print("qnv1+qnv2",qnvec.qnv2flt(qnv1)+qnvec.qnv2flt(qnv2))
     qnvec.printqnv("qnv1-qnv2",qnv2-qnv1)
     print("qnv1-qnv2",qnvec.qnv2flt(qnv1-qnv2))
-    #qnvec.printqnv("qnv1-qnv2",qnvec.qnv2flt(qnv1)-qnvec.qnv2flt(qnv2))
+    print("qnv1-qnv2",qnvec.qnv2flt(qnv1)-qnvec.qnv2flt(qnv2))
 
 def printqnv(str,qnv1):
     print(str,"[",end=" ")

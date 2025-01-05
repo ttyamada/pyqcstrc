@@ -79,8 +79,8 @@ qnmat.printqnm("qnv3 for decagonal lattice",qnm3)
 prj=prjop.Dode()
 prjm=prj.mt
 qnmat.printqnm("projection matrix for dodecaglnal lattice",prjm)
-qnv3=prj.mt@qnm1
-qnvec.printqnm("qnv3 for dodecagonal lattice",qnv3)
+qnm3=prj.mt@qnm1
+qnmat.printqnm("qnv3 for dodecagonal lattice",qnm3)
 #qnvec.printqnm("cls.mt@qnv1 for dodecagonal lattice",cls.mt@qnv1)
 
 
