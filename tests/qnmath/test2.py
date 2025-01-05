@@ -1,16 +1,16 @@
 #test qnmath operations
 import sys
 import numpy as np
-from pyqcstrc.qnnum import qnnum
-from pyqcstrc.qnvec import qnvec
+import pyqcstrc.qnnum.qnnum as qnn
+import pyqcstrc.qnvec.qnvec as qnv
 
 def chkop(qnv1,qnv2):
-    qnvec.printqnv("qnv1+qnv2",qnv1+qnv2)
-    print("qnv1+qnv2",qnvec.qnv2flt(qnv1+qnv2))
-    print("qnv1+qnv2",qnvec.qnv2flt(qnv1)+qnvec.qnv2flt(qnv2))
-    qnvec.printqnv("qnv1-qnv2",qnv2-qnv1)
-    print("qnv1-qnv2",qnvec.qnv2flt(qnv1-qnv2))
-    print("qnv1-qnv2",qnvec.qnv2flt(qnv1)-qnvec.qnv2flt(qnv2))
+    qnv.printqnv("qnv1+qnv2",qnv1+qnv2)
+    print("qnv1+qnv2",qnv.qnv2flt(qnv1+qnv2))
+    print("qnv1+qnv2",qnv.qnv2flt(qnv1)+qnv.qnv2flt(qnv2))
+    qnv.printqnv("qnv1-qnv2",qnv2-qnv1)
+    print("qnv1-qnv2",qnv.qnv2flt(qnv1-qnv2))
+    print("qnv1-qnv2",qnv.qnv2flt(qnv1)-qnv.qnv2flt(qnv2))
 
 def printqnv(str,qnv1):
     print(str,"[",end=" ")
@@ -40,28 +40,28 @@ print("np4",np4)
 
 # octagonal qnnumber
 print("octagonal")
-qn1=qnnum.Qnnum(np1,2) # sqrt(2) type qnnumber
-qn2=qnnum.Qnnum(np2,2)
-qn3=qnnum.Qnnum(np3,2)
-qn4=qnnum.Qnnum(np4,2)
-qn5=qnnum.Qnnum(np0,2)
-qn6=qnnum.Qnnum(np0,2)
+qn1=qnn.Qnnum(np1,2) # sqrt(2) type qnnumber
+qn2=qnn.Qnnum(np2,2)
+qn3=qnn.Qnnum(np3,2)
+qn4=qnn.Qnnum(np4,2)
+qn5=qnn.Qnnum(np0,2)
+qn6=qnn.Qnnum(np0,2)
 
-print("qn1",qnnum.qn2npa(qn1))
-print("qn2",qnnum.qn2npa(qn2))
-print("qn3",qnnum.qn2npa(qn3))
-print("qn4",qnnum.qn2npa(qn4))
-print("qn5",qnnum.qn2npa(qn5))
-print("qn6",qnnum.qn2npa(qn6))
+print("qn1",qnn.qn2npa(qn1))
+print("qn2",qnn.qn2npa(qn2))
+print("qn3",qnn.qn2npa(qn3))
+print("qn4",qnn.qn2npa(qn4))
+print("qn5",qnn.qn2npa(qn5))
+print("qn6",qnn.qn2npa(qn6))
 
-v1=np.array([qn1,qn2,qn3,qn4,qn5,qn6],qnnum.Qnnum) #Qnnum array
-v2=np.array([qn2,qn1,qn4,qn3,qn5,qn6],qnnum.Qnnum) #Qnnum array
-qnv1=qnvec.Qnvec(v1) # qnvector for vec1
-qnv2=qnvec.Qnvec(v2) # qnvector for vec2
+v1=np.array([qn1,qn2,qn3,qn4,qn5,qn6],qnn.Qnnum) #Qnnum array
+v2=np.array([qn2,qn1,qn4,qn3,qn5,qn6],qnn.Qnnum) #Qnnum array
+qnv1=qnv.Qnvec(v1) # qnvector for vec1
+qnv2=qnv.Qnvec(v2) # qnvector for vec2
 
 print(type(qnv1))
 print(type(qnv2))
 
-qnvec.printqnv("qnv1",qnv1)
-qnvec.printqnv("qnv2",qnv2)
+qnv.printqnv("qnv1",qnv1)
+qnv.printqnv("qnv2",qnv2)
 chkop(qnv1,qnv2)
