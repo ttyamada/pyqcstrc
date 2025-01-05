@@ -25,7 +25,16 @@ class Qnnum:
     
     def __truediv__(a, b):
         return div(a,b)
-
+    
+    def __eq__(a, b):
+        return eq(a,b)
+    
+    def __lt__(a,b):
+        return lt(a,b)
+    
+    def __gt__(a,b):
+        return gt(a,b)
+    
 def add(a, b):
     #print("a1",a.n[0],"a2",a.n[1],"a3",a.n[2])
     #print("b1",b.n[0],"b2",b.n[1],"b3",b.n[2])
@@ -91,6 +100,27 @@ def div(a, b):
         return
     c=Qnnum(np.array([c1,c2,c3]),a.N)
     return mul(a,c)
+
+def eq(a, b):
+    c=a-b
+    if(c.n[0]==0 and c.n[1]==0):
+        return True
+    else:
+        return False
+
+def gt(a, b):
+    c=a-b
+    if(np.sign(c.n[0])*c.n[0]**2-np.sign(c.n[1])*c.n[1]**2*c.N > 0):
+        return True
+    else:
+        return False
+
+def lt(a, b):
+    c=a-b
+    if(np.sign(c.n[0])*c.n[0]**2-np.sign(c.n[1])*c.n[1]**2*c.N < 0):
+        return True
+    else:
+        return False
     
 # Qnnumber to np.array converter
 def qn2npa(a):

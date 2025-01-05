@@ -23,6 +23,10 @@ class Qnmat:
     def __matmul__(ma1, ma2):  #  for ma1@ma2
         return matmul(ma1,ma2)
     
+def zerov(qnzero:qnnum.Qnnum, n:np.int64):
+    qnm=Qnmat(np.full(n,qnzero))
+    return qnm
+    
 def add(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
     a=np.empty(mat1.shape, dtype=qnnum.Qnnum)
     la1=ma1.shape
@@ -55,23 +59,29 @@ def matmul(ma1: Qnmat, ma2: Qnmat) -> Qnmat:
     n2=ma2.ndim
     print("la1",la1,"la2",la2,"n1",n1,"n2",n2)
     if(n1==1 and n2==1): # inner product of qnvec
-        sum=Qnnum([0,0,1])
+        N=ma1.mt[0].N
+        qnzero=qnnum.Qnnum([0,0,1],N) # qnnumber zero
+        sum=qnzero
         for i in range(la1[0]):
             sum=sum+ma1.mt[i]*ma2.mt[i]
             return sum
     elif(n1==2 and n2==1): # qnmat@qnvec
-        m3=np.zeros(la1[0]) # zero vector
-        ma3=Qnmat(m3)
+        N=ma2.mt[0].N
+        qnzero=qnnum.Qnnum([0,0,1],N) # qnnumber zero
+        ma3=zerov(qnzero,la1[0]) #"qnnumber zero vector"
         for i in range(la1[0]):
             for j in range(la1[1]):
-                ma3.mt[i]+=ma1.mt[i][j]*ma2.mt[j]
+                #ma3.mt[i]+=ma1.mt[i][j]*ma2.mt[j]
+                ma3.mt[i]=ma3.mt[i]+ma1.mt[i][j]*ma2.mt[j]
         return ma3
     elif(n1==1 and n2==2): # qnvec@qnmat
-        m3=np.zeros(la1[0]) # this should be qnvec
-        ma3=Qnmat(v3)
+        N=ma1.mt[0].N
+        qnzero=qnnum.Qnnum([0,0,1],N) # qnnumber zero
+        ma3=zerov(qnzero,la1[0]) #"qnnumber zero vector"
         for i in range(la2[0]):
             for j in range(la2[1]):
-                ma3.mt[i]+=ma1.mt[j]*ma2.mt[j][i]
+                #ma3.mt[i]+=ma1.mt[j]*ma2.mt[j][i]
+                ma3.mt[i]=ma3.mt[i]+ma1.mt[j]*ma2.mt[j][i]
         return ma3
                 
 # for similarity transformation

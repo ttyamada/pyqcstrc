@@ -15,6 +15,10 @@ class Qnvec:
     
     def __sub__(a, b):
         return sub(a,b)
+    
+def zerov(qnzero:qnnum.Qnnum,n:np.int64): # qnnumber zero vector
+    qnv=Qnvec(np.full(n,qnzero))
+    return qnv
 
 def add(v1:Qnvec, v2:Qnvec) -> Qnvec:
     a=np.empty(v1.shape, dtype=qnnum.Qnnum)
@@ -30,34 +34,35 @@ def sub(v1:Qnvec, v2:Qnvec)-> Qnvec:
         a[i]=v1.vt[i]-v2.vt[i]  #add(v1[i],v2[i])
     return Qnvec(a)
 
-def mul_vector(v:Qnvec, coeff):
+def mul_vector(v:Qnvec, coeff:qnnum.Qnnum):
     if v.ndim==2:
         a=np.zeros(v.shape,dtype=np.int64)
         la=v.shape
-        for i,v in range(la[0]):
-            a[i]=v*coeff  #mul(v,coeff)
+        for i in range(la[0]):
+            a[i]=v.vt[i]*coeff  #mul(v,coeff)
         return a
     else:
         print('incorrect shape')
         return
 
-def mul_vectors(vs, coeff):
+def mul_vectors(vs:Qnvec, coeff:qnnum.Qnnum):
     if vs.ndim==3:
         a=np.zeros(vs.shape,dtype=np.int64)
         la=v.shape
-        for i,v in range(la[0]):
-            a[i]=mul_vector(v,coeff)
+        for i in range(la[0]):
+            a[i]=v.vt[i]*coeff #mul_vector(v,coeff)
         return a
-    elif vs.ndim==4:
-        a=np.zeros(vs.shape,dtype=np.int64)
-        for i1,v in enumerate(vs):
-            for i2,v in enumerate(v):
-                a[i1][i2]=mul_vector(v,coeff)
+#    elif vs.ndim==4:
+#        a=np.zeros(vs.shape,dtype=np.int64)
+#        la=vs.shape
+#        for i1 in range(la[0]):
+#            for i2 in range(la[1]):
+#                a[i1][i2]=v[i1][i2]*coeff  #mul_vector(v,coeff)
     else:
         print('incorrect shape')
         return
 
-def shift_vectors(vs, v):
+def shift_vectors(vs:Qnvec, v:Qnvec):
     if vs.ndim==3:
         a=np.zeros(vs.shape,dtype=np.int64)
         la=vs.shape
@@ -73,7 +78,7 @@ def shift_vectors(vs, v):
         print('incorrect shape')
         return
 
-def outer_product(v1, v2):
+def outer_product(v1:Qnvec, v2:Qnvec):
     a=v1[1]*v2[2] #mul(v1[1],v2[2])
     b=v1[2]*v2[1] #mul(v1[2],v2[1])
     c1=a-b          #sub(a,b)
@@ -88,7 +93,7 @@ def outer_product(v1, v2):
     #
     return np.array([c1,c2,c3],dtype=np.int64)
 
-def inner_product(v1, v2):
+def inner_product(v1:Qnvec, v2:Qnvec):
     s1,_=v1.shape
     s2,_=v2.shape
     if s1!=s2:
@@ -98,10 +103,10 @@ def inner_product(v1, v2):
         a=np.array([0,0,1])
         for i in range(s1):
             b=v1[i]*v2[i]  #mul(v1[i],v2[i])
-            a=a+b            #add(a,b)
+            a=a+b          #add(a,b)
         return a
 
-def dot_product(vec1, vec2):
+def dot_product(vec1:Qnvec, vec2:Qnvec):
     ndim1=vec1.ndim
     ndim2=vec2.ndim
     
@@ -123,7 +128,7 @@ def dot_product(vec1, vec2):
         print('incorrect shape found in dot_product')
         return 
 
-def dot_product_1(vec1, vec2):
+def dot_product_1(vec1:Qnvec, vec2:Qnvec):
     ndim1=vec1.ndim
     ndim2=vec2.ndim
     
@@ -143,7 +148,7 @@ def dot_product_1(vec1, vec2):
         print('incorrect shape found in dot_product')
         return 
 
-def qnv2npa(a):
+def qnv2npa(a:Qnvec):
     # Qnvector to np.array converter
     la=a.shape
     #print("la",la)
@@ -156,7 +161,7 @@ def qnv2npa(a):
         b[i]=[ai.n[0],ai.n[1],ai.n[2]]
     return b
     
-def qnv2flt(a):
+def qnv2flt(a:Qnvec):
     la=a.shape
     b=np.zeros(la, dtype=np.float64)
     #print("b",b)
@@ -166,7 +171,7 @@ def qnv2flt(a):
         b[i]=(ai.n[0]+ai.n[1]*np.sqrt(N))/ai.n[2]
     return b
 
-def printqnv(str,qnv1):
+def printqnv(str:str,qnv1:Qnvec):
     print(str,"[",end=" ")
     la=qnv1.shape
     for i in range(la[0]):
@@ -174,7 +179,7 @@ def printqnv(str,qnv1):
         print(qnnum.qn2npa(j),end=" ")
     print("]")
 
-def printqnv2(str,qnv1,qnv2):
+def printqnv2(str:str,qnv1:Qnvec,qnv2:Qnvec):
     print(str,"[",end=" ")
     la1=qnv1.shape
     for i in range(la[0]):
