@@ -6,7 +6,7 @@ import pyqcstrc.qnnum.qnnum as qnn
     
 class Qnvec:
     #def __init__(self, vt:np.ndarray[qnnum], shape:np.array):
-    def __init__(self, vt:np.ndarray[qnnum]):
+    def __init__(self, vt:np.ndarray[qnn]):
         self.vt=vt
         self.shape = vt.shape  #dimension of a vector a
         self.ndim = vt.ndim
@@ -185,6 +185,14 @@ def qnv2flt(a:Qnvec):
     for i in range(la[0]):
         ai=a.vt[i]
         b[i]=(ai.n[0]+ai.n[1]*np.sqrt(N))/ai.n[2]
+    return b
+
+def intv2qnv(a:np.ndarray,N:np.int64):
+    n=a.shape[0]
+    qn0=qnn.Qnnum([0,0,1],N) # qnnum zero
+    b=Qnvec(np.full(n,qn0)) #qnnum zero vector
+    for i in range(n):
+        b.vt[i]=qnn.int2qnn(a[i],N)
     return b
 
 def printqnv(str:str,qnv1:Qnvec):

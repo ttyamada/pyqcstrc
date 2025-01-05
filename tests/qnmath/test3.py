@@ -6,14 +6,18 @@ import pyqcstrc.qnvec.qnvec as qnv
 import pyqcstrc.qnmat.qnmat as qnm
 import pyqcstrc.prjop.prjop as pro
 
-def chkop(qnv1,qnv2):
+def chkop(qnv1,qnv2,qnm1,N):
     qnv.printqnv("qnv1+qnv2",qnv1+qnv2)
     print("qnv1+qnv2",qnv.qnv2flt(qnv1+qnv2))
     #qnv.printqnv("qnv1+qnv2",qnv.qnv2flt(qnv1)+qnv.qnv2flt(qnv2))
     qnv.printqnv("qnv1-qnv2",qnv2-qnv1)
     print("qnv1-qnv2",qnv.qnv2flt(qnv1-qnv2))
     #qnv.printqnv("qnv1-qnv2",qnv.qnv2flt(qnv1)-qnv.qnv2flt(qnv2))
-
+    a=np.array([[3,1,5],[2,1,3],[3,2,1]])
+    print("a",a)
+    qnma=qnm.intm2qnm(a,N)
+    qnm.printqnm("qnma",qnma)
+    
 np0=np.array([0,0,1])
 np1=np.array([1,2,3])
 np2=np.array([4,5,6])
@@ -29,11 +33,12 @@ print("np4",np4)
 
 # octagonal qnnumber
 print("octagonal")
-qn0=qnn.Qnnum(np0,2) # sqrt(2) type qnnumber
-qn1=qnn.Qnnum(np1,2)
-qn2=qnn.Qnnum(np2,2)
-qn3=qnn.Qnnum(np3,2)
-qn4=qnn.Qnnum(np4,2)
+N=2 # for octagonal
+qn0=qnn.Qnnum(np0,N) # sqrt(N) type qnnumber
+qn1=qnn.Qnnum(np1,N)
+qn2=qnn.Qnnum(np2,N)
+qn3=qnn.Qnnum(np3,N)
+qn4=qnn.Qnnum(np4,N)
 
 print("qn0",qnn.qn2npa(qn0))
 print("qn1",qnn.qn2npa(qn1))
@@ -52,7 +57,7 @@ print("qnm1",type(qnm1))
 
 qnv.printqnv("qnv1",qnv1)
 qnv.printqnv("qnv2",qnv2)
-chkop(qnv1,qnv2)
+chkop(qnv1,qnv2,qnm1,N)
 
 # for octagonal
 prj=pro.Octa()

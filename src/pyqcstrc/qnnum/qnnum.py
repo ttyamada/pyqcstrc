@@ -3,7 +3,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 class Qnnum:
-    def __init__(self, n: NDArray[np.int64], N: np.int64):
+    def __init__(self, n: np.int64, N: np.int64):
         self.n=n
         #self.N=N # 2 5 3 for octagonal, decagonal and dodecagonal Qnnumber   
         self.N=N
@@ -129,4 +129,10 @@ def qn2npa(a):
 def qn2flt(a):
     return (a.n[0]+a.n[1]*np.sqrt(a.N))/a.n[2]
 
+def int2qnn(i:np.int64,N:np.int64):
+    #N=self.N
+    return Qnnum([i,0,1],N)
+
+def printqnn(str:str,a:Qnnum):
+    print(str,"[",a.n[0],a.n[1],a.n[2],"]")
  

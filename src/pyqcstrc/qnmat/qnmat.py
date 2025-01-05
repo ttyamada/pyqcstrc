@@ -6,7 +6,7 @@ from numpy.typing import NDArray
 
 class Qnmat:
     #def __init__(self, mt:np.ndarray[qnnum], shape:np.array):
-    def __init__(self, mt:np.ndarray[qnnum]):
+    def __init__(self, mt:np.ndarray[qnn]):
         self.mt=mt
         self.shape=mt.shape
         self.ndim=mt.ndim
@@ -164,11 +164,20 @@ def qnm2flt(a):
     la=a.shape #len(a)
     b=np.zeros(la[0],la[1],3)  #la x la qnnum matrix 
     N=a[0].N
-    for i in range(la):
-        for j in range(la):
+    for i in range(la[0]):
+        for j in range(la[1]):
             b[i][j]=(a[i][j].n[0]+a[i][j].n[1]*np.sqrt(N))/a[i][j].n[2]
     return b
-        
+
+def intm2qnm(a:np.array,N:np.int64):
+    qn0=qnn.Qnnum([0,0,1],N) # qnnum zero
+    la=a.shape
+    b=Qnmat(np.full(la,qn0)) #qnnum zero vector
+    for i in range(la[0]):
+        for j in range(la[1]):
+            b.mt[i][j]=qnn.int2qnn(a[i][j],N)
+    return b
+
 def printqnm(str,qnm):
     print(str)
     n1=qnm.ndim

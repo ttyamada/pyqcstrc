@@ -11,6 +11,10 @@ def chkop(qnv1,qnv2):
     qnv.printqnv("qnv1-qnv2",qnv2-qnv1)
     print("qnv1-qnv2",qnv.qnv2flt(qnv1-qnv2))
     print("qnv1-qnv2",qnv.qnv2flt(qnv1)-qnv.qnv2flt(qnv2))
+    a=np.array([3,1,5])
+    print("a",a)
+    qna=qnv.intv2qnv(a,qnv1.vt[0].N)
+    qnv.printqnv("qna",qna)
 
 def printqnv(str,qnv1):
     print(str,"[",end=" ")
