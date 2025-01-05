@@ -110,14 +110,14 @@ def eq(a, b):
 
 def gt(a, b):
     c=a-b
-    if(np.sign(c.n[0])*c.n[0]**2-np.sign(c.n[1])*c.n[1]**2*c.N > 0):
+    if(np.sign(c.n[0])*c.n[0]**2+np.sign(c.n[1])*c.n[1]**2*a.N > 0):
         return True
     else:
         return False
 
 def lt(a, b):
     c=a-b
-    if(np.sign(c.n[0])*c.n[0]**2-np.sign(c.n[1])*c.n[1]**2*c.N < 0):
+    if(np.sign(c.n[0])*c.n[0]**2+np.sign(c.n[1])*c.n[1]**2*a.N < 0):
         return True
     else:
         return False
@@ -132,6 +132,36 @@ def qn2flt(a):
 def int2qnn(i:np.int64,N:np.int64):
     #N=self.N
     return Qnnum([i,0,1],N)
+
+def flt2qn(qr:float,N:np.int64) -> Qnnum:
+    xm=abs(qr)
+    isg=np.array([1,-1])
+    sqrtn=np.sqrt(float(N))
+    #print("N",N,"sqrtn",sqrtn) # for test
+    eps=0.000001
+    n1m=200; n2m=200; n3m=200
+    xn=Qnnum([0,0,1],N)
+    for k in range(n3m):
+        n3=k
+        for i in range(n1m):
+            for j in range(n2m):
+                for ic in range(2):
+                    n1=isg[ic]*i #+-i
+                    for jc in range(2):
+                        n2=isg[jc]*j #+-j
+                        xt=(n1+n2*sqrtn)/n3
+                        #print("xt",xt,"qr",qr)
+                        xd=(xt-qr)
+                        if(np.abs(xd) < xm):
+                            xm=np.abs(xd)
+                            xn.n[0]=n1
+                            xn.n[1]=n2
+                            xn.n[2]=n3
+                        if(np.abs(xd)<eps):
+                            #print("xt,n1,n2,n3.sqrtnr",xt,n1,n2,n3,sqrtn)
+                            #printqnn("xn",xn)
+                            return xn
+    print("cannt convert float to qnnum")
 
 def printqnn(str:str,a:Qnnum):
     print(str,"[",a.n[0],a.n[1],a.n[2],"]")
