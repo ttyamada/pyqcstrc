@@ -5,11 +5,26 @@ import pyqcstrc.qnvec.qnvec as qnv
 from numpy.typing import NDArray
 
 class Qnmat:
+
+    def __init__(self, n:np.int64, N:np.int64):
+        #qnzero=qnn.Qnnum([0,0,1],N)
+        print("n",n)
+        self.mt=np.ndarray(dtype=qnn.Qnnum,shape=(n,n)) # 2D array
+        self.shape=(n,n)
+        self.ndim=2
+        qnzero=qnn.int2qnn(0,N)
+        for i in range(n):
+            for j in range(n):
+                self.mt[i][j]=qnzero
+        print("self.shape",self.shape[0],self.shape[1])
+        print("self.ndim",self.ndim)
+        
     #def __init__(self, mt:np.ndarray[qnnum], shape:np.array):
-    def __init__(self, mt:np.ndarray[qnn]):
-        self.mt=mt
-        self.shape=mt.shape
-        self.ndim=mt.ndim
+        
+    #def __init__(self, mt:np.matrix):
+        #self.mt=mt
+        #self.shape=mt.shape
+        #self.ndim=mt.ndim
         
     def __add__(ma1, ma2):  #  for ma1+ma2
         return add(ma1,ma2)
@@ -188,13 +203,13 @@ def intm2qnm(a:np.array,N:np.int64):
 
 def printqnm(str,qnm):
     print(str)
-    n1=qnm.ndim
-    if n1==1:
+    n=qnm.ndim
+    if n==1:
         for i in range(qnm.shape[0]):
             print("[",end=" ")
             print(qnn.qn2npa(qnm.mt[i]),end=" ")
         print("]")
-    elif n1==2:
+    elif n==2:
         for i in range(qnm.shape[0]):
             print("[",end=" ")
             for j in range(qnm.shape[1]):
@@ -204,10 +219,12 @@ def printqnm(str,qnm):
 
 if __name__ == '__main__':
     # test
-    import random
-    sys.path.append('.')
-    import numericalc
-
-    ncycle=20
-    eps=1e-3
+    
+    N=np.int64(2)
+    n=np.int64(6)
+    print("n=",n)
+    qnm=Qnmat(n,N)  # nxn qmnum zero matrix
+    print("qnm.shape",qnm.shape[0],qnm.shape[0])
+    print("qnm.ndim",qnm.ndim)
+    printqnm("Qnsym_Octa",qnm)
     

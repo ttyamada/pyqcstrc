@@ -5,11 +5,22 @@ import pyqcstrc.qnnum.qnnum as qnn
 #from pyqcstrc.qnvec import qnvec
     
 class Qnvec:
+    def __init__(self, n:np.int64, N:np.int64):
+        print("n",n)
+        self.vt=np.ndarray(dtype=qnn.Qnnum,shape=(n)) # 1D array
+        self.shape=n
+        self.ndim=1
+        qnzero=qnn.int2qnn(0,N)
+        for i in range(n):
+            self.vt[i]=qnzero
+        print("self.shape",self.shape)
+        print("self.ndim",self.ndim)
+
     #def __init__(self, vt:np.ndarray[qnnum], shape:np.array):
-    def __init__(self, vt:np.ndarray[qnn]):
-        self.vt=vt
-        self.shape = vt.shape  #dimension of a vector a
-        self.ndim = vt.ndim
+    #def __init__(self, vt:np.ndarray):
+    #    self.vt=vt
+    #    self.shape = vt.shape  #dimension of a vector a
+    #    self.ndim = vt.ndim
     def __add__(a, b):
         return add(a,b)
     
@@ -198,7 +209,7 @@ def intv2qnv(a:np.ndarray,N:np.int64):
 def printqnv(str:str,qnv1:Qnvec):
     print(str,"[",end=" ")
     la=qnv1.shape
-    for i in range(la[0]):
+    for i in range(la):
         j=qnv1.vt[i]
         print(qnn.qn2npa(j),end=" ")
     print("]")
@@ -206,7 +217,7 @@ def printqnv(str:str,qnv1:Qnvec):
 def printqnv2(str:str,qnv1:Qnvec,qnv2:Qnvec):
     print(str,"[",end=" ")
     la1=qnv1.shape
-    for i in range(la[0]):
+    for i in range(la1):
         j=qnv1.vt[i]
         print(qnn.qn2npa(j),end=" ")
     print("] [",end="")
@@ -214,4 +225,14 @@ def printqnv2(str:str,qnv1:Qnvec,qnv2:Qnvec):
     for i in qnv2:
         j=qnv1.vt[i]
         print(qnn.qn2npa(j),end="]")
+    
+    
+if __name__ == '__main__':
+    # test
+    N=np.int64(2)
+    n=np.int64(6)
+    print("n=",n)
+    qnv=Qnvec(n,N)  # nD qnnum zero vector
+    print("qnm.shape",qnv.shape)
+    printqnv("Qnvec_Octa",qnv)
     
