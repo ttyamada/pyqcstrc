@@ -115,9 +115,9 @@ def projection(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     M4=np.array([ 0,-1, 1]) # -sqrt(5)
     v1e=mtrixcal(M2,M1,M0,M2,M0,M0,vt) #
     v2e=mtrixcal(M0,M1,M3,M1,M0,M0,vt) #
+    v3e=mtrixcal(M0,M0,M0,M0,M0,M0,vt) # 0,0,0,0,0,0 
     v1i=mtrixcal(M3,M2,M0,M1,M0,M0,vt) #
     v2i=mtrixcal(M0,M1,M4,M1,M0,M0,vt) #
-    v3e=mtrixcal(M0,M0,M0,M0,M0,M0,vt) # 0,0,0,0,0,0 
     v3i=mtrixcal(M0,M0,M0,M0,M0,M0,vt) # 0,0,0,0,0,0
     return np.array([[v1e,v2e,v3e],[v1i,v2i,v3i]],dtype=np.int64)
 

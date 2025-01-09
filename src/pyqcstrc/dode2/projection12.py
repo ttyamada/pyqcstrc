@@ -1,6 +1,10 @@
 import numpy as np
 from numpy.typing import NDArray
 import random
+import pyqcstrc.qnnum.qnnum as qnn
+import pyqcstrc.qnvec.qnvec as qnv
+import pyqcstrc.qnmat.qnmat as qnm
+import pyqcstrc.qnclass.qnmath
 
 TAU=np.sqrt(3)/2.0
 SQRT3=np.sqrt(3)
