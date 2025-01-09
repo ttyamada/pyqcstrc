@@ -18,14 +18,7 @@ class Qnmat:
                 self.mt[i][j]=qnzero
         print("self.shape",self.shape[0],self.shape[1])
         print("self.ndim",self.ndim)
-        
-    #def __init__(self, mt:np.ndarray[qnnum], shape:np.array):
-        
-    #def __init__(self, mt:np.matrix):
-        #self.mt=mt
-        #self.shape=mt.shape
-        #self.ndim=mt.ndim
-        
+
     def __add__(ma1, ma2):  #  for ma1+ma2
         return add(ma1,ma2)
     

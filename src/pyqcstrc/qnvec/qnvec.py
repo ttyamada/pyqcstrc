@@ -3,7 +3,7 @@ import numpy as np
 from numpy.typing import NDArray
 import pyqcstrc.qnnum.qnnum as qnn
 #from pyqcstrc.qnvec import qnvec
-    
+
 class Qnvec:
     def __init__(self, n:np.int64, N:np.int64):
         print("n",n)
@@ -16,11 +16,6 @@ class Qnvec:
         print("self.shape",self.shape)
         print("self.ndim",self.ndim)
 
-    #def __init__(self, vt:np.ndarray[qnnum], shape:np.array):
-    #def __init__(self, vt:np.ndarray):
-    #    self.vt=vt
-    #    self.shape = vt.shape  #dimension of a vector a
-    #    self.ndim = vt.ndim
     def __add__(a, b):
         return add(a,b)
     
