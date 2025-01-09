@@ -6,16 +6,16 @@ from numpy.typing import NDArray
 
 class Qnmat:
 
-    def __init__(self, n:np.int64, N:np.int64):
+    def __init__(self,mtr:np.ndarray, n:np.int64, N:np.int64):
         #qnzero=qnn.Qnnum([0,0,1],N)
         print("n",n)
         self.mt=np.ndarray(dtype=qnn.Qnnum,shape=(n,n)) # 2D array
         self.shape=(n,n)
         self.ndim=2
-        qnzero=qnn.int2qnn(0,N)
+        #qnzero=qnn.int2qnn(0,N)
         for i in range(n):
             for j in range(n):
-                self.mt[i][j]=qnzero
+                self.mt[i][j]=mtr[i][j]
         print("self.shape",self.shape[0],self.shape[1])
         print("self.ndim",self.ndim)
 
@@ -37,9 +37,8 @@ def zerom(n:np.int64, N: np.int64):
     return qnm
 
 def unitm(n:np.int64, N: np.int64):
-    qnzero=qnn.Qnnum([0,0,1],N)
     qnone=qnn.Qnnum([1,0,1],N)
-    qnm=Qnmat(np.full(n,qnzero)) # qn zero matrix
+    qnm=zerom(n,N)
     for i in range(n):
         qnm.mt[i][i]=qnone
     

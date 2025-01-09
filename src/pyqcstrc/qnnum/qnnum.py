@@ -3,10 +3,13 @@ import numpy as np
 from numpy.typing import NDArray
 
 class Qnnum:
-    def __init__(self, n: np.int64, N: np.int64):
+    def __init__(self, n: np.array, N: np.int64):
         self.n=n
         #self.N=N # 2 5 3 for octagonal, decagonal and dodecagonal Qnnumber   
         self.N=N
+        self.n[0]=n[0]
+        self.n[1]=n[1]
+        self.n[2]=n[2]
     
     def __add__(a, b):
         return add(a,b)
@@ -166,7 +169,15 @@ def flt2qn(qr:float,N:np.int64) -> Qnnum:
 def printqnn(str:str,a:Qnnum):
     print(str,"[",a.n[0],a.n[1],a.n[2],"]")
     
-#if __name__ == '__main__':
+if __name__ == '__main__':
     # test
+    N=np.int64(2)
+    qnn=Qnnum([0,0,1],N)
+    printqnn("qnn.zero",qnn)
+    qnn=Qnnum([1,0,1],N)
+    printqnn("qnn.one",qnn)
+    qnn=Qnnum([0,1,1],N)
+    printqnn("qnn.sqrt(2)",qnn)
+    
     
  
