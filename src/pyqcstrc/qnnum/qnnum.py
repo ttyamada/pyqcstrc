@@ -142,7 +142,7 @@ def flt2qn(qr:float,N:np.int64) -> Qnnum:
     n1m=200; n2m=200; n3m=200
     xn=Qnnum([0,0,1],N)
     for k in range(n3m):
-        n3=k
+        n3=k+1
         for i in range(n1m):
             for j in range(n2m):
                 for ic in range(2):

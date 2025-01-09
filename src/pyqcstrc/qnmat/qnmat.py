@@ -23,9 +23,17 @@ class Qnmat:
     def __matmul__(ma1, ma2):  #  for ma1@ma2
         return matmul(ma1,ma2)
     
-def zerov(qnzero:qnn.Qnnum, n:np.int64):
+def zerom(n:np.int64, N: np.int64):
+    qnzero=qnn.Qnnum([0,0,1],N)
     qnm=Qnmat(np.full(n,qnzero))
     return qnm
+
+def unitm(n:np.int64, N: np.int64):
+    qnzero=qnn.Qnnum([0,0,1],N)
+    qnone=qnn.Qnnum([1,0,1],N)
+    qnm=Qnmat(np.full(n,qnzero)) # qn zero matrix
+    for i in range(n):
+        qnm.mt[i][i]=qnone
     
 def add(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
     a=np.empty(mat1.shape, dtype=qnn.Qnnum)
