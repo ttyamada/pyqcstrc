@@ -12,6 +12,7 @@ class Qnmat:
         self.mt=np.ndarray(dtype=qnn.Qnnum,shape=(n,n)) # 2D array
         self.shape=(n,n)
         self.ndim=2
+        self.N=N
         #qnzero=qnn.int2qnn(0,N)
         for i in range(n):
             for j in range(n):
