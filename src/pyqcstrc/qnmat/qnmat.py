@@ -7,26 +7,25 @@ from numpy.typing import NDArray
 class Qnmat:
 
     def __init__(self,mtr:np.ndarray, n:np.int64, N:np.int64):
-        #qnzero=qnn.Qnnum([0,0,1],N)
         print("n",n)
         self.mt=np.ndarray(dtype=qnn.Qnnum,shape=(n,n)) # 2D array
         self.shape=(n,n)
-        self.ndim=2
+        self.n=2
         self.N=N
         #qnzero=qnn.int2qnn(0,N)
         for i in range(n):
             for j in range(n):
                 self.mt[i][j]=mtr[i][j]
         print("self.shape",self.shape[0],self.shape[1])
-        print("self.ndim",self.ndim)
+        print("self.n",self.n)
 
     def __add__(ma1, ma2):  #  for ma1+ma2
         return add(ma1,ma2)
     
-    def __iadd__(ma1, ma2):  #  for ma1+ma2
+    def __iadd__(ma1, ma2):  #  for ma1+=ma2
         return iadd(ma1,ma2)
     
-    def __isub__(ma1, ma2):  #  for ma+=ma2
+    def __isub__(ma1, ma2):  #  for ma1-=ma2
         return isub(ma1,ma2)
         
     def __matmul__(ma1, ma2):  #  for ma1@ma2
@@ -196,7 +195,7 @@ def intm2qnm(a:np.array,N:np.int64):
 
 def printqnm(str,qnm):
     print(str)
-    n=qnm.ndim
+    n=qnm.n
     if n==1:
         for i in range(qnm.shape[0]):
             print("[",end=" ")

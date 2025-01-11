@@ -38,6 +38,9 @@ class Qnnum:
     def __gt__(a,b):
         return gt(a,b)
     
+    def __neg__(self):
+        return neg(-self)
+    
 def add(a, b):
     #print("a1",a.n[0],"a2",a.n[1],"a3",a.n[2])
     #print("b1",b.n[0],"b2",b.n[1],"b3",b.n[2])
@@ -125,6 +128,16 @@ def lt(a, b):
     else:
         return False
     
+def neg(self):
+    self.n[0]=-self.n[0]
+    self.n[1]=-self.n[1]
+    return self
+
+def abs(a:Qnnum):
+    if a.n[0]+a.n[1]*np.sqrt(a.N)<0:
+        return neg(a)
+    return a
+
 # Qnnumber to np.array converter
 def qn2npa(a):
     return np.array([a.n[0],a.n[1],a.n[2]])
@@ -137,7 +150,7 @@ def int2qnn(i:np.int64,N:np.int64):
     return Qnnum([i,0,1],N)
 
 def flt2qn(qr:float,N:np.int64) -> Qnnum:
-    xm=abs(qr)
+    xm=np.abs(qr)
     isg=np.array([1,-1])
     sqrtn=np.sqrt(float(N))
     #print("N",N,"sqrtn",sqrtn) # for test

@@ -3,58 +3,67 @@ import numpy as np
 import pyqcstrc.qnnum.qnnum as qnn
 import pyqcstrc.qnvec.qnvec as qnv
 import pyqcstrc.qnmat.qnmat as qnm
-import pyqcstrc.qnclass.qnmath
+import pyqcstrc.qnmath.qnmath as mth
 
 # for octagonal QCs
 class Qnprj_Octa:
     def __init__(self):
-        M0=qnn.Qnnum(np.array([ 0, 0, 1]),2) #  0
-        M1=qnn.Qnnum(np.array([ 1, 0, 1]),2) #  1
-        M2=qnn.Qnnum(np.array([-1, 0, 1]),2) # -1
-        M3=qnn.Qnnum(np.array([ 0, 1, 2]),2) #  sqrt(2)/2
-        M4=qnn.Qnnum(np.array([ 0,-1, 2]),2) # -sqrt(2)/2
+        N=2
+        M0=qnn.Qnnum(np.array([ 0, 0, 1]),N) #  0
+        M1=qnn.Qnnum(np.array([ 1, 0, 1]),N) #  1
+        M2=qnn.Qnnum(np.array([-1, 0, 1]),N) # -1
+        M3=qnn.Qnnum(np.array([ 0, 1, 2]),N) #  sqrt(2)/2
+        M4=qnn.Qnnum(np.array([ 0,-1, 2]),N) # -sqrt(2)/2
         MT=np.array([[M2,M1,M0,M2,M0,M0], #
            [M0,M1,M3,M1,M0,M0], #
            [M0,M0,M0,M0,M0,M0], # 0,0,0,0,0,0 
            [M3,M2,M0,M1,M0,M0], #
            [M0,M1,M4,M1,M0,M0], #
            [M0,M0,M0,M0,M0,M0]]) # 0,0,0,0,0,0
-        self.mt=qnm.Qnmat(MT) # matrix of qnnum (qnmat)
+        n=6
+        self.mt=qnm.Qnmat(MT,n,N) # matrix of qnnum (qnmat)
         self.shape = MT.shape  #dimension of a vector a
-        self.ndim = MT.ndim
+        self.n = n
+        self.N=N
 
 # for decagonal QCs
 class Qnprj_Deca:
     # note that this use orthorhombic coordinate system
     def __init__(self):
-        M0=qnn.Qnnum(np.array([ 0, 0, 1]),5) #  0
-        M1=qnn.Qnnum(np.array([ 1, 0, 1]),5) #  1
-        M2=qnn.Qnnum(np.array([-1, 0, 1]),5) # -1
-        M3=qnn.Qnnum(np.array([ 0, 1, 1]),5) #  sqrt(5)
-        M4=qnn.Qnnum(np.array([ 0,-1, 1]),5) # -sqrt(5)
+        N=5
+        M0=qnn.Qnnum(np.array([ 0, 0, 1]),N) #  0
+        M1=qnn.Qnnum(np.array([ 1, 0, 1]),N) #  1
+        M2=qnn.Qnnum(np.array([-1, 0, 1]),N) # -1
+        M3=qnn.Qnnum(np.array([ 0, 1, 1]),N) #  sqrt(5)
+        M4=qnn.Qnnum(np.array([ 0,-1, 1]),N) # -sqrt(5)
         MT=np.array([[M2,M1,M0,M2,M0,M0], #
            [M0,M1,M3,M1,M0,M0], #
            [M0,M0,M0,M0,M0,M0], # 0,0,0,0,0,0 
            [M3,M2,M0,M1,M0,M0], #
            [M0,M1,M4,M1,M0,M0], #
            [M0,M0,M0,M0,M0,M0]]) # 0,0,0,0,0,0
-        self.mt=qnm.Qnmat(MT) # matrix of qnnum (qnmat)
+        n=6
+        self.mt=qnm.Qnmat(MT,n,N) # matrix of qnnum (qnmat)
+        self.shape = MT.shape  #dimension of a vector a
+        self.n = n
+        self.N=N
 
 # for dodecagonal QCs
 class Qnprj_Dode:
     def __init__(self):
+        N=3
         """projection of a 6d vector onto Epar and Eperp in "SIN-style"
         NOTE: coefficient (alpha) of the projection matrix is set to be 1.
         alpha = 2*a/np.sqrt(6)
         see Yamamoto ActaCrystal (1997)
         """
-        M0=qnn.Qnnum(np.array([ 0, 0, 1]),3)
-        M1=qnn.Qnnum(np.array([ 1, 0, 1]),3)
-        M2=qnn.Qnnum(np.array([-1, 0, 1]),3)
-        M3=qnn.Qnnum(np.array([ 1, 0, 2]),3)
-        M4=qnn.Qnnum(np.array([-1, 0, 2]),3)
-        M5=qnn.Qnnum(np.array([ 0, 1, 2]),3) #  sqrt(3)/2
-        M6=qnn.Qnnum(np.array([ 0,-1, 2]),3) # -sqrt(3)/2
+        M0=qnn.Qnnum(np.array([ 0, 0, 1]),N)
+        M1=qnn.Qnnum(np.array([ 1, 0, 1]),N)
+        M2=qnn.Qnnum(np.array([-1, 0, 1]),N)
+        M3=qnn.Qnnum(np.array([ 1, 0, 2]),N)
+        M4=qnn.Qnnum(np.array([-1, 0, 2]),N)
+        M5=qnn.Qnnum(np.array([ 0, 1, 2]),N) #  sqrt(3)/2
+        M6=qnn.Qnnum(np.array([ 0,-1, 2]),N) # -sqrt(3)/2
         #M5=np.array([ 0, 1, 1]) # sqrt(3)
         #M6=np.array([ 0,-1, 1]) # -sqrt(3)
         MT=np.array([[M5,M1,M0,M4,M0,M0], # sin,1,0,-0.5,0,0
@@ -63,7 +72,11 @@ class Qnprj_Dode:
            [M6,M1,M0,M4,M0,M0], # -sin,1,0,-0.5,0,0
            [M4,M0,M1,M6,M0,M0], # -0.5,0,1,-sin,0,0
            [M0,M0,M0,M0,M0,M1]]) # 0,0,0,0,0,1
-        self.mt=qnm.Qnmat(MT) # matrix of qnnum (qnmat)
+        n=6
+        self.mt=qnm.Qnmat(MT,n,N) # matrix of qnnum (qnmat)
+        self.shape = MT.shape  #dimension of a vector a
+        self.n = n
+        self.N=N
 
 class Prj_Octa:
     def __init__(self):   
@@ -79,6 +92,7 @@ class Prj_Octa:
         self.mt=mt
         self.shape=mt.shape
         self.ndim=mt.ndim
+        self.N=2
 
 class Prj_Deca:
     def __init__(self):   
@@ -111,6 +125,7 @@ class Prj_Deca:
         self.mt=mt
         self.shape=mt.shape
         self.ndim=mt.ndim
+        self.N=5
         
 class Prj_Dode:
     def __init__(self):
@@ -125,6 +140,7 @@ class Prj_Dode:
         self.mt=mt
         self.shape=mt.shape
         self.ndim=mt.ndim
+        self.N=3
 
 # for class cls cls should be octa, deca or dode
 def prjop(prj,v):
@@ -148,52 +164,74 @@ if __name__ == '__main__':
     # test for qnnum projection operators
 
     def get_bmt(a,N):
-        la=a.shape
-        qnzero=qnn.Qnnum([0,0,1],N)     # qnnumber zero
-        b=qnm.Qnmat(np.full(la,qnzero)) #qnnum zero matrix
-        for i in range(6):
-            for j in range(6):
+        n=a.shape[0]
+        np0=np.zeros((n,n)) # nxn zero matrix
+        print("np0",np0)
+        b=qnm.Qnmat(np0,n,N) #qnnum zero matrix
+        for i in range(n):
+            for j in range(n):
                 b.mt[i][j]=qnn.flt2qn(a.mt[i][j],N)
         return b
-
-    a=Octa_num()
+    
+    n=6
+    N=2
+    a=Prj_Octa() # float projection operator
     la=a.shape
     print("la",la)
-    N=2
+    
     b=get_bmt(a,N)
-    print("Octa.a")
-    print(a.mt)
+    print("Octa.b")
+    print(b.mt)
     qnm.printqnm("Octa.mt",b)
 
-    a=Deca_num()
-    la=a.shape
-    print("la",la)
-    N=5
+    #N=5
+    #a=Prj_Deca() # float projection operator
+    #la=a.shape
+    #print("la",la)
     #b=get_bmt(a,N)
-    print("Deca.a")
-    print(a.mt)
+    #print("Deca.b")
+    #print(b.mt)
     #qnm.printqnm("Deca.mt",b)
 
-    a=Dode_num()
+    N=3
+    a=Prj_Dode() # float projection operator
     la=a.shape
     print("la",la)
-    N=3
     b=get_bmt(a,N)
-    print("Dode.a")
-    print(a.mt)
+    print("Dode.b")
+    print(b.mt)
     qnm.printqnm("Dode.mt",b)
+ 
     
+    # check qnmatinv
+    N=2 # octagonal
+    n=0
+    mto=Qnprj_Octa()
+    qnm.printqnm("mto",mto)
     
-        
-    #c=np.cos(np.pi/5)
-    #s=np.sin(np.pi/5)
-    #print("c",c)
-    #print("s",s)
-    #print("s/c",s/c)
-    #qnc=qnn.flt2qn(c,N)
-    #qns=qnn.flt2qn(s,N)
-    #qnsc=qnn.flt2qn(s/c,N)
-    #qnn.printqnn("qnc",qnc)
-    #qnn.printqnn("qns",qns)
-    #qnn.printqnn("qnsc",qnsc)
+    mtoi=Qnprj_Octa()
+    mth.qnmatinv(mtoi,np.int64(6))
+    qnm.printqnm("mtoi",mtoi)
+    
+    # check lattice vector external and internal space components
+    ndv=np.ndarray(3**3,dtype=qnn.Qnnum)
+    for i1 in range(-1,2):
+        for i2 in range(-1,2):
+            for i3 in range(-1,2):
+                for i4 in range(-1,2):
+                    V1=qnn.Qnnum(np.array([ i1, 0, 1]),N)
+                    V2=qnn.Qnnum(np.array([ i2, 0, 1]),N)
+                    V3=qnn.Qnnum(np.array([ i3, 0, 1]),N)
+                    V4=qnn.Qnnum(np.array([ i4, 0, 1]),N)
+                    V0=qnn.Qnnum(np.array([ 0, 0, 1]),N)
+                    VT=np.array([v1,v2,v3,V4,V0,V0])
+                    ndv[n]=qnv.Qnvec(VT,6,N) # lattice vector
+                    qnn.printqnv("ndv",ndv) #print qnvector expression
+                    qnv=mto.mt@ndv.vt #external enternal components
+                    qnn.printqnv("qnv",qnv) #print qnvector expression
+                    n+=1
+
+                    
+                    
+    
         
