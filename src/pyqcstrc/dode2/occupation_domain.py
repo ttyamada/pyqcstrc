@@ -9,22 +9,22 @@ import os
 import sys
 import numpy as np
 try:
-    import pyqcstrc.qnmath.qnmath as math12
-    import pyqcstrc.dode2.math1 as math1
-    import pyqcstrc.dode2.utils as utils
-    import pyqcstrc.dode2.numericalc as numericalc
+    import pyqcstrc.qnmath.qnmath as qnmath #math12
+    #import pyqcstrc.dode2.math1 as math1
+    #import pyqcstrc.dode2.utils as utils
+    import pyqcstrc.qnclass.numericalc as numericalc
     import pyqcstrc.dode2.symmetry as symmetry
     import pyqcstrc.dode2.intsct as intsct
-    import pyqcstrc.dode2.projection12 as proj
+    #import pyqcstrc.dode2.projection12 as proj
 except ImportError:
     print('import error\n')
 
 TAU=np.sqrt(3)/2.0
 
 def volume(obj):
-    return utils.obj_area_6d(obj)
+    return utils.obj_area_6d(obj: qnv.Qnvec)
 
-def symmetric(obj,centre,pg):
+def symmetric(obj: qnv.Qnvec,centre : qnv.Qnvec,pg :qnv.Qnvec):
     """
     Generate symmterical occupation domain by symmetric elements on the asymmetric unit.
     
@@ -49,7 +49,7 @@ def symmetric(obj,centre,pg):
         print('object has an incorrect shape!')
         return 
 
-def symmetric_0(obj,centre,indx_symop,pg):
+def symmetric_0(obj: qnv.Qnvec,centre: qnv.Qnvec ,indx_symop : np.int64,pg : qnv.Qnvec):
     """
     Generate symmtericic occupation domain by applying symmetric elements on the asymmetric unit.
     
@@ -72,7 +72,7 @@ def symmetric_0(obj,centre,indx_symop,pg):
         print('object has an incorrect shape!')
         return 
 
-def shift(obj,shift):
+def shift(obj: qnv.Qnvec,shift : qnv.Qnvec):
     """
     Shift the occupation domain.
     

@@ -10,12 +10,13 @@ import sys
 import numpy as np
 try:
     #import pyqcstrc.dode2.math1 as math1
-    import pyqcstrc.qnclass.qnmath as math1
+    import pyqcstrc.qnmath.qnmath as qnmath #math1
     import pyqcstrc.dode2.intsct as intsct
-    import pyqcstrc.dode2.numericalc as numericalc
-    import pyqcstrc.dode2.symmetry as symmetry
+    import pyqcstrc.qnclass.numericalc as numericalc
+    import pyqcstrc.qnsym.qnsym as symmetry
     import pyqcstrc.dode2.utils as utils
     import pyqcstrc.dode2.occupation_domain as od
+    
 except ImportError:
     print('import error\n')
 

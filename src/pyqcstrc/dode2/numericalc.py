@@ -725,7 +725,10 @@ def projection3_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
     num=len(vns)
     #m=np.zeros((num,3),dtype=np.float64)
     #m=np.zeros((num,2),dtype=np.float64)
-    m=[ ]
+    N=vns.N
+    n=6
+    qv=qnv.Qnvec(n,N)
+    m=[qv]*num
     for i in range(num):
         m[i]=projection3_numerical(vns[i])
     return m
@@ -801,7 +804,11 @@ def projection_numerical_par(vn: qnv.Qnvec) -> qnv.Qnvec:
 def inout_occupation_domain_numerical(obj: qnv.Qnvec,point: qnv.Qnvec):
     """
     """
-    triangles=np.zeros((len(obj),3,3),dtype=np.float64)
+    #triangles=np.zeros((len(obj),3,3),dtype=np.float64)
+    N=obj.N
+    n=3
+    qv=qnv.Qnvec(n,N)  # zero initialized qnvec
+    triangles=[qv]*num # qnvec array
     for i1,triangle in enumerate(obj):
         triangles[i1]=get_internal_component_sets_numerical(triangle)
         
@@ -837,12 +844,13 @@ def inside_outside_triangle_numerical(triangle: qnv.Qnvec, point: qnv.Qnvec):
     tmp=np.append(tmp,triangle[1])
     tmp=tmp.reshape(3,3)
     area1+=triangle_area_numerical(tmp)
-    
-    if abs(area0-area1)<EPS:
+    qn0=qnn.Qnnum([0,0,1])
+    if abs(area0-area1)<qn0:  #EPS:
         return True # inside
     else:
         return False # outside
 
+# structure under linear phason
 def strc(objs,positions,pmatrx,n1max,n5max,eshift,oshift,verbose):
     """
     """
@@ -925,11 +933,11 @@ if __name__ == '__main__':
     import random
     
     def generate_random_value():
-        """ generate value in TAU-style
+        """ generate value in TAU-style  # qnnu
         """
-        nmax=10
+        nmax=10 # maximum int
         v=np.zeros((3),dtype=np.int64)
-        for i1 in range(2):
+        for i1 in range(2): # random int v[1] v[2]
             v[i1]=random.randrange(-nmax,nmax) # a and b in (a+b*TAU)/c.
         v[2]=random.randrange(1,nmax) # c in (a+b*TAU)/c.
         return v
