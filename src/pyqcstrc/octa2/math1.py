@@ -6,9 +6,17 @@
 import sys
 import numpy as np
 from numpy.typing import NDArray
+import pyqcstrc.qnnum.qnnum as qnn
+import pyqcstrc.qnvec.qnvec as qnv
+import pyqcstrc.qnmat.qnmat as qnm
+import pyqcstrc.qnmath.qnmath
+#import pyqcstrc.dode2.qnmath8
+import pyqcstrc.qnclass.numericalc
+
 #sys.path.append('.')
 #from numericalc import coplanar_check_numeric_tau
-from pyqcstrc.octa2.numericalc import coplanar_check_numeric_tau
+
+#from pyqcstrc.octa2.numericalc import coplanar_check_numeric_tau
 
 #SQRT2=np.sqrt(2)
 #N=2

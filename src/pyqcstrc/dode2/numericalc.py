@@ -7,122 +7,110 @@ import numpy as np
 from numpy.typing import NDArray
 import random
 
-TAU=np.sqrt(3)/2.0
-SQRT3=np.sqrt(3)
-N=3
+#TAU=np.sqrt(3)/2.0
+#SQRT3=np.sqrt(3)
+#N=3
 
-EPS=1e-6 # tolerance
+#EPS=1e-6 # tolerance
 
-def coplanar_check_numeric_tau(pts: NDArray[np.int64], num_iteration: int=5) -> bool:
-    """check the points (pts) are in coplanar or not
-    
-    Parameters
-    ----------
-    pns: array
-        6d coordinates of the points, xyz, in TAU-style
-    num_iteration: int
-        number of iterations.
-    
-    Returns
-    -------
-    bool
-    
-    """
-    p=get_internal_component_sets_numerical(pts)
-    return coplanar_check_numeric(p,num_iteration)
+#def coplanar_check_numeric_tau(pts: qnv.Qnvec, num_iteration: int=5) -> bool:
+#    """check the points (pts) are in coplanar or not
+#    
+#    Parameters
+#    ----------
+#    pns: array
+#        6d coordinates of the points, xyz, in TAU-style
+#    num_iteration: int
+#        number of iterations.
+#    
+#    Returns
+#    -------
+#    bool
+#    
+#    """
+#    p=get_internal_component_sets_numerical(pts)
+#    return coplanar_check_numeric(p,num_iteration)
 
-def coplanar_check_numeric(pns: NDArray[np.float64],num_iteration: int=5) -> bool:
-    """check the points (pns) are in coplanar or not
-    メモ：xyz1とxyz2の選び方次第で、outer_product(v1,v2)が小さくなりcoplanarと間違って判定する場合がある。
-    これを避けるために適切なxyz1とxyz2の選び方が必要。以下では、ランダムにxyz1とxyz2の選ぶ。
-    
-    Parameters
-    ----------
-    pns: array
-        coordinate of the points in Eperp, xyz.
-    num_iteration: int
-        number of iterations.
-    
-    Returns
-    -------
-    bool
-    """
-    num=len(pns)
-    if num>3:
-        flag=0
-        lst0=[i for i in range(num)]
-        for _ in range(num_iteration):
-            lst3=random.sample(lst0, 3)
-            #
-            xyz1=pns[lst3[1]]-pns[lst3[0]]
-            xyz2=pns[lst3[2]]-pns[lst3[0]]
-            vec=np.cross(xyz1,xyz2)
-            flg=0
-            if np.all(abs(vec)<EPS):
-                pass
-            else:
-                flag=1
-                break
-        if flag==1:
-            counter=0
-            lst=list(filter(lambda x: x not in lst3, lst0))
-            for i in lst:
-            #for i in list(filter(lambda x: x not in lst3, lst0)):
-                xyzi=pns[i]-pns[lst3[0]]
-                if abs(np.dot(vec,xyzi))<1e-10:
-                    pass
-                else:
-                    counter=1
-                    break
-            if counter==0:
-                return True
-            else:
-                return False
-        else:
-            'error in coplanar_check_numeric. increase num_iteration.'
-            return 
-    else:
-        return True
+#def coplanar_check_numeric(pns: NDArray[np.float64],num_iteration: int=5) -> bool:
+#    """check the points (pns) are in coplanar or not
+#    メモ：xyz1とxyz2の選び方次第で、outer_product(v1,v2)が小さくなりcoplanarと間違って判定する場合がある。
+#    これを避けるために適切なxyz1とxyz2の選び方が必要。以下では、ランダムにxyz1とxyz2の選ぶ。
+#    
+#    Parameters
+#    ----------
+#    pns: array
+#        coordinate of the points in Eperp, xyz.
+#    num_iteration: int
+#        number of iterations.
+#    
+#    Returns
+#    -------
+#    bool
+#    """
+#    num=len(pns)
+#    if num>3:
+#        flag=0
+#        lst0=[i for i in range(num)]
+#        for _ in range(num_iteration):
+#            lst3=random.sample(lst0, 3)
+#            #
+#            xyz1=pns[lst3[1]]-pns[lst3[0]]
+#            xyz2=pns[lst3[2]]-pns[lst3[0]]
+#            vec=np.cross(xyz1,xyz2)
+#            flg=0
+#            if np.all(abs(vec)<EPS):
+#                pass
+#            else:
+#                flag=1
+#                break
+#        if flag==1:
+#            counter=0
+#            lst=list(filter(lambda x: x not in lst3, lst0))
+#            for i in lst:
+#            #for i in list(filter(lambda x: x not in lst3, lst0)):
+#                xyzi=pns[i]-pns[lst3[0]]
+#                if abs(np.dot(vec,xyzi))<1e-10:
+#                    pass
+#                else:
+#                    counter=1
+#                    break
+#            if counter==0:
+#                return True
+#            else:
+#                return False
+#        else:
+#            'error in coplanar_check_numeric. increase num_iteration.'
+#            return 
+#    else:
+#        return True
 
-def point_on_segment(point: NDArray[np.int64], line_segment: NDArray[np.int64]) -> bool:
-    """judge whether a point is on a line segment, A-B, or not.
+def point_on_segment(point: qnv.Qnvec, line_segment: qnv.Qnvec) -> bool:
+    #judge whether a point is on a line segment, A-B, or not.
+    #xyx0=projection3_numerical(point)
+    #tmp=projection3_sets_numerical(line_segmant)
+    xyx0=point
+    xyx1=line_segment[0]  # start point in qnvector
+    xyx2=line_segment[1]  # end point in qnvector
     
-    Parameters
-    ----------
-    point: array
-        coordinate of the point, xyz
-    line_segment: array
-        two coordinates of line segment, xyz0, xyz1
-    
-    Returns
-    -------
-    int
-    """
-    
-    point=numerical_vector(point)
-    ln=numerical_vectors(line_segment)
-    
-    xyx0=projection3_numerical(point)
-    tmp=projection3_sets_numerical(ln)
-    xyx1=tmp[0]
-    xyx2=tmp[1]
-    
-    vecPA=xyx0-xyx1 # np.array([x0-x1,y0-y1,z0-z1])
-    vecBA=xyx2-xyx1 # np.array([x2-x1,y2-y1,z2-z1])
-    lPA=np.linalg.norm(vecPA)
-    lBA=np.linalg.norm(vecBA)
-    if lBA>0.0 and abs(np.dot(vecPA,vecBA)-lPA*lBA)<EPS:
+    vecPA=xyx0-xyx1
+    vecBA=xyx2-xyx1
+    lPA=dot(vecPA,vecPA)  # squared norm for qnnumber np.linalg.norm(vecPA)
+    lBA=dot(vecBA,vecBA)  # squared norm for qnnumber np.linalg.norm(vecBA)
+    qn1=qnn.Qnnum(1,0,1)
+    qn0=qnn.Qnnum(0,0,1)
+    #if lBA>0.0 and abs(np.dot(vecPA,vecBA)-lPA*lBA)<EPS:
+    if lBA>qnn.zero and abs(dot(vecPA,vecBA)-lPA*lBA)==qn0:
         s=lPA/lBA
-        if s>=0.0 and s<=1.0:
+        if s>=qn0 and s<=qn1:#if s>=0.0 and s<=1.0:
             return True
-        elif s>1.0:
+        elif s>qn1: #elif s>1.0:
             return False #       A==B P
         else:
             return False #    P A==B
     else:
         return False
 
-def on_out_surface(point: NDArray[np.int64], triangle: NDArray[np.int64]) -> bool:
+def on_out_surface(point: qnv.Qnvec, triangle: qnv.Qnvec) -> bool:
     """
     check whether the point is inside the triangle.
     
@@ -135,10 +123,10 @@ def on_out_surface(point: NDArray[np.int64], triangle: NDArray[np.int64]) -> boo
     
     Returns
     -------
-    float
+    float => qnnum
     """
     
-    def func(p_xyz,tr_xyz,indx):
+    def func(p_xyz:qnn.Qnvec,tr_xyz,indx:qnn.Qnvec) -> qnn.Qnvec:
         out=np.zeros((3,3),dtype=np.float64)
         for i in range(3):
             if i==indx:
@@ -147,24 +135,28 @@ def on_out_surface(point: NDArray[np.int64], triangle: NDArray[np.int64]) -> boo
                 out[i]=tr_xyz[i]
         return out
         
-    p=get_internal_component_numerical(point)
-    triangle0=get_internal_component_sets_numerical(triangle)
+    p=projection3(point) #get_internal_component_numerical(point)
+    #triangle0=get_internal_component_sets_numerical(triangle)
     
-    area0=triangle_area_numerical(triangle0)
+    area0=triangle_area_numerical(triangle) # qnnum
     
-    triangle1=func(p,triangle0,0)
-    triangle2=func(p,triangle0,1)
-    triangle3=func(p,triangle0,2)
+    triangle1=func(p,triangle,0)
+    triangle2=func(p,triangle,1)
+    triangle3=func(p,triangle,2)
     
-    area1=triangle_area_numerical(triangle1)+triangle_area_numerical(triangle2)+triangle_area_numerical(triangle3)
-    
-    if abs(area0-area1)< EPS:
+    area1=triangle_area_numerical(triangle1)+\
+        triangle_area_numerical(triangle2)+\
+        triangle_area_numerical(triangle3)
+    qn0=qnn.Qnnum([0,0,1]) # 0 in qnnum
+    if abs(area0-area1)==qn0:  #< EPS:
         return True
     else:
         return False
 
 # qnnum version => qnnum.qnn2flt
-def numeric_value(t: NDArray[np.int64]) -> float:
+# equivalent to qnn2flt
+def numeric_value(t: qnn.Qnnum) -> float:
+    return qnn.qnn2flt(t)
     """Numeric value of a TAU-style value, a.
 
     Parameters
@@ -177,28 +169,32 @@ def numeric_value(t: NDArray[np.int64]) -> float:
     float
     """
     #return (t[0]+t[1]*TAU)/t[2]
-    return (t[0]+t[1]*SQRT3)/t[2]
+    #return (t[0]+t[1]*SQRT3)/t[2] # float???
 
 # qnnum version => qnnum.qnn2flt
-def numerical_vector(vt: NDArray[np.int64]) -> NDArray[np.int64]:
-    """Numeric value of a TAU-style vector, v.
+# equivalent to qnv2flt
+def numerical_vector(vt: qnv.Qnvec) -> NDArray[np.float]:
+    return qnv.qnv2flt(vt)
+#    """Numeric value of a TAU-style vector, v.
+#
+#    Parameters
+#    ----------
+#    vt: array
+#        vector in TAU-style
+#    
+#    Returns
+#    -------
+#    array
+#    """
+#    n=len(vt)
+#    w=np.zeros(n,dtype=np.float64)
+#    for i in range(n):
+#        w[i]=numeric_value(vt[i])
+#    return w
 
-    Parameters
-    ----------
-    vt: array
-        vector in TAU-style
-    
-    Returns
-    -------
-    array
-    """
-    n=len(vt)
-    w=np.zeros(n,dtype=np.float64)
-    for i in range(n):
-        w[i]=numeric_value(vt[i])
-    return w
-
-def numerical_vectors(vts: NDArray[np.int64]) -> NDArray[np.int64]:
+# qnnum vectors to float (not necessary)
+# equivalent to qnv.qnv2flt
+def numerical_vectors(vts: NDArray[np.int64]) -> NDArray[np.float]:
     """Numeric value of a TAU-style vector, v.
 
     Parameters
@@ -210,23 +206,24 @@ def numerical_vectors(vts: NDArray[np.int64]) -> NDArray[np.int64]:
     -------
     array
     """
-    if vts.ndim==3:
+    if vts.ndim==3: # triangle vertex
         n1,n2,_=vts.shape
-        w=np.zeros((n1,n2),dtype=np.float64)
+        w=np.zeros((n1,n2),dtype=np.float64) # float???
         for i1,vt in enumerate(vts):
             w[i1]=numerical_vector(vt)
         return w
-    elif vts.ndim==4:
+    elif vts.ndim==4: # tetrahedron vertex
         n1,n2,n3,_=vts.shape
-        w=np.zeros((n1,n2,n3),dtype=np.float64)
+        w=np.zeros((n1,n2,n3),dtype=np.float64) # float?
         for i1,triangle in enumerate(vts):
-            for i2,vt in enumerate(triangle):
+            for i2,vt in enumerate(triangle): # surface triangles
                 w[i1][i2]=numerical_vector(vt)
         return w
     else:
         print('error')
         return 
 
+# vector length in float (not necessary)
 def length_numerical(vt: NDArray[np.int64]) -> float:
     """numerical value of norm of vector, v, in Tau-style
     
@@ -245,7 +242,7 @@ def length_numerical(vt: NDArray[np.int64]) -> float:
 
 
 
-def check_intersection_segment_surface_numerical_6d_tau(line_segment: NDArray[np.int64], triangle: NDArray[np.int64]) -> bool:
+def check_intersection_segment_surface_numerical_6d_tau(line_segment: qnv.Qnvec, triangle: qnv.Qnvec) -> bool:
     """check intersection between a line segment and a triangle.
     
     Parameters
@@ -259,12 +256,12 @@ def check_intersection_segment_surface_numerical_6d_tau(line_segment: NDArray[np
     -------
     
     """
-    ln=get_internal_component_sets_numerical(line_segment)
-    tr=get_internal_component_sets_numerical(triangle)
+    #ln=get_internal_component_sets_numerical(line_segment)
+    #tr=get_internal_component_sets_numerical(triangle)
     return check_intersection_segment_surface_numerical(ln,tr)
     
 
-def check_intersection_segment_surface_numerical(line_segment: NDArray[np.float64], triangle: NDArray[np.float64]) -> bool:
+def check_intersection_segment_surface_numerical(line_segment: qnv.Qnvec, triangle: qnv.Qnvec) -> bool:
     
     """check intersection between a line segment and a triangle.
     
@@ -328,7 +325,7 @@ def check_intersection_segment_surface_numerical(line_segment: NDArray[np.float6
     """
     
     #  edge: 0-1,0-2,1-2
-    comb=[[0,1],[0,2],[1,2]]
+    comb=[[0,1],[0,2],[1,2]] # line index
     counter=0
     for j in comb:
         if check_intersection_two_segment_numerical(line_segment,triangle[j]):
@@ -341,7 +338,7 @@ def check_intersection_segment_surface_numerical(line_segment: NDArray[np.float6
     else:
         return False
 
-def check_intersection_two_segment_numerical_6d_tau(segment_1: NDArray[np.int64], segment_2: NDArray[np.int64]) -> bool:
+def check_intersection_two_segment_numerical_6d_tau(segment_1: qnv.Qnvec, segment_2: qnv.Qnvec) -> bool:
     """check intersection between two line segments
     
     Parameters
@@ -359,11 +356,11 @@ def check_intersection_two_segment_numerical_6d_tau(segment_1: NDArray[np.int64]
     #segment_1=numerical_vectors(segment_1)
     #segment_2=numerical_vectors(segment_2)
     
-    ln1=get_internal_component_sets_numerical(segment_1)
-    ln2=get_internal_component_sets_numerical(segment_2)
-    return check_intersection_two_segment_numerical(ln1,ln2)
+    #ln1=get_internal_component_sets_numerical(segment_1)
+    #ln2=get_internal_component_sets_numerical(segment_2)
+    return check_intersection_two_segment_numerical(segment_1,segment_2)
 
-def check_intersection_two_segment_numerical(ln1: NDArray[np.float64], ln2: NDArray[np.float64]) -> bool:
+def check_intersection_two_segment_numerical(ln1: qnv.Qnvec, ln2: qnv.Qnvec) -> bool:
     """check intersection between two line segments.
     
     Parameters
@@ -429,27 +426,28 @@ def check_intersection_two_segment_numerical(ln1: NDArray[np.float64], ln2: NDAr
     vecCD=L2b-L2a
     
     # bunshi
-    t1=np.dot(vecAC,vecCD)*np.dot(vecCD,vecAB)-np.dot(vecCD,vecCD)*np.dot(vecAC,vecAB)
+    t1=dot(vecAC,vecCD)*dot(vecCD,vecAB)-dot(vecCD,vecCD)*dot(vecAC,vecAB)
     # bunbo
-    t2=np.dot(vecAB,vecCD)*np.dot(vecCD,vecAB)-np.dot(vecAB,vecAB)*np.dot(vecCD,vecCD)
-    
-    if abs(t2)<EPS:
+    t2=dot(vecAB,vecCD)*dot(vecCD,vecAB)-dot(vecAB,vecAB)*dot(vecCD,vecCD)
+    qn0=qnn.Qnnum([0,0,1])
+    qn1=qnn.Qnnum([1,0,1])
+    if abs(t2)<qn0:  #EPS:
         return False
     else:
         s=t1/t2
-        t=(-np.dot(vecAC,vecCD)+s*np.dot(vecAB,vecCD))/np.dot(vecCD,vecCD)
-        if s>=0.0 and s<=1.0 and t>=0.0 and t<=1.0:
-            dd=0
+        t=(-dot(vecAC,vecCD)+s*dot(vecAB,vecCD))/dot(vecCD,vecCD)
+        if s>=qn0 and s<=qn1 and t>=qn0 and t<=qn1:
+            dd=qn0  #0
             for i in range(3):
                 dd+=((L2a[i]-L1a[i])-s*(L1b[i]-L1a[i])+t*(L2b[i]-L2a[i]))**2
-            if dd<EPS:
+            if dd<qn0:  #EPS:
                 return True # intersecting
             else:
                 return False
         else:
             return False
     
-def triangle_area(a: NDArray[np.int64]) -> float:
+def triangle_area(a: qnv.Qnvec) -> qnn.Qnnum:  #-> float:
     """Numerial calcuration of area of given triangle, a.
     The coordinates of the tree vertecies of the triangle are given in TAU-style.
     
@@ -459,24 +457,29 @@ def triangle_area(a: NDArray[np.int64]) -> float:
     
     Returns
     -------
-    area of given triangle: float
+    area of given triangle: qnnum  #float
     """
     
-    x1=numeric_value(a[1][0])-numeric_value(a[0][0])
-    y1=numeric_value(a[1][1])-numeric_value(a[0][1])
-    z1=numeric_value(a[1][2])-numeric_value(a[0][2])
+    #x1=a[1].v[0])-a[0].v[0]
+    #y1=a[1].v[1])-a[0].v[1]
+    #z1=a[1].v[2])-a[0].v[2]
     
-    x2=numeric_value(a[2][0])-numeric_value(a[0][0])
-    y2=numeric_value(a[2][1])-numeric_value(a[0][1])
-    z2=numeric_value(a[2][2])-numeric_value(a[0][2])
+    #x2=a[2].v[0]-a[0].v[0]
+    #y2=a[2].v[1]-a[0].v[1]
+    #z2=a[2].v[2]-a[0].v[2]
     
-    v1=np.array([x1,y1,z1])
-    v2=np.array([x2,y2,z2])
+    #v1=np.array([x1,y1,z1])
+    #v2=np.array([x2,y2,z2])
+    v1=a[1]-a[0]
+    v2=a[2]-a[0]
     
-    v3=np.cross(v2,v1) # cross product
-    return np.sqrt(np.sum(np.abs(v3**2)))/2.0
+    v3=cross(v2,v1) # cross product of 3D qnvec
+    vol=dot(v3,v3) # squared norm
+    qn2=qnn.Qnnum([2,0,1])  # 2 in qnnum
+    return abs(vol)/qn2
+    #return np.sqrt(np.sum(np.abs(v3**2)))/2.0
 
-def triangle_area_numerical(a: NDArray[np.float64]) -> float:
+def triangle_area_numerical(a: qnv.Qnvec) -> qnv.Qnvec:
     """Numerial calcuration of area of given triangle, a.
     The coordinates of the tree vertecies of the triangle are given.
     
@@ -488,34 +491,24 @@ def triangle_area_numerical(a: NDArray[np.float64]) -> float:
     -------
     area of given triangle: float
     """
-    
-    #x1=a[1][0]-a[0][0]
-    #y1=a[1][1]-a[0][1]
-    #z1=a[1][2]-a[0][2]
-    #
-    #x2=a[2][0]-a[0][0]
-    #y2=a[2][1]-a[0][1]
-    #z2=a[2][2]-a[0][2]
-    #
-    #v1=np.array([x1,y1,z1])
-    #v2=np.array([x2,y2,z2])
-    
+
     v1=a[1]-a[0]
     v2=a[2]-a[0]
-    v3=np.cross(v2,v1) # cross product
-    return np.sqrt(np.sum(np.abs(v3**2)))/2.0
+    v3=Cross(v2,v1) # cross product (qnnum area)
+    qn2=qnn.Qnnum([2,0,1]) # 2
+    return abs(v3)/qn2
 
-def inside_outside_obj_tau(point: NDArray[np.int64], obj: NDArray[np.int64]) -> bool:
+def inside_outside_obj_tau(point: qnv.Qnvec, obj: qnv.Qnvec) -> bool:
     
     # TAU-style to Float
-    point=numerical_vector(point)
-    obj=numerical_vectors(obj)
+    #point=numerical_vector(point) # qnvector
+    #obj=numerical_vectors(obj) # qnvector array
     # 
-    point=get_internal_component_numerical(ln)
-    obj=get_internal_component_sets_numerical(obj)
+    #point=get_internal_component_numerical(ln)  # ln ???
+    #obj=get_internal_component_sets_numerical(obj)
     return inside_outside_obj(point,obj)
     
-def inside_outside_obj(point: NDArray[np.float64], obj: NDArray[np.float64]) -> bool:
+def inside_outside_obj(point: qnv.Qnvec, obj: qnv.Qnvec) -> bool:
     """this function judges whether the point is inside an object (set of triangle) or not
         
     Parameters
@@ -525,6 +518,7 @@ def inside_outside_obj(point: NDArray[np.float64], obj: NDArray[np.float64]) -> 
     obj: array
         vertex coordinates of triangle, (xyz1, xyz2, xyz3), (), (), ...
     """
+
     flg=0
     for tetrahedron in obj:
         if inside_outside_triangle(point,triangle):
@@ -535,7 +529,7 @@ def inside_outside_obj(point: NDArray[np.float64], obj: NDArray[np.float64]) -> 
     else:
         return False # outside
 
-def inside_outside_triangle_tau(point: NDArray[np.int64], triangle: NDArray[np.int64]) -> bool:
+def inside_outside_triangle_tau(point: qnv.Qnvec, triangle: qnv.Qnvec) -> bool:
     """this function judges whether the point is inside a triangle or not
         
     Parameters
@@ -549,7 +543,7 @@ def inside_outside_triangle_tau(point: NDArray[np.int64], triangle: NDArray[np.i
     triangle=get_internal_component_sets_numerical(triangle)
     return inside_outside_triangle(point,triangle)
 
-def inside_outside_triangle(point: NDArray[np.float64], triangle: NDArray[np.float64]) -> bool:
+def inside_outside_triangle(point: qnv.Qnvec, triangle: qnv.Qnvec) -> bool:
     """this function judges whether the point is inside a tetrahedron or not
         
     Parameters
@@ -563,7 +557,7 @@ def inside_outside_triangle(point: NDArray[np.float64], triangle: NDArray[np.flo
     
     def small_triangle(indx,p,triangle0):
         tri=np.zeros((4,3),dtype=np.float64)
-        for i,vt in enumerate(triangle0):
+        for i,vt in enumerate(triangle0):  #????
             if i==indx:
                 tri[i]=p
             else:
@@ -584,12 +578,7 @@ def inside_outside_triangle(point: NDArray[np.float64], triangle: NDArray[np.flo
     else:
         return False # outside
 
-
-
-
-
-
-def obj_volume_6d_numerical(obj: NDArray[np.int64]) -> float:
+def obj_volume_6d_numerical(obj: qnv.Qnvec) -> qnn.Qnnum:  #float:
     """This function returns volume of an object (set of triangle).
         
     Parameters
@@ -597,12 +586,13 @@ def obj_volume_6d_numerical(obj: NDArray[np.int64]) -> float:
     object: array
         6-dimensional vertex coordinates of triangle.
     """
-    vol=0
+    qn0=qnn.Qnnum([0,0,1]) # 0 in qnnum
+    vol=qn0
     for triangle in obj:
         vol+=triangle_volume_6d_numerical(triangle)
     return vol
 
-def triangle_volume_6d_numerical(triangle: NDArray[np.int64]) -> float:
+def triangle_volume_6d_numerical(triangle: qnv.Qnvec) -> qnn.Qnnum:  # float:
     """This function returns volume of a triangle
         
     Parameters
@@ -610,9 +600,10 @@ def triangle_volume_6d_numerical(triangle: NDArray[np.int64]) -> float:
     tetrahedron: array
         6-dimensional vertex coordinates of the tetrahedron, xyzuvw0,xyzuvw1,xyzuvw2
     """
-    a=get_internal_component_sets_numerical(triangle)
+    #a=get_internal_component_sets_numerical(triangle)
     #return triangle_volume_numerical(a)
-    return triangle_area_numerical(a)
+    #return triangle_area_numerical(a)
+    return triangle_area_numerical(triangle)
 
 #def obj_volume_numerical(obj: NDArray[np.float64]) -> float:
 #    """This function returns volume of an object (set of triangle).
@@ -651,17 +642,17 @@ def triangle_volume_6d_numerical(triangle: NDArray[np.int64]) -> float:
 
 
 
-def get_internal_component_numerical(vt: NDArray[np.int64]) -> NDArray[np.float64]:
+#def get_internal_component_numerical(vt: NDArray[np.int64]) -> NDArray[np.float64]:
     """
     Parameters
     ----------
     vn: array
         6-dimensional vector, xyzuvw.
     """
-    vn=numerical_vector(vt)
-    return projection3_numerical(vn)
+#    vn=numerical_vector(vt)
+#    return projection3_numerical(vn)
 
-def get_internal_component_sets_numerical(vts: NDArray[np.int64]) -> NDArray[np.float64]:
+def get_internal_component_sets_numerical(vts: qnv.Qnvec) -> qnv.Qnvec:
     """parallel and perpendicular components of a 6D lattice vector in direct space.
     
     Parameters
@@ -669,41 +660,12 @@ def get_internal_component_sets_numerical(vts: NDArray[np.int64]) -> NDArray[np.
     vsn: array
         set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
     """
-    vns=numerical_vectors(vts)
+    #vns=numerical_vectors(vts)
+    #return projection3_sets_numerical(vns)
     return projection3_sets_numerical(vns)
 
-def projection_numerical(vn: NDArray[np.float64]) -> NDArray[np.float64]:
+def projection_numerical(vn: qnv.Qnvec) -> qnv.Qnvec:
     """parallel and perpendicular components of a 6D lattice vector in direct space.
-    
-    Parameters
-    ----------
-    vn: array
-        6-dimensional vector, xyzuvw.
-    """
-    v1 =  TAU*vn[0]+vn[1]-0.5*vn[3] # x in Epar
-    v2 = -0.5*vn[0]+vn[2]+TAU*vn[3] # y in Epar
-    v3 = vn[4]                      # z in Epar
-    v4 = -TAU*vn[0]+vn[1]-0.5*vn[3] # x in Eperp
-    v5 = -0.5*vn[0]+vn[2]-TAU*vn[3] # y in Eperp
-    v6 = vn[5]                      # z in Epperp, dummy
-    return np.array([v1,v2,v3,v4,v5,v6],dtype=np.float64)
-
-def projection_sets_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
-    """parallel and perpendicular components of a 6D lattice vector in direct space.
-    
-    Parameters
-    ----------
-    vsn: array
-        set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
-    """
-    num=len(vns)
-    m=np.zeros((num,6),dtype=np.float64)
-    for i in range(num):
-        m[i]=projection_numerical(vns[i])
-    return m
-    
-def projection3_numerical(vn: NDArray[np.float64]) -> NDArray[np.float64]:
-    """perpendicular component of a 6D lattice vector in direct space.
     
     Parameters
     ----------
@@ -713,13 +675,46 @@ def projection3_numerical(vn: NDArray[np.float64]) -> NDArray[np.float64]:
     #v1 =  TAU*vn[0]+vn[1]-0.5*vn[3] # x in Epar
     #v2 = -0.5*vn[0]+vn[2]+TAU*vn[3] # y in Epar
     #v3 = vn[4]                      # z in Epar
-    v4 = -TAU*vn[0]+vn[1]-0.5*vn[3]  # x in Eperp
-    v5 = -0.5*vn[0]+vn[2]-TAU*vn[3]  # y in Eperp
-    v6 = vn[5]                      # z in Epperp, dummy
-    #return np.array([v4,v5],dtype=np.float64)
-    return np.array([v4,v5,v6],dtype=np.float64)
+    #v4 = -TAU*vn[0]+vn[1]-0.5*vn[3] # x in Eperp
+    #v5 = -0.5*vn[0]+vn[2]-TAU*vn[3] # y in Eperp
+    #v6 = vn[5]                      # z in Epperp, dummy
+    #return np.array([v1,v2,v3,v4,v5,v6],dtype=np.float64)
+    return projop(vn)
 
-def projection3_sets_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
+def projection_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
+    """parallel and perpendicular components of a 6D lattice vector in direct space.
+    
+    Parameters
+    ----------
+    vsn: array
+        set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
+    """
+    num=len(vns)
+    m=[] # array of qnvec ???
+    for i in range(num):
+        m[i]=projection_numerical(vns[i])
+    return m
+    
+# equivalent to qnv2fot
+def projection3_numerical(vn: qnv.Qnvec) -> float:
+    return qnv2frt(vn)
+#    """perpendicular component of a 6D lattice vector in direct space.
+#    
+#    Parameters
+#    ----------
+#    vn: array
+#        6-dimensional vector, xyzuvw.
+#    """
+#    #v1 =  TAU*vn[0]+vn[1]-0.5*vn[3] # x in Epar
+#    #v2 = -0.5*vn[0]+vn[2]+TAU*vn[3] # y in Epar
+#    #v3 = vn[4]                      # z in Epar
+#    v4 = -TAU*vn[0]+vn[1]-0.5*vn[3]  # x in Eperp
+#    v5 = -0.5*vn[0]+vn[2]-TAU*vn[3]  # y in Eperp
+#    v6 = vn[5]                      # z in Epperp, dummy
+#    #return np.array([v4,v5],dtype=np.float64)
+#    return np.array([v4,v5,v6],dtype=np.float64)
+
+def projection3_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
     """perpendicular component of a 6D lattice vector in direct space.
     
     Parameters
@@ -728,13 +723,14 @@ def projection3_sets_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
         set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
     """
     num=len(vns)
-    m=np.zeros((num,3),dtype=np.float64)
+    #m=np.zeros((num,3),dtype=np.float64)
     #m=np.zeros((num,2),dtype=np.float64)
+    m=[ ]
     for i in range(num):
         m[i]=projection3_numerical(vns[i])
     return m
 
-def projection_numerical_phason(vn: NDArray[np.float64],mat: NDArray[np.float64]) -> NDArray[np.float64]:
+def projection_numerical_phason(vn: qnv.Qnvec,mat: qnm.Qnmat) -> qnv.Qnvec:
     """parallel and perpendicular components of a 6D lattice vector in direct space under uniform phason strain.
     
     Parameters
@@ -759,7 +755,9 @@ def projection_numerical_phason(vn: NDArray[np.float64],mat: NDArray[np.float64]
 #########
 #  WIP  #
 #########
-def projection_numerical_perp(vn: NDArray[np.float64]) -> NDArray[np.float64]:
+# equivalent to prjop_e
+def projection_numerical_perp(vn: qnv.Qnvec) -> qnv.Qnvec:
+    return prjop_e(vn)
     """This returns 6D vector which corresponds to a projection of vn onto Eperp.
     
     Parameters
@@ -771,12 +769,14 @@ def projection_numerical_perp(vn: NDArray[np.float64]) -> NDArray[np.float64]:
     -------
     6d vectors projected onto Eperp
     """
-    return 
+    #return 
 
 #########
 #  WIP  #
 #########
-def projection_numerical_par(vn: NDArray[np.float64]) -> NDArray[np.float64]:
+# equivalent to prjop 
+def projection_numerical_par(vn: qnv.Qnvec) -> qnv.Qnvec:
+    return prjop(vn)
     """This returns 6D vector which corresponds to a projection of vn onto Epar.
     
     Parameters
@@ -788,17 +788,17 @@ def projection_numerical_par(vn: NDArray[np.float64]) -> NDArray[np.float64]:
     -------
     6d vectors projected onto Eperp.
     """
-    m=np.array([\
-            [ 0.5,          0.577350269,  0.0,         -0.288675135,  0.0,  0.0],\
-            [ 0.288675135,  0.5,          0.288675135,  0.0,          0.0,  0.0],\
-            [ 0.0,          0.288675135,  0.5,          0.288675135,  0.0,  0.0],\
-            [-0.288675135,  0.0,          0.577350269,  0.5,          0.0,  0.0],\
-            [ 0.0,          0.0,          0.0,          0.0,          1.0,  0.0],\
-            [ 0.0,          0.0,          0.0,          0.0,          0.0,  0.0],\
-        ])
-    return m@vn
+    #m=np.array([\
+    #        [ 0.5,          0.577350269,  0.0,         -0.288675135,  0.0,  0.0],\
+    #        [ 0.288675135,  0.5,          0.288675135,  0.0,          0.0,  0.0],\
+    #        [ 0.0,          0.288675135,  0.5,          0.288675135,  0.0,  0.0],\
+    #        [-0.288675135,  0.0,          0.577350269,  0.5,          0.0,  0.0],\
+    #        [ 0.0,          0.0,          0.0,          0.0,          1.0,  0.0],\
+    #        [ 0.0,          0.0,          0.0,          0.0,          0.0,  0.0],\
+    #    ])
+    #return m@vn
 
-def inout_occupation_domain_numerical(obj,point):
+def inout_occupation_domain_numerical(obj: qnv.Qnvec,point: qnv.Qnvec):
     """
     """
     triangles=np.zeros((len(obj),3,3),dtype=np.float64)
@@ -815,7 +815,7 @@ def inout_occupation_domain_numerical(obj,point):
     else:
         return False
 
-def inside_outside_triangle_numerical(triangle,point):
+def inside_outside_triangle_numerical(triangle: qnv.Qnvec, point: qnv.Qnvec):
     """
     """
     tmp=np.append(triangle[0],triangle[1])

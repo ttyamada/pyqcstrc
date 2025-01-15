@@ -5,6 +5,8 @@ import pyqcstrc.qnvec.qnvec as qnv
 import pyqcstrc.qnmat.qnmat as qnm
 import pyqcstrc.qnmath.qnmath as mth
 
+prj=Qrjop_Octa() # projection operator for Qnvector
+
 # for octagonal QCs
 class Qnprj_Octa:
     def __init__(self):
@@ -141,24 +143,57 @@ class Prj_Dode:
         self.shape=mt.shape
         self.ndim=mt.ndim
         self.N=3
+        
+        
+def prjop_init(n:np.int64):
+    if(n==3): # projection operator for decagonal
+        prj=Qnprj_Deca()
+    elif(n==4): # projection operator for octagonal
+        prj=Qnprj_Octa()
+    elif(n==5): # projection operator dodecagonal
+        prj=Qnprj_Dode()
 
 # for class cls cls should be octa, deca or dode
-def prjop(prj,v):
+def prjop(v: qnv.Qnvec) -> qnv.Qnvec:
     qnm.printqnm("prj",prj)
     qnv.printqnv("v.vt",v)
     vei=prj.mt@v.vt # vt assumed to be qnvec
     return vei
 
 # projection into external space for class cls
-def prjop_e(prj,v):
+def prjop_e(v:qnv.Qnvec) -> qnv.Qnvec:
     vei=prj.mt@v.vt # vt assumed to be qnvec
     return vei[1:3]
 
 # projection into internal space for class cls
-def prjop_i(prj,v):
+def prjop_i(v: qnv.Qnvec) -> qnv.Qnvec:
     vei=prj.mt@v.vt
     return vei[4:6]
 
+def projection_numerical_par(vn: qnv.Qnvec) -> qnv.Qnvec:
+    return prjop(prj,vn)
+
+def projection3(vt: qnv.Qnvec) -> qnv.Qnvec:
+    return prjop_i(prj,vt)
+
+# alias for prjop(vt)
+def get_internal_component_numerical(vt: qnv.Qnvec) -> qnv.Qnvec:
+    return prjop_i(vt)
+
+def projection_numerical(vn: qnv.Qnvec) -> qnv.Qnvec:
+    return prjop(vn)
+
+def projection_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
+    Parameters
+    ----------
+    vsn: array
+        set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
+    
+    num=len(vns)
+    
+    for i in range(num):
+        m[i]=projection_numerical(vns[i])
+    return m
 
 if __name__ == '__main__':
     # test for qnnum projection operators

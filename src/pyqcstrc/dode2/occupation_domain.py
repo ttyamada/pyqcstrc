@@ -9,7 +9,7 @@ import os
 import sys
 import numpy as np
 try:
-    import pyqcstrc.qnclass.qnmath as math12
+    import pyqcstrc.qnmath.qnmath as math12
     import pyqcstrc.dode2.math1 as math1
     import pyqcstrc.dode2.utils as utils
     import pyqcstrc.dode2.numericalc as numericalc

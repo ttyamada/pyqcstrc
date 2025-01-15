@@ -9,7 +9,8 @@ import os
 import sys
 import numpy as np
 try:
-    import pyqcstrc.octa2.math1 as math1
+    #import pyqcstrc.octa2.math1 as math1
+    import pyqcstrc.qnclass.qnmath as math1
     import pyqcstrc.octa2.intsct as intsct
     import pyqcstrc.octa2.numericalc as numericalc
     import pyqcstrc.octa2.symmetry as symmetry

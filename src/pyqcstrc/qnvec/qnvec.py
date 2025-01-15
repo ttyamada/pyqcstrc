@@ -101,75 +101,80 @@ def cros(v1:Qnvec, v2:Qnvec) -> Qnvec:
     #return np.array([c1,c2,c3],dtype=qnn.Qnnumber)
     return Qnvec([c1,c2,c3])
 
+# equivalent to cross
 def outer_product(v1:Qnvec, v2:Qnvec)-> Qnvec:
-    a=v1[1]*v2[2] #mul(v1[1],v2[2])
-    b=v1[2]*v2[1] #mul(v1[2],v2[1])
-    c1=a-b          #sub(a,b)
-    #
-    a=v1[2]*v2[0] #mul(v1[2],v2[0])
-    b=v1[0]*v2[2] #mul(v1[0],v2[2])
-    c2=a-b          #sub(a,b)
-    #
-    a=v1[0]*v2[1] #mul(v1[0],v2[1])
-    b=v1[1]*v2[0] #mul(v1[1],v2[0])
-    c3=a-b          #sub(a,b)
-    #return np.array([c1,c2,c3],dtype=qnn.Qnnumber)
-    return Qnvec([c1,c2,c3])
+    return cross(v1,v2)
+#    a=v1[1]*v2[2] #mul(v1[1],v2[2])
+#    b=v1[2]*v2[1] #mul(v1[2],v2[1])
+#    c1=a-b          #sub(a,b)
+#    #
+#    a=v1[2]*v2[0] #mul(v1[2],v2[0])
+#    b=v1[0]*v2[2] #mul(v1[0],v2[2])
+#    c2=a-b          #sub(a,b)
+#    #
+#    a=v1[0]*v2[1] #mul(v1[0],v2[1])
+#    b=v1[1]*v2[0] #mul(v1[1],v2[0])
+#    c3=a-b          #sub(a,b)
+#    #return np.array([c1,c2,c3],dtype=qnn.Qnnumber)
+#    return Qnvec([c1,c2,c3])
 
+
+# equivalent to dot
 def inner_product(v1:Qnvec, v2:Qnvec) -> qnn.Qnnum:
-    s1,_=v1.shape
-    s2,_=v2.shape
-    if s1!=s2:
-        print('matrices have not a proper shape.')
-        return 
-    else:
-        a=np.array([0,0,1])
-        for i in range(s1):
-            b=v1[i]*v2[i]  #mul(v1[i],v2[i])
-            a=a+b          #add(a,b)
-        return a
+    return dot(v1,v2)
+#    s1,_=v1.shape
+#    s2,_=v2.shape
+#    if s1!=s2:
+#        print('matrices have not a proper shape.')
+#        return 
+#    else:
+#        a=np.array([0,0,1])
+#        for i in range(s1):
+#            b=v1[i]*v2[i]  #mul(v1[i],v2[i])
+#            a=a+b          #add(a,b)
+#        return a
 
-def dot_product(vec1:Qnvec, vec2:Qnvec):
-    ndim1=vec1.ndim
-    ndim2=vec2.ndim
-    
-    if ndim1==2 and ndim2==2:
-        return inner_product(vec1,vec2)
-    elif ndim1==3 and ndim2==2:
-        s,t1,_=vec1.shape
-        t2,_=vec2.shape
-        if t1!=t2:
-            print('incorrect shape found in dot_product')
-            return 	            
-    elif ndim1==3 and ndim2==3:
-        s,t1,_=vec1.shape
-        t2,u,_=vec2.shape
-        if t1!=t2:
-            print('incorrect shape found in dot_product')
-            return 
-    else:
-        print('incorrect shape found in dot_product')
-        return 
+#def dot_product(vec1:Qnvec, vec2:Qnvec):
+#    ndim1=vec1.ndim
+#    ndim2=vec2.ndim
+#    
+#    if ndim1==2 and ndim2==2:
+#        return inner_product(vec1,vec2)
+#    elif ndim1==3 and ndim2==2:
+#        s,t1,_=vec1.shape
+#        t2,_=vec2.shape
+#        if t1!=t2:
+#            print('incorrect shape found in dot_product')
+#            return 	            
+#    elif ndim1==3 and ndim2==3:
+#        s,t1,_=vec1.shape
+#        t2,u,_=vec2.shape
+#        if t1!=t2:
+#            print('incorrect shape found in dot_product')
+#            return 
+#    else:
+#        print('incorrect shape found in dot_product')
+#        return 
 
-def dot_product_1(vec1:Qnvec, vec2:Qnvec):
-    ndim1=vec1.ndim
-    ndim2=vec2.ndim
-    
-    if ndim1==2 and ndim2==2:
-        s,t1,=vec1.shape
-        t2,_=vec2.shape
-        if t1!=t2:
-            print('incorrect shape found in dot_product')
-            return 
-    elif ndim1==2 and ndim2==3:
-        s,t1,=vec1.shape
-        t2,u,_=vec2.shape
-        if t1!=t2:
-            print('incorrect shape found in dot_product')
-            return 
-    else:
-        print('incorrect shape found in dot_product')
-        return 
+#def dot_product_1(vec1:Qnvec, vec2:Qnvec):
+#    ndim1=vec1.ndim
+#    ndim2=vec2.ndim
+#    
+#    if ndim1==2 and ndim2==2:
+#        s,t1,=vec1.shape
+#        t2,_=vec2.shape
+#        if t1!=t2:
+#            print('incorrect shape found in dot_product')
+#            return 
+#    elif ndim1==2 and ndim2==3:
+#        s,t1,=vec1.shape
+#        t2,u,_=vec2.shape
+#        if t1!=t2:
+#            print('incorrect shape found in dot_product')
+#            return 
+#    else:
+#        print('incorrect shape found in dot_product')
+#        return 
 
 def qnv2npa(a:Qnvec):
     # Qnvector to np.array converter

@@ -8,16 +8,16 @@ import numpy as np
 import pyqcstrc.qnnum.qnnum as qnn
 import pyqcstrc.qnvec.qnvec as qnv
 import pyqcstrc.qnmat.qnmat as qnm
-import pyqcstrc.qnclass.qnmath
-import pyqcstrc.dode2.qnmath12
-
-
+import pyqcstrc.qnmath.qnmath
+#import pyqcstrc.dode2.qnmath12
+import pyqcstrc.qnclass.numericalc
 
 from numpy.typing import NDArray
 #sys.path.append('.')
 #from numericalc import coplanar_check_numeric_tau
 #from pyqcstrc.qnclass.qnmath import mul
-from pyqcstrc.dode2.numericalc import coplanar_check_numeric_tau
+#
+#from pyqcstrc.dode2.numericalc import coplanar_check_numeric_tau
 
 ##SIN=np.sqrt(3)/2
 #SQRT3=np.sqrt(3)

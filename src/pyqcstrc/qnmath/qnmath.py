@@ -167,6 +167,170 @@ def qsort(x:qnv.Qnvec,ip:np.array,nx: np.int64):
             break
     return 
 
+def cross2(v1:qnv.Qnvec, v2:qnv.Qnvec) -> qnn.Qnnum:
+    qnn.Qnnum([0,0,1]) # zero qnnumber
+    return   v1.v[0]*v2.v[0]+v1.v[1]*v2.v[1]-v1.v[1]*v2.v[0]-v1.v[0]*v2.v[1]
+    
+# for octagonal and dodecagonal
+def dot(v1:qnv.Qnvec, v2:qnv.Qnvec) -> qnn.Qnnum:
+    v=qnn.Qnnum([0,0,1]) # qnnum zero
+    for i in range(len(v1)):
+        v=v+v1.v[i]*v2.v[i]
+    return 
+    
+
+def centroid(obj: qnv.Qnvec) -> qnv.Qnvec:
+    """geometric center, centroid of tetrahedron, triangle or edge, in SQRT2-style.
+
+    Parameters
+    ----------
+    obj: array
+        6-dimensional vector in SQRT2-style
+    
+    Returns
+    -------
+    centroid: array in SQRT2-style
+    """
+    N=obj[0].N
+    num=len(obj) # length of obj
+    v2=qnv.Qnvec(6,N) # 6D zero qnvector
+    qnnum=qnn.Qnnum(1,0,num) # 1/num
+    for i1 in range(num):
+        v2=v2+obj[i1]
+    v0=v2*qnnum
+    return v0
+
+# needless???
+def centroid_obj(obj: qnv.Qnvec) -> qnv.Qnvec:
+    """geometric center, centroid of tetrahedron, in TAU-style.
+
+    Parameters
+    ----------
+    tetrahedron: array
+        6-dimensional vector in TAU-style
+    
+    Returns
+    -------
+    centroid: array in TAU-style
+    """
+    #print('centroid_obj')
+    
+    #  geometric center, centroid of OBJ
+    N=obj[0].N
+    len=qnn.Qnnum([1,0,len(obj)],N)  # 1/len(obj)
+    tmp=qnv.Qnvec(6,N) # zero vector
+    for thd in obj:
+        tmp=tmp+thd
+    tmp=tmp*len
+    return tmp
+
+def coplanar_check(p: NDArray[np.int64],num_iteration: int=5) -> bool:
+    """Check whether a given set of points (in TAU-style) is coplanar or not.
+    
+    メモ：xyz1とxyz2の選び方次第で、outer_product(v1,v2)が小さくなりcoplanarと間違って判定する場合がある。
+    これを避けるために適切なxyz1とxyz2の選び方が必要。以下では、ランダムにxyz1とxyz2の選ぶ。
+    
+    Parameters
+    ----------
+    p: array
+        a set of pointsin TAU-style.
+
+    Returns
+    -------
+    int
+    #bool
+    """
+    
+    """
+    num=len(p)
+    if num>3:
+        flag=0
+        lst0=[i for i in range(num)]
+        for _ in range(num_iteration):
+            lst3=random.sample(lst0, 3)
+            xyz0i=projection3(p[lst3[0]])
+            xyz1i=projection3(p[lst3[1]])
+            xyz2i=projection3(p[lst3[2]])
+            v1=sub_vectors(xyz1i,xyz0i)
+            v2=sub_vectors(xyz2i,xyz0i)
+            v3=outer_product(v1,v2)
+            flag=0
+            if np.all(d[:2])==0):
+                pass
+            else:
+                flag=1
+                break
+        if flag==1:
+            counter=0
+            lst=list(filter(lambda x: x not in lst3, lst0))
+            for i in lst:
+                xyz3i=projection3(p[i])
+                v4=sub_vectors(xyz3i,xyz0i)
+                d=inner_product(v3,v4)
+                if np.all(d[:2])==0:
+                    pass
+                else:
+                    counter=1
+                    break
+            if counter==0:
+                return True # coplanar
+            else:
+                return False
+        else:
+            'error in coplanar_check_numeric. increase num_iteration.'
+            return 
+    else:
+        return True # coplanar
+    """
+    return coplanar_check_numeric_tau(p,num_iteration)
+
+#def matrixpow(ma: NDArray[np.int64], n: int) -> NDArray[np.int64]:
+#    """
+#    """
+#    (mx,my)=ma.shape
+#    if mx==my:
+#        if n==0:
+#            return np.identity(mx)
+#        elif n<0:
+#            tmp=np.identity(mx)
+#            inva = np.linalg.inv(ma)
+#            for i in range(-n):
+#                #tmp=np.dot(tmp,inva)
+#                tmp=tmp@inva
+#            return tmp
+#        else:
+#            tmp=np.identity(mx)
+#            for i in range(n):
+#                #tmp=np.dot(tmp,ma)
+#                tmp=tmp@ma
+#            return tmp
+#    else:
+#        print('matrix has not regular shape')
+#        return 
+
+def det_matrix(mtx: qnm.Qnmat) -> qnn.Qnnum:
+    """Determinant of 3x3 matrix, mtx, in SQRT2 style
+    
+    Parameters
+    ----------
+    mtx: array
+        3x3 matrix in SQRT2-style
+
+    Returns
+    -------
+    6d vectors projected onto Eperp in SQRT2-style.
+    """
+    
+    t3=   mtx.m[0][0]*mtx.m[1][1]*mtx.m[2][2]
+    t3=t3+mtx.m[0][1]*mtx.m[1][2]*mtx.m[2][0]    
+    t3=t3+mtx.m[0][2]*mtx.m[1][0]*mtx.m[2][1]
+    t3=t3-mtx.m[0][2]*mtx.m[1][1]*mtx.m[2][0]
+    t3=t3-mtx.m[0][1]*mtx.m[1][0]*mtx.m[2][2]    
+    t3=t3-mtx.m[0][0]*mtx.m[1][2]*mtx.m[2][1]
+
+    return t3
+
+
 #END subroutine qsortr
 
 
