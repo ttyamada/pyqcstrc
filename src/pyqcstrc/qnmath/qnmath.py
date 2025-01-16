@@ -167,18 +167,6 @@ def qsort(x:qnv.Qnvec,ip:np.array,nx: np.int64):
             break
     return 
 
-def cross2(v1:qnv.Qnvec, v2:qnv.Qnvec) -> qnn.Qnnum:
-    qnn.Qnnum([0,0,1]) # zero qnnumber
-    return   v1.v[0]*v2.v[0]+v1.v[1]*v2.v[1]-v1.v[1]*v2.v[0]-v1.v[0]*v2.v[1]
-    
-# for octagonal and dodecagonal
-def dot(v1:qnv.Qnvec, v2:qnv.Qnvec) -> qnn.Qnnum:
-    v=qnn.Qnnum([0,0,1]) # qnnum zero
-    for i in range(len(v1)):
-        v=v+v1.v[i]*v2.v[i]
-    return 
-    
-
 def centroid(obj: qnv.Qnvec) -> qnv.Qnvec:
     """geometric center, centroid of tetrahedron, triangle or edge, in SQRT2-style.
 

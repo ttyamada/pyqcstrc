@@ -6,9 +6,10 @@
 import numpy as np
 from numpy.typing import NDArray
 import random
-import qnstrc.qnnum.qnnum as qnn
-import qnstrc.qnvec.qnvec as qnv
-import qnstrc.qbnat.qnmat as qnm
+
+#TAU=np.sqrt(3)/2.0
+#SQRT3=np.sqrt(3)
+#N=3
 
 #EPS=1e-6 # tolerance
 
@@ -95,11 +96,10 @@ def point_on_segment(point: qnv.Qnvec, line_segment: qnv.Qnvec) -> bool:
     vecBA=xyx2-xyx1
     lPA=dot(vecPA,vecPA)  # squared norm for qnnumber np.linalg.norm(vecPA)
     lBA=dot(vecBA,vecBA)  # squared norm for qnnumber np.linalg.norm(vecBA)
-    N=point.N
-    qn1=qnn.Qnnum([1,0,1].N)
-    qn0=qnn.Qnnum([0,0,1],N)
+    qn1=qnn.Qnnum(1,0,1)
+    qn0=qnn.Qnnum(0,0,1)
     #if lBA>0.0 and abs(np.dot(vecPA,vecBA)-lPA*lBA)<EPS:
-    if lBA>qn0 and abs(dot(vecPA,vecBA)-lPA*lBA)==qn0:
+    if lBA>qnn.zero and abs(dot(vecPA,vecBA)-lPA*lBA)==qn0:
         s=lPA/lBA
         if s>=qn0 and s<=qn1:#if s>=0.0 and s<=1.0:
             return True
@@ -126,7 +126,7 @@ def on_out_surface(point: qnv.Qnvec, triangle: qnv.Qnvec) -> bool:
     float => qnnum
     """
     
-    def func(p_xyz:qnv.Qnvec,tr_xyz:qnv.Qnvec,indx:int) -> qnn.Qnvec:
+    def func(p_xyz:qnn.Qnvec,tr_xyz,indx:qnn.Qnvec) -> qnn.Qnvec:
         out=np.zeros((3,3),dtype=np.float64)
         for i in range(3):
             if i==indx:
@@ -261,6 +261,7 @@ def check_intersection_segment_surface_numerical_6d_tau(line_segment: qnv.Qnvec,
     #tr=get_internal_component_sets_numerical(triangle)
     return check_intersection_segment_surface_numerical(ln,tr)
     
+
 def check_intersection_segment_surface_numerical(line_segment: qnv.Qnvec, triangle: qnv.Qnvec) -> bool:
     
     """check intersection between a line segment and a triangle.
@@ -429,7 +430,7 @@ def check_intersection_two_segment_numerical(ln1: qnv.Qnvec, ln2: qnv.Qnvec) -> 
     t1=dot(vecAC,vecCD)*dot(vecCD,vecAB)-dot(vecCD,vecCD)*dot(vecAC,vecAB)
     # bunbo
     t2=dot(vecAB,vecCD)*dot(vecCD,vecAB)-dot(vecAB,vecAB)*dot(vecCD,vecCD)
-    N=L1a.N
+    N=La1[0].N
     qn0=qnn.Qnnum([0,0,1],N)
     qn1=qnn.Qnnum([1,0,1],N)
     if abs(t2)<qn0:  #EPS:
@@ -587,7 +588,7 @@ def obj_volume_6d_numerical(obj: qnv.Qnvec) -> qnn.Qnnum:  #float:
     object: array
         6-dimensional vertex coordinates of triangle.
     """
-    N=obj[0].v[0].N
+    N=point.N
     qn0=qnn.Qnnum([0,0,1],N) # 0 in qnnum
     vol=qn0
     for triangle in obj:
@@ -846,7 +847,7 @@ def inside_outside_triangle_numerical(triangle: qnv.Qnvec, point: qnv.Qnvec):
     tmp=np.append(tmp,triangle[1])
     tmp=tmp.reshape(3,3)
     area1+=triangle_area_numerical(tmp)
-    N=triangle[0].v[0].N
+    N=triangle[0].N
     qn0=qnn.Qnnum([0,0,1],N)
     if abs(area0-area1)<qn0:  #EPS:
         return True # inside

@@ -24,10 +24,16 @@ class Qnnum:
         return isub(self,b)
     
     def __mul__(a, b):
-        return mul(a,b)
+        if isinstance(b, qnn.Qnnum):
+            return mul(a,b)
+        elif isinstance(b, int):
+            return mul_i(a,b)
     
     def __truediv__(a, b):
-        return div(a,b)
+        if isinstance(b, qnn.Qnnum):
+            return div(a,b)
+        elif isinstance(b, int):
+            return div_i(a,b)
     
     def __eq__(a, b):
         return eq(a,b)
@@ -95,6 +101,12 @@ def mul(a, b):
         return Qnnum(np.array([-c1,-c2,-c3]),a.N)
     else:
         return Qnnum(np.array([c1,c2,c3]),a.N)
+    
+def mul_i(a, b): # b should be int
+    c1=a.n[0]*b
+    c2=a.n[1]*b
+    c3=a.n[2]
+    return Qnnum(np.array([c1,c2,c3]),a.N)
 
 def div(a, b):
     c1=b.n[0]*b.n[2]
@@ -106,6 +118,13 @@ def div(a, b):
         return
     c=Qnnum(np.array([c1,c2,c3]),a.N)
     return mul(a,c)
+
+def div_i(a, b): # b should be int
+    c1=a.n[0]
+    c2=a.n[1]
+    c3=b.n[2]*b
+    c=Qnnum(np.array([c1,c2,c3]),a.N)
+    return c
 
 def eq(a, b):
     c=a-b

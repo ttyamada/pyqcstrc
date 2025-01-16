@@ -32,15 +32,15 @@ class Qnmat:
         return matmul(ma1,ma2)
     
 def zerom(n:np.int64, N: np.int64):
-    qnzero=qnn.Qnnum([0,0,1],N)
-    qnm=Qnmat(np.full(n,qnzero))
+    qn0=qnn.Qnnum([0,0,1],N)
+    qnm=Qnmat(np.full(n,qn0))
     return qnm
 
 def unitm(n:np.int64, N: np.int64):
-    qnone=qnn.Qnnum([1,0,1],N)
+    qn1=qnn.Qnnum([1,0,1],N)
     qnm=zerom(n,N)
     for i in range(n):
-        qnm.mt[i][i]=qnone
+        qnm.mt[i][i]=qn1
     
 def add(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
     a=np.empty(mat1.shape, dtype=qnn.Qnnum)
@@ -73,14 +73,24 @@ def matmul(ma1: Qnmat, ma2: Qnmat) -> Qnmat:
     n1=ma1.ndim
     n2=ma2.ndim
     print("la1",la1,"la2",la2,"n1",n1,"n2",n2)
-    if(n1==1 and n2==1): # inner product of qnvec
+    if n1==1 and n2==1: # inner product of qnvec
         N=ma1.mt[0].N
         qnzero=qnn.Qnnum([0,0,1],N) # qnnumber zero
         sum=qnzero
         for i in range(la1[0]):
             sum=sum+ma1.mt[i]*ma2.mt[i]
             return sum
-    elif(n1==2 and n2==1): # qnmat@qnvec
+    elif n1>1 and n2>1:
+        N=ma1.mt[0][0].N
+        qn0=qnn.Qnnum([0,0,1],N) # qnnumber zero
+        ma3=zeromat(qn0,la1[0],la2[1]) #"qnnumber zero vector"
+        for i in range(la1[0]):
+            for j in range(la2[1]):
+                for k in range(la2[0]):
+                    #ma3.mt[i]+=ma1.mt[i][j]*ma2.mt[j]
+                    ma3.mt[i][j]=ma3.mt[i][j]+ma1.mt[i][k]*ma2.mt[k][j]
+        return ma3
+    elif n1>1 and n2==1 : # qnmat@qnvec
         N=ma2.mt[0].N
         qnzero=qnn.Qnnum([0,0,1],N) # qnnumber zero
         ma3=zerov(qnzero,la1[0]) #"qnnumber zero vector"
@@ -89,7 +99,7 @@ def matmul(ma1: Qnmat, ma2: Qnmat) -> Qnmat:
                 #ma3.mt[i]+=ma1.mt[i][j]*ma2.mt[j]
                 ma3.mt[i]=ma3.mt[i]+ma1.mt[i][j]*ma2.mt[j]
         return ma3
-    elif(n1==1 and n2==2): # qnvec@qnmat
+    elif n1==1 and n2>1 : # qnvec@qnmat
         N=ma1.mt[0].N
         qnzero=qnn.Qnnum([0,0,1],N) # qnnumber zero
         ma3=zerov(qnzero,la1[0]) #"qnnumber zero vector"

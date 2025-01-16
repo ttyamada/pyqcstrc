@@ -4,19 +4,26 @@
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 #
 import sys
-from pyqcstrc.qnclass.qnmath import (add,
-                                sub,
-                                mul,
-                                div,
-                                add_vectors,
-                                sub_vectors,
-                                outer_product,
-                                inner_product,
-                                )
-from pyqcstrc.dode2.math1 import (projection3,
-                                centroid,
-                                coplanar_check,
-                                )
+import pyqcstrc.qnnum.qnnum as qnn
+import pyqcstrc.qnvec.qnvec as qnv
+import pyqcstrc.qnmat.qnmat as qnm
+import pyqcstrc.prjop.prjop as prjop
+import pyqcstrc.qnmath.qnmath as qnmath
+import pyqcstrc.qnclass.numericalc as numericalc
+
+#from pyqcstrc.qnclass.qnmath import (add,
+#                                sub,
+#                                mul,
+#                                div,
+#                                add_vectors,
+#                                sub_vectors,
+#                                outer_product,
+#                                inner_product,
+#                                )
+#from pyqcstrc.dode2.math1 import (projection3,
+#                                centroid,
+#                                coplanar_check,
+#                                )
 #from pyqcstrc.dode2.math1 import (projection3,
 #                                add,
 #                                sub,
@@ -29,14 +36,14 @@ from pyqcstrc.dode2.math1 import (projection3,
 #                                centroid,
 #                                coplanar_check,
 #                                )
-from pyqcstrc.dode2.numericalc import (numeric_value,
-                                    numerical_vector,
-                                    numerical_vectors,
-                                    point_on_segment,
-                                    coplanar_check_numeric_tau,
-                                    get_internal_component_numerical,
-                                    get_internal_component_sets_numerical,
-                                    )
+#from pyqcstrc.dode2.numericalc import (numeric_value,
+#                                    numerical_vector,
+#                                    numerical_vectors,
+#                                    point_on_segment,
+#                                    coplanar_check_numeric_tau,
+#                                    get_internal_component_numerical,
+#                                    get_internal_component_sets_numerical,
+#                                    )
 
 import numpy as np
 from numpy.typing import NDArray
@@ -44,18 +51,19 @@ from scipy.spatial import Delaunay
 import itertools
 import time
 
-TAU=np.sqrt(3)/2
+#TAU=np.sqrt(3)/2
 
-def shift_object(obj: NDArray[np.int64], shift: NDArray[np.int64]) -> NDArray[np.int64]:
+def shift_object(obj: qnv.Qnvec, shift: qnv.Qnvec) -> qnv.Qnvec:
     """shift an object
     """
+    qn0=qnn.Qnvec([0,0,1])
     if obj.ndim==4:
-        obj_new=np.zeros(obj.shape,dtype=np.int64)
+        obj_new=[qn0]*obj.shape
         i1=0
         for triangle in obj:
             i2=0
             for vertex in triangle:
-                obj_new[i1][i2]=add_vectors(vertex,shift)
+                obj_new[i1][i2]=vertex+shift
                 i2+=1
             i1+=1
         return obj_new
@@ -66,7 +74,7 @@ def shift_object(obj: NDArray[np.int64], shift: NDArray[np.int64]) -> NDArray[np
 #----------------------------
 # Volume, area
 #----------------------------
-def obj_area_6d(obj: NDArray[np.int64]) -> NDArray[np.int64]:
+def obj_area_6d(obj: qnv.Qnvec) -> qnn.Qnnum:
     """Calculate volume of an object (set of triangles) in TAU style.
     
     Parameters
@@ -78,17 +86,18 @@ def obj_area_6d(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     area: array
         area in TAU-style.
     """
-    w=np.array([0,0,1])
+    qn0=qnn.Qnvec([0,0,1])
+    w=qn0
     if obj.ndim==4:
         for triangle in obj:
             v=triangle_area_6d(triangle)
-            w=add(w,v)
+            w=w+v
         return w
     elif obj.ndim==5:
         for tset in obj:
             for triangle in tset:
                 v=triangle_area_6d(triangle)
-                w=add(w,v)
+                w=w+v
         return w
     elif obj.ndim==3:
         return triangle_area_6d(obj)
@@ -96,7 +105,7 @@ def obj_area_6d(obj: NDArray[np.int64]) -> NDArray[np.int64]:
         print('object has an incorrect shape!')
         return 
 
-def triangle_area_6d(triangle: NDArray[np.int64]) -> NDArray[np.int64]:
+def triangle_area_6d(triangle: qnv.Qnvec) -> qnn.Qnnum:
     """Calculate volume of triangle in TAU style.
     
     Parameters
@@ -109,9 +118,11 @@ def triangle_area_6d(triangle: NDArray[np.int64]) -> NDArray[np.int64]:
     area: array
         Area in TAU-style.
     """
+    N=triangle[0].vt[0].N
+    qn0=qnn.Qnnum([0,0,1],N)
     if triangle.ndim==3:
         #print('triangle',triangle)
-        vts=np.zeros((3,3,3),dtype=np.int64)
+        vts=[qn0]*(3,3,3)
         for i,vt in enumerate(triangle):
             vts[i]=projection3(vt)
         return triangle_area(vts)
@@ -122,7 +133,7 @@ def triangle_area_6d(triangle: NDArray[np.int64]) -> NDArray[np.int64]:
 #######################
 ###  To be checked  ###
 #######################
-def triangle_area(vts: NDArray[np.int64]) -> NDArray[np.int64]:
+def triangle_area(vts: qnv.Qnvector) -> qnn.Qnnum:
     """Calculate area of a triangle in TAU style.
     
     Parameters
@@ -135,24 +146,27 @@ def triangle_area(vts: NDArray[np.int64]) -> NDArray[np.int64]:
     volume: array
         Volume in TAU-style.
     """
-    v1=sub_vectors(vts[1],vts[0])
-    v2=sub_vectors(vts[2],vts[0])
+    v1=vts[1]-vts[0]
+    v2=vts[2]-vts[0]
     
-    v=outer_product(v1,v2)
+    v=cross(v1,v2)
     
-    a1=v[2][0]
-    a2=v[2][1]
-    a3=v[2][2]
+    #a1=v[2][0]
+    #a2=v[2][1]
+    #a3=v[2][2]
+    N=vts[0].vt[0].N
+    qn0=qnn.Qnnum([0,0,1],N)
+    qn1=qnn.Qnnum([1,0,2],N)
     
-    if a1+a2*TAU<0.0: # to avoid negative volume...
-        return mul(v[2],np.array([-1,0,2]))
+    if v[2] < qn0:  #a1+a2*TAU<0.0: # to avoid negative volume...
+        return -v[2]*qn1  #mul(v[2],np.array([-1,0,2]))
     else:
-        return mul(v[2],np.array([1,0,2]))
+        return v[2]*qn1  #mul(v[2],np.array([1,0,2]))
 
 #----------------------------
 # Remove doubling
 #----------------------------
-def remove_doubling(vts: NDArray[np.int64]) -> NDArray[np.int64]:
+def remove_doubling(vts: qnv.Qnvec) -> qnv.Qnvec:
     """Remove doubling 6d coordinates
     
     Parameters
@@ -170,14 +184,14 @@ def remove_doubling(vts: NDArray[np.int64]) -> NDArray[np.int64]:
         n1,n2,_,_=vts.shape
         num=n1*n2
         vts=vts.reshape(num,6,3)
-        return np.unique(vts,axis=0)
+        return np.unique(vts,axis=0) # write unique for qnvector array
     elif ndim==3:
-        return np.unique(vts,axis=0)
+        return np.unique(vts,axis=0) # 
     else:
         print('ndim should be 3 or 4.')
         return 
 
-def remove_doubling_in_perp_space(vts: NDArray[np.int64]) -> NDArray[np.int64]:
+def remove_doubling_in_perp_space(vts: qnv.Qnvec) -> qnv.Qnvec:
     """Remove 6d coordinates which is doubled in Eperp.
     
     Parameters
@@ -201,15 +215,18 @@ def remove_doubling_in_perp_space(vts: NDArray[np.int64]) -> NDArray[np.int64]:
     
     # first run remove_doubling()
     vts=remove_doubling(vts)
-    num=len(vts)
+    num=len(vts) # length of qnvec array
     
     # then, remove doubling in perp space.
-    a=np.zeros((num,3,3),dtype=np.int64)
+    #a=np.zeros((num,3,3),dtype=np.int64)
+    a=[qnv]*(num,3) 
     for i in range(num):
         a[i]=projection3(vts[i])
-    b=np.unique(a,return_index=True,axis=0)[1]
+    b=np.unique(a,return_index=True,axis=0)[1] # write unique for qnvec array
     num=len(b)
-    a=np.zeros((num,6,3),dtype=np.int64)
+    qn0=qnn.Qnvec([0,0,1])
+    #a=np.zeros((num,6,3),dtype=np.int64)
+    a=[qn0]*(num,6)
     for i in range(num):
         a[i]=vts[b[i]]
     return a
@@ -221,12 +238,12 @@ def remove_doubling_in_perp_space(vts: NDArray[np.int64]) -> NDArray[np.int64]:
 #----------------------------
 
 #### WIP ###
-def get_common_edges(trianges: NDArray[np.int64]) -> NDArray[np.int64]:
+def get_common_edges(trianges: qnv.Qnvec) -> qnv.Qnvec:
     """Get common edges in trianges
     """
     return 
 
-def generator_all_edges(obj: NDArray[np.int64]) -> NDArray[np.int64]:
+def generator_all_edges(obj: qnv.Qnvec) -> qnv.Qnvec:
     """Generate all egdes in Object
     
     Parameters
@@ -243,19 +260,22 @@ def generator_all_edges(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     
     # (1) preparing a list of edges
     n1,n2,_,_=obj.shape
+    N=obj[0].vt[0].N
+    qn0=qnn.Qnnum([0,0,1],N)
     if n2==3:
-        edges=np.zeros((n1,3,2,6,3),dtype=np.int64)
+        #edges=np.zeros((n1,3,2,6,3),dtype=np.int64)
+        edges=[qn0](n1,3,2,6)
         i1=0
         for triangle in obj:
             edges[i1]=get_triangle_edge(triangle)
             i1+=1
-        return edges.reshape(n1*3,2,6,3)
+        return edges.reshape(n1*3,2,6)  #edges.reshape(n1*3,2,6,3)
     else:
         print('obj should be a set of trianges')
         return 
 
 ### WIP: to be checked ###
-def generator_unique_edges(obj: NDArray[np.int64]) -> NDArray[np.int64]:
+def generator_unique_edges(obj: qnv.Qnvec) -> qnv.Qnvec:
     """Return unique egdes in Object
     
     """
@@ -274,19 +294,23 @@ def generator_unique_edges(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     # (2) 重複のないユニークな辺を得る。
     #print('number of edges:',len(edges))
     num_edges=len(edges)
-    a=np.zeros((num_edges,3),dtype=np.float64)
+    N=obj[0][0].vt[0].N
+    qn0=qnn.Qnnum([0,0,1],N)
+    #a=np.zeros((num_edges,3),dtype=np.float64)
+    a=[qn0]*(num,edges)
     for i1 in range(num_edges):
         vt=centroid(edges[i1])
         a[i1]=get_internal_component_numerical(vt)
     b=np.unique(a,return_index=True,axis=0)[1]
     num=len(b)
     #print('number of unique edges:',num)
-    a=np.zeros((num,2,6,3),dtype=np.int64)
+    #a=np.zeros((num,2,6,3),dtype=np.int64)
+    a=[qn0]*(num,2,6)
     for i1 in range(num):
         a[i1]=edges[b[i1]]
     return a
 
-def get_triangle_edge(triangle: NDArray[np.int64]) -> NDArray[np.int64]:
+def get_triangle_edge(triangle: qnv.Qnvec) -> qnv.Qnvec:
     """Return three edges of triange.
     """
     # three edges of triange: 0-1, 0-2, 1-2
@@ -296,7 +320,10 @@ def get_triangle_edge(triangle: NDArray[np.int64]) -> NDArray[np.int64]:
     [1,2]] 
     
     # Three egdes of the triangl.
-    a=np.zeros((3,2,6,3),dtype=np.int64)
+    N=triangle[0][0].vt[0].N
+    qn0=qnn.Qnnum([0,0,1],N)
+    #a=np.zeros((3,2,6,3),dtype=np.int64)
+    a=[qn0]*(3,2,6)
     i1=0
     for k in comb:
         i2=0
@@ -309,7 +336,7 @@ def get_triangle_edge(triangle: NDArray[np.int64]) -> NDArray[np.int64]:
 #-------------
 # Convex_hull
 #-------------
-def generate_convex_hull(obj: NDArray[np.int64]) -> NDArray[np.int64]:
+def generate_convex_hull(obj: qnv.Qnvec) -> qnv.Qnvec:
     """generate convex hull from object (a set of triangles)
     
     objの凸包を得る。
@@ -338,7 +365,7 @@ def generate_convex_hull(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     # 4
     return triangulation_points(vts)
 
-def surface_cleaner(surface: NDArray[np.int64]) -> NDArray[np.int64]:
+def surface_cleaner(surface: qnv.Qnvec) -> qnv.Qnvec:
     """generate border edges from a set of triangles on the objct's surface.
     
     obj表面の三角形からobjの外枠を出力。
@@ -398,14 +425,16 @@ def surface_cleaner(surface: NDArray[np.int64]) -> NDArray[np.int64]:
             flag=0
     #print('edges_new.shape',edges_new.shape)
     n1=len(lst)
-    out=np.zeros((n1,2,6,3),dtype=np.int64)
+    qn0=qnn.Qnvec([0,0,1])
+    #out=np.zeros((n1,2,6,3),dtype=np.int64)
+    out=[qn0]*(n1,2,6,3)
     for i1 in range(n1):
         out[i1]=edges_new[lst[i1]]
     #print('out.shape',out.shape)
     
     return out
 
-def get_sets_of_coplanar_triangles(surface: NDArray[np.int64]) -> NDArray[np.int64]:
+def get_sets_of_coplanar_triangles(surface: qnv.Qnvec) -> qnv.Qnvec:
     """
     同一平面上にある三角形の集合を作る。surfaceに含まれるtriangleについて
     順に同一平面上にあるかどうかをチェックし、もし以前のどの三角形とも同一平面
@@ -442,7 +471,7 @@ def get_sets_of_coplanar_triangles(surface: NDArray[np.int64]) -> NDArray[np.int
         lst_sets.append(a)
     return lst_sets
 
-def gen_border_edges_of_coplanar_triangles(coplanar_triangles: NDArray[np.int64]) -> NDArray[np.int64]:
+def gen_border_edges_of_coplanar_triangles(coplanar_triangles: qnv.Qnvec) -> qnv.Qnvec:
     """
     同一平面上にある三角形の辺のうち、どの三角形とも共有していない独立な辺を求める．
     """
@@ -464,7 +493,7 @@ def gen_border_edges_of_coplanar_triangles(coplanar_triangles: NDArray[np.int64]
             lst.append(edge1)
         else:
             pass
-    return np.array(lst,dtype=np.int64)
+    return lst  #np.array(lst,dtype=np.int64)
 
 #----------------------------
 # Equivalence check
@@ -475,7 +504,7 @@ def gen_border_edges_of_coplanar_triangles(coplanar_triangles: NDArray[np.int64]
 #   equivalent_vertices
 #----------------------------
 # WIP:
-def equivalent(obj1: NDArray[np.int64], obj2: NDArray[np.int64]) -> bool:
+def equivalent(obj1: qnv.Qnvec, obj2: qnv.Qnvec) -> bool:
     """Checking whether obj1 and obj1 are equivalent or not. 
     """
     def check1(a,b,n):
@@ -519,7 +548,7 @@ def equivalent(obj1: NDArray[np.int64], obj2: NDArray[np.int64]) -> bool:
     else:
         return 
 
-def equivalent_triangles(triangle1: NDArray[np.int64], triangle2: NDArray[np.int64]) -> bool:
+def equivalent_triangles(triangle1: qnv.Qnvec, triangle2: qnv.Qnvec) -> bool:
     """Checking whether triangle1 and triangle2 are equivalent or not.
     """
     a=np.vstack([triangle1,triangle2])
@@ -529,7 +558,7 @@ def equivalent_triangles(triangle1: NDArray[np.int64], triangle2: NDArray[np.int
     else:
         return False # not equivalent traiangles
 
-def equivalent_edges(edge1: NDArray[np.int64], edge2: NDArray[np.int64]) -> bool:
+def equivalent_edges(edge1: qnv.Qnvec, edge2: qnv.Qnvec) -> bool:
     """Checking whether edge1 and edge2 are equivalent or not.
     """
     a=np.vstack([edge1,edge2])
@@ -539,7 +568,7 @@ def equivalent_edges(edge1: NDArray[np.int64], edge2: NDArray[np.int64]) -> bool
     else:
         return False # not equivalent
 
-def equivalent_vertices(vertex1: NDArray[np.int64], vertex2: NDArray[np.int64]) -> bool:
+def equivalent_vertices(vertex1: qnv.Qnvec, vertex2: qnv.Qnvec) -> bool:
     xyz1=projection3(vertex1)
     xyz2=projection3(vertex2)
     if np.all(xyz1==xyz2):
@@ -550,29 +579,39 @@ def equivalent_vertices(vertex1: NDArray[np.int64], vertex2: NDArray[np.int64]) 
 #----------------------------
 # Sort
 #----------------------------
-def sort_vctors(vts: NDArray[np.int64]) -> NDArray[np.int64]:
+def sort_vctors(vts: qnv.Qnvec) -> qnv.Qnvec:
     """
     sort vectors in TAU-style
     
     sort the coordinates (xi,yi,zi) such that the xi in the order.
     """
-    n1,n2,_=vts.shape
-    out=np.zeros(vts.shape,dtype=np.int64)
+n1,n2,_=vts.shape
+    #out=np.zeros(vts.shape,dtype=np.int64)
+    N=vts[0].vt[0].N
+    qn0=qnn.Qnnum([0,0,1],N)
+    out=[qn0]*vts.shape
     vns=get_internal_component_sets_numerical(vts)
     
-    tmp=np.argsort(vns,axis=0)
+    ln=len(vns)
+    ip=[0]*ln
+    qnmath.qsort(vns,ip,ln)
+    #tmp=np.argsort(vns,axis=0)
+
     #tmp=vns[np.argsort(vns[:,0])]
     for i1 in range(n1):
         out[i1]=vts[tmp[i1][0]]
     return out
 
-def sort_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
+def sort_obj(obj: qnv.Qnvec) -> qnv.Qnvec:
     """
     sort triangle in an object
     """
-    out=np.zeros(vts.shape,dtype=np.int64)
-    centroids=np.zeros(len(obj),dtype=np.float64)
-    tmp=np.zeros((obj.shape,3),dtype=np.int64)
+    #out=np.zeros(vts.shape,dtype=np.int64)
+    out=[qn0]*vts.shape
+    #centroids=np.zeros(len(obj),dtype=np.float64)
+    centroids=[qn0]*len(obj)
+    #tmp=np.zeros((obj.shape,3),dtype=np.int64)
+    tmp=[qn0]*obj.shape
     
     # 各triangleの頂点xyzをx順にソートすると同時に重心を求めておく。
     for i1 in range(len(obj)):
@@ -581,7 +620,10 @@ def sort_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     
     # 三角形の重心xyzのx順にソート
     #indx=np.argsort(centroids,axis=0)
-    indx=centroids[np.argsort(centroids[:,0])]
+    #indx=centroids[np.argsort(centroids[:,0])] # returns index
+    ln=len(centroids)
+    index=[0]*ln
+    qnmath.qsort(centroids,indx,ln) # get index
     
     for i1 in range(n1):
         out[i1]=tmp[indx[i1][0]]
@@ -590,7 +632,7 @@ def sort_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
 #----------------------------
 # Triangulation
 #----------------------------
-def decomposition(tmp2v: NDArray[np.float64]):
+def decomposition(tmp2v: qnv.Qnvec):
     try:
         tri=Delaunay(tmp2v)
     except:
@@ -602,9 +644,12 @@ def decomposition(tmp2v: NDArray[np.float64]):
             out.append([tet[0],tet[1],tet[2]])
     return out
 
-def triangulation_points(points: NDArray[np.int64]):
+def triangulation_points(points: qnv.Qnvec):
     
-    tmp=np.zeros((len(points),2),dtype=np.float64)
+    #tmp=np.zeros((len(points),2),dtype=np.float64)
+    N=points[0].vt[0].N
+    qn0=qnn.Qnnum([0,0,1],N)
+    tmp=[qm0]*(len(points),2)
     for i1,p in enumerate(points):
         v=projection3(p)
         v=numerical_vector(v)
@@ -616,19 +661,22 @@ def triangulation_points(points: NDArray[np.int64]):
     else:
         counter=0
         for i in ltmp:
-            tmp3=np.array([points[i[0]],points[i[1]],points[i[2]]]).reshape(3,6,3)
+            #tmp3=np.array([points[i[0]],points[i[1]],points[i[2]]]).reshape(3,6,3)
+            tmp3=np.array([points[i[0]],points[i[1]],points[i[2]]]).reshape(3,6)
             vol=triangle_area_6d(tmp3)
             if vol[0]==0 and vol[1]==0:
                 pass
             else:
                 if counter==0:
-                    tmp1=tmp3.reshape(54) # 3*6*3=54
+                    #tmp1=tmp3.reshape(54) # 3*6*3=54
+                    tmp1=tmp3.reshape(18) # 3*6=18
                 else:
                     tmp1=np.append(tmp1,tmp3)
                 counter+=1
         if counter!=0:
             #return tmp1.reshape(int(len(tmp1)/54),3,6,3) # 3*6*3=54
-            return tmp1.reshape(counter,3,6,3) # 3*6*3=54
+            #return tmp1.reshape(counter,3,6,3) # 3*6*3=54
+            return tmp1.reshape(counter,3,6) # 3*6*3=54
         else:
             return 
 
@@ -639,7 +687,7 @@ def triangulation_points(points: NDArray[np.int64]):
 ####
 ####
 ##############################
-def remove_vectors(vts1: NDArray[np.int64], vts2: NDArray[np.int64]) -> NDArray[np.int64]:
+def remove_vectors(vts1: qnv.Qnvec, vts2: qnv.Qnvec) -> qnv.Qnvec:
     """remove 6d vectors in a set vts2 from a set vts1.
     6次元ベクトルリストvts1から6次元ベクトルリストvts2にあるベクトルを抜きとる
     """
@@ -654,14 +702,17 @@ def remove_vectors(vts1: NDArray[np.int64], vts2: NDArray[np.int64]) -> NDArray[
             lst.append(i1)
     num=len(lst)
     if num!=0:
-        out=np.zeros((len(lst),6,3),dtype=np.int64)
+        N=vts1[0].N
+        qn0=qnn.Qnnum([0,0,1],N)
+        #out=np.zeros((len(lst),6,3),dtype=np.int64)
+        out=[qn0]*(len(lst),6)
         for i1 in range(len(lst)):
             out[i1]=vts1[lst[i1]]
         return out
     else:
         return vts1
 
-def remove_vector(vts: NDArray[np.int64], vt: NDArray[np.int64]) -> NDArray[np.int64]:
+def remove_vector(vts: qnv.Qnvec, vt: qnv.Qnvec) -> qnv.Qnvec:
     """ remove a 6d vector(vt2) from a set of 6d vectors (vts).
     6次元ベクトルリストvlst1から6次元ベクトルvt2を抜きとる
     """
@@ -674,7 +725,9 @@ def remove_vector(vts: NDArray[np.int64], vt: NDArray[np.int64]) -> NDArray[np.i
             lst.append(i1)
     num=len(lst)
     if num!=0:
-        out=np.zeros((len(lst),6,3),dtype=np.int64)
+        #out=np.zeros((len(lst),6,3),dtype=np.int64)
+        qn0=qnn.Qnvec([0,0,1])
+        out=[qn0]*(len(lst),6)
         for i1 in range(len(lst)):
             out[i1]=vts[lst[i1]]
         return out
@@ -688,14 +741,11 @@ def remove_vector(vts: NDArray[np.int64], vt: NDArray[np.int64]) -> NDArray[np.i
 ####
 ####
 #################################
-def merge_two_triangles_in_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
-    
+def merge_two_triangles_in_obj(obj: qnv.Qnvec) -> qnn.Qnnum:
     num=len(obj)
-    
-    
     return obj
 
-def merge_two_triangles(triangle_1: NDArray[np.int64], triangle_2: NDArray[np.int64]) -> NDArray[np.int64]:
+def merge_two_triangles(triangle_1: qnv.Qnvec, triangle_2: qnv.Qnvec) -> qnv.Qnvec:
     """Return merged tetrahedra.
     """
     if check_connectivity_triangles(triangle_1,triangle_2): # triangle1とtriangle2が共通する辺を持つ場合
@@ -720,7 +770,7 @@ def merge_two_triangles(triangle_1: NDArray[np.int64], triangle_2: NDArray[np.in
     else:
         return 
     
-def check_connectivity_triangles(triangle_1: NDArray[np.int64], triangle_2: NDArray[np.int64]) -> bool:
+def check_connectivity_triangles(triangle_1: qnv.Qnvec, triangle_2: qnv.Qnvec) -> bool:
     """Checking whether triangle_1 and _2 are sharing an edge or not.
     """
     a=np.vstack([triangle_1,triangle_1])
@@ -730,7 +780,7 @@ def check_connectivity_triangles(triangle_1: NDArray[np.int64], triangle_2: NDAr
     else:
         return False # not commom edge
 
-def get_common_edge_in_two_triangles(triangle_1: NDArray[np.int64], triangle_2: NDArray[np.int64]) -> NDArray[np.int64]:
+def get_common_edge_in_two_triangles(triangle_1: qnv.Qnvec, triangle_2: qnv.Qnvec) -> qnv.Qnvec:
     """ Return common edge of two connected triangles.
     """
     edge1=get_triangle_edge(triangle_1)
@@ -753,7 +803,7 @@ def get_common_edge_in_two_triangles(triangle_1: NDArray[np.int64], triangle_2: 
     else:
         return 
 
-def two_segment_into_one(line_segment_1: NDArray[np.int64], line_segment_2: NDArray[np.int64]) -> NDArray[np.int64]:
+def two_segment_into_one(line_segment_1: qnv.Qnvec, line_segment_2:qnv.Qnvec) -> qnv.Qnvec:
     
     combination=[\
     [0,1,0,1],\
@@ -783,7 +833,7 @@ def two_segment_into_one(line_segment_1: NDArray[np.int64], line_segment_2: NDAr
     else:
         return 
 
-def coplanar_check_two_triangles(triange1: NDArray[np.int64], triange2: NDArray[np.int64]) -> bool:
+def coplanar_check_two_triangles(triange1: qnv.Qnvec, triange2: qnv.Qnvec) -> bool:
     """Checking whether two triangles are coplanar or not.
     
     Note
@@ -804,10 +854,12 @@ def coplanar_check_two_triangles(triange1: NDArray[np.int64], triange2: NDArray[
 
 
 # MICS
-def middle_position(pos1,pos2):
+def middle_position(pos1: qnv.Qnvec,pos2 :qnv.Qnvec):
+    N=pos1.vt[0].N
     for i1 in range(6):
-        v=add(pos1[i1],pos2[i1])
-        v=mul(v,np.array([1,0,2]))
+        v=pos1[i1]+pos2[i1]
+        #v=mul(v,np.array([1,0,2]))
+        v=v*qnn.Qnnum([1,0,2].N) #???
         if i1!=0:
             out=np.vstack([tmp2,v])
         else:
