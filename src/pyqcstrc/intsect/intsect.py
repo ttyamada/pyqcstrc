@@ -2,12 +2,12 @@ import numpy as np
 from numpy.typing import NDArray
 import time # in object_subtraction_dev1, tetrahedron_not_obj
 import itertools
-import pyqcstrc.qnnum.qnnum as qnnum
-import pyqcstrc.qnvec.qnvec as qnvec
-import pyqcstrc.qnmat.qnmat as qnmat
+import pyqcstrc.qnnum.qnnum as qnn
+import pyqcstrc.qnvec.qnvec as qnv
+import pyqcstrc.qnmat.qnmat as qnm
 import pyqcstrc.qnclass.numericalc as numericalc
 
-def ball_radius_obj(obj: qnv.Qnvec, centroid: qnv.Qnvec) -> float:
+def ball_radius_obj(obj: qnv.Qnvec, centroid: qnv.Qnvec) -> qnn.Qnnum: #float:
     """estimate maximum distance between verices of given OBJ and its centroid.
     
     Parameters
@@ -23,11 +23,12 @@ def ball_radius_obj(obj: qnv.Qnvec, centroid: qnv.Qnvec) -> float:
     
     """
     vertices=remove_doubling_in_perp_space(obj)
-    dd=0
+    qn0=qnn.Qnnum([0,0,1])
+    dd=qn0  #0
     for v in vertices:
         a=v-centroid
         a=projection3(a)
-        dd1=length_numerical(a)
+        dd1=qnv.dot(a,a)  #length_numerical(a)
         if dd1>dd:
             dd=dd1
         else:

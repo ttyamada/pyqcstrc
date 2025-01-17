@@ -8,7 +8,7 @@ import pyqcstrc.qnnum.qnnum as qnn
 import pyqcstrc.qnvec.qnvec as qnv
 import pyqcstrc.qnmat.qnmat as qnm
 import pyqcstrc.prjop.prjop as prjop
-import pyqcstrc.qnmath.qnmath as qnmath
+import pyqcstrc.qnmath.qnmath as qnmth
 import pyqcstrc.qnclass.numericalc as numericalc
 
 #from pyqcstrc.qnclass.qnmath import (add,
@@ -594,7 +594,7 @@ n1,n2,_=vts.shape
     
     ln=len(vns)
     ip=[0]*ln
-    qnmath.qsort(vns,ip,ln)
+    qnmth.qsort(vns,ip,ln)  # qsort in qnmath
     #tmp=np.argsort(vns,axis=0)
 
     #tmp=vns[np.argsort(vns[:,0])]
@@ -623,7 +623,7 @@ def sort_obj(obj: qnv.Qnvec) -> qnv.Qnvec:
     #indx=centroids[np.argsort(centroids[:,0])] # returns index
     ln=len(centroids)
     index=[0]*ln
-    qnmath.qsort(centroids,indx,ln) # get index
+    qnmth.qsort(centroids,indx,ln) # get index
     
     for i1 in range(n1):
         out[i1]=tmp[indx[i1][0]]

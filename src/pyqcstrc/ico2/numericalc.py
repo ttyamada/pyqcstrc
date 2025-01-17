@@ -6,11 +6,15 @@
 import numpy as np
 from numpy.typing import NDArray
 import random
+import pyqnstrc.qnnum.qnnum as qnn
+import pyqnstrc.qnvec.qnvec as qnv
+import pyqnstrc.qnmat.qnmat as qnm
+import pyqnstrc.qnmath.qnmath as qnmth
 
 TAU=(1+np.sqrt(5))/2.0
 EPS=1e-6
 
-def coplanar_check_numeric_tau(pts: NDArray[np.int64], num_iteration: int=5) -> bool:
+def coplanar_check_numeric_tau(pts: qnv.Qnvec, num_iteration: int=5) -> bool:
     """check the points (pts) are in coplanar or not
     
     Parameters

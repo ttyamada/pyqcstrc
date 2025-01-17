@@ -8,6 +8,8 @@ import numpy as np
 from numpy.typing import NDArray
 import time # in subtraction_two_obj
 import itertools
+import pyqcstrc.qnnum.qnnum as qnn
+import pyqcstrc.qnmath.qnmath as qnmth
 
 from pyqcstrc.ico2.math1 import (projection3,
                                 centroid, 
@@ -64,7 +66,7 @@ def decomposition(p: NDArray[np.int64]) -> NDArray[np.int64]:
             tmp.append([tet[0],tet[1],tet[2],tet[3]])
     return tmp
 
-def ball_radius_obj(obj: NDArray[np.int64], centroid: NDArray[np.int64]) -> float:
+def ball_radius_obj(obj: qnv.Qnvec, centroid: qnv.Qnvec) -> qnn.Qnnum: #float:
     """estimate maximum distance between verices of given OBJ and its centroid.
     
     Parameters
@@ -82,37 +84,40 @@ def ball_radius_obj(obj: NDArray[np.int64], centroid: NDArray[np.int64]) -> floa
     #print("ball_radius_obj")
     
     vertices=remove_doubling_in_perp_space(obj)
-    dd=0
+    qn0=qnn.Qnvec([0,0,1])
+    dd=qn0  #0
     for v in vertices:
-        a=sub_vectors(v,centroid)
+        a=v-centroid
         a=projection3(a)
-        dd1=length_numerical(a)
+        dd1=qnv.dot(a,a)  #length_numerical(a)
         if dd1>dd:
             dd=dd1
         else:
             pass
-    return dd
+    return dd # squared radius
 
-def ball_radius(tetrahedron: NDArray[np.int64], centroid: NDArray[np.int64]) -> float:
+def ball_radius(tetrahedron: qnv.Qnvec, centroid: qnv.Qnvec) -> qnn.Qnnum:  #float:
     #  this transforms a tetrahedron to a boll which covers the tetrahedron
     #  the centre of the boll is the centroid of the tetrahedron.
     return ball_radius_obj(tetrahedron,centroid)
 
-def distance_in_perp_space(vt1: NDArray[np.int64], vt2: NDArray[np.int64]) -> float:
-    a=sub_vectors(vt1,vt2)
+# squared distance
+def distance_in_perp_space(vt1: qnv.Qnvec, vt2: qnv.Qnvec) -> qnn.Qnnum:  # float:
+    a=vt1-vt2
     a=projection3(a)
-    return length_numerical(a)
+    return qnv.dot(a,a)  #length_numerical(a)
 
-def rough_check_intersection_tetrahedron_obj(tetrahedron: NDArray[np.int64], cententer: NDArray[np.int64], distance: float) -> bool:
+def rough_check_intersection_tetrahedron_obj(tetrahedron: qnv.Qnvec,\
+                     cententer: qnv.Qnvec, distance: qnn.Qnnum) -> bool:
     cen1=centroid(tetrahedron)
-    dd1=ball_radius(tetrahedron,cen1)
-    dd0=distance_in_perp_space(cen1,cententer)
+    dd1=ball_radius(tetrahedron,cen1) # squared radius
+    dd0=distance_in_perp_space(cen1,cententer) # squared distance
     if dd0 <= dd1+distance: # two balls are intersecting.
         return True
     else: #
         return False
 
-def check_intersection_two_tetrahedron_4(tetrahedron_1: NDArray[np.int64], tetrahedron_2: NDArray[np.int64]) -> int:
+def check_intersection_two_tetrahedron_4(tetrahedron_1: qnv.Qnvec, tetrahedron_2: qnv.Qnvec) -> int:
     # checking whether tetrahedron_1 is fully inside tetrahedron_2 or not
     counter2=0
     for vtx in tetrahedron_1:
@@ -239,8 +244,8 @@ def check_intersection_two_tetrahedron_4(tetrahedron_1: NDArray[np.int64], tetra
         else:
             return 0 # no intersection
 
-### This function has ho be checked, although it is not used in ico2.
-def intersection_two_segment(segment_1: NDArray[np.int64], segment_2: NDArray[np.int64]) -> NDArray[np.int64]:
+### This function has to be checked, although it is not used in ico2.
+def intersection_two_segment(segment_1: qnv.Qnvec, segment_2: qnv.Qnvec) -> qnv.Qnvec:
     """check intersection between two line segments.
     
     Parameters
@@ -283,7 +288,7 @@ def intersection_two_segment(segment_1: NDArray[np.int64], segment_2: NDArray[np
     else: # no intersection
         return 
 
-def intersection_segment_surface(segment: NDArray[np.int64], surface: NDArray[np.int64]) -> NDArray[np.int64]:
+def intersection_segment_surface(segment: qnv.Qnvec, surface: qnv.Qnvec) -> qnv.Qnvec:
     """check intersection between a line segment and a triangle.
     
     Möller–Trumbore intersection algorithm
@@ -303,34 +308,34 @@ def intersection_segment_surface(segment: NDArray[np.int64], surface: NDArray[np
     # check whether the line segment and the surface are intersecting or not by numerical calc.
     if check_intersection_segment_surface_numerical_6d_tau(segment,surface): # intersecting
         # calc in TAU-style
-        vec6AB=sub_vectors(segment[1],segment[0])
+        vec6AB=segment[1]-segment[0]
         vecAB=projection3(vec6AB)                 # AB # R
         #
-        tmp=sub_vectors(surface[1],surface[0])
+        tmp=surface[1]-surface[0]
         vecCD=projection3(tmp)                 # CD # E1
         #
-        tmp=sub_vectors(surface[2],surface[0])
+        tmp=surface[2]-surface[0]
         vecCE=projection3(tmp)                 # CE # E2
         #
-        tmp=sub_vectors(segment[0],surface[0])
+        tmp=segment[0]-surface[0]
         vecCA=projection3(tmp)                 # CA # T
         
-        vecP=outer_product(vecAB,vecCE) # P
-        vecQ=outer_product(vecCA,vecCD) # Q
+        vecP=qnv.cros(vecAB,vecCE) # P
+        vecQ=qnv.cros(vecCA,vecCD) # Q
         
-        bunbo=inner_product(vecP,vecCD)
+        bunbo=qnv.dot(vecP,vecCD)
         
-        bunshi=inner_product(vecQ,vecCE)
-        t=div(bunshi,bunbo)
+        bunshi=qnv.dot(vecQ,vecCE)
+        t=bunshi/bunbo # qnnumber
         
         # intersecting point: OA + t*AB
-        tmp=mul_vector(vec6AB,t) # t*AB
+        tmp=vec6AB*t # t*AB
         #print('   t=',numeric_value(t))
-        return add_vectors(segment[0],tmp).reshape(1,6,3)
+        return (segment[0]+tmp).reshape(1,6,3)
     else: # no intersection
         return 
 
-def intersection_two_tetrahedron_4(tetrahedron_1: NDArray[np.int64], tetrahedron_2: NDArray[np.int64]) -> NDArray[np.int64]:
+def intersection_two_tetrahedron_4(tetrahedron_1: qnv.Qnvec, tetrahedron_2: qnv.Qnvec) -> qnv.Qnvec:
     #print('intersection_two_tetrahedron_4()')
     #
     # -----------------
@@ -504,7 +509,7 @@ def intersection_two_tetrahedron_4(tetrahedron_1: NDArray[np.int64], tetrahedron
     else:
         return 
 
-def intersection_two_obj_1(obj1: NDArray[np.int64],obj2: NDArray[np.int64],kind=None,verbose: int=0) -> NDArray[np.int64]:
+def intersection_two_obj_1(obj1: qnv.Qnvec,obj2: qnv.Qnvec,kind=None,verbose: int=0) -> qnv.Qnvec:
     """
     Return an intersection between two objects.
     
@@ -637,7 +642,7 @@ def intersection_two_obj_1(obj1: NDArray[np.int64],obj2: NDArray[np.int64],kind=
     else:
         return 
 
-def intersection_two_obj_convex(obj1: NDArray[np.int64], obj2: NDArray[np.int64], verbose: int=0) -> NDArray[np.int64]:
+def intersection_two_obj_convex(obj1: qnv.Qnvec, obj2: qnv.Qnvec, verbose: int=0) -> qnv.Qnvec:
     """
     Return an intersection between two objects.
     
@@ -783,7 +788,7 @@ def intersection_two_obj_convex(obj1: NDArray[np.int64], obj2: NDArray[np.int64]
 ###   WIP
 ###
 #########
-def subtraction_two_obj(obj1: NDArray[np.int64], obj2: NDArray[np.int64], verbose: int=0) -> NDArray[np.int64]:
+def subtraction_two_obj(obj1: qnv.Qnvec, obj2: qnv.Qnvec, verbose: int=0) -> qnv.Qnvec:
     """Operate A not B (= A NOT (A AND B)).
 
     Parameters
@@ -841,7 +846,7 @@ def subtraction_two_obj(obj1: NDArray[np.int64], obj2: NDArray[np.int64], verbos
     #        print('         ends in %4.3f sec'%time_diff)
     return out
 
-def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64], surface_obj: NDArray[np.int64], verbose: int=0) -> NDArray[np.int64]:
+def tetrahedron_not_obj_1(tetrahedron: qnv.Qnvec, obj: qnv.Qnvec, surface_obj: qnv.Qnvec, verbose: int=0) -> qnv.Qnvec:
     """Operate tetrahedron not object = tetrahedron not (tetrahedron and object).
     
     Parameters
@@ -983,7 +988,9 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
         #---------------------------------------
         num=len(triangle_common)
         #print('len(triangle_common)',num)
-        dd=np.zeros(num,dtype=np.float64)
+        #dd=np.zeros(num,dtype=np.float64)
+        qn0=qnn.Qnnum([0,0,1])
+        dd=[qn0]*num # for squared radius
         i1=0
         for triangle in triangle_common:
             vt=centroid(triangle)
@@ -995,12 +1002,14 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
             vn_out=get_internal_component_numerical(vrtx1_out.reshape(6,3))
             vn=vn-vn_out
             #print('vn',vn)
-            dd[i1]=np.sqrt(vn[0]**2+vn[1]**2+vn[2]**2)
+            #dd[i1]=np.sqrt(vn[0]**2+vn[1]**2+vn[2]**2)
+            dd[i1]=qnv.dot(vn,vn,3)
             i1+=1
         #print('dd',dd)
-        indx_dd=np.argsort(dd)
+        #indx_dd=np.argsort(dd)
+        qnmth.qsort(dd,indx_dd,i1) # qsort in qnmath
         #print('indx_dd',indx_dd)
-        tmp=np.zeros((num,3,6,3),dtype=np.int64)
+        tmp=np.zeros((num,3,6,3),dtype=np.int64) # [0]*(num,3,6,3)
         for i1 in range(len(indx_dd)):
             tmp[i1]=triangle_common[indx_dd[i1]]
         triangle_common=tmp
@@ -1027,11 +1036,11 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
             ################################################
             # 上記の問題点があるため、不要なものを除く必要がある。
             # 以下では、tmpにある四面体の集合について、可能な組み合わせ
-            # のうち正しい体積になるものを見つける。
+               # のうち正しい体積になるものを見つける。
             # 体積が正しいからといって、求めたいものではないは可能性ある。
             #
             # triangle_commonの中のtrianglenをvrtx1_outと近い順に
-            # ソートておいた方が早く目的のtetrahedronが見つかるはず。
+               # ソートておいた方が早く目的のtetrahedronが見つかるはず。
             # 上でソートておいた。
             ################################################
             #print('len(tmp)',len(tmp))
@@ -1164,7 +1173,7 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
                 print('         case 4-X')
         return out
 
-def tetrahedron_not_obj_2(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]) -> NDArray[np.int64]:
+def tetrahedron_not_obj_2(tetrahedron: qnv.Qnvec, obj: qnv.Qnvec) -> qnv.Qnvec:
     """Operate tetrahedron not object = tetrahedron not (tetrahedron and object).
     
     tetrahedronからobjを引いた物体の表面にある三角形を求める（本当は四面体を求めたいが難しい）
