@@ -8,7 +8,8 @@
 #import os
 import sys
 import numpy as np
-import pyqcstrc.dode2.qnmath12 as qnmath
+#import pyqcstrc.dode2.qnmath12 as qnmath
+import pyqcstrc.qnmath.qnmath as qnmath
 import pyqcstrc.dode2.occupation_domain as od
 import pyqcstrc.dode2.two_occupation_domains as ods
 import pyqcstrc.dode2.projection12 as proj

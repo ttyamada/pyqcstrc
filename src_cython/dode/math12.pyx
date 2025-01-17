@@ -14,7 +14,7 @@ DTYPE_int = np.int64
 #ctypedef np.float64_t DTYPE_double_t
 
 cdef np.float64_t SIN=np.sqrt(3)/2.0
-cdef np.int64 N=3
+cdef np.int64_t N=3
 cdef np.ndarray M0=np.array([ 0, 0, 1])
 cdef np.ndarray M1=np.array([ 1, 0, 1])
 cdef np.ndarray M2=np.array([-1, 0, 1])
@@ -130,57 +130,57 @@ cpdef list mul(DTYPE_int_t p1,DTYPE_int_t p2,DTYPE_int_t p3,DTYPE_int_t q1,DTYPE
     else:
         return [int(c1/gcd),int(c2/gcd),int(c3/gcd)]
 
-cdef divDTYPE_int_t p1,DTYPE_int_t p2,DTYPE_int_t p3,DTYPE_int_t q1,DTYPE_int_t q2,DTYPE_int_t q3):
-    cdef DTYPE_int_t c1,c2,c3,gcd
-    c1=q1*q3
-    c2=-q2*q3
-    c3=q1*q1-N*q2*q2
-    #c=[c1,c2,c3]
-
-    c=np.array([c1,c2,c3],dtype=np.int64)
-    if c3==0:
-        print('ERROR_1:division error')
-        return
-    return mul(a,c)
-
-#cpdef list div(DTYPE_int_t p1,DTYPE_int_t p2,DTYPE_int_t p3,DTYPE_int_t q1,DTYPE_int_t q2,DTYPE_int_t q3): # A/B
+#cdef list div(DTYPE_int_t p1,DTYPE_int_t p2,DTYPE_int_t p3,DTYPE_int_t q1,DTYPE_int_t q2,DTYPE_int_t q3):
 #    cdef DTYPE_int_t c1,c2,c3,gcd
-#    cdef np.ndarray[DTYPE_int_t,ndim=1] x
-#    if q1==0 and q2==0:
+#    c1=q1*q3
+#    c2=-q2*q3
+#    c3=q1*q1-N*q2*q2
+#    #c=[c1,c2,c3]
+#
+#    c=np.array([c1,c2,c3],dtype=np.int64)
+#    if c3==0:
 #        print('ERROR_1:division error')
-#        return 1
-#    else:
-#        if p1==0 and p2==0:
-#            return [0,0,1]
-#        else:
-#            if q1!=0 and q2!=0:
-#                if 4*q1**2-3*q2**2!=0:
-#                    c1=q3*(4*p1*q1-3*p2*q2)
-#                    c2=-4*q3*(p1*q2-p2*q1)
-#                    c3=p3*(4*q1**2-3*q2**2)
-#                else:
-#                    c1=3*p2*q3
-#                    c2=4*p1*q3
-#                    c3=6*p3*q2
-#            elif q1==0 and q2!=0:
-#                c1=3*p2*q3
-#                c2=4*p1*q3
-#                c3=3*p3*q2
-#            else:
-#            #elif q1!=0 and q2==0:
-#                c1=p1*q3
-#                c2=p2*q3
-#                c3=p3*q1
-#            x=np.array([c1,c2,c3])
-#            gcd=np.gcd.reduce(x)
-#            if gcd!=0:
-#                if c3/gcd<0:
-#                    return [int(-c1/gcd),int(-c2/gcd),int(-c3/gcd)]
-#                else:
-#                    return [int(c1/gcd),int(c2/gcd),int(c3/gcd)]
-#            else:
-#                print('ERROR_2:division error',c1,c2,c3,p1,p2,p3,q1,q2,q3)
-#                return 1
+#        return
+#    return mul(a,c)
+
+cpdef list div(DTYPE_int_t p1,DTYPE_int_t p2,DTYPE_int_t p3,DTYPE_int_t q1,DTYPE_int_t q2,DTYPE_int_t q3): # A/B
+    cdef DTYPE_int_t c1,c2,c3,gcd
+    cdef np.ndarray[DTYPE_int_t,ndim=1] x
+    if q1==0 and q2==0:
+        print('ERROR_1:division error')
+        return 1
+    else:
+        if p1==0 and p2==0:
+            return [0,0,1]
+        else:
+            if q1!=0 and q2!=0:
+                if 4*q1**2-3*q2**2!=0:
+                    c1=q3*(4*p1*q1-3*p2*q2)
+                    c2=-4*q3*(p1*q2-p2*q1)
+                    c3=p3*(4*q1**2-3*q2**2)
+                else:
+                    c1=3*p2*q3
+                    c2=4*p1*q3
+                    c3=6*p3*q2
+            elif q1==0 and q2!=0:
+                c1=3*p2*q3
+                c2=4*p1*q3
+                c3=3*p3*q2
+            else:
+            #elif q1!=0 and q2==0:
+                c1=p1*q3
+                c2=p2*q3
+                c3=p3*q1
+            x=np.array([c1,c2,c3])
+            gcd=np.gcd.reduce(x)
+            if gcd!=0:
+                if c3/gcd<0:
+                    return [int(-c1/gcd),int(-c2/gcd),int(-c3/gcd)]
+                else:
+                    return [int(c1/gcd),int(c2/gcd),int(c3/gcd)]
+            else:
+                print('ERROR_2:division error',c1,c2,c3,p1,p2,p3,q1,q2,q3)
+                return 1
 
 cpdef int gcd(DTYPE_int_t p1,DTYPE_int_t p2,DTYPE_int_t p3):
     cdef np.ndarray[DTYPE_int_t,ndim=1] x

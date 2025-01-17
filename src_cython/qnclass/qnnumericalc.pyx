@@ -3,6 +3,7 @@
 # PyQCstrc - Python library for Quasi-Crystal structure
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 #
+cimport cython
 cimport numpy as np
 from numpy.typing cimport NDArray
 cimport random

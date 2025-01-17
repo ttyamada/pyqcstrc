@@ -1,3 +1,4 @@
+cimport cython
 cimport sys
 cimport numpy as np
 cimport pyqcstrc.qnnum.qnnum as qnn
