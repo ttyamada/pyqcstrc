@@ -47,6 +47,15 @@ tests/octa2/test1/*.xyz
 examples/example1/*.xyz
 examples/example2/*.xyz
 examples/example3/*.xyz
+tests/dode2/tests/test1/*.xyz
+tests/ico2/examples/example1/*.xyz
+tests/ico2/examples/example2/*.xyz
+tests/ico2/examples/example3/*.xyz
+tests/ico2/examples/example6/*.xyz
+tests/octa2/test1/*.xyz
+tests/octa2/test2/*.xyz
+examples/example4/*.xyz
+examples/example5/*.xyz
 .gitignore
 
 
