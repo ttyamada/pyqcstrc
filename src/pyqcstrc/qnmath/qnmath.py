@@ -23,13 +23,14 @@ def qnmatinv(a:qnm.Qnmat,n:np.int64):
     b=np.ndarray(n,dtype=qnn.Qnnum)
     ipivot=np.ndarray(n,dtype=qnn.Qnnum) 
     index=np.ndarray((n,2),dtype=qnn.Qnnum)
-
-    det=1.0 
+    qn0=qnn.Qnnum([0,0,1],a.N)
+    qn1=qnn.Qnnum([1,0,1],a.N)
+    det=qn1  #1.0 
     for  j in range(n):
         ipivot[j]=0
     
     for i in range(n): 
-        t=qnn.Qnnum([0,0,1],a.N)
+        t=qn0
         for j in range(n):
             if ipivot[j]==1:
                 continue
