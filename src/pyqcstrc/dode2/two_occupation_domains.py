@@ -10,7 +10,7 @@ import sys
 import numpy as np
 try:
     #import pyqcstrc.dode2.math1 as math1
-    import pyqcstrc.qnmath.qnmath as qnmath #math1
+    #import pyqcstrc.qnmath.qnmath as mth #math1
     import pyqcstrc.dode2.intsct as intsct
     import pyqcstrc.qnclass.numericalc as numericalc
     import pyqcstrc.qnsym.qnsym as symmetry

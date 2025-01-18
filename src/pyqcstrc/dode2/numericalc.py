@@ -692,7 +692,8 @@ def projection_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
         set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
     """
     num=len(vns)
-    m=[] # array of qnvec ???
+    qn0=qnn.Qnnum([0,0,1])
+    m=[qn0]*num # array of qnvec ???
     for i in range(num):
         m[i]=projection_numerical(vns[i])
     return m
@@ -729,10 +730,10 @@ def projection3_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
     #m=np.zeros((num,2),dtype=np.float64)
     N=vns.N
     n=6
-    qv=qnv.Qnvec(n,N)
+    qv=qnv.Qnvec(n,N) # nD zero qnvector
     m=[qv]*num
     for i in range(num):
-        m[i]=projection3_numerical(vns[i])
+        m[i]=projection3_numerical(vns[i]) # internal space components
     return m
 
 def projection_numerical_phason(vn: qnv.Qnvec,mat: qnm.Qnmat) -> qnv.Qnvec:
@@ -745,17 +746,19 @@ def projection_numerical_phason(vn: qnv.Qnvec,mat: qnm.Qnmat) -> qnv.Qnvec:
     mat: array
         phason matrix
     """
-    u11=mat[0][0]
-    u12=mat[0][1]
-    u21=mat[1][0]
-    u22=mat[1][1]
-    v1 =  TAU*vn[0]+vn[1]-0.5*vn[3] # x in Epar
-    v2 = -0.5*vn[0]+vn[2]+TAU*vn[3] # y in Epar
-    v3 = vn[4]                      # z in Epar
-    v4 = (-TAU+u11*TAU-0.5*u21)*vn[0] + (1+u11)*vn[1] +     u21*vn[2] + (-0.5-0.5*u11+TAU*u21)*vn[3] # x in Eperp
-    v5 = (-0.5+TAU*u12-0.5*u22)*vn[0] +     u12*vn[1] + (1+u22)*vn[2] + (-TAU-0.5*u12+TAU*u22)*vn[3] # y in Eperp
-    v6= vn[5]                                                                                      # z in Epperp, dummy
-    return np.array([v1,v2,v3,v4,v5,v6],dtype=np.float64)
+    return mat@vn
+    #u11=mat[0][0]
+    #u12=mat[0][1]
+    #u21=mat[1][0]
+    #u22=mat[1][1]
+    #v1 =  TAU*vn[0]+vn[1]-0.5*vn[3] # x in Epar
+    #v2 = -0.5*vn[0]+vn[2]+TAU*vn[3] # y in Epar
+    #v3 = vn[4]                      # z in Epar
+    #v4 = (-TAU+u11*TAU-0.5*u21)*vn[0] + (1+u11)*vn[1] +     u21*vn[2] + (-0.5-0.5*u11+TAU*u21)*vn[3] # x in Eperp
+    #v5 = (-0.5+TAU*u12-0.5*u22)*vn[0] +     u12*vn[1] + (1+u22)*vn[2] + (-TAU-0.5*u12+TAU*u22)*vn[3] # y in Eperp
+    #v6= vn[5]                                                                                      # z in Epperp, dummy
+    #return np.array([v1,v2,v3,v4,v5,v6],dtype=np.float64)
+
 
 #########
 #  WIP  #
@@ -803,7 +806,7 @@ def projection_numerical_par(vn: qnv.Qnvec) -> qnv.Qnvec:
     #    ])
     #return m@vn
 
-def inout_occupation_domain_numerical(obj: qnv.Qnvec,point: qnv.Qnvec):
+def inout_occupation_domain_numerical(obj: qnv.Qnvec,point: qnv.Qnvec) -> bool:
     """
     """
     #triangles=np.zeros((len(obj),3,3),dtype=np.float64)
@@ -824,7 +827,7 @@ def inout_occupation_domain_numerical(obj: qnv.Qnvec,point: qnv.Qnvec):
     else:
         return False
 
-def inside_outside_triangle_numerical(triangle: qnv.Qnvec, point: qnv.Qnvec):
+def inside_outside_triangle_numerical(triangle: qnv.Qnvec, point: qnv.Qnvec) -> bool:
     """
     """
     tmp=np.append(triangle[0],triangle[1])
@@ -854,7 +857,7 @@ def inside_outside_triangle_numerical(triangle: qnv.Qnvec, point: qnv.Qnvec):
         return False # outside
 
 # structure under linear phason
-def strc(objs,positions,pmatrx,n1max,n5max,eshift,oshift,verbose):
+def strc(objs,positions,pmatrx,n1max,n5max,eshift,oshift,verbose) -> qnv.Qnvec:
     """
     """
     print()
@@ -923,11 +926,11 @@ def strc(objs,positions,pmatrx,n1max,n5max,eshift,oshift,verbose):
 # Unnecessary functions？？？
 ################
 
-def matrix_dot(m1,m2):
-    return np.dot(m1,m2)
-
-def inner_product_numerical(v1,v2):
-    return np.dot(v1,v2)
+#def matrix_dot(m1,m2):
+#    return np.dot(m1,m2)
+#
+#def inner_product_numerical(v1,v2):
+#    return np.dot(v1,v2)
 
 if __name__ == '__main__':
     

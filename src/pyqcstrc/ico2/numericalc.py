@@ -834,11 +834,11 @@ def projection_numerical_par(vn: NDArray[np.float64]) -> NDArray[np.float64]:
 # Unnecessary functions？？？
 ################
 
-def matrix_dot(m1,m2):
-    return np.dot(m1,m2)
-
-def inner_product_numerical(v1, v2):
-    return np.dot(v1,v2)
+#def matrix_dot(m1,m2):
+#    return np.dot(m1,m2)
+#
+#def inner_product_numerical(v1, v2):
+#    return np.dot(v1,v2)
 
 if __name__ == '__main__':
     

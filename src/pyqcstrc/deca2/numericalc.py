@@ -46,7 +46,7 @@ def projection_5d(vn: NDArray[np.float64]) -> NDArray[np.float64]:
         [ C2-1, C4-1, C1-1, C3-1, 0],\
         [   S2,   S4,   S1,   S3, 0],\
     ])
-    return mat@vn
+    return vn@mat  #@vn
     
 def projection3_5d(vn: NDArray[np.float64]) -> NDArray[np.float64]:
     """
@@ -59,7 +59,7 @@ def projection3_5d(vn: NDArray[np.float64]) -> NDArray[np.float64]:
         [ C2-1, C4-1, C1-1, C3-1, 0],\
         [   S2,   S4,   S1,   S3, 0],\
     ])
-    return mat@vn
+    return vn@mat  #@vn
 
 def projection_6d(vn: NDArray[np.float64]) -> NDArray[np.float64]:
     """
@@ -83,7 +83,7 @@ def projection3_6d(vn: NDArray[np.float64]) -> NDArray[np.float64]:
         [C21, C22, C23, C24, C25, 0],\
         [S21, S22, S23, S24, S25, 0],\
     ])
-    return mat@vn
+    return vn@mat  #@vn
     
 def transform6to5(vn: NDArray[np.float64]) -> NDArray[np.float64]:
     """
@@ -96,7 +96,7 @@ def transform6to5(vn: NDArray[np.float64]) -> NDArray[np.float64]:
         [-1,-1,-1, 4,-1, 0],\
         [ 0, 0, 0, 0, 0, 5],\
     ])/5.0
-    return mat@x
+    return x@mat  #@x
 
 def projection_sets_numerical(vns: NDArray[np.float64]) -> NDArray[np.float64]:
     """parallel and perpendicular components of a 6D lattice vector in direct space.
