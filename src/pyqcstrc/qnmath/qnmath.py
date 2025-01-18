@@ -319,11 +319,19 @@ def det_matrix(mtx: qnm.Qnmat) -> qnn.Qnnum:
 
     return t3
 
-
-#END subroutine qsortr
-
-
-#END subroutine
+def matrixtr(mtx: qnm.Qnmat) -> qnn.Qnnum:
+    """ replace mtx with its transposed matrix"""
+    n=mtx.n
+    N=mtx.N
+    mt=[qn0]*mtx.shape
+    mtt=qnm.Qnmat(mt,n,N)
+    for i in range(n):
+        for j in range(n):
+            mtt[j][i]=mtx[i][j]
+    for i in range(n):
+        for j in range(n):
+            mtx[i][j]=mtt[i][j]
+        
 
 #if __name__ == '__main__':
     # test

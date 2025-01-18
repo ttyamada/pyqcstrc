@@ -5,7 +5,7 @@ import pyqcstrc.qnvec.qnvec as qnv
 import pyqcstrc.qnmat.qnmat as qnm
 import pyqcstrc.qnmath.qnmath as mth
 
-prj=Qrjop_Octa() # projection operator for Qnvector
+prj=Qnprjop_Octa() # projection operator for Qnvector
 
 # for octagonal QCs
 class Qnprj_Octa:
@@ -34,18 +34,20 @@ class Qnprj_Deca:
     # note that this use orthorhombic coordinate system
     def __init__(self):
         N=5
-        qn2=qnn.Qnnum([2,0,1],N) # 2
+        qn2=qnn.Qnnum([2,0,1],N)   #  2
         M0=qnn.Qnnum([ 0, 0, 1],N) #  0
         M1=qnn.Qnnum([ 1, 0, 1],N) #  1
         M2=qnn.Qnnum([-1, 0, 1],N) # -1
-        M3=qnn.Qnnum([1,1,2],N) # tau
-        M4=qnn.Qnnum([-1,1,2],N) # tau^-1
+        M3=qnn.Qnnum([1,1,2],N)    # tau
+        M4=qnn.Qnnum([-1,1,2],N)   # tau^-1
         M5=M4*M4 # tau^-2
+        M6=M4-qn2
+        M7=-M3-qn2
         MT=np.array([\
-           [M4-qn2,M4,-M3-qn2,M5,M0,M0],\
-           [-M3-qn2,M5,M4-qn2,-M4,M0,M0],\
-           [-M3-qn2,-M5,M4-qn2,M4,M0,M0],\
-           [M4-qn2,-M4,-M3-qn2,-M5,M0,M0],\
+           [M6,M4,M7,M5,M0,M0],\
+           [M7,M5,M6,-M4,M0,M0],\
+           [M7,-M5,M6,M4,M0,M0],\
+           [M6,-M4,M7,-M5,M0,M0],\
            [M0,M0,M0,M0,M1,M0],\
            [M0,M0,M0,M0,M0,M0]])
         n=6
@@ -63,11 +65,11 @@ class Qnprj_Dode:
         alpha = 2*a/np.sqrt(6)
         see Yamamoto ActaCrystal (1997)
         """
-        M0=qnn.Qnnum(np.array([ 0, 0, 1]),N)
-        M1=qnn.Qnnum(np.array([ 1, 0, 1]),N)
-        M2=qnn.Qnnum(np.array([-1, 0, 1]),N)
-        M3=qnn.Qnnum(np.array([ 1, 0, 2]),N)
-        M4=qnn.Qnnum(np.array([-1, 0, 2]),N)
+        M0=qnn.Qnnum(np.array([ 0, 0, 1]),N) #0
+        M1=qnn.Qnnum(np.array([ 1, 0, 1]),N) # 1
+        M2=qnn.Qnnum(np.array([-1, 0, 1]),N) #-1
+        M3=qnn.Qnnum(np.array([ 1, 0, 2]),N) # 1/2
+        M4=qnn.Qnnum(np.array([-1, 0, 2]),N) # 1/2
         M5=qnn.Qnnum(np.array([ 0, 1, 2]),N) #  sqrt(3)/2
         M6=qnn.Qnnum(np.array([ 0,-1, 2]),N) # -sqrt(3)/2
         #M5=np.array([ 0, 1, 1]) # sqrt(3)
@@ -119,97 +121,102 @@ class Qnprj_Icos:
         self.shape = MT.shape  #dimension of a vector a
         self.n = n
         self.N=N
+        # take MT transpose
+        matrixtr(self) 
 
-class Prj_Octa:
-    def __init__(self):   
-        TAU=np.sqrt(2)
-        mt=np.array([\
-            [ TAU,  0.0,  TAU,  0.0,  0.0,  0.0],\
-            [ 1.0,  1.0, -1.0,  1.0,  0.0,  0.0],\
-            [ 0.0,  TAU,  0.0, -TAU,  0.0,  0.0],\
-            [-1.0,  1.0,  1.0,  1.0,  0.0,  0.0],\
-            [ 0.0,  0.0,  0.0,  0.0,  1.0,  0.0],\
-            [ 0.0,  0.0,  0.0,  0.0,  0.0,  0.0],\
-            ])
-        self.mt=mt
-        self.shape=mt.shape
-        self.ndim=mt.ndim
-        self.N=2
+#class Prj_Octa:
+#    def __init__(self):   
+#        TAU=np.sqrt(2)
+#        mt=np.array([\
+#            [ TAU,  0.0,  TAU,  0.0,  0.0,  0.0],\
+#            [ 1.0,  1.0, -1.0,  1.0,  0.0,  0.0],\
+#            [ 0.0,  TAU,  0.0, -TAU,  0.0,  0.0],\
+#            [-1.0,  1.0,  1.0,  1.0,  0.0,  0.0],\
+#            [ 0.0,  0.0,  0.0,  0.0,  1.0,  0.0],\
+#            [ 0.0,  0.0,  0.0,  0.0,  0.0,  0.0],\
+#            ])
+#        self.mt=mt
+#        self.shape=mt.shape
+#        self.ndim=mt.ndim
+#        self.N=2
 
-class Prj_Deca:
-    def __init__(self):   
-        PI = np.pi
-        C=np.zeros(4,dtype=float)
-        S=np.zeros(4,dtype=float)
-        C0=np.zeros(4,dtype=float)
-        TAU=(1+np.sqrt(5))/2
-        #SCL=1/np.sqrt(2+TAU)
-        #SCL=1/np.sqrt(5)
-        #SCL=TAU
-        #SCL=1/np.cos(2*PI/5)
-        SCL=1
-        for i in range(4):
-            i1=i+1
-            C0[i] = np.cos(2*PI*i1/5)
-            C[i]=(C0[i]-1)*SCL
-            S[i] = np.sin(2*PI*i1/5)*SCL
-        print("C0",C0)
-        print("C",C)
-        print("S",S)
-        mt=np.array([
-            [ C[0], C[1], C[2], C[3], 0, 0],\
-            [ S[0], S[1], S[2], S[3], 0, 0],\
-            [ C[1], C[3], C[0], C[2], 0, 0],\
-            [ S[1], S[3], S[0], S[2], 0, 0],\
-            [    0,    0,    0,    0, 1, 0],\
-            [    0,    0,    0,    0, 0, 0],\
-            ])
-        self.mt=mt
-        self.shape=mt.shape
-        self.ndim=mt.ndim
-        self.N=5
+#class Prj_Deca:
+#    def __init__(self):   
+#        PI = np.pi
+#        C=np.zeros(4,dtype=float)
+#        S=np.zeros(4,dtype=float)
+#        C0=np.zeros(4,dtype=float)
+#        TAU=(1+np.sqrt(5))/2
+#        #SCL=1/np.sqrt(2+TAU)
+#        #SCL=1/np.sqrt(5)
+#        #SCL=TAU
+#        #SCL=1/np.cos(2*PI/5)
+#        SCL=1
+#        for i in range(4):
+#            i1=i+1
+#            C0[i] = np.cos(2*PI*i1/5)
+#            C[i]=(C0[i]-1)*SCL
+#            S[i] = np.sin(2*PI*i1/5)*SCL
+#        print("C0",C0)
+#        print("C",C)
+#        print("S",S)
+#        mt=np.array([
+#            [ C[0], C[1], C[2], C[3], 0, 0],\
+#            [ S[0], S[1], S[2], S[3], 0, 0],\
+#            [ C[1], C[3], C[0], C[2], 0, 0],\
+#            [ S[1], S[3], S[0], S[2], 0, 0],\
+#            [    0,    0,    0,    0, 1, 0],\
+#            [    0,    0,    0,    0, 0, 0],\
+#            ])
+#        self.mt=mt
+#        self.shape=mt.shape
+#        self.ndim=mt.ndim
+#        self.N=5
         
-class Prj_Dode:
-    def __init__(self):
-        mt=np.array([\
-            [ 0.5,          0.577350269,  0.0,         -0.288675135,  0.0,  0.0],\
-            [ 0.288675135,  0.5,          0.288675135,  0.0,          0.0,  0.0],\
-            [ 0.0,          0.288675135,  0.5,          0.288675135,  0.0,  0.0],\
-            [-0.288675135,  0.0,          0.577350269,  0.5,          0.0,  0.0],\
-            [ 0.0,          0.0,          0.0,          0.0,          1.0,  0.0],\
-            [ 0.0,          0.0,          0.0,          0.0,          0.0,  0.0],\
-            ])
-        self.mt=mt
-        self.shape=mt.shape
-        self.ndim=mt.ndim
-        self.N=3
+#class Prj_Dode:
+#    def __init__(self):
+#        mt=np.array([\
+#            [ 0.5,          0.577350269,  0.0,         -0.288675135,  0.0,  0.0],\
+#            [ 0.288675135,  0.5,          0.288675135,  0.0,          0.0,  0.0],\
+#            [ 0.0,          0.288675135,  0.5,          0.288675135,  0.0,  0.0],\
+#            [-0.288675135,  0.0,          0.577350269,  0.5,          0.0,  0.0],\
+#            [ 0.0,          0.0,          0.0,          0.0,          1.0,  0.0],\
+#            [ 0.0,          0.0,          0.0,          0.0,          0.0,  0.0],\
+#            ])
+#        self.mt=mt
+#        self.shape=mt.shape
+#        self.ndim=mt.ndim
+#        self.N=3
+#        # take MT transpose
+#        matrixtr(self) 
 
-class Prj_Icos:
-    #def projection_numerical_par(vn: NDArray[np.float64]) -> NDArray[np.float64]:
-    """This returns 6D vector which corresponds to a projection of vn onto Epar.
-    
-    Parameters
-    ----------
-    v: array
-        6-dimensional vector
 
-    Returns
-    -------
-    6d vectors projected onto Eperp.
-    """
-    def __init__(selfself):
-        mt=np.array([\
-           [0.5,  0.2236068,  0.2236068,  0.2236068,  0.2236068,  0.2236068],\
-           [ 0.2236068,  0.5      ,  0.2236068, -0.2236068, -0.2236068,  0.2236068],\
-           [ 0.2236068,  0.2236068,  0.5      ,  0.2236068, -0.2236068, -0.2236068],\
-           [ 0.2236068, -0.2236068,  0.2236068,  0.5      ,  0.2236068, -0.2236068],\
-           [ 0.2236068, -0.2236068, -0.2236068,  0.2236068,  0.5      ,  0.2236068],\
-           [ 0.2236068,  0.2236068, -0.2236068, -0.2236068,  0.2236068,  0.5      ]\
-           ])
-        self.mt=mt
-        self.shape=mt.shape
-        self.ndim=mt.ndim
-        self.N=5
+#class Prj_Icos:
+#    #def projection_numerical_par(vn: NDArray[np.float64]) -> NDArray[np.float64]:
+#    """This returns 6D vector which corresponds to a projection of vn onto Epar.
+#    
+#    Parameters
+#    ----------
+#    v: array
+#        6-dimensional vector
+#
+#    Returns
+#    -------
+#    6d vectors projected onto Eperp.
+#    """
+#    def __init__(selfself):
+#        mt=np.array([\
+#           [0.5,  0.2236068,  0.2236068,  0.2236068,  0.2236068,  0.2236068],\
+#           [ 0.2236068,  0.5      ,  0.2236068, -0.2236068, -0.2236068,  0.2236068],\
+#           [ 0.2236068,  0.2236068,  0.5      ,  0.2236068, -0.2236068, -0.2236068],\
+#           [ 0.2236068, -0.2236068,  0.2236068,  0.5      ,  0.2236068, -0.2236068],\
+#           [ 0.2236068, -0.2236068, -0.2236068,  0.2236068,  0.5      ,  0.2236068],\
+#           [ 0.2236068,  0.2236068, -0.2236068, -0.2236068,  0.2236068,  0.5      ]\
+#           ])
+#        self.mt=mt
+#        self.shape=mt.shape
+#        self.ndim=mt.ndim
+#        self.N=5
 
 def prjop_init(n:np.int64):
     if(n==3): # projection operator for decagonal
@@ -284,14 +291,14 @@ if __name__ == '__main__':
     print(b.mt)
     qnm.printqnm("Octa.mt",b)
 
-    #N=5
-    #a=Prj_Deca() # float projection operator
-    #la=a.shape
-    #print("la",la)
-    #b=get_bmt(a,N)
-    #print("Deca.b")
-    #print(b.mt)
-    #qnm.printqnm("Deca.mt",b)
+    N=5
+    a=Prj_Deca() # float projection operator
+    la=a.shape
+    print("la",la)
+    b=get_bmt(a,N)
+    print("Deca.b")
+    print(b.mt)
+    qnm.printqnm("Deca.mt",b)
 
     N=3
     a=Prj_Dode() # float projection operator
