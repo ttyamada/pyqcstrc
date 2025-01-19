@@ -11,9 +11,9 @@ class Qnvec:
         self.shape=n
         self.ndim=1
         self.N=N
-        qnzero=qnn.int2qnn(0,N)
+        qn0=qnn.int2qnn(0,N)
         for i in range(n):
-            self.vt[i]=qnzero
+            self.vt[i]=qn0
         print("self.shape",self.shape)
         print("self.ndim",self.ndim)
 

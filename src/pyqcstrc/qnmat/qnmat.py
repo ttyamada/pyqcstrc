@@ -6,16 +6,16 @@ from numpy.typing import NDArray
 
 class Qnmat:
 
-    def __init__(self,mtr:np.ndarray, n:np.int64, N:np.int64):
+    def __init__(self,n:np.int64, N:np.int64):
         print("n",n)
         self.mt=np.ndarray(dtype=qnn.Qnnum,shape=(n,n)) # 2D array
         self.shape=(n,n)
         self.n=2
         self.N=N
-        #qnzero=qnn.int2qnn(0,N)
+        qn0=qnn.int2qnn(0,N)
         for i in range(n):
             for j in range(n):
-                self.mt[i][j]=mtr[i][j]
+                self.mt[i][j]=qn0
         print("self.shape",self.shape[0],self.shape[1])
         print("self.n",self.n)
 
@@ -32,8 +32,7 @@ class Qnmat:
         return matmul(ma1,ma2)
     
 def zerom(n:np.int64, N: np.int64):
-    qn0=qnn.Qnnum([0,0,1],N)
-    qnm=Qnmat(np.full(n,qn0))
+    qnm=Qnmat(n,N)
     return qnm
 
 def unitm(n:np.int64, N: np.int64):
@@ -41,22 +40,51 @@ def unitm(n:np.int64, N: np.int64):
     qnm=zerom(n,N)
     for i in range(n):
         qnm.mt[i][i]=qn1
+        
+def copy(qnm: Qnmat) -> Qnmat:
+    n=qnm.n
+    N=qnm.N
+    qnr=Qnmat(n,N)
+    for i in range(n):
+        for j in range(n):
+            qnr.mt[i][j]=qnm.mt[i][j] # copy matrix elements
+    return qnr
     
 def add(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
-    a=np.empty(mat1.shape, dtype=qnn.Qnnum)
+    #a=np.empty(mat1.shape, dtype=qnn.Qnnum)
     la1=ma1.shape
     la2=ma2.shape
-    n1=ma1.ndim
-    n2=ma2.ndim
+    n1=ma1.n
+    n2=ma2.n
+    N=mat1.N
+    a=Qnmat(n1,N)
     if(n1==1 and n2==1):
         for i in range(la[0]):
-            a[i]=ma1.mt[i]+ma2.mt[i]  #add(v1[i],v2[i])
-        return Qnmat(a)
+            a.mt[i]=ma1.mt[i]+ma2.mt[i]  #add(v1[i],v2[i])
+        return a
     elif(n1==2 and n2==2):
         for i in range(la[0]):
             for j in range(la[1]):
-                a[i][j]=ma1.mt[i][j]+ma2.mt[i][j]  #add(v1[i],v2[i])
-        return Qnmat(a) 
+                a.mt[i][j]=ma1.mt[i][j]+ma2.mt[i][j]  #add(v1[i],v2[i])
+        return a 
+    
+def sub(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
+    #a=np.empty(mat1.shape, dtype=qnn.Qnnum)
+    la1=ma1.shape
+    la2=ma2.shape
+    n1=ma1.n
+    n2=ma2.n
+    N=mat1.N
+    a=Qnmat(n1,N)
+    if(n1==1 and n2==1):
+        for i in range(la[0]):
+            a.mt[i]=ma1.mt[i]-ma2.mt[i]  #add(v1[i],v2[i])
+        return a
+    elif(n1==2 and n2==2):
+        for i in range(la[0]):
+            for j in range(la[1]):
+                a.mt[i][j]=ma1.mt[i][j]-ma2.mt[i][j]  #add(v1[i],v2[i])
+        return a 
     
 def iadd(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
     ma1=add(ma1,ma2)
@@ -70,8 +98,8 @@ def isub(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
 def matmul(ma1: Qnmat, ma2: Qnmat) -> Qnmat: 
     la1=ma1.shape
     la2=ma2.shape
-    n1=ma1.ndim
-    n2=ma2.ndim
+    n1=ma1.n
+    n2=ma2.n
     print("la1",la1,"la2",la2,"n1",n1,"n2",n2)
     if n1==1 and n2==1: # inner product of qnvec
         N=ma1.mt[0].N
@@ -80,7 +108,7 @@ def matmul(ma1: Qnmat, ma2: Qnmat) -> Qnmat:
         for i in range(la1[0]):
             sum=sum+ma1.mt[i]*ma2.mt[i]
             return sum
-    elif n1>1 and n2>1:
+    elif n1==2 and n2==2:
         N=ma1.mt[0][0].N
         qn0=qnn.Qnnum([0,0,1],N) # qnnumber zero
         ma3=zeromat(qn0,la1[0],la2[1]) #"qnnumber zero vector"
@@ -90,7 +118,7 @@ def matmul(ma1: Qnmat, ma2: Qnmat) -> Qnmat:
                     #ma3.mt[i]+=ma1.mt[i][j]*ma2.mt[j]
                     ma3.mt[i][j]=ma3.mt[i][j]+ma1.mt[i][k]*ma2.mt[k][j]
         return ma3
-    elif n1>1 and n2==1 : # qnmat@qnvec
+    elif n1==2 and n2==1 : # qnmat@qnvec
         N=ma2.mt[0].N
         qnzero=qnn.Qnnum([0,0,1],N) # qnnumber zero
         ma3=zerov(qnzero,la1[0]) #"qnnumber zero vector"
@@ -99,7 +127,7 @@ def matmul(ma1: Qnmat, ma2: Qnmat) -> Qnmat:
                 #ma3.mt[i]+=ma1.mt[i][j]*ma2.mt[j]
                 ma3.mt[i]=ma3.mt[i]+ma1.mt[i][j]*ma2.mt[j]
         return ma3
-    elif n1==1 and n2>1 : # qnvec@qnmat
+    elif n1==1 and n2==2 : # qnvec@qnmat
         N=ma1.mt[0].N
         qnzero=qnn.Qnnum([0,0,1],N) # qnnumber zero
         ma3=zerov(qnzero,la1[0]) #"qnnumber zero vector"
@@ -120,7 +148,8 @@ def matrixpow(ma: Qnmat, n: int) -> Qnmat:
             return np.identity(mx)
         elif n<0:
             tmp=np.identity(mx)
-            inva = np.linalg.inv(ma) # matrix inversion
+            mai = copy(ma) # copy for qnmatinv
+            qnmatinv(mai,n)
             for i in range(-n):
                 tmp=np.dot(tmp,inva)
             return tmp
@@ -225,8 +254,8 @@ if __name__ == '__main__':
     N=np.int64(2)
     n=np.int64(6)
     print("n=",n)
-    qnm=Qnmat(n,N)  # nxn qmnum zero matrix
+    qnm=zerom(n,N) #qnm=Qnmat(n,N)  # nxn qmnum zero matrix
     print("qnm.shape",qnm.shape[0],qnm.shape[0])
-    print("qnm.ndim",qnm.ndim)
-    printqnm("Qnsym_Octa",qnm)
+    print("qnm.n",qnm.n)
+    printqnm("zero matrix",qnm)
     

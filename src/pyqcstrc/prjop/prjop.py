@@ -5,7 +5,7 @@ import pyqcstrc.qnvec.qnvec as qnv
 import pyqcstrc.qnmat.qnmat as qnm
 import pyqcstrc.qnmath.qnmath as mth
 
-prj=Qnprjop_Octa() # projection operator for Qnvector
+#prj=Qnprjop_Octa() # projection operator for Qnvector
 
 # for octagonal QCs
 class Qnprj_Octa:
