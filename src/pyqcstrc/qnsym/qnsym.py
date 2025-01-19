@@ -3,41 +3,74 @@ import numpy as np
 import pyqcstrc.qnnum.qnnum as qnn
 import pyqcstrc.qnvec.qnvec as qnv
 import pyqcstrc.qnmat.qnmat as qnm
+import pyqcstrc.prjop.prjop as prj
+import pyqcstrc.qnmath.qnmath as qmt
 #import pyqcstrc.qnclass.qnmath
 
 class Qnsym_Octa:
-    # generators R8 and M
-    r8=[0]*(6,6); rm=[0]*(6,6) # 6x6 rotation matrix
-    r8[0][1]=1; r8[1][2]=1; r8[2][3]=1; r8[3][0]=-1 # R8 
-    rm[1][2]=1; rm[2][1]=1; rm[0][3]=1; rm[3][0]=1 # M
-    r=[0]*(16,6,6)
-    set_r(r8,rm,8,2,r,16)
-    N=2 # for sqrt(2)
-    intr2qnr(r,qnr,16,N)
+    def __init__(self):
+        # generators R8 and M
+        r8=[0]*(6,6); rm=[0]*(6,6) # 6x6 rotation matrix
+        r8[0][1]=1; r8[1][2]=1; r8[2][3]=1; r8[3][0]=-1 # R8 
+        rm[1][2]=1; rm[2][1]=1; rm[0][3]=1; rm[3][0]=1 # M
+        nr=16
+        r=[0]*(nr,6,6)
+        set_r(r8,rm,8,2,r,nr)
+        N=2 # for sqrt(2)
+        intr2qnr(r,qnr,nr,N)
+        prj=prj.Qnprjop_Octa()
+        prji=prj.Qnprjop_Octa()
+        qnr=get_qnr(prj,prji,N,nr)
+        self.qnr=qnr
+        self.nr=nr
+    
 # for decagonal QCs
 class Qnsym_Deca:
-    # gemeratprs R10 and M
-    r10=[0]*(6,6); rm=[0]*(6,6) # 6x6 rotation matrix
-    r10[0][3]=1; #R10
-    r10[1][0]=1; r10[1][1]=1; r10[1][2]=1; r10[1][3]=1 # R10
-    r10[2][3]=1; r10[3][1]=-1 #R10 
-    rm[0][3]=1; rm[3][0]=1; rm[1][2]=1; rm[2][1]=1 # M
-    r=[0]*(20,6,6)
-    set_r(r10,rm,10,2,r,20)
-    N=5 # for sqrt(5)
-    qnr=intr2qnr(r,20,N)
+    def __init__(self):
+        # gemeratprs R10 and M
+        r10=[0]*(6,6); rm=[0]*(6,6) # 6x6 rotation matrix
+        r10[0][3]=1; #R10
+        r10[1][0]=1; r10[1][1]=1; r10[1][2]=1; r10[1][3]=1 # R10
+        r10[2][3]=1; r10[3][1]=-1 #R10 
+        rm[0][3]=1; rm[3][0]=1; rm[1][2]=1; rm[2][1]=1 # M
+        nr=20
+        r=[0]*(nr,6,6)
+        set_r(r10,rm,10,2,r,nr)
+        N=5 # for sqrt(5)
+        prj=prj.Qnprjop_Deca()
+        prji=prj.Qnprjop_Deca()
+        qnr=get_qnr(prj,prji,N,nr)
+        self.qnr=qnr
+        self.nr=nr
+    
 
 ## for dodecagonal QCs
 class Qnsym_Dode:
-    # generators R8 and M
-    r12=[0]*(6,6); rm=[0]*(6,6) # 6x6 rotation matrix
-    r12[0][1]=1; r12[1][2]=1; r12[2][3]=1; r12[3][0]=-1; r12[3][2]=1 # R12 
-    rm[1][2]=1; rm[2][1]=1; rm[0][3]=1; rm[3][0]=1 # M
-    r=[0]*(24,6,6)
-    set_r(r12,rm,12,2,r,24)
-    N=3 # for sqrt(3)
-    qnr=intr2qnr(r,24,N)
-
+    def __init__(self):
+        # generators R8 and M
+        r12=[0]*(6,6); rm=[0]*(6,6) # 6x6 rotation matrix
+        r12[0][1]=1; r12[1][2]=1; r12[2][3]=1; r12[3][0]=-1; r12[3][2]=1 # R12 
+        rm[1][2]=1; rm[2][1]=1; rm[0][3]=1; rm[3][0]=1 # M
+        nr=24
+        r=[0]*(nr,6,6)
+        set_r(r12,rm,12,2,r,nr)
+        N=3 # for sqrt(3)
+        prj=prj.Qnprjop_Dode()
+        prji=prj.Qnprjop_Dode()
+        qnr=get_qnr(prj,prji,N,nr)
+        self.qnr=qnr
+        self.nr=nr
+    
+def get_qnr(prj,prji,N,nr):
+    qmt.qnmatinv(prji,6) # inverse matrix of prj
+    qm0=qnm.zerom(6,N) # 6x6 qn zeromatrix
+    qnr=[qm0]*nr # qnmatrix array
+    matrixtr(prj)# transposed prj matrix
+    matrixtr(prji) # transposed prji matrix 
+    for i in range(nr):
+        qnr[i]=prj@qnr@prji
+    return qnr
+    
 def set_r(rg1,ng1,rg2,ng2,r,nr):
     r[0]=rg1
     for i in range(ng1-1):

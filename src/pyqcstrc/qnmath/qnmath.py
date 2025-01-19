@@ -6,7 +6,8 @@ import pyqcstrc.qnmat.qnmat as qnm
 #from goto import with_goto
 
 def abs(a:qnn.Qnnum):
-    qnzero=qnn.Qnnum([0,0,1],a.N)
+    N=a.N
+    qnzero=qnn.Qnnum([0,0,1],N)
     if(a<qnn.qnzero):
         return -a
     if(a>=qnn.qnzero):
@@ -19,12 +20,13 @@ def qnmatinv(a:qnm.Qnmat,n:np.int64):
     #    if m is nonzero vector b is replaced by a**-1*b
     #
     #      dimension a(nm,nm),b(nm),ipivot(nm),index(nm,2),pivot(nm)
-    a=np.ndarray((n,n),dtype=qnn.Qnnum) 
-    b=np.ndarray(n,dtype=qnn.Qnnum)
-    ipivot=np.ndarray(n,dtype=qnn.Qnnum) 
+    #a=np.ndarray((n,n),dtype=qnn.Qnnum) 
+    #b=np.ndarray(n,dtype=qnn.Qnnum)
+    ipivot=np.ndarray(n,dtype=np.int64) 
     index=np.ndarray((n,2),dtype=qnn.Qnnum)
-    qn0=qnn.Qnnum([0,0,1],a.N)
-    qn1=qnn.Qnnum([1,0,1],a.N)
+    N=a.N
+    qn0=qnn.Qnnum([0,0,1],N)
+    qn1=qnn.Qnnum([1,0,1],N)
     det=qn1  #1.0 
     for  j in range(n):
         ipivot[j]=0
@@ -273,29 +275,6 @@ def coplanar_check(p: NDArray[np.int64],num_iteration: int=5) -> bool:
     """
     return coplanar_check_numeric_tau(p,num_iteration)
 
-#def matrixpow(ma: NDArray[np.int64], n: int) -> NDArray[np.int64]:
-#    """
-#    """
-#    (mx,my)=ma.shape
-#    if mx==my:
-#        if n==0:
-#            return np.identity(mx)
-#        elif n<0:
-#            tmp=np.identity(mx)
-#            inva = np.linalg.inv(ma)
-#            for i in range(-n):
-#                #tmp=np.dot(tmp,inva)
-#                tmp=tmp@inva
-#            return tmp
-#        else:
-#            tmp=np.identity(mx)
-#            for i in range(n):
-#                #tmp=np.dot(tmp,ma)
-#                tmp=tmp@ma
-#            return tmp
-#    else:
-#        print('matrix has not regular shape')
-#        return 
 
 def det_matrix(mtx: qnm.Qnmat) -> qnn.Qnnum:
     """Determinant of 3x3 matrix, mtx, in SQRT2 style
