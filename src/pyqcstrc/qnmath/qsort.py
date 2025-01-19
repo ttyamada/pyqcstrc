@@ -1,6 +1,4 @@
-from goto import with_goto
-
-@with_goto     
+ 
 def qsort(x:qnv.Qnvec,ip:np.array,nx: np.int64):
     #     quick sort (ascending order of x)
     #     nx: the number of data x

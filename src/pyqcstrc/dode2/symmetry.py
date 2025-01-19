@@ -7,7 +7,7 @@ import sys
 import itertools
 
 #from pyqcstrc.dode2.math1 import (add, 
-from pyqcstrc.qnclass.qnmath import (add, 
+from pyqcstrc.qnmath.qnmath import (add, 
                                 matrixpow, 
                                 dot_product, 
                                 dot_product_1, 

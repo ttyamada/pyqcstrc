@@ -22,7 +22,7 @@ class Qnsym_Octa:
         prji=prj.Qnprjop_Octa()
         qnr=get_qnr(prj,prji,N,nr)
         self.qnr=qnr
-        self.nr=nr
+        self.order=nr
     
 # for decagonal QCs
 class Qnsym_Deca:
@@ -41,7 +41,7 @@ class Qnsym_Deca:
         prji=prj.Qnprjop_Deca()
         qnr=get_qnr(prj,prji,N,nr)
         self.qnr=qnr
-        self.nr=nr
+        self.order=nr
     
 
 ## for dodecagonal QCs
@@ -59,7 +59,7 @@ class Qnsym_Dode:
         prji=prj.Qnprjop_Dode()
         qnr=get_qnr(prj,prji,N,nr)
         self.qnr=qnr
-        self.nr=nr
+        self.order=nr
     
 def get_qnr(prj,prji,N,nr):
     qmt.qnmatinv(prji,6) # inverse matrix of prj
@@ -85,7 +85,7 @@ def get_r(r1,r2):
             for k in range(6):
                 r[i][j]+=r1[i][k]*r2[k][j]
         
-    return
+    return r
 
 def intr2qnr(r,nr,N):
     qm0=qnm.Qnmat(r,6,N)

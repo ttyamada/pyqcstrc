@@ -3,7 +3,6 @@ import numpy as np
 import pyqcstrc.qnnum.qnnum as qnn
 import pyqcstrc.qnvec.qnvec as qnv
 import pyqcstrc.qnmat.qnmat as qnm
-#from goto import with_goto
 
 def abs(a:qnn.Qnnum):
     N=a.N
@@ -13,15 +12,9 @@ def abs(a:qnn.Qnnum):
     if(a>=qnn.qnzero):
         return a
 
-def qnmatinv(a:qnm.Qnmat,n:np.int64):
-    #subroutine matinv(a,nm,n,b,m,determ,ipivot,index,pivot) 
-    #
-    #    n*n matrix a is replaced by its inverse matrix a**-1
-    #    if m is nonzero vector b is replaced by a**-1*b
-    #
-    #      dimension a(nm,nm),b(nm),ipivot(nm),index(nm,2),pivot(nm)
-    #a=np.ndarray((n,n),dtype=qnn.Qnnum) 
-    #b=np.ndarray(n,dtype=qnn.Qnnum)
+def qnmatinv(a:qnm.Qnmat,n:np.int64): # qnmatrix inversion
+    # a is replaced by its inversion matrix
+    # n is the order of a (nxn matrix)
     ipivot=np.ndarray(n,dtype=np.int64) 
     index=np.ndarray((n,2),dtype=qnn.Qnnum)
     N=a.N
@@ -80,7 +73,7 @@ def qnmatinv(a:qnm.Qnmat,n:np.int64):
             a[k][ir]=a[k][ic]
             a[k][ic]=t
        
-#@with_goto     
+
 def qsort(x:qnv.Qnvec,ip:np.array,nx: np.int64):
     #     quick sort (ascending order of x)
     #     nx: the number of data x
@@ -168,19 +161,19 @@ def qsort(x:qnv.Qnvec,ip:np.array,nx: np.int64):
             continue
         else:
             break
-    return 
+
 
 def centroid(obj: qnv.Qnvec) -> qnv.Qnvec:
-    """geometric center, centroid of tetrahedron, triangle or edge, in SQRT2-style.
+    """geometric center, centroid of tetrahedron, triangle or edge, in qnvec.
 
     Parameters
     ----------
     obj: array
-        6-dimensional vector in SQRT2-style
+        6-dimensional vector in qnvec
     
     Returns
     -------
-    centroid: array in SQRT2-style
+    centroid in qnvec
     """
     N=obj[0].N
     num=len(obj) # length of obj
@@ -193,16 +186,16 @@ def centroid(obj: qnv.Qnvec) -> qnv.Qnvec:
 
 # needless???
 def centroid_obj(obj: qnv.Qnvec) -> qnv.Qnvec:
-    """geometric center, centroid of tetrahedron, in TAU-style.
+    """geometric center, centroid of tetrahedron, in qnvec.
 
     Parameters
     ----------
     tetrahedron: array
-        6-dimensional vector in TAU-style
+        6-dimensional vector in qnvec
     
     Returns
     -------
-    centroid: array in TAU-style
+    centroid in qnvec
     """
     #print('centroid_obj')
     
@@ -215,78 +208,17 @@ def centroid_obj(obj: qnv.Qnvec) -> qnv.Qnvec:
     tmp=tmp*len
     return tmp
 
-def coplanar_check(p: NDArray[np.int64],num_iteration: int=5) -> bool:
-    """Check whether a given set of points (in TAU-style) is coplanar or not.
-    
-    メモ：xyz1とxyz2の選び方次第で、outer_product(v1,v2)が小さくなりcoplanarと間違って判定する場合がある。
-    これを避けるために適切なxyz1とxyz2の選び方が必要。以下では、ランダムにxyz1とxyz2の選ぶ。
-    
-    Parameters
-    ----------
-    p: array
-        a set of pointsin TAU-style.
-
-    Returns
-    -------
-    int
-    #bool
-    """
-    
-    """
-    num=len(p)
-    if num>3:
-        flag=0
-        lst0=[i for i in range(num)]
-        for _ in range(num_iteration):
-            lst3=random.sample(lst0, 3)
-            xyz0i=projection3(p[lst3[0]])
-            xyz1i=projection3(p[lst3[1]])
-            xyz2i=projection3(p[lst3[2]])
-            v1=sub_vectors(xyz1i,xyz0i)
-            v2=sub_vectors(xyz2i,xyz0i)
-            v3=outer_product(v1,v2)
-            flag=0
-            if np.all(d[:2])==0):
-                pass
-            else:
-                flag=1
-                break
-        if flag==1:
-            counter=0
-            lst=list(filter(lambda x: x not in lst3, lst0))
-            for i in lst:
-                xyz3i=projection3(p[i])
-                v4=sub_vectors(xyz3i,xyz0i)
-                d=inner_product(v3,v4)
-                if np.all(d[:2])==0:
-                    pass
-                else:
-                    counter=1
-                    break
-            if counter==0:
-                return True # coplanar
-            else:
-                return False
-        else:
-            'error in coplanar_check_numeric. increase num_iteration.'
-            return 
-    else:
-        return True # coplanar
-    """
-    return coplanar_check_numeric_tau(p,num_iteration)
-
-
 def det_matrix(mtx: qnm.Qnmat) -> qnn.Qnnum:
-    """Determinant of 3x3 matrix, mtx, in SQRT2 style
+    """Determinant of 3x3 matrix, mtx, in qnnumber
     
     Parameters
     ----------
     mtx: array
-        3x3 matrix in SQRT2-style
+        3x3 matrix in qnnumer
 
     Returns
     -------
-    6d vectors projected onto Eperp in SQRT2-style.
+    determinant in qnnumber
     """
     
     t3=   mtx.m[0][0]*mtx.m[1][1]*mtx.m[2][2]

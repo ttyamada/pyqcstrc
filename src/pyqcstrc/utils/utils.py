@@ -4,54 +4,18 @@
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 #
 import sys
-import pyqcstrc.qnnum.qnnum as qnn
-import pyqcstrc.qnvec.qnvec as qnv
-import pyqcstrc.qnmat.qnmat as qnm
-import pyqcstrc.prjop.prjop as prjop
-import pyqcstrc.qnmath.qnmath as qnmth
-import pyqcstrc.qnclass.numericalc as numericalc
-
-#from pyqcstrc.qnclass.qnmath import (add,
-#                                sub,
-#                                mul,
-#                                div,
-#                                add_vectors,
-#                                sub_vectors,
-#                                outer_product,
-#                                inner_product,
-#                                )
-#from pyqcstrc.dode2.math1 import (projection3,
-#                                centroid,
-#                                coplanar_check,
-#                                )
-#from pyqcstrc.dode2.math1 import (projection3,
-#                                add,
-#                                sub,
-#                                mul,
-#                                div,
-#                                add_vectors,
-#                                sub_vectors,
-#                                outer_product,
-#                                inner_product,
-#                                centroid,
-#                                coplanar_check,
-#                                )
-#from pyqcstrc.dode2.numericalc import (numeric_value,
-#                                    numerical_vector,
-#                                    numerical_vectors,
-#                                    point_on_segment,
-#                                    coplanar_check_numeric_tau,
-#                                    get_internal_component_numerical,
-#                                    get_internal_component_sets_numerical,
-#                                    )
-
 import numpy as np
 from numpy.typing import NDArray
 from scipy.spatial import Delaunay
 import itertools
 import time
 
-#TAU=np.sqrt(3)/2
+import pyqcstrc.qnnum.qnnum as qnn
+import pyqcstrc.qnvec.qnvec as qnv
+import pyqcstrc.qnmat.qnmat as qnm
+import pyqcstrc.prjop.prjop as prjop
+import pyqcstrc.qnmath.qnmath as qnmth
+import pyqcstrc.qnclass.numericalc as numericalc
 
 def shift_object(obj: qnv.Qnvec, shift: qnv.Qnvec) -> qnv.Qnvec:
     """shift an object
@@ -958,6 +922,3 @@ if __name__ == '__main__':
     surface=obj.reshape(1,3,6,3)
     #generator_edge(surface)
     generator_all_edges(surface)
-    
-    
-    
