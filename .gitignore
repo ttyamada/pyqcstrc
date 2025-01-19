@@ -56,6 +56,11 @@ tests/octa2/test1/*.xyz
 tests/octa2/test2/*.xyz
 examples/example4/*.xyz
 examples/example5/*.xyz
+src/pyqcstrc/deca2/*.bak
+src/pyqcstrc/octa2/*.bak
+src/pyqcstrc/dode2/*.bak
+src/pyqcstrc/qnclass/*.bak
 .gitignore
+
 
 
