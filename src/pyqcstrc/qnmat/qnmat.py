@@ -49,6 +49,13 @@ def copy(qnm: Qnmat) -> Qnmat:
         for j in range(n):
             qnr.mt[i][j]=qnm.mt[i][j] # copy matrix elements
     return qnr
+
+def int2qnm(r:np.ndarray,n:np.int64,N: np.int64):
+    qnr=Qnmat(n,N)
+    for i in range(n):
+        for j in range(n):
+            qnr.mt[i][j]=int2qnn(r[i][j],N)
+    return qnr
     
 def add(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
     #a=np.empty(mat1.shape, dtype=qnn.Qnnum)
@@ -223,12 +230,10 @@ def qnm2flt(a):
             b[i][j]=(a[i][j].n[0]+a[i][j].n[1]*np.sqrt(N))/a[i][j].n[2]
     return b
 
-def intm2qnm(a:np.array,N:np.int64):
-    qn0=qnn.Qnnum([0,0,1],N) # qnnum zero
-    la=a.shape
-    b=Qnmat(np.full(la,qn0)) #qnnum zero vector
-    for i in range(la[0]):
-        for j in range(la[1]):
+def intm2qnm(a:np.array,n:np.int64,N:np.int64):
+    b=Qnmat(n,N) #qnnum zero vector
+    for i in range(n):
+        for j in range(n):
             b.mt[i][j]=qnn.int2qnn(a[i][j],N)
     return b
 

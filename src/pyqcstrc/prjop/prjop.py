@@ -282,7 +282,7 @@ if __name__ == '__main__':
     
     n=6
     N=2
-    a=Prj_Octa() # float projection operator
+    a=Qnprj_Octa() # float projection operator
     la=a.shape
     print("la",la)
     
@@ -292,7 +292,7 @@ if __name__ == '__main__':
     qnm.printqnm("Octa.mt",b)
 
     N=5
-    a=Prj_Deca() # float projection operator
+    a=Qnrj_Deca() # float projection operator
     la=a.shape
     print("la",la)
     b=get_bmt(a,N)
@@ -301,7 +301,7 @@ if __name__ == '__main__':
     qnm.printqnm("Deca.mt",b)
 
     N=3
-    a=Prj_Dode() # float projection operator
+    a=Qnprj_Dode() # float projection operator
     la=a.shape
     print("la",la)
     b=get_bmt(a,N)
