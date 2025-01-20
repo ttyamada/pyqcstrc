@@ -22,12 +22,15 @@ class Qnprj_Octa:
            [M0,M1,M0,M2,M0,M0],\
            [M4,M3,M3,M3,M0,M0],\
            [M0,M0,M0,M0,M1,M0],\
-           [M0,M0,M0,M0,M0,M0]])
+           [M0,M0,M0,M0,M0,M0]\
+           ])
         n=6
-        self.mt=qnm.Qnmat(MT,n,N) # matrix of qnnum (qnmat)
-        self.shape = MT.shape  #dimension of a vector a
-        self.n = n
-        self.N=N
+        prj=qnm.Qnmat(n,N) # matrix of qnnum (qnmat)
+        prj.mt=prj.set_mt(MT) # matrix of qnnum (qnmat)
+        self.prj=prj
+        #self.shape = MT.shape  #dimension of a vector a
+        #prj.n = n
+        #self.N=N
 
 # for decagonal QCs
 class Qnprj_Deca:
@@ -49,9 +52,12 @@ class Qnprj_Deca:
            [M7,-M5,M6,M4,M0,M0],\
            [M6,-M4,M7,-M5,M0,M0],\
            [M0,M0,M0,M0,M1,M0],\
-           [M0,M0,M0,M0,M0,M0]])
+           [M0,M0,M0,M0,M0,M0]\
+           ])
         n=6
-        self.mt=qnm.Qnmat(MT,n,N) # matrix of qnnum (qnmat)
+        qnmt=qnm.Qnmat(n,N) # matrix of qnnum (qnmat)
+        qnmt.set_mt(MT) # matrix of qnnum (qnmat)
+        self.mt=qnmt.mt
         self.shape = MT.shape  #dimension of a vector a
         self.n = n
         self.N=N
@@ -80,9 +86,12 @@ class Qnprj_Dode:
            [M0,M1,M0,M1,M0,M0],\
            [M4,M5,M4,M6,M0,M0],\
            [M0,M0,M0,M0,M1,M0],\
-           [M0,M0,M0,M0,M0,M0]])
+           [M0,M0,M0,M0,M0,M0]\
+           ])
         n=6
-        self.mt=qnm.Qnmat(MT,n,N) # matrix of qnnum (qnmat)
+        qnmt=qnm.Qnmat(n,N) # matrix of qnnum (qnmat)
+        qnmt.set_mt(MT) # matrix of qnnum (qnmat)
+        self.mt=qnmt.mt
         self.shape = MT.shape  #dimension of a vector a
         self.n = n
         self.N=N
@@ -115,9 +124,11 @@ class Qnprj_Icos:
             [m0,m1,m2,m4,m0,m3],\
             [m3,m2,m2,m0,m4,m0],\
             [m2,m0,m0,m3,m2,m3],\
-            [m0,m3,m4,m1,m0,m2]])
+            [m0,m3,m4,m1,m0,m2]\
+            ])
         n=6
-        self.mt=qnm.Qnmat(MT,n,N) # matrix of qnnum (qnmat)
+        qnmt=qnm.Qnmat(MT,n,N) # matrix of qnnum (qnmat)
+        self.mt=qnm.set_mt(qnmt) # matrix of qnnum (qnmat)
         self.shape = MT.shape  #dimension of a vector a
         self.n = n
         self.N=N
@@ -270,23 +281,13 @@ def projection_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
 if __name__ == '__main__':
     # test for qnnum projection operators
 
-    def get_bmt(a,N):
-        n=a.shape[0]
-        np0=np.zeros((n,n)) # nxn zero matrix
-        print("np0",np0)
-        b=qnm.Qnmat(np0,n,N) #qnnum zero matrix
-        for i in range(n):
-            for j in range(n):
-                b.mt[i][j]=qnn.flt2qn(a.mt[i][j],N)
-        return b
     
     n=6
     N=2
     a=Qnprj_Octa() # float projection operator
-    la=a.shape
+    la=a.prj.n
     print("la",la)
-    
-    b=get_bmt(a,N)
+    b=qnm.copy(a.prj)
     print("Octa.b")
     print(b.mt)
     qnm.printqnm("Octa.mt",b)
@@ -295,7 +296,7 @@ if __name__ == '__main__':
     a=Qnrj_Deca() # float projection operator
     la=a.shape
     print("la",la)
-    b=get_bmt(a,N)
+    b=qnm.copy(a)
     print("Deca.b")
     print(b.mt)
     qnm.printqnm("Deca.mt",b)
@@ -304,7 +305,7 @@ if __name__ == '__main__':
     a=Qnprj_Dode() # float projection operator
     la=a.shape
     print("la",la)
-    b=get_bmt(a,N)
+    b=qnm.copy(a)
     print("Dode.b")
     print(b.mt)
     qnm.printqnm("Dode.mt",b)

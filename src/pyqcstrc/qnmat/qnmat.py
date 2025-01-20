@@ -8,16 +8,26 @@ class Qnmat:
 
     def __init__(self,n:np.int64, N:np.int64):
         print("n",n)
-        self.mt=np.ndarray(dtype=qnn.Qnnum,shape=(n,n)) # 2D array
-        self.shape=(n,n)
-        self.n=2
-        self.N=N
+        mt=np.ndarray(shape=(n,n),dtype=qnn.Qnnum) # 2D array
+        #mt=np.array((n,n),dtype=qnn.Qnnum)
         qn0=qnn.int2qnn(0,N)
         for i in range(n):
             for j in range(n):
-                self.mt[i][j]=qn0
+                mt[i][j]=qn0
+        self.mt=mt
+        self.shape=(n,n)
+        self.n=n
+        self.N=N
         print("self.shape",self.shape[0],self.shape[1])
         print("self.n",self.n)
+
+    def set_mt(self,mt:np.ndarray):
+        n=self.n
+        N=self.N
+        for i in range(n):
+            for j in range(n):
+                self.mt[i][j]=mt[i][j]
+
 
     def __add__(ma1, ma2):  #  for ma1+ma2
         return add(ma1,ma2)
@@ -169,48 +179,48 @@ def matrixpow(ma: Qnmat, n: int) -> Qnmat:
         print('matrix has not regular shape')
         return 
 
-def det_matrix(mtx: Qnmat) -> Qnmat:
-    """Determinant of 3x3 matrix, mtx, in TAU style
-    
-    Parameters
-    ----------
-    mtx: array
-        3x3 matrix in SQRT3-style
-
-    Returns
-    -------
-    6d vectors projected onto Eperp in SQRT3-style.
-    """
-    
-    t3=mtx[0][0]*mtx[1][1]  #mul(mtx[0][0],mtx[1][1])
-    t1=t3*mtx[2][2]         #mul(t3,mtx[2][2])
-    #
-    t3=mtx[0][2]*mtx[1][0]  #mul(mtx[0][2],mtx[1][0])
-    t2=t3*c[1]              #mul(t3,c[1])
-    #
-    t1=t1+t2                #add(t1,t2)
-    
-    t3=mtx[0][1]*mtx[1][2]  #mul(mtx[0][1],mtx[1][2])
-    t3=t3*mtx[2][0]         #mul(t3,mtx[2][0])
-    #
-    t1=t1+t3                #add(t1,t3)
-    
-    t3=mtx[0][2]*mtx[1][1]  #mul(mtx[0][2],mtx[1][1])
-    t2=t3*mtx[2][0]         #mul(t3,mtx[2][0])
-    #
-    t1=t1-t2                #sub(t1,t2)
-    
-    t3=mtx[0][1]*mtx[1][0]  #mul(mtx[0][1],mtx[1][0])
-    t2=t3*mtx[2][2]         #mul(t3,mtx[2][2])
-    #
-    t1=t1-t2                #sub(t1,t2)
-    
-    t3=mtx[0][0]*mtx[1][2]  #mul(mtx[0][0],mtx[1][2])
-    t2=t3*mtx[2][1]         #mul(t3,mtx[2][1])
-    #
-    t1=t1-t2                #sub(t1,t2)
-    #
-    return t1
+#def det_matrix(mtx: Qnmat) -> Qnmat:
+#    """Determinant of 3x3 matrix, mtx, in TAU style
+#    
+#    Parameters
+#    ----------
+#    mtx: array
+#        3x3 matrix in SQRT3-style
+#
+#    Returns
+#    -------
+#    6d vectors projected onto Eperp in SQRT3-style.
+#    """
+#    
+#    t3=mtx[0][0]*mtx[1][1]  #mul(mtx[0][0],mtx[1][1])
+#    t1=t3*mtx[2][2]         #mul(t3,mtx[2][2])
+#    #
+#    t3=mtx[0][2]*mtx[1][0]  #mul(mtx[0][2],mtx[1][0])
+#    t2=t3*c[1]              #mul(t3,c[1])
+#    #
+#    t1=t1+t2                #add(t1,t2)
+#    
+#    t3=mtx[0][1]*mtx[1][2]  #mul(mtx[0][1],mtx[1][2])
+#    t3=t3*mtx[2][0]         #mul(t3,mtx[2][0])
+#    #
+#    t1=t1+t3                #add(t1,t3)
+#    
+#    t3=mtx[0][2]*mtx[1][1]  #mul(mtx[0][2],mtx[1][1])
+#    t2=t3*mtx[2][0]         #mul(t3,mtx[2][0])
+#    #
+#    t1=t1-t2                #sub(t1,t2)
+#    
+#    t3=mtx[0][1]*mtx[1][0]  #mul(mtx[0][1],mtx[1][0])
+#    t2=t3*mtx[2][2]         #mul(t3,mtx[2][2])
+#    #
+#    t1=t1-t2                #sub(t1,t2)
+#    
+#    t3=mtx[0][0]*mtx[1][2]  #mul(mtx[0][0],mtx[1][2])
+#    t2=t3*mtx[2][1]         #mul(t3,mtx[2][1])
+#    #
+#    t1=t1-t2                #sub(t1,t2)
+#    #
+#    return t1
     
 def qnm2npa(a):
     # Qnmatrix to np.array converter
