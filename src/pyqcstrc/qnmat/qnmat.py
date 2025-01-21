@@ -7,17 +7,17 @@ from numpy.typing import NDArray
 class Qnmat:
 
     def __init__(self,n:np.int64, N:np.int64):
-        print("n",n)
-        mt=np.ndarray(shape=(n,n),dtype=qnn.Qnnum) # 2D array
+        #print("n",n)
+        self.mt=np.ndarray((n,n),dtype=qnn.Qnnum) # 2D array
         #mt=np.array((n,n),dtype=qnn.Qnnum)
         qn0=qnn.int2qnn(0,N)
         for i in range(n):
             for j in range(n):
-                mt[i][j]=qn0
-        self.mt=mt
-        self.shape=(n,n)
-        self.n=n
-        self.N=N
+                self.mt[i][j]=qn0
+        #self.mt=copy(mt,N)
+        self.shape=np.copy((n,n))
+        self.n=np.copy(n)
+        self.N=np.copy(N)
         print("self.shape",self.shape[0],self.shape[1])
         print("self.n",self.n)
 
@@ -26,7 +26,7 @@ class Qnmat:
         N=self.N
         for i in range(n):
             for j in range(n):
-                self.mt[i][j]=mt[i][j]
+                self.mt[i][j]=np.copy(mt[i][j]) # copy qnnum
 
 
     def __add__(ma1, ma2):  #  for ma1+ma2
@@ -51,13 +51,18 @@ def unitm(n:np.int64, N: np.int64):
     for i in range(n):
         qnm.mt[i][i]=qn1
         
-def copy(qnm: Qnmat) -> Qnmat:
-    n=qnm.n
-    N=qnm.N
+def copy(qnm: Qnmat, N:np.int64) -> Qnmat:
+#    return np.copy(qnm)
+    n=qnm.shape[0]
+    #N=qnm.N
     qnr=Qnmat(n,N)
+    qnr.n=np.copy(qnm.n)
+    qnr.N=np.copy(qnm.N)
+    qnr.shape=np.copy(qnm.shape)
+ 
     for i in range(n):
         for j in range(n):
-            qnr.mt[i][j]=qnm.mt[i][j] # copy matrix elements
+            qnr.mt[i][j]=qnn.copy(qnm.mt[i][j])
     return qnr
 
 def int2qnm(r:np.ndarray,n:np.int64,N: np.int64):
@@ -247,7 +252,7 @@ def intm2qnm(a:np.array,n:np.int64,N:np.int64):
             b.mt[i][j]=qnn.int2qnn(a[i][j],N)
     return b
 
-def printqnm(str,qnm):
+def printqnm(str,qnm:Qnmat):
     print(str)
     n=qnm.n
     if n==1:

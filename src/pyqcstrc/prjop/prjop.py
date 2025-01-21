@@ -17,21 +17,16 @@ class Qnprj_Octa:
         M3=qnn.Qnnum(np.array([ 0, 1, 2]),N) #  sqrt(2)/2
         M4=qnn.Qnnum(np.array([ 0,-1, 2]),N) # -sqrt(2)/2
         MT=np.array([\
-           [M1,M0,M1,M0,M0,M0],\
-           [M3,M3,M4,M3,M0,M0],\
-           [M0,M1,M0,M2,M0,M0],\
-           [M4,M3,M3,M3,M0,M0],\
-           [M0,M0,M0,M0,M1,M0],\
-           [M0,M0,M0,M0,M0,M0]\
+           [M1,M0,M1,M0,M0],\
+           [M3,M3,M4,M3,M0],\
+           [M0,M1,M0,M2,M0],\
+           [M4,M3,M3,M3,M0],\
+           [M0,M0,M0,M0,M1],\
            ])
-        n=6
-        prj=qnm.Qnmat(n,N) # matrix of qnnum (qnmat)
-        prj.mt=prj.set_mt(MT) # matrix of qnnum (qnmat)
-        self.prj=prj
-        #self.shape = MT.shape  #dimension of a vector a
-        #prj.n = n
-        #self.N=N
-
+        n=5
+        self=qnm.Qnmat(n,N) # matrix of qnnum (qnmat)
+        self.mt=qnmt.set_mt(MT) # matrix of qnnum (qnmat)
+        #self=qnm.copy(qnmt,N)
 # for decagonal QCs
 class Qnprj_Deca:
     # note that this use orthorhombic coordinate system
@@ -47,30 +42,21 @@ class Qnprj_Deca:
         M6=M4-qn2
         M7=-M3-qn2
         MT=np.array([\
-           [M6,M4,M7,M5,M0,M0],\
-           [M7,M5,M6,-M4,M0,M0],\
-           [M7,-M5,M6,M4,M0,M0],\
-           [M6,-M4,M7,-M5,M0,M0],\
-           [M0,M0,M0,M0,M1,M0],\
-           [M0,M0,M0,M0,M0,M0]\
+           [M6,M4,M7,M5,M0],\
+           [M7,M5,M6,-M4,M0],\
+           [M7,-M5,M6,M4,M0],\
+           [M6,-M4,M7,-M5,M0],\
+           [M0,M0,M0,M0,M1]\
            ])
-        n=6
+        n=5
         qnmt=qnm.Qnmat(n,N) # matrix of qnnum (qnmat)
-        qnmt.set_mt(MT) # matrix of qnnum (qnmat)
-        self.mt=qnmt.mt
-        self.shape = MT.shape  #dimension of a vector a
-        self.n = n
-        self.N=N
+        qnmt.mt=qnmt.set_mt(MT) # matrix of qnnum (qnmat)
+        self=qnm.copy(qnmt)
 
 # for dodecagonal QCs
 class Qnprj_Dode:
     def __init__(self):
         N=3
-        """projection of a 6d vector onto Epar and Eperp in "SIN-style"
-        NOTE: coefficient (alpha) of the projection matrix is set to be 1.
-        alpha = 2*a/np.sqrt(6)
-        see Yamamoto ActaCrystal (1997)
-        """
         M0=qnn.Qnnum(np.array([ 0, 0, 1]),N) #0
         M1=qnn.Qnnum(np.array([ 1, 0, 1]),N) # 1
         M2=qnn.Qnnum(np.array([-1, 0, 1]),N) #-1
@@ -81,38 +67,21 @@ class Qnprj_Dode:
         #M5=np.array([ 0, 1, 1]) # sqrt(3)
         #M6=np.array([ 0,-1, 1]) # -sqrt(3)
         MT=np.array([\
-           [M5,M2,M6,M5,M0,M0],\
-           [M1,M0,M1,M0,M0,M0],\
-           [M0,M1,M0,M1,M0,M0],\
-           [M4,M5,M4,M6,M0,M0],\
-           [M0,M0,M0,M0,M1,M0],\
-           [M0,M0,M0,M0,M0,M0]\
+           [M5,M2,M6,M5,M0],\
+           [M1,M0,M1,M0,M0],\
+           [M0,M1,M0,M1,M0],\
+           [M4,M5,M4,M6,M0],\
+           [M0,M0,M0,M0,M1]\
            ])
-        n=6
+        n=5
         qnmt=qnm.Qnmat(n,N) # matrix of qnnum (qnmat)
-        qnmt.set_mt(MT) # matrix of qnnum (qnmat)
-        self.mt=qnmt.mt
-        self.shape = MT.shape  #dimension of a vector a
-        self.n = n
-        self.N=N
+        qnmt.mt=qnmt.set_mt(MT) # matrix of qnnum (qnmat)
+        self=qnm.copy(qnmt)
+ 
         
 class Qnprj_Icos:
     def __init__(self):
         N=5
-        """projection of a 6d vector onto Epar and Eperp in "TAU-style"
-        NOTE: coefficient (alpha) of the projection matrix is set to be 1.
-        alpha = a/np.sqrt(2.0+TAU)
-        see Yamamoto ActaCrystal (1997)
-
-        Parameters
-        ----------
-        vt: array
-            6-dimensional vector in TAU-style
-
-        Returns
-    -    ------
-        array containing two 3d vectors projected onto Epar and Eperp in TAU-style.
-        """
         m0=qnn.Qnnum([ 0, 0, 1]) #  0 in 'TAU-style'
         m1=qnn.Qnnum([ 1, 0, 1]) #  1
         m2=qnn.Qnnum([-1, 0, 1]) # -1
@@ -127,11 +96,9 @@ class Qnprj_Icos:
             [m0,m3,m4,m1,m0,m2]\
             ])
         n=6
-        qnmt=qnm.Qnmat(MT,n,N) # matrix of qnnum (qnmat)
-        self.mt=qnm.set_mt(qnmt) # matrix of qnnum (qnmat)
-        self.shape = MT.shape  #dimension of a vector a
-        self.n = n
-        self.N=N
+        qnmt=qnm.Qnmat(n,N) # matrix of qnnum (qnmat)
+        qnmt.mt=prj.set_mt(MT)
+        self=qnm.copy(qnmt)
         # take MT transpose
         matrixtr(self) 
 
@@ -229,15 +196,17 @@ class Qnprj_Icos:
 #        self.ndim=mt.ndim
 #        self.N=5
 
-def prjop_init(n:np.int64):
-    if(n==3): # projection operator for decagonal
+def prjop_init(isys:np.int64):
+    if(isys==2): # projection operator for icosahedral
+        prj=Qnprj_Icos()
+    elif(isys==3): # projection operator for decagonal
         prj=Qnprj_Deca()
-    elif(n==4): # projection operator for octagonal
+    elif(isys==4): # projection operator for octagonal
         prj=Qnprj_Octa()
-    elif(n==5): # projection operator dodecagonal
+    elif(isys==5): # projection operator dodecagonal
         prj=Qnprj_Dode()
 
-# for class cls cls should be octa, deca or dode
+# for class cls cls should be icos octa, deca or dode
 def prjop(v: qnv.Qnvec) -> qnv.Qnvec:
     qnm.printqnm("prj",prj)
     qnv.printqnv("v.vt",v)
@@ -254,15 +223,9 @@ def prjop_i(v: qnv.Qnvec) -> qnv.Qnvec:
     vei=vt@prj.mt  #@v.vt
     return vei[4:6]
 
-def projection_numerical_par(vn: qnv.Qnvec) -> qnv.Qnvec:
-    return prjop(prj,vn)
-
+# alias for prjop_i
 def projection3(vt: qnv.Qnvec) -> qnv.Qnvec:
     return prjop_i(prj,vt)
-
-# alias for prjop(vt)
-def get_internal_component_numerical(vt: qnv.Qnvec) -> qnv.Qnvec:
-    return prjop_i(vt)
 
 def projection_numerical(vn: qnv.Qnvec) -> qnv.Qnvec:
     return prjop(vn)
@@ -271,58 +234,68 @@ def projection_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
     #Parameters
     #vsn: array
     #    set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
-    
     num=len(vns)
-    
     for i in range(num):
         m[i]=projection_numerical(vns[i])
     return m
 
+def projection_numerical_par(vn: qnv.Qnvec) -> qnv.Qnvec:
+    return prjop(prj,vn)
+
+# alias for prjop(vt)
+def get_internal_component_numerical(vt: qnv.Qnvec) -> qnv.Qnvec:
+    return prjop_i(vt)
+
+
+
 if __name__ == '__main__':
     # test for qnnum projection operators
+    #n=6
+    #N=2
+    prj=Qnprj_Octa() # qnnum projection operator
+    n=prj.n
+    N=prj.N
+    print("n",n,"N",N)
+    qnm.printqnm("Octa.mt",prj.mt)
+    b=qnm.copy(prj)
+    print("Octa.mt")
+    qnm.printqnm("Octa.mt",b.mt)
 
-    
-    n=6
-    N=2
-    a=Qnprj_Octa() # float projection operator
-    la=a.prj.n
-    print("la",la)
-    b=qnm.copy(a.prj)
-    print("Octa.b")
-    print(b.mt)
-    qnm.printqnm("Octa.mt",b)
-
-    N=5
-    a=Qnrj_Deca() # float projection operator
-    la=a.shape
-    print("la",la)
-    b=qnm.copy(a)
-    print("Deca.b")
-    print(b.mt)
+    #N=5
+    prj=Qnrj_Deca() # float projection operator
+    n=prj.n
+    N=prj.N
+    print("n",n,"N",N)
+    b=qnm.copy(prj.mt)
+    print("Deca.mt")
+    print(b)
     qnm.printqnm("Deca.mt",b)
 
-    N=3
-    a=Qnprj_Dode() # float projection operator
-    la=a.shape
-    print("la",la)
-    b=qnm.copy(a)
-    print("Dode.b")
-    print(b.mt)
+    #N=3
+    prj=Qnprj_Dode() # float projection operator
+    n=prj.n
+    N=prj.N
+    print("n",n,"N",N)
+    b=qnm.copy(prj.mt)
+    print("Dode.mt")
+    print(b)
     qnm.printqnm("Dode.mt",b)
  
     
     # check qnmatinv
-    N=2 # octagonal
-    n=0
-    mto=Qnprj_Octa()
+    #N=2 # octagonal
+    #n=0
+    prj=Qnprj_Octa()
+    mto=prj.mt
     qnm.printqnm("mto",mto)
     
-    mtoi=Qnprj_Octa()
-    mth.qnmatinv(mtoi,np.int64(6))
+    mtoi=qnm.copy(mto) # copy for matinv
+    mth.qnmatinv(mtoi,6)
     qnm.printqnm("mtoi",mtoi)
     
     # check lattice vector external and internal space components
     ndv=np.ndarray(3**3,dtype=qnn.Qnnum)
+    n=5
     for i1 in range(-1,2):
         for i2 in range(-1,2):
             for i3 in range(-1,2):
@@ -331,9 +304,9 @@ if __name__ == '__main__':
                     V2=qnn.Qnnum(np.array([ i2, 0, 1]),N)
                     V3=qnn.Qnnum(np.array([ i3, 0, 1]),N)
                     V4=qnn.Qnnum(np.array([ i4, 0, 1]),N)
-                    V0=qnn.Qnnum(np.array([ 0, 0, 1]),N)
-                    VT=np.array([v1,v2,v3,V4,V0,V0])
-                    ndv[n]=qnv.Qnvec(VT,6,N) # lattice vector
+                    #V0=qnn.Qnnum(np.array([ 0, 0, 1]),N)
+                    VT=np.array([v1,v2,v3,V4,V0])
+                    ndv[n]=qnv.Qnvec(VT,n,N) # lattice vector
                     qnn.printqnv("ndv",ndv) #print qnvector expression
                     qnv=vt@mto.mt  #@ndv.vt #external enternal components
                     qnn.printqnv("qnv",qnv) #print qnvector expression

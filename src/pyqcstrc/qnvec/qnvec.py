@@ -6,7 +6,7 @@ import pyqcstrc.qnnum.qnnum as qnn
 
 class Qnvec:
     def __init__(self, n:np.int64, N:np.int64):
-        print("n",n)
+        #print("n",n)
         self.vt=np.ndarray(dtype=qnn.Qnnum,shape=(n)) # 1D array
         self.shape=n
         self.ndim=1

@@ -157,6 +157,9 @@ def abs(a:Qnnum):
         return neg(a)
     return a
 
+def copy(b:Qnnum,a:Qnnum ):
+    b.n1=np.copy(a.n1); b.n2=np.copy(a.n2); b.n3=np.copy(a.n3)
+
 # Qnnumber to np.array converter
 def qn2npa(a):
     return np.array([a.n[0],a.n[1],a.n[2]])
