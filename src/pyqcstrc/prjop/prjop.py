@@ -24,9 +24,12 @@ class Qnprj_Octa:
            [M0,M0,M0,M0,M1],\
            ])
         n=5
-        self=qnm.Qnmat(n,N) # matrix of qnnum (qnmat)
-        self.mt=qnmt.set_mt(MT) # matrix of qnnum (qnmat)
-        #self=qnm.copy(qnmt,N)
+        qnmt=qnm.Qnmat(n,N) # matrix of qnnum (qnmat)
+        qnmt.set_mt(MT) # matrix of qnnum (qnmat)
+        #self.n=n
+        #self.N=N
+        #self.shape=(n,n)
+        self=qnm.copy(qnmt)
 # for decagonal QCs
 class Qnprj_Deca:
     # note that this use orthorhombic coordinate system
@@ -50,7 +53,10 @@ class Qnprj_Deca:
            ])
         n=5
         qnmt=qnm.Qnmat(n,N) # matrix of qnnum (qnmat)
-        qnmt.mt=qnmt.set_mt(MT) # matrix of qnnum (qnmat)
+        qnmt.set_mt(MT) # matrix of qnnum (qnmat)
+        #self.n=n
+        #self.N=N
+        #self.shape=(n,n)
         self=qnm.copy(qnmt)
 
 # for dodecagonal QCs
@@ -75,7 +81,10 @@ class Qnprj_Dode:
            ])
         n=5
         qnmt=qnm.Qnmat(n,N) # matrix of qnnum (qnmat)
-        qnmt.mt=qnmt.set_mt(MT) # matrix of qnnum (qnmat)
+        qnmt.set_mt(MT) # matrix of qnnum (qnmat)
+        #self.n=n
+        #self.N=N
+        #self.shape=(n,n)
         self=qnm.copy(qnmt)
  
         
@@ -99,8 +108,12 @@ class Qnprj_Icos:
         qnmt=qnm.Qnmat(n,N) # matrix of qnnum (qnmat)
         qnmt.mt=prj.set_mt(MT)
         self=qnm.copy(qnmt)
+        #self.n=n
+        #self.N=N
+        #self.shape=(n,n)
         # take MT transpose
         matrixtr(self) 
+        
 
 #class Prj_Octa:
 #    def __init__(self):   
@@ -257,15 +270,16 @@ if __name__ == '__main__':
     N=prj.N
     print("n",n,"N",N)
     qnm.printqnm("Octa.mt",prj.mt)
-    b=qnm.copy(prj)
+    b=qnm.copy(prj.mt)
     print("Octa.mt")
-    qnm.printqnm("Octa.mt",b.mt)
+    qnm.printqnm("Octa.mt",b)
 
     #N=5
-    prj=Qnrj_Deca() # float projection operator
+    prj=Qnprj_Deca() # float projection operator
     n=prj.n
     N=prj.N
     print("n",n,"N",N)
+    qnm.printqnm("Deca.mt",prj.mt)
     b=qnm.copy(prj.mt)
     print("Deca.mt")
     print(b)
@@ -289,9 +303,9 @@ if __name__ == '__main__':
     mto=prj.mt
     qnm.printqnm("mto",mto)
     
-    mtoi=qnm.copy(mto) # copy for matinv
-    mth.qnmatinv(mtoi,6)
-    qnm.printqnm("mtoi",mtoi)
+    prji=qnm.copy(prj) # copy for matinv
+    mth.qnmatinv(prji,5)
+    qnm.printqnm("mtoi",prji.mt)
     
     # check lattice vector external and internal space components
     ndv=np.ndarray(3**3,dtype=qnn.Qnnum)

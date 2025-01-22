@@ -26,7 +26,7 @@ class Qnmat:
         N=self.N
         for i in range(n):
             for j in range(n):
-                self.mt[i][j]=np.copy(mt[i][j]) # copy qnnum
+                self.mt[i][j]=qnn.copy(mt[i][j]) # copy qnnum
 
 
     def __add__(ma1, ma2):  #  for ma1+ma2
@@ -51,15 +51,15 @@ def unitm(n:np.int64, N: np.int64):
     for i in range(n):
         qnm.mt[i][i]=qn1
         
-def copy(qnm: Qnmat, N:np.int64) -> Qnmat:
+def copy(qnm: Qnmat) -> Qnmat:
 #    return np.copy(qnm)
-    n=qnm.shape[0]
-    #N=qnm.N
+    n=qnm.n
+    N=qnm.N
     qnr=Qnmat(n,N)
     qnr.n=np.copy(qnm.n)
     qnr.N=np.copy(qnm.N)
     qnr.shape=np.copy(qnm.shape)
- 
+    print("qnr.n",qnr.n,"qnr.N",qnr.N,"qnr.shape",qnr.shape)
     for i in range(n):
         for j in range(n):
             qnr.mt[i][j]=qnn.copy(qnm.mt[i][j])

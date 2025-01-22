@@ -6,17 +6,17 @@ import pyqcstrc.qnmat.qnmat as qnm
 
 def abs(a:qnn.Qnnum):
     N=a.N
-    qnzero=qnn.Qnnum([0,0,1],N)
-    if(a<qnn.qnzero):
+    qn0=qnn.Qnnum([0,0,1],N)
+    if(a<qn0):
         return -a
-    if(a>=qnn.qnzero):
+    if(a>=qn0):
         return a
 
 def qnmatinv(a:qnm.Qnmat,n:np.int64): # qnmatrix inversion
     # a is replaced by its inversion matrix
     # n is the order of a (nxn matrix)
-    ipivot=np.ndarray(n,dtype=np.int64) 
-    index=np.ndarray((n,2),dtype=qnn.Qnnum)
+    ipivot=np.ndarray(n,dtype=qnn.Qnnum) 
+    index=np.ndarray((n,2),dtype=np.int64)
     N=a.N
     qn0=qnn.Qnnum([0,0,1],N)
     qn1=qnn.Qnnum([1,0,1],N)
@@ -31,11 +31,11 @@ def qnmatinv(a:qnm.Qnmat,n:np.int64): # qnmatrix inversion
                 continue
             for k in range(n):
                 if ipivot[k]-1<0:
-                    if abs(t)>=abs(a[j][k]):
+                    if abs(t)>=abs(a.mt[j][k]):
                         continue
                     ir=j
                     ic=k
-                    t=a[j][k]
+                    t=a.mt[j][k]
                 elif ipivot[k]-1>0:
                     return
     
@@ -43,17 +43,17 @@ def qnmatinv(a:qnm.Qnmat,n:np.int64): # qnmatrix inversion
         if ir!=ic:
             det=-det
             for l in range(n):
-                t=a[ir][l]
-                a[ir][l]=a[ic][l]
-                a[ic][l]=t
+                t=a.mt[ir][l]
+                a.mt[ir][l]=a.mt[ic][l]
+                a.mt[ic][l]=t
 
-        index[i][1]=ir
-        index[i][2]=ic
-        pivot[i]=a[ic][ic]
-        det=det*pivot[i]
-        a[ic][ic]=1.0
+        index[i][0]=ir
+        index[i][1]=ic
+        ipivot[i]=a.mt[ic][ic]
+        det=det*ipivot[i]
+        a.mt[ic][ic]=1.0
         for l in range(n):
-            a[ic][l]=a[ic][l]/pivot[i]
+            a.mt[ic][l]=a.mt[ic][l]/ipivot[i]
 
         for l1 in range(n):
             if l1==ic:
@@ -61,17 +61,17 @@ def qnmatinv(a:qnm.Qnmat,n:np.int64): # qnmatrix inversion
             t=a[l1][ic]
             a[l1][ic]=0.0
             for l in range(n):
-                a[l1][l]=a[l1][l]-a[ic][l]*t
+                a.mt[l1][l]=a.mt[l1][l]-a.mt[ic][l]*t
     for i in range(n):
         l=n+1-i
-        if index[l][1]==index[l][2]:
+        if index[l][0]==index[l][1]:
             continue
-        ir=index[l][1]
-        ic=index[l][2]
+        ir=index[l][0]
+        ic=index[l][1]
         for k in range(n):
-            t=a[k][ir]
-            a[k][ir]=a[k][ic]
-            a[k][ic]=t
+            t=a.mt[k][ir]
+            a.mt[k][ir]=a.mt[k][ic]
+            a.mt[k][ic]=t
        
 
 def qsort(x:qnv.Qnvec,ip:np.array,nx: np.int64):

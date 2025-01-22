@@ -5,7 +5,7 @@ from numpy.typing import NDArray
 class Qnnum:
     def __init__(self, n: np.array, N: np.int64):
         self.n=n
-        #self.N=N # 2 5 3 for octagonal, decagonal and dodecagonal Qnnumber   
+        #N :2 5 3 for octagonal, decagonal and dodecagonal Qnnumber   
         self.N=N
         self.n[0]=n[0]
         self.n[1]=n[1]
@@ -24,13 +24,13 @@ class Qnnum:
         return isub(self,b)
     
     def __mul__(a, b):
-        if isinstance(b, qnn.Qnnum):
+        if isinstance(b, Qnnum):
             return mul(a,b)
         elif isinstance(b, int):
             return mul_i(a,b)
     
     def __truediv__(a, b):
-        if isinstance(b, qnn.Qnnum):
+        if isinstance(b, Qnnum):
             return div(a,b)
         elif isinstance(b, int):
             return div_i(a,b)
@@ -41,11 +41,17 @@ class Qnnum:
     def __lt__(a,b):
         return lt(a,b)
     
+    def __le__(a,b):
+        return leq(a,b)
+    
     def __gt__(a,b):
         return gt(a,b)
     
+    def __ge__(a,b):
+        return geq(a,b)
+    
     def __neg__(self):
-        return neg(-self)
+        return neg(self)
     
 def add(a, b):
     #print("a1",a.n[0],"a2",a.n[1],"a3",a.n[2])
@@ -139,10 +145,25 @@ def gt(a, b):
         return True
     else:
         return False
+    
+def geq(a, b):
+    c=a-b
+    if(np.sign(c.n[0])*c.n[0]**2+np.sign(c.n[1])*c.n[1]**2*a.N >= 0):
+        return True
+    else:
+        return False
+
 
 def lt(a, b):
     c=a-b
     if(np.sign(c.n[0])*c.n[0]**2+np.sign(c.n[1])*c.n[1]**2*a.N < 0):
+        return True
+    else:
+        return False
+    
+def leq(a, b):
+    c=a-b
+    if(np.sign(c.n[0])*c.n[0]**2+np.sign(c.n[1])*c.n[1]**2*a.N <= 0):
         return True
     else:
         return False
@@ -157,8 +178,12 @@ def abs(a:Qnnum):
         return neg(a)
     return a
 
-def copy(b:Qnnum,a:Qnnum ):
-    b.n1=np.copy(a.n1); b.n2=np.copy(a.n2); b.n3=np.copy(a.n3)
+def copy(a:Qnnum) -> Qnnum:
+    n=np.copy(a.n) # a.n : int list
+    N=a.N
+    b=Qnnum(n,N)
+    #b.n1=np.copy(a.n1); b.n2=np.copy(a.n2); b.n3=np.copy(a.n3)
+    return b
 
 # Qnnumber to np.array converter
 def qn2npa(a):
