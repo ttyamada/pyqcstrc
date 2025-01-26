@@ -97,7 +97,7 @@ def triangle_area_6d(triangle: qnv.Qnvec) -> qnn.Qnnum:
 #######################
 ###  To be checked  ###
 #######################
-def triangle_area(vts: qnv.Qnvector) -> qnn.Qnnum:
+def triangle_area(vts: qnv.Qnvec) -> qnn.Qnnum:
     """Calculate area of a triangle in TAU style.
     
     Parameters
@@ -228,7 +228,7 @@ def generator_all_edges(obj: qnv.Qnvec) -> qnv.Qnvec:
     qn0=qnn.Qnnum([0,0,1],N)
     if n2==3:
         #edges=np.zeros((n1,3,2,6,3),dtype=np.int64)
-        edges=[qn0](n1,3,2,6)
+        edges=[qn0]*(n1,3,2,6)
         i1=0
         for triangle in obj:
             edges[i1]=get_triangle_edge(triangle)
@@ -549,12 +549,14 @@ def sort_vctors(vts: qnv.Qnvec) -> qnv.Qnvec:
     
     sort the coordinates (xi,yi,zi) such that the xi in the order.
     """
-    n1,n2,_=vts.shape
+    #n1,n2,_=vts.shape
     #out=np.zeros(vts.shape,dtype=np.int64)
-    N=vts[0].vt[0].N
-    qn0=qnn.Qnnum([0,0,1],N)
-    out=[qn0]*vts.shape
-    vns=get_internal_component_sets_numerical(vts)
+    #ln=len(vts)
+    #N=vts[0].vt[0].N
+    #qn0=qnn.Qnnum([0,0,1],N)
+    #qnv1=qnv.Qnvec(ln,N)
+    #out=[qnv1]*ln
+    vns=numericalc.get_internal_component_sets_numerical(vts)
     
     ln=len(vns)
     ip=[0]*ln
@@ -874,18 +876,30 @@ if __name__ == '__main__':
     #================
     # ソートのテスト
     #================
-    nset=10
-    vts=generate_random_vectors(nset)
-    vns=get_internal_component_sets_numerical(vts)
-    print(vns.shape)
+    N=2 # for octagonal
+    n=2
+    ns=3
+    qn0=qnn.Qnnum([0,0,1],N)
+    qn1=qnn.Qnnum([1,0,1],N)
+    qn2=qnn.Qnnum([0,1,1],N)
+    qn3=qnn.Qnnum([1,1,2],N)
+    qv0=qnv.Qnvec(n,N)
+    vns=[qv0]*ns
+    vns[0].vt=[qn0,qn1]
+    vns[1].vt=[qn1,qn2]
+    vns[2].vt=[qn1,qn3]
+    #vts=generate_random_vectors(nset)  # this shoykd be vnvector
+    #vns=numericalc.get_internal_component_sets_numerical(vts)
+    #qnv.printqnv("vns",vns)
     for vn in vns:
-        print(vn)
+        qnv.printqnv("vn",vn)
     print('\n')
-    print(vts.shape)
-    vts1=sort_vctors(vts)
-    vns1=get_internal_component_sets_numerical(vts1)
+    #print(vts.shape)
+    
+    vts1=sort_vctors(vns)
+    vns1=numericalc.get_internal_component_sets_numerical(vts1)
     for vn in vns1:
-        print(vn)
+        qnv.printqnv("vn",vn)
     
     #================
     # 重複のテスト

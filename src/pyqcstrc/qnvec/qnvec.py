@@ -186,7 +186,7 @@ def qnv2flt(a:Qnvec):
     b=np.zeros(la, dtype=np.float64)
     #print("b",b)
     N=a.vt[0].N
-    for i in range(la[0]):
+    for i in range(la):
         ai=a.vt[i]
         b[i]=(ai.n[0]+ai.n[1]*np.sqrt(N))/ai.n[2]
     return b
@@ -201,21 +201,21 @@ def intv2qnv(a:np.ndarray,N:np.int64):
 
 def printqnv(str:str,qnv1:Qnvec):
     print(str,"[",end=" ")
-    la=qnv1.shape
-    for i in range(la):
+    n=qnv1.shape
+    for i in range(n):
         j=qnv1.vt[i]
         print(qnn.qn2npa(j),end=" ")
     print("]")
 
 def printqnv2(str:str,qnv1:Qnvec,qnv2:Qnvec):
     print(str,"[",end=" ")
-    la1=qnv1.shape
-    for i in range(la1):
+    n1=qnv1.shape
+    for i in range(n1):
         j=qnv1.vt[i]
         print(qnn.qn2npa(j),end=" ")
     print("] [",end="")
-    la2=qnv2.shape
-    for i in qnv2:
+    n2=qnv2.shape
+    for i in range(n2):
         j=qnv1.vt[i]
         print(qnn.qn2npa(j),end="]")
     

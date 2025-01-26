@@ -6,6 +6,9 @@
 import numpy as np
 from numpy.typing import NDArray
 import random
+import pyqcstrc.qnnum.qnnum as qnn
+import pyqcstrc.qnvec.qnvec as qnv
+import pyqcstrc.qnmat.qnmat as qnm
 
 #TAU=np.sqrt(3)/2.0
 #SQRT3=np.sqrt(3)
@@ -174,7 +177,7 @@ def numeric_value(t: qnn.Qnnum) -> float:
 
 # qnnum version => qnnum.qnn2flt
 # equivalent to qnv2flt
-def numerical_vector(vt: qnv.Qnvec) -> NDArray[np.float]:
+def numerical_vector(vt: qnv.Qnvec) -> NDArray[np.float64]:
     return qnv.qnv2flt(vt)
 #    """Numeric value of a TAU-style vector, v.
 #
@@ -195,7 +198,7 @@ def numerical_vector(vt: qnv.Qnvec) -> NDArray[np.float]:
 
 # qnnum vectors to float (not necessary)
 # equivalent to qnv.qnv2flt
-def numerical_vectors(vts: NDArray[np.int64]) -> NDArray[np.float]:
+def numerical_vectors(vts: NDArray[np.int64]) -> NDArray[np.float64]:
     """Numeric value of a TAU-style vector, v.
 
     Parameters
@@ -655,7 +658,7 @@ def triangle_volume_6d_numerical(triangle: qnv.Qnvec) -> qnn.Qnnum:  # float:
 #    vn=numerical_vector(vt)
 #    return projection3_numerical(vn)
 
-def get_internal_component_sets_numerical(vts: qnv.Qnvec) -> qnv.Qnvec:
+def get_internal_component_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
     """parallel and perpendicular components of a 6D lattice vector in direct space.
     
     Parameters
@@ -700,7 +703,7 @@ def projection_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
     
 # equivalent to qnv2fot
 def projection3_numerical(vn: qnv.Qnvec) -> float:
-    return qnv2frt(vn)
+    return qnv.qnv2flt(vn)
 #    """perpendicular component of a 6D lattice vector in direct space.
 #    
 #    Parameters
@@ -728,7 +731,7 @@ def projection3_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
     num=len(vns)
     #m=np.zeros((num,3),dtype=np.float64)
     #m=np.zeros((num,2),dtype=np.float64)
-    N=vns.N
+    N=vns[0].N
     n=6
     qv=qnv.Qnvec(n,N)
     m=[qv]*num
@@ -757,6 +760,19 @@ def projection_numerical_phason(vn: qnv.Qnvec,mat: qnm.Qnmat) -> qnv.Qnvec:
     v5 = (-0.5+TAU*u12-0.5*u22)*vn[0] +     u12*vn[1] + (1+u22)*vn[2] + (-TAU-0.5*u12+TAU*u22)*vn[3] # y in Eperp
     v6= vn[5]                                                                                      # z in Epperp, dummy
     return np.array([v1,v2,v3,v4,v5,v6],dtype=np.float64)
+
+
+def get_internal_component_sets_numerical(vts: qnv.Qnvec) -> qnv.Qnvec:
+    """parallel and perpendicular components of a 6D lattice vector in direct space.
+    
+    Parameters
+    ----------
+    vsn: array
+        set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
+    """
+    #vns=numerical_vectors(vts)
+    #return projection3_sets_numerical(vns)
+    return projection3_sets_numerical(vts)
 
 #########
 #  WIP  #

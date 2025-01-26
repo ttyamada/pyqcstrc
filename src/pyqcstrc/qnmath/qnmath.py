@@ -80,19 +80,21 @@ def qsort(x:qnv.Qnvec,ip:np.array,nx: np.int64):
     #     ip: the initial order
     #     st: a work array
     
-    def setlrs():
+    def setlr(s,st):
         #label .l1
         l=st[s][0] 
         r=st[s][1] 
         s=s-1 
+        return l,r,s
 #2   continue
-    def setijxt():
+    def setijxt(l,r,x):
         #label .l2
         i=l 
         j=r 
         xt=x[(l+r)/2]
+        return i,j,xt
 
-    st=np.ndarray((nx,2),dtype=np.int63)
+    st=np.ndarray((nx,2),dtype=np.int64)
     if nx==0: return 
     
     for i in range(nx): 
@@ -102,8 +104,8 @@ def qsort(x:qnv.Qnvec,ip:np.array,nx: np.int64):
     st[1][0]=1 
     st[1][1]=nx 
 
-    setlrs()
-    setijxt()
+    l,r,s=setlr(s,st)
+    i,j,xt=setijxt(l,r,x)
     
     while True:
         while True:
@@ -153,11 +155,11 @@ def qsort(x:qnv.Qnvec,ip:np.array,nx: np.int64):
                 st[s][1]=r
             r=j
         if l<r: 
-            setijxt()
+            i,j,xt=setijxt(l,r,x)
             continue
         if s!=0: 
-            setlrs()
-            setijxt()
+            l,r,s=setlr(s,st)
+            i,j,xt=setijxt(l,r,x)
             continue
         else:
             break
@@ -230,7 +232,7 @@ def det_matrix(mtx: qnm.Qnmat) -> qnn.Qnnum:
 
     return t3
 
-def matrixtr(mtx: qnm.Qnmat) -> qnn.Qnnum:
+def matrixtr(mtx: qnm.Qnmat):
     """ replace mtx with its transposed matrix"""
     n=mtx.n
     N=mtx.N

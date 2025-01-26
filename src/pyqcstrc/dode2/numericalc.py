@@ -700,7 +700,7 @@ def projection_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
     
 # equivalent to qnv2fot
 def projection3_numerical(vn: qnv.Qnvec) -> float:
-    return qnv2frt(vn)
+    return qnv.qnv2flt(vn)
 #    """perpendicular component of a 6D lattice vector in direct space.
 #    
 #    Parameters
