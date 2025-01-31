@@ -226,6 +226,6 @@ if __name__ == '__main__':
     n=np.int64(6)
     print("n=",n)
     qnv=Qnvec(n,N)  # nD qnnum zero vector
-    print("qnm.shape",qnv.shape)
+    print("qnv.shape",qnv.shape)
     printqnv("Qnvec_Octa",qnv)
     

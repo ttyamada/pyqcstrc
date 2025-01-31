@@ -9,10 +9,10 @@
 import sys
 import numpy as np
 #import pyqcstrc.dode2.qnmath12 as qnmath
-import pyqcstrc.qnmath.qnmath as qnmath
-import pyqcstrc.dode2.occupation_domain as od
-import pyqcstrc.dode2.two_occupation_domains as ods
-import pyqcstrc.dode2.projection12 as proj
+#import pyqcstrc.qnmath.qnmath as qnm
+import pyqcstrc.occdom.occdom as od
+#import pyqcstrc.towods.twoods as ods
+#import pyqcstrc.prjop.prjop as prj
 
 opath='./test1'
 #xyzpath='../../../xyz/dode'

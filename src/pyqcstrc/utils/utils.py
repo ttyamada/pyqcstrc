@@ -12,10 +12,10 @@ import time
 
 import pyqcstrc.qnnum.qnnum as qnn
 import pyqcstrc.qnvec.qnvec as qnv
-import pyqcstrc.qnmat.qnmat as qnm
-import pyqcstrc.prjop.prjop as prjop
-import pyqcstrc.qnmath.qnmath as qnmth
-import pyqcstrc.qnclass.numericalc as numericalc
+#import pyqcstrc.qnmat.qnmat as qnm
+#import pyqcstrc.prjop.prjop as prj
+#import pyqcstrc.qnmath.qnmath as qnm
+import pyqcstrc.qnclass.numericalc as num
 
 def shift_object(obj: qnv.Qnvec, shift: qnv.Qnvec) -> qnv.Qnvec:
     """shift an object
@@ -88,7 +88,7 @@ def triangle_area_6d(triangle: qnv.Qnvec) -> qnn.Qnnum:
         #print('triangle',triangle)
         vts=[qn0]*(3,3,3)
         for i,vt in enumerate(triangle):
-            vts[i]=projection3(vt)
+            vts[i]=prj.projection3(vt)
         return triangle_area(vts)
     else:
         print('object has an incorrect shape!')
@@ -185,7 +185,7 @@ def remove_doubling_in_perp_space(vts: qnv.Qnvec) -> qnv.Qnvec:
     #a=np.zeros((num,3,3),dtype=np.int64)
     a=[qnv]*(num,3) 
     for i in range(num):
-        a[i]=projection3(vts[i])
+        a[i]=prj.projection3(vts[i])
     b=np.unique(a,return_index=True,axis=0)[1] # write unique for qnvec array
     num=len(b)
     qn0=qnn.Qnvec([0,0,1])
@@ -485,8 +485,8 @@ def equivalent(obj1: qnv.Qnvec, obj2: qnv.Qnvec) -> bool:
             return False
     
     def check2(a,b):
-        a=projection3(a)
-        b=projection3(b)
+        a=prj.projection3(a)
+        b=prj.projection3(b)
         if np.all(a==b):
             return True # equivalent traiangle
         else:
@@ -533,8 +533,8 @@ def equivalent_edges(edge1: qnv.Qnvec, edge2: qnv.Qnvec) -> bool:
         return False # not equivalent
 
 def equivalent_vertices(vertex1: qnv.Qnvec, vertex2: qnv.Qnvec) -> bool:
-    xyz1=projection3(vertex1)
-    xyz2=projection3(vertex2)
+    xyz1=prj.projection3(vertex1)
+    xyz2=prj.projection3(vertex2)
     if np.all(xyz1==xyz2):
         return True # equivalent
     else:
@@ -556,7 +556,7 @@ def sort_vctors(vts: qnv.Qnvec) -> qnv.Qnvec:
     #qn0=qnn.Qnnum([0,0,1],N)
     #qnv1=qnv.Qnvec(ln,N)
     #out=[qnv1]*ln
-    vns=numericalc.get_internal_component_sets_numerical(vts)
+    vns=num.get_internal_component_sets_numerical(vts)
     
     ln=len(vns)
     ip=[0]*ln
@@ -617,8 +617,8 @@ def triangulation_points(points: qnv.Qnvec):
     qn0=qnn.Qnnum([0,0,1],N)
     tmp=[qm0]*(len(points),2)
     for i1,p in enumerate(points):
-        v=projection3(p)
-        v=numerical_vector(v)
+        v=prj.projection3(p)
+        v=num.numerical_vector(v)
         tmp[i1]=v[:2]
         
     ltmp=decomposition(tmp)
@@ -889,7 +889,7 @@ if __name__ == '__main__':
     vns[1].vt=[qn1,qn2]
     vns[2].vt=[qn1,qn3]
     #vts=generate_random_vectors(nset)  # this shoykd be vnvector
-    #vns=numericalc.get_internal_component_sets_numerical(vts)
+    #vns=num.get_internal_component_sets_numerical(vts)
     #qnv.printqnv("vns",vns)
     for vn in vns:
         qnv.printqnv("vn",vn)
@@ -897,7 +897,7 @@ if __name__ == '__main__':
     #print(vts.shape)
     
     vts1=sort_vctors(vns)
-    vns1=numericalc.get_internal_component_sets_numerical(vts1)
+    vns1=num.get_internal_component_sets_numerical(vts1)
     for vn in vns1:
         qnv.printqnv("vn",vn)
     

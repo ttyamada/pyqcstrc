@@ -8,8 +8,8 @@
 #import os
 import sys
 import numpy as np
-import pyqcstrc.dode2.occupation_domain as od
-import pyqcstrc.dode2.symmetry as sym
+import pyqcstrc.occdom.occdom as od
+import pyqcstrc.qnsym.qnsym as sym
 
 opath='./test7'
 xyzpath='./test7'

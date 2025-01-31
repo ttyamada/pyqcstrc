@@ -8,7 +8,7 @@
 #import os
 import sys
 import numpy as np
-import pyqcstrc.dode2.occupation_domain as od
+import pyqcstrc.occdom.occdom as od
 
 opath='./test3'
 xyzpath='./test1'

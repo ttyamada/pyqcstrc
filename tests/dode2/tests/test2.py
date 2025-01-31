@@ -8,10 +8,10 @@
 #import os
 import sys
 import numpy as np
-import pyqcstrc.qnclass.qnmath12 as qnmath
-import pyqcstrc.dode2.symmetry as sym
-import pyqcstrc.dode2.numericalc as numcalc
-import pyqcstrc.dode2.projection12 as proj
+#import pyqcstrc.qnclass.qnmath12 as qnmath
+import pyqcstrc.qnsymm.qnsym as sym
+import pyqcstrc.qnclass.numericalc as num
+#import pyqcstrc.prjop.prjop as prj
 
 verbose=0
 #verbose=1
@@ -30,7 +30,7 @@ site=site_6a
 #site=site_3a
 #site=site_6b
 
-vn=numcalc.numerical_vector(site)
+vn=num.numerical_vector(site)
 print(' site coordinates: %3.2f %3.2f %3.2f %3.2f %3.2f %3.2f'%(vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
 
 # list1: symmetry operators of site symmetry group, G

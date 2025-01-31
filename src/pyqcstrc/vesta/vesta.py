@@ -3,9 +3,10 @@ import os
 import sys
 import numpy as np
 
-import pyqcstrc.qnmath.qnmath as qnmath
-import pyqcstrc.dode2.utils as utils
-import pyqcstrc.qnclass.numericalc as numericalc
+import pyqcstrc.qnmath.qnmath as qnm
+import pyqcstrc.utils.utils as utl
+import pyqcstrc.qnclass.numericalc as num
+import pyqcstrc.intsct.intsct as ints
 #import pyqcstrc.qnsym.qnsym as qnsym
 #import pyqcstrc.dode2.intsct as intsct
 #import pyqcstrc.dode2.projection12 as proj
@@ -76,21 +77,21 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
         else:
             # get independent edges
             if select=='simple':
-                edges = utils.generator_obj_edge(obj,verbose)
+                edges = utl.generator_obj_edge(obj,verbose)
             else:
                 edges = obj
             # get independent vertices of the edges
-            vertices = utils.remove_doubling_in_perp_space(edges)
+            vertices = utl.remove_doubling_in_perp_space(edges)
                 
             # get bond pairs, [[distance, XXX, YYY],...]
             pairs = []
             for edge in edges:
-                dist=intsct.distance_in_perp_space(edge[0],edge[1])
+                dist=ints.distance_in_perp_space(edge[0],edge[1])
                 a=[dist]
                 for i2 in range(2):
                     for i3,vt in enumerate(vertices):
                         tmp=np.vstack([edge[i2],vt])
-                        tmp=utils.remove_doubling_in_perp_space(tmp.reshape(2,6,3))
+                        tmp=utl.remove_doubling_in_perp_space(tmp.reshape(2,6,3))
                         if len(tmp)==1:
                             a.append(i3)
                             break
@@ -127,8 +128,8 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
             \nSTRUC', file=f)
             for i2,vrtx in enumerate(vertices):
-                xyz = math1.projection3(vrtx)
-                xyz=numericalc.numerical_vector(xyz)
+                xyz = qnm.projection3(vrtx)
+                xyz=num.numerical_vector(xyz)
                 print('%4d A        A%d  1.0000    %8.6f %8.6f %8.6f        1'%\
                 (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
                 print('                             0.000000    0.000000    0.000000  0.00', file=f)
@@ -326,8 +327,8 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
                 \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
                 \nSTRUC', file=f)
                 for i2,vertx in enumerate(obj1):
-                    xyz=math1.projection3(vertx)
-                    xyz=numericalc.numerical_vector(xyz)
+                    xyz=qnm.projection3(vertx)
+                    xyz=num.numerical_vector(xyz)
                     print('%4d Xx        Xx%d  1.0000    %8.6f %8.6f %8.6f        1'%\
                     (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
                     print('                             0.000000    0.000000    0.000000  0.00', file=f)
@@ -491,21 +492,21 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
         else:
             # get independent edges
             #edges = utils.generator_obj_edge(obj, verbose)
-            edges = utils.generator_unique_edges(obj)
+            edges = utl.generator_unique_edges(obj)
             #print(len(edges))
             # get independent vertices of the edges
-            vertices = utils.remove_doubling_in_perp_space(edges)
+            vertices = utl.remove_doubling_in_perp_space(edges)
             #print(len(vertices))
             # get bond pairs, [[distance, XXX, YYY],...]
             pairs = []
             for edge in edges:
-                dist=intsct.distance_in_perp_space(edge[0],edge[1])
+                dist=ints.distance_in_perp_space(edge[0],edge[1])
                 a=[dist]
                 for i2 in range(2):
                     i3=0
                     for vrtx in vertices:
                         tmp=np.vstack([edge[i2],vrtx])
-                        tmp=utils.remove_doubling_in_perp_space(tmp.reshape(2,6,3))
+                        tmp=utl.remove_doubling_in_perp_space(tmp.reshape(2,6,3))
                         #i3+=1
                         if len(tmp)==1:
                             a.append(i3)
@@ -546,9 +547,9 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \nSTRUC', file=f)
             i2=0
             for vrtx in vertices:
-                xyz = math1.projection3(vrtx)
+                xyz = qnm.projection3(vrtx)
                 print('%4d A        A%d  1.0000    %8.6f %8.6f %8.6f        1'%\
-                (i2+1,i2+1,numericalc.numeric_value(xyz[0]),numericalc.numeric_value(xyz[1]),numericalc.numeric_value(xyz[2])), file=f)
+                (i2+1,i2+1,num.numeric_value(xyz[0]),numericalc.numeric_value(xyz[1]),numericalc.numeric_value(xyz[2])), file=f)
                 i2+=1
                 print('                             0.000000    0.000000    0.000000  0.00', file=f)
             print('  0 0 0 0 0 0 0\
@@ -754,11 +755,11 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         i1=0
         for i1,triangle in enumerate(obj):
             for i2,vt in enumerate(triangle):
-                v=proj.projection3(vt)
+                v=prj.projection3(vt)
                 f.write('Xx %8.6f %8.6f %8.6f # %3d-the triangle %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-                (numericalc.numeric_value(v[0]),\
-                numericalc.numeric_value(v[1]),\
-                numericalc.numeric_value(v[2]),\
+                (num.numeric_value(v[0]),\
+                num.numeric_value(v[1]),\
+                num.numeric_value(v[2]),\
                 i1,i2,\
                 vt[0][0],vt[0][1],vt[0][2],\
                 vt[1][0],vt[1][1],vt[1][2],\
@@ -766,10 +767,10 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
                 vt[3][0],vt[3][1],vt[3][2],\
                 vt[4][0],vt[4][1],vt[4][2],\
                 vt[5][0],vt[5][1],vt[5][2]))
-        v=utils.obj_area_6d(obj)
+        v=utl.obj_area_6d(obj)
         f.write('volume = %d %d %d (%8.6f)\n'%(v[0],v[1],v[2],numericalc.numeric_value(v)))
         for i1,triangle in enumerate(obj):
-            v=utils.triangle_area_6d(triangle)
+            v=utl.triangle_area_6d(triangle)
             f.write('%3d-the triangle, %d %d %d (%8.6f)\n'\
                     %(i1,v[0],v[1],v[2],numericalc.numeric_value(v)))
         f.closed
@@ -793,11 +794,11 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f.write('%s\n'%(filename))
         for i1,edge in enumerate(obj):
             for i2,vt in enumerate(edge):
-                v=math1.projection3(vt)
+                v=qnm.projection3(vt)
                 f.write('Xx %8.6f %8.6f %8.6f # %3d-the edge %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-                (numericalc.numeric_value(v[0]),\
-                numericalc.numeric_value(v[1]),\
-                numericalc.numeric_value(v[2]),\
+                (num.numeric_value(v[0]),\
+                num.numeric_value(v[1]),\
+                num.numeric_value(v[2]),\
                 i1,i2,\
                 vt[0][0],vt[0][1],vt[0][2],\
                 vt[1][0],vt[1][1],vt[1][2],\
@@ -827,11 +828,11 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         counter=0
         for triangle in range(len(obj)):
             for point in range(len(triangle)):
-                v=math1.projection3(point)
+                v=qnm.projection3(point)
                 f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # # # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-                (numericalc.numeric_value(v[0]),\
-                numericalc.numeric_value(v[1]),\
-                numericalc.numeric_value(v[2]),\
+                (num.numeric_value(v[0]),\
+                num.numeric_value(v[1]),\
+                num.numeric_value(v[2]),\
                 counter,\
                 point[0][0],point[0][1],point[0][2],\
                 point[1][0],point[1][1],point[1][2],\
@@ -860,11 +861,11 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f.write('%d\n'%(len(obj)))
         f.write('%s\n'%(filename))
         for i1,point in enumerate(obj):
-            v=math1.projection3(point)
+            v=qnm.projection3(point)
             f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # # # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-            (numericalc.numeric_value(v[0]),\
-            numericalc.numeric_value(v[1]),\
-            numericalc.numeric_value(v[2]),\
+            (num.numeric_value(v[0]),\
+            num.numeric_value(v[1]),\
+            num.numeric_value(v[2]),\
             i1,\
             point[0][0],point[0][1],point[0][2],\
             point[1][0],point[1][1],point[1][2],\
@@ -1007,10 +1008,10 @@ def simplification(obj,verbose=0):
             print('    zero volume')
         return 
     else:
-        vol0=utils.obj_area_6d(obj)
+        vol0=utl.obj_area_6d(obj)
         obj_convex_hull=utils.generate_convex_hull(obj)
-        obj_tmp=intsct.intersection_two_obj_1(obj_convex_hull,obj)
-        vol1=utils.obj_area_6d(obj_tmp)
+        obj_tmp=ints.intersection_two_obj_1(obj_convex_hull,obj)
+        vol1=utl.obj_area_6d(obj_tmp)
         if np.all(vol0==vol1):
             if verbose>0:
                 print('      simplification succeed:')
@@ -1035,8 +1036,8 @@ def generate_border_edges(obj):
             The shape is (num,2,6,3), where num=numbre_of_edge.
     
     """
-    triangle_surface=utils.generator_surface_1(obj)
-    return utils.surface_cleaner(triangle_surface)
+    triangle_surface=utl.generator_surface_1(obj)
+    return utl.surface_cleaner(triangle_surface)
 
 def outline(obj):
     """
@@ -1050,7 +1051,7 @@ def outline(obj):
             The shape is (num,2,6,3), where num=number of the outlines.
     
     """
-    return utils.surface_cleaner(obj)
+    return utl.surface_cleaner(obj)
     
 # new in version 0.0.2a2
 def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
@@ -1060,12 +1061,12 @@ def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
         counter1=0
         for i1 in [0,1,2]:
             vtx1=obj[0][i1]
-            xyz1=math1.projection3(vtx1)
+            xyz1=qnm.projection3(vtx1)
             counter2=0
             for i2 in range(1,len(obj)):
                 counter3=0
                 for i3 in [0,1,2]:
-                    xyz2=math1.projection3(obj[i2][i3])
+                    xyz2=qnm.projection3(obj[i2][i3])
                     if np.all(xyz1==xyz2):
                         counter3=1
                         break
@@ -1100,20 +1101,20 @@ def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
         #--------
         fatm.write('%d \'Em\' 1 %d 1 2.0 0. 0. 1.0 0. 0. 0.\n'%(serial_number,serial_number))
         
-        vn=numericalc.numerical_vector(vrtx0)
+        vn=num.numerical_vector(vrtx0)
         fatm.write('x=  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f\n'%(\
         vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
         
         # generate a list of verices and remove the common vertex from it.
-        vtxs=utils.remove_doubling_in_perp_space(obj)
-        vtxs=utils.remove_vector(vtxs,vrtx0)
+        vtxs=utl.remove_doubling_in_perp_space(obj)
+        vtxs=utl.remove_vector(vtxs,vrtx0)
         
         #--------
         #  pod
         #--------
         fpod.write('%d %d %d \'comment\'\n'%(serial_number,len(vtxs),2))
         for vtx in vtxs:
-            vn=numericalc.numerical_vector(vtx)
+            vn=num.numerical_vector(vtx)
             fpod.write('ej=  %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f\n'%(\
             vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
         #

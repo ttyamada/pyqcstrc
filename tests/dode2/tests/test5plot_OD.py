@@ -7,9 +7,9 @@
 import os
 import sys
 import numpy as np
-import pyqcstrc.dode2.occupation_domain as od
-import pyqcstrc.dode2.symmetry as sym
-import pyqcstrc.dode2.numericalc as numericalc
+import pyqcstrc.occdom.occdom as od
+import pyqcstrc.qnsym.qnsym as sym
+import pyqcstrc.qnclass.numericalc as num
 
 from matplotlib.patches import Circle, Wedge, Polygon
 from matplotlib.collections import PatchCollection
@@ -59,7 +59,7 @@ for triangle in od_sym:
     x=[]
     y=[]
     for vt in triangle:
-        xy=numericalc.get_internal_component_numerical(vt)
+        xy=num.get_internal_component_numerical(vt)
         x.append(float(xy[0]))
         y.append(float(xy[1]))
     #plt.fill(x,y,'#808080') # gray
@@ -72,7 +72,7 @@ for triangle in od_sym:
     x=[]
     y=[]
     for vt in triangle:
-        xy=numericalc.get_internal_component_numerical(vt)
+        xy=num.get_internal_component_numerical(vt)
         x.append(float(xy[0]))
         y.append(float(xy[1]))
     #plt.fill(x,y,'#D3D3D3') # lightgrey
@@ -84,7 +84,7 @@ for triangle in od_sym:
     x=[]
     y=[]
     for vt in triangle:
-        xy=numericalc.get_internal_component_numerical(vt)
+        xy=num.get_internal_component_numerical(vt)
         x.append(float(xy[0]))
         y.append(float(xy[1]))
     #plt.fill(x,y,'#F5F5F5') # whitesmoke

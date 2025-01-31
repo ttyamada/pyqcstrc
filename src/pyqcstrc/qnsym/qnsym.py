@@ -4,7 +4,7 @@ import pyqcstrc.qnnum.qnnum as qnn
 import pyqcstrc.qnvec.qnvec as qnv
 import pyqcstrc.qnmat.qnmat as qnm
 import pyqcstrc.prjop.prjop as prj
-import pyqcstrc.qnmath.qnmath as qmt
+#import pyqcstrc.qnmath.qnmath as qnm
 #import pyqcstrc.qnclass.qnmath
 
 class Qnsym_Octa:
