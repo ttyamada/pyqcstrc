@@ -63,6 +63,11 @@ def copy(qnm: Qnmat) -> Qnmat:
     for i in range(n):
         for j in range(n):
             qnr.mt[i][j]=qnn.copy(qnm.mt[i][j])
+            
+    print("qnr.n",qnr.n) # for test
+    print("qnr.N",qnr.N) # fpr test
+    print("qnr.shape",qnr.shape) # fpr test
+    
     return qnr
 
 def int2qnm(r:np.ndarray,n:np.int64,N: np.int64):

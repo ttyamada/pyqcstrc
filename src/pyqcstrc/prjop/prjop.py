@@ -29,6 +29,9 @@ class Qnprj_Octa:
         qnm.printqnm("Qnprj_Octa",qnmt,2) # for test
         self=qnm.copy(qnmt)
         qnm.printqnm("Qnprj_Octa self",self,2) # for test
+        print("self.n",self.n) # fpr test
+        print("self.shape",self.shape) # fpr test
+        print("self.N",self.N) # for test
 
 # for decagonal QCs
 class Qnprj_Deca:
@@ -250,53 +253,7 @@ def projection_numerical_par(vn: qnv.Qnvec) -> qnv.Qnvec:
 def get_internal_component_numerical(vt: qnv.Qnvec) -> qnv.Qnvec:
     return prjop_i(vt)
 
-
-
-if __name__ == '__main__':
-    # test for qnnum projection operators
-    #n=6
-    #N=2
-    prj=Qnprj_Octa() # qnnum projection operator
-    n=prj.n
-    N=prj.N
-    print("n",n,"N",N)
-    qnm.printqnm("Octa.mt",prj.mt,2)
-    b=qnm.copy(prj.mt)
-    print("Octa.mt")
-    qnm.printqnm("Octa.mt",b,2)
-
-    #N=5
-    prj=Qnprj_Deca() # float projection operator
-    n=prj.n
-    N=prj.N
-    print("n",n,"N",N)
-    qnm.printqnm("Deca.mt",prj.mt,2)
-    b=qnm.copy(prj.mt)
-    print("Deca.mt")
-    print(b)
-    qnm.printqnm("Deca.mt",b,2)
-
-    #N=3
-    prj=Qnprj_Dode() # float projection operator
-    n=prj.n
-    N=prj.N
-    print("n",n,"N",N)
-    b=qnm.copy(prj.mt)
-    print("Dode.mt")
-    print(b)
-    qnm.printqnm("Dode.mt",b,2)
- 
-    # check qnmatinv
-    #N=2 # octagonal
-    #n=0
-    prj=Qnprj_Octa()
-    mto=prj.mt
-    qnm.printqnm("mto",mto,2)
-    
-    prji=qnm.copy(prj) # copy for matinv
-    mth.qnmatinv(prji,5)
-    qnm.printqnm("mtoi",prji.mt,2)
-    
+def check_ltv(n,N):
     # check lattice vector external and internal space components
     ndv=np.ndarray(3**3,dtype=qnn.Qnnum)
     n=5
@@ -315,6 +272,49 @@ if __name__ == '__main__':
                     qnv=vt@mto.mt  #@ndv.vt #external enternal components
                     qnn.printqnv("qnv",qnv) #print qnvector expression
                     n+=1
+
+if __name__ == '__main__':
+    # test for qnnum projection operators
+    prj4=Qnprj_Octa() # qnnum projection operator
+    n=prj4.n
+    N=prj4.N
+    print("n",n,"N",N)
+    qnm.printqnm("Octa.mt",prj4.mt,2)
+    b=qnm.copy(prj4.mt)
+    print("Octa.mt")
+    qnm.printqnm("Octa.mt",b,2)
+
+    prj3=Qnprj_Deca() # float projection operator
+    n=prj3.n
+    N=prj3.N
+    print("n",n,"N",N)
+    qnm.printqnm("Deca.mt",prj3.mt,2)
+    b=qnm.copy(prj3.mt)
+    print("Deca.mt")
+    print(b)
+    qnm.printqnm("Deca.mt",b,2)
+
+    prj5=Qnprj_Dode() # float projection operator
+    n=prj5.n
+    N=prj5.N
+    print("n",n,"N",N)
+    b=qnm.copy(prj5.mt)
+    print("Dode.mt")
+    print(b)
+    qnm.printqnm("Dode.mt",b,2)
+ 
+    # check qnmatinv
+    #N=2 # octagonal
+    #n=0
+    prj3=Qnprj_Octa()
+    mto=prj3.mt
+    qnm.printqnm("mto",mto,2)
+    
+    prji=qnm.copy(prj3) # copy for matinv
+    mth.qnmatinv(prji,5)
+    qnm.printqnm("mtoi",prji.mt,2)
+    
+    check_ltv(n,N)
 
                     
                     
