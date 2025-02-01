@@ -56,9 +56,10 @@ import time
 def shift_object(obj: qnv.Qnvec, shift: qnv.Qnvec) -> qnv.Qnvec:
     """shift an object
     """
-    qn0=qnn.Qnvec([0,0,1])
+    N=obj.N
+    qn0=qnn.Qnvec([0,0,1],N)
     if obj.ndim==4:
-        obj_new=[qn0]*obj.shape
+        obj_new=np.array(obj.shape,dtype=qnv.Qnvec)  #[qn0]*obj.shape
         i1=0
         for triangle in obj:
             i2=0
@@ -119,10 +120,11 @@ def triangle_area_6d(triangle: qnv.Qnvec) -> qnn.Qnnum:
         Area in TAU-style.
     """
     N=triangle[0].vt[0].N
+    ndim=triangle.ndim
     qn0=qnn.Qnnum([0,0,1],N)
-    if triangle.ndim==3:
+    if(ndim==3):
         #print('triangle',triangle)
-        vts=[qn0]*(3,3,3)
+        vts=np.array(ndim,dtype=qnv.Qnvec)  #[qn0]*(3,3,3)
         for i,vt in enumerate(triangle):
             vts[i]=projection3(vt)
         return triangle_area(vts)

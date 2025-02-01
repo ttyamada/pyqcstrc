@@ -692,8 +692,10 @@ def projection_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
         set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
     """
     num=len(vns)
-    qn0=qnn.Qnnum([0,0,1])
-    m=[qn0]*num # array of qnvec ???
+    N=vns.N
+    qn0=qnn.Qnnum([0,0,1],N)
+    #m=[qn0]*num # array of qnvec ???
+    m=np.array(num,dtype=qnv.Qnvec) # 1D array
     for i in range(num):
         m[i]=projection_numerical(vns[i])
     return m

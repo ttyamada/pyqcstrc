@@ -20,9 +20,10 @@ import pyqcstrc.qnclass.numericalc as num
 def shift_object(obj: qnv.Qnvec, shift: qnv.Qnvec) -> qnv.Qnvec:
     """shift an object
     """
-    qn0=qnn.Qnvec([0,0,1])
+    N=obj.N
+    qn0=qnn.Qnnum([0,0,1],N)
     if obj.ndim==4:
-        obj_new=[qn0]*obj.shape
+        obj_new=np.array(obj.shape,dtype=qnv.Qnvec)  #[qn0]*obj.shape
         i1=0
         for triangle in obj:
             i2=0
@@ -50,20 +51,22 @@ def obj_area_6d(obj: qnv.Qnvec) -> qnn.Qnnum:
     area: array
         area in TAU-style.
     """
-    qn0=qnn.Qnvec([0,0,1])
+    N=obj.N
+    qn0=qnn.Qnnum([0,0,1],N)
+    ndim=obj.ndim # ndim qn vector
     w=qn0
-    if obj.ndim==4:
+    if ndim==4:
         for triangle in obj:
             v=triangle_area_6d(triangle)
             w=w+v
         return w
-    elif obj.ndim==5:
+    elif ndim==5:
         for tset in obj:
             for triangle in tset:
                 v=triangle_area_6d(triangle)
                 w=w+v
         return w
-    elif obj.ndim==3:
+    elif ndim==3:
         return triangle_area_6d(obj)
     else:
         print('object has an incorrect shape!')
@@ -83,10 +86,11 @@ def triangle_area_6d(triangle: qnv.Qnvec) -> qnn.Qnnum:
         Area in TAU-style.
     """
     N=triangle[0].vt[0].N
+    ndim=triangle.ndim
     qn0=qnn.Qnnum([0,0,1],N)
-    if triangle.ndim==3:
+    if ndim==3:
         #print('triangle',triangle)
-        vts=[qn0]*(3,3,3)
+        vts=np.array((ndim),dtype=qnv.Qnvec)  #[qn0]*(3,3,3)
         for i,vt in enumerate(triangle):
             vts[i]=prj.projection3(vt)
         return triangle_area(vts)
@@ -188,9 +192,10 @@ def remove_doubling_in_perp_space(vts: qnv.Qnvec) -> qnv.Qnvec:
         a[i]=prj.projection3(vts[i])
     b=np.unique(a,return_index=True,axis=0)[1] # write unique for qnvec array
     num=len(b)
-    qn0=qnn.Qnvec([0,0,1])
+    N=vts[0].N
+    qn0=qnn.Qnvec([0,0,1],N)
     #a=np.zeros((num,6,3),dtype=np.int64)
-    a=[qn0]*(num,6)
+    a=np.array((num),dtype=qnv.Qnvec)  #[qn0]*(num,6)
     for i in range(num):
         a[i]=vts[b[i]]
     return a
@@ -228,12 +233,12 @@ def generator_all_edges(obj: qnv.Qnvec) -> qnv.Qnvec:
     qn0=qnn.Qnnum([0,0,1],N)
     if n2==3:
         #edges=np.zeros((n1,3,2,6,3),dtype=np.int64)
-        edges=[qn0]*(n1,3,2,6)
+        edges=np.array((n1,3),dtype=qnv.Qnvec)  #[qn0]*(n1,3,2,6)
         i1=0
         for triangle in obj:
             edges[i1]=get_triangle_edge(triangle)
             i1+=1
-        return edges.reshape(n1*3,2,6)  #edges.reshape(n1*3,2,6,3)
+        return edges  #edges.reshape(n1*3,2,6)  #edges.reshape(n1*3,2,6,3)
     else:
         print('obj should be a set of trianges')
         return 
@@ -261,7 +266,7 @@ def generator_unique_edges(obj: qnv.Qnvec) -> qnv.Qnvec:
     N=obj[0][0].vt[0].N
     qn0=qnn.Qnnum([0,0,1],N)
     #a=np.zeros((num_edges,3),dtype=np.float64)
-    a=[qn0]*(num,edges)
+    a=np.array((num),dtype=qnv.Qnvec) #[qn0]*(num,edges)
     for i1 in range(num_edges):
         vt=centroid(edges[i1])
         a[i1]=get_internal_component_numerical(vt)
@@ -269,7 +274,7 @@ def generator_unique_edges(obj: qnv.Qnvec) -> qnv.Qnvec:
     num=len(b)
     #print('number of unique edges:',num)
     #a=np.zeros((num,2,6,3),dtype=np.int64)
-    a=[qn0]*(num,2,6)
+    a=np.array((num,2),dtype=qnv.Qnvec)  #[qn0]*(num,2,6)
     for i1 in range(num):
         a[i1]=edges[b[i1]]
     return a
@@ -287,7 +292,7 @@ def get_triangle_edge(triangle: qnv.Qnvec) -> qnv.Qnvec:
     N=triangle[0][0].vt[0].N
     qn0=qnn.Qnnum([0,0,1],N)
     #a=np.zeros((3,2,6,3),dtype=np.int64)
-    a=[qn0]*(3,2,6)
+    a=np.array((3,2),dtype=qnv.Qnvec)  #[qn0]*(3,2,6)
     i1=0
     for k in comb:
         i2=0
@@ -389,9 +394,10 @@ def surface_cleaner(surface: qnv.Qnvec) -> qnv.Qnvec:
             flag=0
     #print('edges_new.shape',edges_new.shape)
     n1=len(lst)
-    qn0=qnn.Qnvec([0,0,1])
+    N=surface[0].N
+    qn0=qnn.Qnvec([0,0,1],N)
     #out=np.zeros((n1,2,6,3),dtype=np.int64)
-    out=[qn0]*(n1,2,6,3)
+    out=np.array((n1,2),dtype=qnv.Qnvec)  #[qn0]*(n1,2,6,3)
     for i1 in range(n1):
         out[i1]=edges_new[lst[i1]]
     #print('out.shape',out.shape)
@@ -552,8 +558,8 @@ def sort_vctors(vts: qnv.Qnvec) -> qnv.Qnvec:
     #n1,n2,_=vts.shape
     #out=np.zeros(vts.shape,dtype=np.int64)
     #ln=len(vts)
-    #N=vts[0].vt[0].N
-    #qn0=qnn.Qnnum([0,0,1],N)
+    N=vts[0].vt[0].N
+    qn0=qnn.Qnnum([0,0,1],N)
     #qnv1=qnv.Qnvec(ln,N)
     #out=[qnv1]*ln
     vns=num.get_internal_component_sets_numerical(vts)
@@ -573,11 +579,12 @@ def sort_obj(obj: qnv.Qnvec) -> qnv.Qnvec:
     sort triangle in an object
     """
     #out=np.zeros(vts.shape,dtype=np.int64)
-    out=[qn0]*vts.shape
+    shape=obj.shape
+    out=np.array(shape,dtype=qnv.Qnvec)  #[qn0]*vts.shape
     #centroids=np.zeros(len(obj),dtype=np.float64)
-    centroids=[qn0]*len(obj)
+    centroids=np.array(shape,dtype=qnv.Qnvec)  #[qn0]*len(obj)
     #tmp=np.zeros((obj.shape,3),dtype=np.int64)
-    tmp=[qn0]*obj.shape
+    tmp=np.array(shape,dtype=qnv.Qnvec)  #[qn0]*obj.shape
     
     # 各triangleの頂点xyzをx順にソートすると同時に重心を求めておく。
     for i1 in range(len(obj)):
@@ -671,7 +678,7 @@ def remove_vectors(vts1: qnv.Qnvec, vts2: qnv.Qnvec) -> qnv.Qnvec:
         N=vts1[0].N
         qn0=qnn.Qnnum([0,0,1],N)
         #out=np.zeros((len(lst),6,3),dtype=np.int64)
-        out=[qn0]*(len(lst),6)
+        out=np.array(num,dtype=qnv.Qnvec)  #[qn0]*(len(lst),6)
         for i1 in range(len(lst)):
             out[i1]=vts1[lst[i1]]
         return out
@@ -692,8 +699,9 @@ def remove_vector(vts: qnv.Qnvec, vt: qnv.Qnvec) -> qnv.Qnvec:
     num=len(lst)
     if num!=0:
         #out=np.zeros((len(lst),6,3),dtype=np.int64)
-        qn0=qnn.Qnvec([0,0,1])
-        out=[qn0]*(len(lst),6)
+        N=vts[0].N
+        qn0=qnn.Qnvec([0,0,1],N)
+        out=np.array(shape,dtype=qnv.Qnvec)  #[qn0]*(len(lst),6)
         for i1 in range(len(lst)):
             out[i1]=vts[lst[i1]]
         return out
