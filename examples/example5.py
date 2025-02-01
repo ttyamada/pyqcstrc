@@ -10,14 +10,28 @@ import sys
 import numpy as np
 import pyqcstrc.ico2.occupation_domain as od
 import pyqcstrc.ico2.two_occupation_domains as ods
+import pyqcstrc.qnnum.qnnum as qnn
+import pyqcstrc.qnvec.qnvec as qnv
+import pyqcstrc.qnmat.qnmat as qnm
 
-V0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
-BC = np.array([[ 1, 0, 2],[ 1, 0, 2],[ 1, 0, 2],[ 1, 0, 2],[ 1, 0, 2],[ 1, 0, 2]])
-EC = np.array([[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+M0=qnn.Qnnum([0,0,1],N) # 0
+M1=qnn.Qnnum([1,0,2],N) # 1/2
+M2=qnn.Qnnum([-1,0,2],N) # -1/2
+M3=qnn.Qnnum([1,0,1],N)
+M4=qnn.Qnnum([1,0,4],N)
+M5=qnn.Qnnum([-1,0,4],N)
+V0 = np.array([M0,M0,M0,M0,M0,M0])
+BC = np.array([M1,M1,M1,M1,M1,M1])
+EC = np.array([M1,M0,M0,M0,M0,M0])
+
+#V0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+#BC = np.array([[ 1, 0, 2],[ 1, 0, 2],[ 1, 0, 2],[ 1, 0, 2],[ 1, 0, 2],[ 1, 0, 2]])
+#EC = np.array([[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
 
 common_od_asym=od.read_xyz(path='./example3', basename='common_od_asym')
 # back to the origin
-v4 = np.array([[-1, 0, 2],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+v4 = np.array([M2,M0,M0,M0,M0,M0])
+#v4 = np.array([[-1, 0, 2],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
 common_od_asym=od.shift(common_od_asym,v4)
 
 vtx=od.write_vesta(obj=common_od_asym, path='./example5', basename='common_od_asym', color = 'k', select = 'podatm')

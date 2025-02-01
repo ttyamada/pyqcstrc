@@ -111,12 +111,12 @@ def get_r(r1,r2,n):
 # integer matrix to qnnumber matrix transformation
 def intr2qnmr(r,n,N,nr):
     #qnmr=np.array(nr,dtype=qnm.Qnmat)
-    qm0=qnm.zerom(n,N) # nxn zero qnmatrix
-    qnmr=[qm0]*nr
+    #qm0=qnm.Qnmat(n,N)  # nxn zero qnmatrix
+    qnmr=np.array((nr),dtype=qnn.Qnmat) #[qm0]*nr
     for i in range(nr):
         ri=qnm.intm2qnm(r[i],n,N) # qnmat for i-th rotation operator r[i]
         qnmr[i]=qnm.Qnmat(n,N)
-        qnmr[i].mt=ri
+        qnmr[i].mt=ri # set mt values
         qnmr[i].n=n
         qnmr[i].N=N
     return qnmr

@@ -14,7 +14,7 @@ import pyqcstrc.qnnum.qnnum as qnn
 import pyqcstrc.qnvec.qnvec as qnv
 #import pyqcstrc.qnmat.qnmat as qnm
 #import pyqcstrc.prjop.prjop as prj
-#import pyqcstrc.qnmath.qnmath as qnm
+import pyqcstrc.qnmath.qnmath as qnt
 import pyqcstrc.qnclass.numericalc as num
 
 def shift_object(obj: qnv.Qnvec, shift: qnv.Qnvec) -> qnv.Qnvec:
@@ -892,7 +892,9 @@ if __name__ == '__main__':
     qn2=qnn.Qnnum([0,1,1],N)
     qn3=qnn.Qnnum([1,1,2],N)
     qv0=qnv.Qnvec(n,N)
-    vns=[qv0]*ns
+    vns=np.array((ns),dtype=qnv.Qnvec)  #[qv0]*ns
+    for i in range(ns):
+        vns[i]=qnv.Qnvec(n,N)
     vns[0].vt=[qn0,qn1]
     vns[1].vt=[qn1,qn2]
     vns[2].vt=[qn1,qn3]
@@ -904,7 +906,7 @@ if __name__ == '__main__':
     print('\n')
     #print(vts.shape)
     
-    vts1=sort_vctors(vns)
+    vts1=qnt.sort_vctors(vns,ip,ns) # use qnmath
     vns1=num.get_internal_component_sets_numerical(vts1)
     for vn in vns1:
         qnv.printqnv("vn",vn)
@@ -912,8 +914,18 @@ if __name__ == '__main__':
     #================
     # 重複のテスト
     #================
-    nset=10
-    vst=generate_random_vectors(nset)
+    nset=5
+    #vst=generate_random_vectors(nset)
+    vst=np.array((nset),dtype=qnv.Qnvec)
+    for i in range(nset):
+        vst[i]=qnv.Qnvec(n,N)
+    # set vt values
+    vst[0].vt=[qn0,qn1]
+    vst[1].vt=[qn1,qn2]
+    vst[2].vt=[qn1,qn3]
+    vst[3].vt=[qn0,qn3]
+    vst[4].vt=[qn2,qn1]
+    
     vst_d3=np.concatenate([vst,vst]) # doubling dim3 vectors
     vst_d4=np.stack([vst_d3,vst_d3]) # doubling dim4 vectors
     
@@ -932,15 +944,20 @@ if __name__ == '__main__':
     #================
     # 面と辺のテスト
     #================
-    triangle=generate_random_triangle()
+    #triangle=generate_random_triangle()
     
+    # generate triangles
+    triangle=[vst[0],vst[1],vst[2]]
     # doubled tetrahedon
     obj=np.stack([triangle,triangle]) # doubled tetrahedon
     #generator_surface_1(obj)
     
     # a tetrahedon
     obj=triangle
+    
     #surface=generator_surface_1(obj.reshape(1,3,6,3))
     surface=obj.reshape(1,3,6,3)
     #generator_edge(surface)
     generator_all_edges(surface)
+    
+    

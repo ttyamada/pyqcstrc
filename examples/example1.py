@@ -10,14 +10,29 @@ import sys
 import numpy as np
 import pyqcstrc.ico2.occupation_domain as od
 import pyqcstrc.ico2.two_occupation_domains as ods
+import pyqcstrc.qnnum.qnnum as qnn
+import pyqcstrc.qnvec.qnvec as qnv
+import pyqcstrc.qnmat.qnmat as qnm
 
 # Vertices of tetrahedron, v0,v1,v2,v3, which
 # defines the asymmetric part.
-v0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
-v1 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2]])
-v2 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2]])
-v3 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[ 0, 0, 2],[-1, 0, 2],[ 0, 0, 2]])
-od0 = np.vstack([v0,v1,v2,v3]).reshape(1,4,6,3)
+N=5 # for icosahedral
+n=6 # for icosahedral
+
+M0=qnn.Qnnum([0,0,1],N) # 0
+M1=qnn.Qnnum([1,0,2],N) # 1/2
+M2=qnn.Qnnum([-1,0,2],N) # -1/2
+M3=qnn.Qnnum([1,0,1],N)
+v0=np.array([M0,M0,M0,M0,M0,M0])
+v1=np.array([M1,M2,M2,M2,M2,M2])
+v2=np.array([M1,M2,M2,M1,M2,M2])
+v3=np.array([M1,M2,M2,M0,M2,M0])
+
+#v0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+#v1 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2]])
+#v2 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2]])
+#v3 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[ 0, 0, 2],[-1, 0, 2],[ 0, 0, 2]])
+od0 = np.vstack([v0,v1,v2,v3]).reshape(1,4,6)  #reshape(1,4,6,3)
 od.write_vesta(od0, path='./example1', basename='rtod0', color='r')
 od.write_xyz(od0, path='./example1', basename='rtod0')
 
@@ -27,8 +42,9 @@ od.write_vesta(od1, path='./example1', basename='rtod1', color='r')
 od.write_xyz(od1, path='./example1', basename='rtod1')
 
 # coordinate of position_1
-pos1 = np.array([[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],
-                 [ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+pos1 = np.array([M3,M0,M0,M0,M0,M0]) # (1,0,0,0,0,0)
+#pos1 = np.array([[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],
+#                 [ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
 od2 = od.shift(od1,pos1)  # move to position_1
 od.write_vesta(od2, path='./example1', basename='rtod2', color='p')
 od.write_xyz(od2, path='./example1', basename='rtod2')
