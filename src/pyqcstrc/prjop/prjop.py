@@ -26,10 +26,10 @@ class Qnprj_Octa:
         n=5
         qnmt=qnm.Qnmat(n,N) # matrix of qnnum (qnmat)
         qnmt.set_mt(MT) # matrix of qnnum (qnmat)
-        #self.n=n
-        #self.N=N
-        #self.shape=(n,n)
+        qnm.printqnm("Qnprj_Octa",qnmt,2) # for test
         self=qnm.copy(qnmt)
+        qnm.printqnm("Qnprj_Octa self",self,2) # for test
+
 # for decagonal QCs
 class Qnprj_Deca:
     # note that this use orthorhombic coordinate system
@@ -52,12 +52,10 @@ class Qnprj_Deca:
            [M0,M0,M0,M0,M1]\
            ])
         n=5
-        qnmt=qnm.Qnmat(n,N) # matrix of qnnum (qnmat)
+        qnmt=qnm.Qnmat(n,N)  #Qnmat(n,N) # matrix of qnnum (qnmat)
         qnmt.set_mt(MT) # matrix of qnnum (qnmat)
-        #self.n=n
-        #self.N=N
-        #self.shape=(n,n)
         self=qnm.copy(qnmt)
+        #self.mt=qnm.copy(qnmt.mt)
 
 # for dodecagonal QCs
 class Qnprj_Dode:
@@ -80,13 +78,9 @@ class Qnprj_Dode:
            [M0,M0,M0,M0,M1]\
            ])
         n=5
-        qnmt=qnm.Qnmat(n,N) # matrix of qnnum (qnmat)
+        qnmt=qnm.Qnmat(n,N)  #Qnmat(n,N) # matrix of qnnum (qnmat)
         qnmt.set_mt(MT) # matrix of qnnum (qnmat)
-        #self.n=n
-        #self.N=N
-        #self.shape=(n,n)
         self=qnm.copy(qnmt)
- 
         
 class Qnprj_Icos:
     def __init__(self):
@@ -105,14 +99,11 @@ class Qnprj_Icos:
             [m0,m3,m4,m1,m0,m2]\
             ])
         n=6
-        qnmt=qnm.Qnmat(n,N) # matrix of qnnum (qnmat)
+        qnmt=qnm.Qnmat(n,N)  #Qnmat(n,N) # matrix of qnnum (qnmat)
         qnmt.mt=prj.set_mt(MT)
         self=qnm.copy(qnmt)
-        #self.n=n
-        #self.N=N
-        #self.shape=(n,n)
         # take MT transpose
-        matrixtr(self) 
+        #matrixtr(self) 
         
 
 #class Prj_Octa:
@@ -221,7 +212,7 @@ def prjop_init(isys:np.int64):
 
 # for class cls cls should be icos octa, deca or dode
 def prjop(v: qnv.Qnvec) -> qnv.Qnvec:
-    qnm.printqnm("prj",prj)
+    qnm.printqnm("prj",prj,2)
     qnv.printqnv("v.vt",v)
     vei=vt@prj.mt  #@v.vt # vt assumed to be qnvec
     return vei
@@ -269,21 +260,21 @@ if __name__ == '__main__':
     n=prj.n
     N=prj.N
     print("n",n,"N",N)
-    qnm.printqnm("Octa.mt",prj.mt)
+    qnm.printqnm("Octa.mt",prj.mt,2)
     b=qnm.copy(prj.mt)
     print("Octa.mt")
-    qnm.printqnm("Octa.mt",b)
+    qnm.printqnm("Octa.mt",b,2)
 
     #N=5
     prj=Qnprj_Deca() # float projection operator
     n=prj.n
     N=prj.N
     print("n",n,"N",N)
-    qnm.printqnm("Deca.mt",prj.mt)
+    qnm.printqnm("Deca.mt",prj.mt,2)
     b=qnm.copy(prj.mt)
     print("Deca.mt")
     print(b)
-    qnm.printqnm("Deca.mt",b)
+    qnm.printqnm("Deca.mt",b,2)
 
     #N=3
     prj=Qnprj_Dode() # float projection operator
@@ -293,19 +284,18 @@ if __name__ == '__main__':
     b=qnm.copy(prj.mt)
     print("Dode.mt")
     print(b)
-    qnm.printqnm("Dode.mt",b)
+    qnm.printqnm("Dode.mt",b,2)
  
-    
     # check qnmatinv
     #N=2 # octagonal
     #n=0
     prj=Qnprj_Octa()
     mto=prj.mt
-    qnm.printqnm("mto",mto)
+    qnm.printqnm("mto",mto,2)
     
     prji=qnm.copy(prj) # copy for matinv
     mth.qnmatinv(prji,5)
-    qnm.printqnm("mtoi",prji.mt)
+    qnm.printqnm("mtoi",prji.mt,2)
     
     # check lattice vector external and internal space components
     ndv=np.ndarray(3**3,dtype=qnn.Qnnum)

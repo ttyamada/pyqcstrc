@@ -8,6 +8,8 @@ class Qnmat:
 
     def __init__(self,n:np.int64, N:np.int64):
         #print("n",n)
+        qn0=qnn.Qnnum([0,0,1],N)
+        #self.mt=[qn0]*(n,n)  #
         self.mt=np.ndarray((n,n),dtype=qnn.Qnnum) # 2D array
         #mt=np.array((n,n),dtype=qnn.Qnnum)
         qn0=qnn.int2qnn(0,N)
@@ -18,8 +20,9 @@ class Qnmat:
         self.shape=np.copy((n,n))
         self.n=np.copy(n)
         self.N=np.copy(N)
-        print("self.shape",self.shape[0],self.shape[1])
+        print("self.shape",self.shape)
         print("self.n",self.n)
+        printqnm("Qnmat self",self,2) # for test
 
     def set_mt(self,mt:np.ndarray):
         n=self.n
@@ -53,12 +56,9 @@ def unitm(n:np.int64, N: np.int64):
         
 def copy(qnm: Qnmat) -> Qnmat:
 #    return np.copy(qnm)
-    n=qnm.n
-    N=qnm.N
+    n=np.copy(qnm.n)
+    N=np.copy(qnm.N)
     qnr=Qnmat(n,N)
-    qnr.n=np.copy(qnm.n)
-    qnr.N=np.copy(qnm.N)
-    qnr.shape=np.copy(qnm.shape)
     print("qnr.n",qnr.n,"qnr.N",qnr.N,"qnr.shape",qnr.shape)
     for i in range(n):
         for j in range(n):
@@ -252,21 +252,22 @@ def intm2qnm(a:np.array,n:np.int64,N:np.int64):
             b.mt[i][j]=qnn.int2qnn(a[i][j],N)
     return b
 
-def printqnm(str,qnm:Qnmat):
+def printqnm(str,qnm:Qnmat,ord:np.int64):
     print(str)
-    n=qnm.n
-    if n==1:
+    if ord==1:
         for i in range(qnm.shape[0]):
             print("[",end=" ")
             print(qnn.qn2npa(qnm.mt[i]),end=" ")
         print("]")
-    elif n==2:
+    elif ord==2:
         for i in range(qnm.shape[0]):
             print("[",end=" ")
             for j in range(qnm.shape[1]):
                 print(qnn.qn2npa(qnm.mt[i][j]),end=" ")
             print("]")
         print("]")
+    else:
+        print("ord in printqnm should be 1 or2 but",ord); exit()
 
 if __name__ == '__main__':
     # test
@@ -277,5 +278,5 @@ if __name__ == '__main__':
     qnm=zerom(n,N) #qnm=Qnmat(n,N)  # nxn qmnum zero matrix
     print("qnm.shape",qnm.shape[0],qnm.shape[0])
     print("qnm.n",qnm.n)
-    printqnm("zero matrix",qnm)
+    printqnm("zero matrix",qnmm2)
     

@@ -14,7 +14,7 @@ def abs(a:qnn.Qnnum):
 
 def qnmatinv(a:qnm.Qnmat,n:np.int64): # qnmatrix inversion
     # a is replaced by its inversion matrix
-    # n is the order of a (nxn matrix)
+    # n is the order of a (nxn qnnumber matrix)
     ipivot=np.ndarray(n,dtype=qnn.Qnnum) 
     index=np.ndarray((n,2),dtype=np.int64)
     N=a.N
