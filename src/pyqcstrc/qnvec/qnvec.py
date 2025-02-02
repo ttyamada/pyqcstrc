@@ -2,7 +2,7 @@ import sys
 import numpy as np
 from numpy.typing import NDArray
 import pyqcstrc.qnnum.qnnum as qnn
-#from pyqcstrc.qnvec import qnvec
+import pyqcstrc.qndarray.qndarray as qna
 
 class Qnvec(np.ndarray):
     def __new__(cls, n:np.int64, N:np.int64):
@@ -12,7 +12,6 @@ class Qnvec(np.ndarray):
     def __init__(self, n:np.int64, N:np.int64):
         #self=np.empty(shape=(n),dtype=qnn.Qnnum) # 1D array
         qn0=qnn.Qnnum([0,0,1],N) #int2qnn(0,N)
-        #self=np.full((n),qn0,dtype=qnn.Qnnum) # 2D array
         for i in range(self.shape[0]):
             self[i]=qn0
         #print("self.shape",self.shape)  # for test

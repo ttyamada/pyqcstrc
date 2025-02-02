@@ -2,6 +2,7 @@ import sys
 import numpy as np
 import pyqcstrc.qnnum.qnnum as qnn
 import pyqcstrc.qnvec.qnvec as qnv
+import pyqcstrc.qndarray.qndarray as qna
 #from numpy.typing import NDArray
 
 class Qnmat(np.ndarray):
@@ -11,7 +12,6 @@ class Qnmat(np.ndarray):
 
     def __init__(self,n:np.int64, N:np.int64):
         qn0=qnn.Qnnum([0,0,1],N)
-        #self=np.full((n,n),qn0) # 2D array
         for i in range(self.shape[0]):
             for j in range(self.shape[1]):
                 self[i][j]=qn0
