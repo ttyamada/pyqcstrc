@@ -4,15 +4,20 @@ from numpy.typing import NDArray
 import pyqcstrc.qnnum.qnnum as qnn
 #from pyqcstrc.qnvec import qnvec
 
-class Qnvec:
+class Qnvec(np.ndarray):
+    def __new__(cls, n:np.int64, N:np.int64):
+        shape=(n)
+        return super().__new__(cls,shape,dtype=qnn.Qnnum)
+    
     def __init__(self, n:np.int64, N:np.int64):
         #self=np.empty(shape=(n),dtype=qnn.Qnnum) # 1D array
         qn0=qnn.Qnnum([0,0,1],N) #int2qnn(0,N)
-        self=np.full((n),qn0,dtype=qnn.Qnnum) # 2D array
-
-        print("self.shape",self.shape)
-        print("self.ndim",self.ndim)
-        print("self.dtype",self.dtype)
+        #self=np.full((n),qn0,dtype=qnn.Qnnum) # 2D array
+        for i in range(self.shape[0]):
+            self[i]=qn0
+        #print("self.shape",self.shape)  # for test
+        #print("self.ndim",self.ndim)    # for test
+        #print("self.dtype",self.dtype)  # for test
 
     def __add__(a, b):
         return add(a,b)

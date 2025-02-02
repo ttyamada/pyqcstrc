@@ -20,13 +20,16 @@ class Qnprj_Octa:
         M2=qnn.Qnnum(np.array([-1, 0, 1]),N) # -1
         M3=qnn.Qnnum(np.array([ 0, 1, 2]),N) #  sqrt(2)/2
         M4=qnn.Qnnum(np.array([ 0,-1, 2]),N) # -sqrt(2)/2
-        self=np.array([\
+        self=qnm.Qnmat(n,N)
+        # mt QnNdarray?
+        mt=np.array([\
            [M1,M0,M1,M0,M0],\
            [M3,M3,M4,M3,M0],\
            [M0,M1,M0,M2,M0],\
            [M4,M3,M3,M3,M0],\
            [M0,M0,M0,M0,M1],\
            ],dtype=qnn.Qnnum)
+        self.set_mt(mt)
         prj=qnm.copy(self)
  
         print("self.ndim",self.ndim) # fpr test
