@@ -8,14 +8,10 @@ class Qnmat:
 
     def __init__(self,n:np.int64, N:np.int64):
         qn0=qnn.Qnnum([0,0,1],N)
-        #self=np.empty((n,n),dtype=qnn.Qnnum) # 2D array
         self=np.full((n,n),qn0) # 2D array
-        #for i in range(n):
-        #    for j in range(n):
-        #        self[i][j]=qn0
-
         print("self.shape",self.shape)
         print("self.ndim",self.ndim)
+        print("self.dtype",self.dtype)
         printqnm("Qnmat self",self) # for test
 
     def __add__(ma1, ma2):  #  for ma1+ma2
@@ -237,7 +233,7 @@ if __name__ == '__main__':
     N=2
     n=5
     print("n=",n)
-    qnm=Qnmat(n,N) #qnm=Qnmat(n,N)  # nxn qmnum zero matrix
+    qnm=Qnmat(n,N) # nxn qmnum zero matrix
     print("qnm.ndim",qnm.ndim)
     print("qnm.shape",qnm.shape)
     printqnm("zero qnmat",qnm)

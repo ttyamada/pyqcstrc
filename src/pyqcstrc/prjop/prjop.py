@@ -5,7 +5,7 @@ import pyqcstrc.qnvec.qnvec as qnv
 import pyqcstrc.qnmat.qnmat as qnm
 import pyqcstrc.qnmath.qnmath as mth
 
-n=5
+n=6
 N=5
 prj=qnm.Qnmat(n,N)
 
@@ -26,14 +26,18 @@ class Qnprj_Octa:
            [M0,M1,M0,M2,M0],\
            [M4,M3,M3,M3,M0],\
            [M0,M0,M0,M0,M1],\
-           ])
+           ],dtype=qnn.Qnnum)
         prj=qnm.copy(self)
  
-        qnm.printqnm("Qnprj_Octa self",self) # for test
         print("self.ndim",self.ndim) # fpr test
         print("self.shape",self.shape) # fpr test
         print("self.shape[0]",self.shape[0]) # for test
-
+        qnm.printqnm("Qnprj_Octa self",self) # for test
+        
+        #print("prj.ndim",prj.ndim) # for test
+        #print("prj.shape",prj.shape) # for test
+        #print("prj.shape[0]",prj.shape[0]) # for test
+        #qnm.printqnm("Qnprj_Octa prj",prj) # for test
 
 # for decagonal QCs
 class Qnprj_Deca:
@@ -55,7 +59,7 @@ class Qnprj_Deca:
            [M7,-M5,M6,M4,M0],\
            [M6,-M4,M7,-M5,M0],\
            [M0,M0,M0,M0,M1]\
-           ])
+           ],dtype=qnn.Qnnum)
         prj=qnm.copy(self)
 
         qnm.printqnm("Qnprj_Deca self",self) # for test
@@ -81,7 +85,7 @@ class Qnprj_Dode:
            [M0,M1,M0,M1,M0],\
            [M4,M5,M4,M6,M0],\
            [M0,M0,M0,M0,M1]\
-           ])
+           ],dtype=qnn.Qnnum)
         prj=qnm.copy(self)
 
         qnm.printqnm("Qnprj_Dode self",self) # for test
@@ -103,7 +107,7 @@ class Qnprj_Icos:
             [m3,m2,m2,m0,m4,m0],\
             [m2,m0,m0,m3,m2,m3],\
             [m0,m3,m4,m1,m0,m2]\
-            ])
+            ],dtype=qnn.Qnnum)
         prj=qnm.copy(self)
  
         qnm.printqnm("Qnprj_Icos self",self) # for test
@@ -274,40 +278,32 @@ def check_ltv(n,N):
                     qnv=vt@mto  #@ndv #external enternal components
                     qnn.printqnv("qnv",qnv) #print qnvector expression
                     n+=1
+                    
+def print_prj(str:str,prj:qnm.Qnmat):
+    #print(prj)
+    print(str)
+    n=prj.shape[0]
+    N=prj[0][0].N
+    print("n",n,"N",N)
+    
+    qnm.printqnm(str,prj)
+    
+    b=qnm.copy(prj)
+    print(str)
+    qnm.printqnm("str",b)
 
 if __name__ == '__main__':
     # test for qnnum projection operators
     prj4=Qnprj_Octa() # qnnum projection operator
-    n=prj4.shape[0]
-    N=prj4[0][0].N
-    print("n",n,"N",N)
-    
-    qnm.printqnm("Octa",prj4)
-    b=qnm.copy(prj4)
-    print("Octa")
-    qnm.printqnm("Octa",b)
+    print_prj("Octa",prj4)
+    qnm.printqnm("prj4",prj4)
 
-    prj3=Qnprj_Deca() # float projection operator
-    n=prj3.shape[0]
-    N=prj3[0][0].N
-    print("n",n,"N",N)
-    
-    qnm.printqnm("Deca",prj3)
-    b=qnm.copy(prj3)
-    print("Deca")
-    print(b)
-    qnm.printqnm("Deca",b)
+    #prj3=Qnprj_Deca() # float projection operator
+    #print_prj("Deca",prj)
 
     prj5=Qnprj_Dode() # float projection operator
-    n=prj5.shape[0]
-    N=prj5[0][0].N
-    print("n",n,"N",N)
-    
-    b=qnm.copy(prj5)
-    print("Dode")
-    print(b)
-    qnm.printqnm("Dode",b)
- 
+    print_prj("Dode",prj)
+
     # check qnmatinv
     prj3=Qnprj_Octa()
     n=prj3.shape[0]

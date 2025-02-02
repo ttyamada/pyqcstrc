@@ -6,11 +6,10 @@ import pyqcstrc.qnnum.qnnum as qnn
 
 class Qnvec:
     def __init__(self, n:np.int64, N:np.int64):
- 
-        self=np.empty(shape=(n),dtype=qnn.Qnnum) # 1D array
+        #self=np.empty(shape=(n),dtype=qnn.Qnnum) # 1D array
         qn0=qnn.Qnnum([0,0,1],N) #int2qnn(0,N)
-        for i in range(n):
-            self[i]=qn0
+        self=np.full((n),qn0,dtype=qnn.Qnnum) # 2D array
+
         print("self.shape",self.shape)
         print("self.ndim",self.ndim)
         print("self.dtype",self.dtype)
@@ -198,11 +197,11 @@ def intv2qnv(a:np.ndarray,N:np.int64):
         b[i]=qnn.int2qnn(a[i],N)
     return b
 
-def printqnv(str:str,qnv1:Qnvec):
+def printqnv(str:str,qnv:Qnvec):
     print(str,"[",end=" ")
-    n=qnv1.shape[0]
+    n=qnv.shape[0]
     for i in range(n):
-        j=qnv1[i]
+        j=qnv[i]
         print(qnn.qn2npa(j),end=" ")
     print("]")
 
@@ -221,12 +220,13 @@ def printqnv2(str:str,qnv1:Qnvec,qnv2:Qnvec):
     
 if __name__ == '__main__':
     # test
-    N=np.int64(2)
-    n=np.int64(6)
+    N=np.int64(2) # octagonal
+    n=np.int64(5)
     print("n=",n)
-    #qnv=Qnvec(n,N)  # nD qnnum zero vector
-    #print("qnv.shape",qnv.shape)
-    #printqnv("Qnvec_Octa",qnv)
+    
+    qnv=Qnvec(n,N)  # nD qnnum zero vector
+    print("qnv.shape",qnv.shape)
+    printqnv("Qnvec_Octa",qnv)
     
     M0=qnn.Qnnum([0,0,1],N)
     M1=qnn.Qnnum([1,0,1],N)
