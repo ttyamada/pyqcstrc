@@ -1,4 +1,6 @@
- 
+import pyqcstrc.qnvec.qnvec as qnv
+import pyqcstrc.qnnum.qnnum as qnn
+
 def qsort(x:qnv.Qnvec,ip:np.array,nx: np.int64):
     #     quick sort (ascending order of x)
     #     nx: the number of data x

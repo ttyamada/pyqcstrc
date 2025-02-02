@@ -5,6 +5,10 @@ import pyqcstrc.qnvec.qnvec as qnv
 import pyqcstrc.qnmat.qnmat as qnm
 import pyqcstrc.qnmath.qnmath as mth
 
+n=5
+N=5
+prj=qnm.Qnmat(n,N)
+
 #prj=Qnprjop_Octa() # projection operator for Qnvector
 
 # for octagonal QCs
@@ -16,22 +20,20 @@ class Qnprj_Octa:
         M2=qnn.Qnnum(np.array([-1, 0, 1]),N) # -1
         M3=qnn.Qnnum(np.array([ 0, 1, 2]),N) #  sqrt(2)/2
         M4=qnn.Qnnum(np.array([ 0,-1, 2]),N) # -sqrt(2)/2
-        MT=np.array([\
+        self=np.array([\
            [M1,M0,M1,M0,M0],\
            [M3,M3,M4,M3,M0],\
            [M0,M1,M0,M2,M0],\
            [M4,M3,M3,M3,M0],\
            [M0,M0,M0,M0,M1],\
            ])
-        n=5
-        qnmt=qnm.Qnmat(n,N) # matrix of qnnum (qnmat)
-        qnmt.set_mt(MT) # matrix of qnnum (qnmat)
-        qnm.printqnm("Qnprj_Octa",qnmt,2) # for test
-        self=qnm.copy(qnmt)
-        qnm.printqnm("Qnprj_Octa self",self,2) # for test
-        print("self.n",self.n) # fpr test
+        prj=qnm.copy(self)
+ 
+        qnm.printqnm("Qnprj_Octa self",self) # for test
+        print("self.ndim",self.ndim) # fpr test
         print("self.shape",self.shape) # fpr test
-        print("self.N",self.N) # for test
+        print("self.shape[0]",self.shape[0]) # for test
+
 
 # for decagonal QCs
 class Qnprj_Deca:
@@ -47,18 +49,18 @@ class Qnprj_Deca:
         M5=M4*M4 # tau^-2
         M6=M4-qn2
         M7=-M3-qn2
-        MT=np.array([\
+        self=np.array([\
            [M6,M4,M7,M5,M0],\
            [M7,M5,M6,-M4,M0],\
            [M7,-M5,M6,M4,M0],\
            [M6,-M4,M7,-M5,M0],\
            [M0,M0,M0,M0,M1]\
            ])
-        n=5
-        qnmt=qnm.Qnmat(n,N)  #Qnmat(n,N) # matrix of qnnum (qnmat)
-        qnmt.set_mt(MT) # matrix of qnnum (qnmat)
-        self=qnm.copy(qnmt)
-        #self.mt=qnm.copy(qnmt.mt)
+        prj=qnm.copy(self)
+
+        qnm.printqnm("Qnprj_Deca self",self) # for test
+        print("self.ndim",self.ndim) # fpr test
+        print("self.shape",self.shape) # fpr test
 
 # for dodecagonal QCs
 class Qnprj_Dode:
@@ -73,27 +75,28 @@ class Qnprj_Dode:
         M6=qnn.Qnnum(np.array([ 0,-1, 2]),N) # -sqrt(3)/2
         #M5=np.array([ 0, 1, 1]) # sqrt(3)
         #M6=np.array([ 0,-1, 1]) # -sqrt(3)
-        MT=np.array([\
+        self=np.array([\
            [M5,M2,M6,M5,M0],\
            [M1,M0,M1,M0,M0],\
            [M0,M1,M0,M1,M0],\
            [M4,M5,M4,M6,M0],\
            [M0,M0,M0,M0,M1]\
            ])
-        n=5
-        qnmt=qnm.Qnmat(n,N)  #Qnmat(n,N) # matrix of qnnum (qnmat)
-        qnmt.set_mt(MT) # matrix of qnnum (qnmat)
-        self=qnm.copy(qnmt)
+        prj=qnm.copy(self)
+
+        qnm.printqnm("Qnprj_Dode self",self) # for test
+        print("self.ndim",self.ndim) # fpr test
+        print("self.shape",self.shape) # fpr test
         
 class Qnprj_Icos:
     def __init__(self):
         N=5
-        m0=qnn.Qnnum([ 0, 0, 1]) #  0 in 'TAU-style'
-        m1=qnn.Qnnum([ 1, 0, 1]) #  1
-        m2=qnn.Qnnum([-1, 0, 1]) # -1
-        m3=qnn.Qnnum([ 1, 1, 2]) #  tau
-        m4=qnn.qnnum([-1,-1, 2]) # -tau
-        MT=np.array([\
+        m0=qnn.Qnnum([ 0, 0, 1],N) #  0 in 'TAU-style'
+        m1=qnn.Qnnum([ 1, 0, 1],N) #  1
+        m2=qnn.Qnnum([-1, 0, 1],N) # -1
+        m3=qnn.Qnnum([ 1, 1, 2],N) #  tau=(1+sqrt(5))/2
+        m4=qnn.qnnum([-1,-1, 2],N) # -tau
+        self=np.array([\
             [m1,m3,m3,m0,m2,m0],\
             [m3,m0,m0,m1,m3,m1],\
             [m0,m1,m2,m4,m0,m3],\
@@ -101,12 +104,11 @@ class Qnprj_Icos:
             [m2,m0,m0,m3,m2,m3],\
             [m0,m3,m4,m1,m0,m2]\
             ])
-        n=6
-        qnmt=qnm.Qnmat(n,N)  #Qnmat(n,N) # matrix of qnnum (qnmat)
-        qnmt.mt=prj.set_mt(MT)
-        self=qnm.copy(qnmt)
-        # take MT transpose
-        #matrixtr(self) 
+        prj=qnm.copy(self)
+ 
+        qnm.printqnm("Qnprj_Icos self",self) # for test
+        print("self.ndim",self.ndim) # fpr test
+        print("self.shape",self.shape) # fpr test
         
 
 #class Prj_Octa:
@@ -120,7 +122,7 @@ class Qnprj_Icos:
 #            [ 0.0,  0.0,  0.0,  0.0,  1.0,  0.0],\
 #            [ 0.0,  0.0,  0.0,  0.0,  0.0,  0.0],\
 #            ])
-#        self.mt=mt
+#        self=mt
 #        self.shape=mt.shape
 #        self.ndim=mt.ndim
 #        self.N=2
@@ -153,7 +155,7 @@ class Qnprj_Icos:
 #            [    0,    0,    0,    0, 1, 0],\
 #            [    0,    0,    0,    0, 0, 0],\
 #            ])
-#        self.mt=mt
+#        self=mt
 #        self.shape=mt.shape
 #        self.ndim=mt.ndim
 #        self.N=5
@@ -168,7 +170,7 @@ class Qnprj_Icos:
 #            [ 0.0,          0.0,          0.0,          0.0,          1.0,  0.0],\
 #            [ 0.0,          0.0,          0.0,          0.0,          0.0,  0.0],\
 #            ])
-#        self.mt=mt
+#        self=mt
 #        self.shape=mt.shape
 #        self.ndim=mt.ndim
 #        self.N=3
@@ -198,7 +200,7 @@ class Qnprj_Icos:
 #           [ 0.2236068, -0.2236068, -0.2236068,  0.2236068,  0.5      ,  0.2236068],\
 #           [ 0.2236068,  0.2236068, -0.2236068, -0.2236068,  0.2236068,  0.5      ]\
 #           ])
-#        self.mt=mt
+#        self=mt
 #        self.shape=mt.shape
 #        self.ndim=mt.ndim
 #        self.N=5
@@ -215,24 +217,24 @@ def prjop_init(isys:np.int64):
 
 # for class cls cls should be icos octa, deca or dode
 def prjop(v: qnv.Qnvec) -> qnv.Qnvec:
-    qnm.printqnm("prj",prj,2)
-    qnv.printqnv("v.vt",v)
-    vei=vt@prj.mt  #@v.vt # vt assumed to be qnvec
+    qnm.printqnm("prj",prj)
+    qnv.printqnv("v",v)
+    vei=v@prj  #@v # vt assumed to be qnvec
     return vei
 
 # projection into external space for class cls
 def prjop_e(v:qnv.Qnvec) -> qnv.Qnvec:
-    vei=vt@prj.mt  #@v.vt # vt assumed to be qnvec
+    vei=v@prj  #@v # vt assumed to be qnvec
     return vei[1:3]
 
 # projection into internal space for class cls
 def prjop_i(v: qnv.Qnvec) -> qnv.Qnvec:
-    vei=vt@prj.mt  #@v.vt
+    vei=v@prj  #@v
     return vei[4:6]
 
 # alias for prjop_i
-def projection3(vt: qnv.Qnvec) -> qnv.Qnvec:
-    return prjop_i(prj,vt)
+def projection3(v: qnv.Qnvec) -> qnv.Qnvec:
+    return prjop_i(prj,v)
 
 def projection_numerical(vn: qnv.Qnvec) -> qnv.Qnvec:
     return prjop(vn)
@@ -269,50 +271,51 @@ def check_ltv(n,N):
                     VT=np.array([v1,v2,v3,V4,V0])
                     ndv[n]=qnv.Qnvec(VT,n,N) # lattice vector
                     qnn.printqnv("ndv",ndv) #print qnvector expression
-                    qnv=vt@mto.mt  #@ndv.vt #external enternal components
+                    qnv=vt@mto  #@ndv #external enternal components
                     qnn.printqnv("qnv",qnv) #print qnvector expression
                     n+=1
 
 if __name__ == '__main__':
     # test for qnnum projection operators
     prj4=Qnprj_Octa() # qnnum projection operator
-    n=prj4.n
-    N=prj4.N
+    n=prj4.shape[0]
+    N=prj4[0][0].N
     print("n",n,"N",N)
-    qnm.printqnm("Octa.mt",prj4.mt,2)
-    b=qnm.copy(prj4.mt)
-    print("Octa.mt")
-    qnm.printqnm("Octa.mt",b,2)
+    
+    qnm.printqnm("Octa",prj4)
+    b=qnm.copy(prj4)
+    print("Octa")
+    qnm.printqnm("Octa",b)
 
     prj3=Qnprj_Deca() # float projection operator
-    n=prj3.n
-    N=prj3.N
+    n=prj3.shape[0]
+    N=prj3[0][0].N
     print("n",n,"N",N)
-    qnm.printqnm("Deca.mt",prj3.mt,2)
-    b=qnm.copy(prj3.mt)
-    print("Deca.mt")
+    
+    qnm.printqnm("Deca",prj3)
+    b=qnm.copy(prj3)
+    print("Deca")
     print(b)
-    qnm.printqnm("Deca.mt",b,2)
+    qnm.printqnm("Deca",b)
 
     prj5=Qnprj_Dode() # float projection operator
-    n=prj5.n
-    N=prj5.N
+    n=prj5.shape[0]
+    N=prj5[0][0].N
     print("n",n,"N",N)
-    b=qnm.copy(prj5.mt)
-    print("Dode.mt")
+    
+    b=qnm.copy(prj5)
+    print("Dode")
     print(b)
-    qnm.printqnm("Dode.mt",b,2)
+    qnm.printqnm("Dode",b)
  
     # check qnmatinv
-    #N=2 # octagonal
-    #n=0
     prj3=Qnprj_Octa()
-    mto=prj3.mt
-    qnm.printqnm("mto",mto,2)
+    n=prj3.shape[0]
+    qnm.printqnm("prj3",prj3)
     
-    prji=qnm.copy(prj3) # copy for matinv
-    mth.qnmatinv(prji,5)
-    qnm.printqnm("mtoi",prji.mt,2)
+    prji3=qnm.copy(prj3) # copy for matinv
+    mth.qnmatinv(prji3,n)
+    qnm.printqnm("prji3",prji3)
     
     check_ltv(n,N)
 

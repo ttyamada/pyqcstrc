@@ -31,11 +31,11 @@ def qnmatinv(a:qnm.Qnmat,n:np.int64): # qnmatrix inversion
                 continue
             for k in range(n):
                 if ipivot[k]-1<0:
-                    if abs(t)>=abs(a.mt[j][k]):
+                    if abs(t)>=abs(a[j][k]):
                         continue
                     ir=j
                     ic=k
-                    t=a.mt[j][k]
+                    t=a[j][k]
                 elif ipivot[k]-1>0:
                     return
     
@@ -43,17 +43,17 @@ def qnmatinv(a:qnm.Qnmat,n:np.int64): # qnmatrix inversion
         if ir!=ic:
             det=-det
             for l in range(n):
-                t=a.mt[ir][l]
-                a.mt[ir][l]=a.mt[ic][l]
-                a.mt[ic][l]=t
+                t=a[ir][l]
+                a[ir][l]=a[ic][l]
+                a[ic][l]=t
 
         index[i][0]=ir
         index[i][1]=ic
-        ipivot[i]=a.mt[ic][ic]
+        ipivot[i]=a[ic][ic]
         det=det*ipivot[i]
-        a.mt[ic][ic]=1.0
+        a[ic][ic]=1.0
         for l in range(n):
-            a.mt[ic][l]=a.mt[ic][l]/ipivot[i]
+            a[ic][l]=a[ic][l]/ipivot[i]
 
         for l1 in range(n):
             if l1==ic:
@@ -61,7 +61,7 @@ def qnmatinv(a:qnm.Qnmat,n:np.int64): # qnmatrix inversion
             t=a[l1][ic]
             a[l1][ic]=0.0
             for l in range(n):
-                a.mt[l1][l]=a.mt[l1][l]-a.mt[ic][l]*t
+                a[l1][l]=a[l1][l]-a[ic][l]*t
     for i in range(n):
         l=n+1-i
         if index[l][0]==index[l][1]:
@@ -69,9 +69,9 @@ def qnmatinv(a:qnm.Qnmat,n:np.int64): # qnmatrix inversion
         ir=index[l][0]
         ic=index[l][1]
         for k in range(n):
-            t=a.mt[k][ir]
-            a.mt[k][ir]=a.mt[k][ic]
-            a.mt[k][ic]=t
+            t=a[k][ir]
+            a[k][ir]=a[k][ic]
+            a[k][ic]=t
        
 
 def qsort(x:qnv.Qnvec,ip:np.array,nx: np.int64):
@@ -178,8 +178,9 @@ def centroid(obj: qnv.Qnvec) -> qnv.Qnvec:
     centroid in qnvec
     """
     N=obj[0].N
+    n=obj.shape[0]
     num=len(obj) # length of obj
-    v2=qnv.Qnvec(6,N) # 6D zero qnvector
+    v2=qnv.Qnvec(n,N) # nD zero qnvector
     qnnum=qnn.Qnnum(1,0,num) # 1/num
     for i1 in range(num):
         v2=v2+obj[i1]
@@ -203,8 +204,9 @@ def centroid_obj(obj: qnv.Qnvec) -> qnv.Qnvec:
     
     #  geometric center, centroid of OBJ
     N=obj[0].N
+    n=qnv.shape[0]
     len=qnn.Qnnum([1,0,len(obj)],N)  # 1/len(obj)
-    tmp=qnv.Qnvec(6,N) # zero vector
+    tmp=qnv.Qnvec(n,N) # zero vector
     for thd in obj:
         tmp=tmp+thd
     tmp=tmp*len
@@ -222,13 +224,14 @@ def det_matrix(mtx: qnm.Qnmat) -> qnn.Qnnum:
     -------
     determinant in qnnumber
     """
-    
-    t3=   mtx.m[0][0]*mtx.m[1][1]*mtx.m[2][2]
-    t3=t3+mtx.m[0][1]*mtx.m[1][2]*mtx.m[2][0]    
-    t3=t3+mtx.m[0][2]*mtx.m[1][0]*mtx.m[2][1]
-    t3=t3-mtx.m[0][2]*mtx.m[1][1]*mtx.m[2][0]
-    t3=t3-mtx.m[0][1]*mtx.m[1][0]*mtx.m[2][2]    
-    t3=t3-mtx.m[0][0]*mtx.m[1][2]*mtx.m[2][1]
+    N=mtx[0][0].N
+    t3=qnn.Qnmtrx([0,0,1],N) # zero qnnumber
+    t3=t3+mtx[0][0]*mtx[1][1]*mtx[2][2]
+    t3=t3+mtx[0][1]*mtx[1][2]*mtx[2][0]    
+    t3=t3+mtx[0][2]*mtx[1][0]*mtx[2][1]
+    t3=t3-mtx[0][2]*mtx[1][1]*mtx[2][0]
+    t3=t3-mtx[0][1]*mtx[1][0]*mtx[2][2]    
+    t3=t3-mtx[0][0]*mtx[1][2]*mtx[2][1]
 
     return t3
 
