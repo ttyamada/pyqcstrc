@@ -5,7 +5,7 @@ import pyqcstrc.qnvec.qnvec as qnv
 import pyqcstrc.qnmat.qnmat as qnm
 
 def abs(a:qnn.Qnnum):
-    N=a.N
+    N=a[0][0].N
     qn0=qnn.Qnnum([0,0,1],N)
     if(a<qn0):
         return -a
@@ -17,7 +17,7 @@ def qnmatinv(a:qnm.Qnmat,n:np.int64): # qnmatrix inversion
     # n is the order of a (nxn qnnumber matrix)
     ipivot=np.ndarray(n,dtype=qnn.Qnnum) 
     index=np.ndarray((n,2),dtype=np.int64)
-    N=a.N
+    N=a[0][0].N
     qn0=qnn.Qnnum([0,0,1],N)
     qn1=qnn.Qnnum([1,0,1],N)
     det=qn1  #1.0 
@@ -238,7 +238,7 @@ def det_matrix(mtx: qnm.Qnmat) -> qnn.Qnnum:
 def matrixtr(mtx: qnm.Qnmat):
     """ replace mtx with its transposed matrix"""
     n=mtx.n
-    N=mtx.N
+    N=mtx[0][0].N
     mt=[qn0]*mtx.shape
     mtt=qnm.Qnmat(mt,n,N)
     for i in range(n):
