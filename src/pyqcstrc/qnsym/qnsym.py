@@ -5,20 +5,25 @@ import pyqcstrc.qnvec.qnvec as qnv
 import pyqcstrc.qnmat.qnmat as qnm
 import pyqcstrc.prjop.prjop as prj
 import pyqcstrc.qnmath.qnmath as qmt
+import pyqcstrc.qnndarray.qnndarray as qna
 #import pyqcstrc.qnclass.qnmath
 
 class Qnsym_Octa:
     def __init__(self):
         # generators R8 and M
         n=5
+        N=2
         # two generating elements
-        r8= np.zeros((n, n)); rm = np.zeros((n, n)) # 6x6 integer rotation matrix
+        r8= np.zeros((n, n))  # nxn integer rotation matrix
+        rm = np.zeros((n, n)) # nxn integer rotation matrix
         r8[0][1]=1; r8[1][2]=1; r8[2][3]=1; r8[3][0]=-1 # R8 
         rm[1][2]=1; rm[2][1]=1; rm[0][3]=1; rm[3][0]=1 # M
         nr=16
-        r=np.zeros((nr, n, n)) # this should be array of int matrix
+        shape=(nr,n,n) # for nr nxn rotation matrices
+        r=qna.QnNdarray(shape,N)
+        #r=np.zeros((nr, n, n)) # this should be array of int matrix
         set_r(r8,8,rm,2,r,n,nr) # set all integer symmetry operators r
-        N=2 # for sqrt(2)
+
         qnmr=intr2qnmr(r,n,N,nr)  # integer rotation operators for qnr (qnmat rotation operator)
         prj0=prj.Qnprj_Octa()
         prji=prj.Qnprj_Octa()
@@ -37,14 +42,18 @@ class Qnsym_Deca:
     def __init__(self):
         # gemeratprs R10 and M
         n=5
+        N=5
         # two generating elements
-        r10= np.zeros((n, n)); rm = np.zeros((n, n)) # 6x6 integer rotation matrix
+        r10= np.zeros((n, n))
+        rm = np.zeros((n, n)) # nxn integer rotation matrix
         r10[0][3]=1; #R10
         r10[1][0]=1; r10[1][1]=1; r10[1][2]=1; r10[1][3]=1 # R10
         r10[2][3]=1; r10[3][1]=-1 #R10 
         rm[0][3]=1; rm[3][0]=1; rm[1][2]=1; rm[2][1]=1 # M
         nr=20
-        r=np.zeros((nr, n, n))
+        #r=np.zeros((nr, n, n))
+        shape=(nr,n,n) # for nr nxn rotation matrices
+        r=qna.QnNdarray(shape,N)
         set_r(r10,10,rm,2,r,n,nr)  # set all integer rotation matrices
         N=5 # for sqrt(5)
         qnmr=intr2qnmr(r,n,N,nr)  # integer rotation operators to qnmat rotation operator
@@ -61,12 +70,15 @@ class Qnsym_Dode:
     def __init__(self):
         # generators R8 and M
         n=5
+        N=3
         # two generating elements
         r12= np.zeros((n, n)); rm = np.zeros((n, n)) # 6x6 integer rotation matrix
         r12[0][1]=1; r12[1][2]=1; r12[2][3]=1; r12[3][0]=-1; r12[3][2]=1 # R12 
         rm[1][2]=1; rm[2][1]=1; rm[0][3]=1; rm[3][0]=1 # M
         nr=24
-        r=np.zeros((nr, n, n))
+        #r=np.zeros((nr, n, n))
+        shape=(nr,n,n) # for nr nxn rotation matrices
+        r=qna.QnNdarray(shape,N)
         set_r(r12,12,rm,2,r,n,nr)  # set all integer rotation matrices
         N=3 # for sqrt(3)
         qnmr=intr2qnmr(r,n,N,nr)  # integer rotation operators to qnmat rotation operator
@@ -110,21 +122,23 @@ def get_r(r1,r2,n):
 
 # integer matrix to qnnumber matrix transformation
 def intr2qnmr(r,n,N,nr):
-    #qnmr=np.array(nr,dtype=qnm.Qnmat)
-    #qm0=qnm.Qnmat(n,N)  # nxn zero qnmatrix
-    qnmr=np.array((nr),dtype=qnn.Qnmat) #[qm0]*nr
+    qnmr=qna.QnNdarray((nr,n,n),N) #[qm0]*nr
     for i in range(nr):
-        ri=qnm.intm2qnm(r[i],n,N) # qnmat for i-th rotation operator r[i]
-        qnmr[i]=qnm.Qnmat(n,N)
-        qnmr[i].mt=ri # set mt values
-        qnmr[i].n=n
-        qnmr[i].N=N
+        qnmr[i]=qnm.intm2qnm(r[i],n,N) # qnmat for i-th rotation operator r[i]
     return qnmr
-    
+
+def test_wt(str:str,nr,a:qna.QnNdarray):
+    print("nr",nr)
+    print(str)
+    for i in range(nr):
+        qnm.printqnm("Qnsym_",str,a.qnr[i])
+        
 # for test
 if __name__ == '__main__':
     # test for qnnum projection operators
     isys=4
+    n=5
+    N=2
     a=Qnsym_Octa() # octagonal
     n=a.n
     print("a.n",n)
@@ -133,20 +147,17 @@ if __name__ == '__main__':
     #    qnm.printqnm("Qnsym_Octa",a.qnr[i])
     
     isys=3
+    n=5
+    N=5
     a=Qnsym_Deca() # decagonal
     nr=a.order
-    print("nr",nr)
-    print("Deca.a")
-    for i in range(nr):
-        qnm.printqnm("Qnsym_Deca",a.qnr[i])
-        
+    test_wt("Deca",nr,a)
+
     isys=5
+    n=5
+    N=3
     a=Qnsym_Dode() # dodecagonal
     nr=a.order
-    print("nr",nr)
-    print("Dode.a")
-    for i in range(nr):
-        qnm.printqnm("Qnsym_Dode",a.qnr[i])
-        
-    
+    test_wt("Dode",nr,a)
 
+        

@@ -2,22 +2,27 @@ import sys
 import numpy as np
 import pyqcstrc.qnnum.qnnum as qnn
 import pyqcstrc.qnvec.qnvec as qnv
-import pyqcstrc.qndarray.qndarray as qna
+import pyqcstrc.qnndarray.qnndarray as qna
 #from numpy.typing import NDArray
 
-class Qnmat(np.ndarray):
-    def __new__(cls, n:np.int64, N:np.int64):
-        shape=(n,n)
-        return super().__new__(cls,shape,dtype=qnn.Qnnum)
+#class Qnmat(np.ndarray):
+class Qnmat(qna.QnNdarray):
+    #def __new__(cls, n:np.int64, N:np.int64):
+    #    shape=(n,n)
+    #    return super().__new__(cls,n,N)
+    #    #return super().__new__(cls,shape,dtype=qnn.Qnnum)
 
     def __init__(self,n:np.int64, N:np.int64):
+        shape=(n,n)
+        #self=qna.QnNdarray(shape,N)
+        self=super().__init__(shape,N)
         qn0=qnn.Qnnum([0,0,1],N)
         for i in range(self.shape[0]):
             for j in range(self.shape[1]):
                 self[i][j]=qn0
-        #print("self.shape",self.shape)
-        #print("self.ndim",self.ndim)
-        #print("self.dtype",self.dtype)
+        print("self.shape",self.shape)
+        print("self.ndim",self.ndim)
+        print("self.dtype",self.dtype)
         #printqnm("Qnmat self",self) # for test
 
     def __add__(ma1, ma2):  #  for ma1+ma2
@@ -208,14 +213,17 @@ def qnm2flt(a):
             b[i][j]=(a[i][j].n[0]+a[i][j].n[1]*np.sqrt(N))/a[i][j].n[2]
     return b
 
+# get qnmat from int matrix
 def intm2qnm(a:np.array,n:np.int64,N:np.int64):
     b=Qnmat(n,N) #qnnum zero vector
     for i in range(n):
         for j in range(n):
-            b.mt[i][j]=qnn.int2qnn(a[i][j],N)
+            b[i][j]=qnn.int2qnn(a[i][j],N)
     return b
 
-def printqnm(str:str,qnm:Qnmat):
+#def printqnm(str:str,qnm:Qnmat):
+#def printqnm(str:str,qna:QnNdarray):
+def printqnm(str:str,qnm:qna.QnNdarray):
     ndim=qnm.ndim
     print(str)
     if ndim==1:
@@ -230,16 +238,26 @@ def printqnm(str:str,qnm:Qnmat):
                 print(qnn.qn2npa(qnm[i][j]),end=" ")
             print("]")
         print("]")
+    elif ndim==3:
+        for i in range(qnm.shape[0]):
+            print("")
+            for j in range(qnm.shape[1]):
+                print("[",end=" ")
+                for k in range(qnm.shape[2]):
+                    print(qnn.qn2npa(qnm[i][j][k]),end=" ")
+                print("]")
+        print("")
     else:
-        print("ord in printqnm should be 1 or2 but",ord); exit()
+        print("ord in printqnm should be 1 2 or 3 but",ord); exit()
 
 if __name__ == '__main__':
     # test
     
     N=2
     n=5
-    print("n=",n)
+    print("n=",n,"N",N)
     qnm=Qnmat(n,N) # nxn qmnum zero matrix
     print("qnm.ndim",qnm.ndim)
     print("qnm.shape",qnm.shape)
+    #printqnm("zero qnmat",qnm)
     printqnm("zero qnmat",qnm)

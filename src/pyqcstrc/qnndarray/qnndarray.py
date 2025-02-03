@@ -16,7 +16,7 @@ class QnNdarray(np.ndarray): # only for ndim=2
         while not it.finished:  # loop up to last index
             it[0] = qn0
             idx = it.multi_index
-            print('idx=', idx ,', self[idx]=', self[idx], ', it[0]=', it[0])
+            #print('idx=', idx ,', self[idx]=', self[idx], ', it[0]=', it[0]) # for test
             it.iternext()   #it : next index
 
         printqndm("Qnmat self",self) # for test
@@ -46,7 +46,7 @@ def printqndm(str:str, qnm:QnNdarray):
                 print("[",end=" ")
                 for k in range(qnm.shape[2]):
                     print(qnn.qn2npa(qnm[i][j][k]),end=" ")
-            print("]")
+                print("]")
         print("")
     else:
         print("ord in printqnm should be 1, 2 or 3 but",ord); exit()

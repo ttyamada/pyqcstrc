@@ -2,21 +2,26 @@ import sys
 import numpy as np
 from numpy.typing import NDArray
 import pyqcstrc.qnnum.qnnum as qnn
-import pyqcstrc.qndarray.qndarray as qna
+import pyqcstrc.qnndarray.qnndarray as qna
 
-class Qnvec(np.ndarray):
-    def __new__(cls, n:np.int64, N:np.int64):
-        shape=(n)
-        return super().__new__(cls,shape,dtype=qnn.Qnnum)
+#class Qnvec(np.ndarray):
+#class Qnvec(np.ndarray):
+class Qnvec(qna.QnNdarray):
+    #def __new__(cls, n:np.int64, N:np.int64):
+    #    shape=(n)
+    #    return super().__new__(cls,shape,dtype=qnn.Qnnum)
     
     def __init__(self, n:np.int64, N:np.int64):
         #self=np.empty(shape=(n),dtype=qnn.Qnnum) # 1D array
+        shape=(n)
+        #self=qna.QnNdarray(shape,N)
+        self=super().__init__(shape,N)
         qn0=qnn.Qnnum([0,0,1],N) #int2qnn(0,N)
         for i in range(self.shape[0]):
             self[i]=qn0
-        #print("self.shape",self.shape)  # for test
-        #print("self.ndim",self.ndim)    # for test
-        #print("self.dtype",self.dtype)  # for test
+        print("self.shape",self.shape)  # for test
+        print("self.ndim",self.ndim)    # for test
+        print("self.dtype",self.dtype)  # for test
 
     def __add__(a, b):
         return add(a,b)
@@ -201,13 +206,21 @@ def intv2qnv(a:np.ndarray,N:np.int64):
         b[i]=qnn.int2qnn(a[i],N)
     return b
 
-def printqnv(str:str,qnv:Qnvec):
-    print(str,"[",end=" ")
-    n=qnv.shape[0]
-    for i in range(n):
-        j=qnv[i]
-        print(qnn.qn2npa(j),end=" ")
-    print("]")
+#def printqnv(str:str,qnv:Qnvec):
+def printqnv(str:str,qnv:qna.QnNdarray):
+    ndim=qnv.ndim
+    if ndim==1 :
+        print(str,"[",end=" ")
+        for i in range(qnv.shape[0]):
+            print(qnn.qn2npa(qnv[i]),end=" ")
+            print("]")
+    elif ndim==2:
+        for i in range(qnv.shape[0]):
+            print("[",end=" ")
+            for j in range(qnv.shape[1]):
+                print(qnn.qn2npa(qnv[i][j]),end=" ")
+            print("]")
+        print("")
 
 def printqnv2(str:str,qnv1:Qnvec,qnv2:Qnvec):
     print(str,"[",end=" ")
