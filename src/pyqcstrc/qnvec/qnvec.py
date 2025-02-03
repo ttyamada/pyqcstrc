@@ -213,7 +213,7 @@ def printqnv(str:str,qnv:qna.QnNdarray):
         print(str,"[",end=" ")
         for i in range(qnv.shape[0]):
             print(qnn.qn2npa(qnv[i]),end=" ")
-            print("]")
+        print("]")
     elif ndim==2:
         for i in range(qnv.shape[0]):
             print("[",end=" ")
@@ -237,13 +237,8 @@ def printqnv2(str:str,qnv1:Qnvec,qnv2:Qnvec):
     
 if __name__ == '__main__':
     # test
-    N=np.int64(2) # octagonal
-    n=np.int64(5)
-    print("n=",n)
-    
-    qnv=Qnvec(n,N)  # nD qnnum zero vector
-    print("qnv.shape",qnv.shape)
-    printqnv("Qnvec_Octa",qnv)
+    N=2 # octagonal
+    n=5
     
     M0=qnn.Qnnum([0,0,1],N)
     M1=qnn.Qnnum([1,0,1],N)

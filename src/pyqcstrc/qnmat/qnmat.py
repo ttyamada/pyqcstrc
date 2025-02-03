@@ -7,15 +7,15 @@ import pyqcstrc.qnndarray.qnndarray as qna
 
 #class Qnmat(np.ndarray):
 class Qnmat(qna.QnNdarray):
-    #def __new__(cls, n:np.int64, N:np.int64):
-    #    shape=(n,n)
-    #    return super().__new__(cls,n,N)
-    #    #return super().__new__(cls,shape,dtype=qnn.Qnnum)
+    def __new__(cls, n:np.int64, N:np.int64):
+        shape=(n,n)
+        return super().__new__(cls,shape,N)
+        #return super().__new__(cls,shape,dtype=qnn.Qnnum)
 
     def __init__(self,n:np.int64, N:np.int64):
-        shape=(n,n)
+        #shape=(n,n)
         #self=qna.QnNdarray(shape,N)
-        self=super().__init__(shape,N)
+        #self=super().__init__(shape,N)
         qn0=qnn.Qnnum([0,0,1],N)
         for i in range(self.shape[0]):
             for j in range(self.shape[1]):
@@ -237,7 +237,7 @@ def printqnm(str:str,qnm:qna.QnNdarray):
             for j in range(qnm.shape[1]):
                 print(qnn.qn2npa(qnm[i][j]),end=" ")
             print("]")
-        print("]")
+        print("")
     elif ndim==3:
         for i in range(qnm.shape[0]):
             print("")
