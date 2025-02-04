@@ -259,5 +259,4 @@ if __name__ == '__main__':
     qnm=Qnmat(n,N) # nxn qmnum zero matrix
     print("qnm.ndim",qnm.ndim)
     print("qnm.shape",qnm.shape)
-    #printqnm("zero qnmat",qnm)
     printqnm("zero qnmat",qnm)

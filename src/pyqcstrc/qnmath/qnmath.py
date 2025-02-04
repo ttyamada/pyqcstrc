@@ -6,7 +6,7 @@ import pyqcstrc.qnmat.qnmat as qnm
 import pyqcstrc.qnndarray.qnndarray as qna
 
 def abs(a:qnn.Qnnum):
-    N=a[0][0].N
+    N=a.N
     qn0=qnn.Qnnum([0,0,1],N)
     if(a<qn0):
         return -a
@@ -19,28 +19,28 @@ def qnmatinv(a:qnm.Qnmat,n:np.int64): # qnmatrix inversion
     ipivot=np.ndarray(n,dtype=qnn.Qnnum) 
     index=np.ndarray((n,2),dtype=np.int64)
     N=a[0][0].N
-    qn0=qnn.Qnnum([0,0,1],N)
-    qn1=qnn.Qnnum([1,0,1],N)
+    qn0=qnn.Qnnum([0,0,1],N)  # 0
+    qn1=qnn.Qnnum([1,0,1],N)  # 1
     det=qn1  #1.0 
     for  j in range(n):
-        ipivot[j]=0
+        ipivot[j]=qn0
     
     for i in range(n): 
-        t=qn0
+        t=qnn.copy(qn0)
         for j in range(n):
-            if ipivot[j]==1:
+            if ipivot[j]==qn1:
                 continue
             for k in range(n):
-                if ipivot[k]-1<0:
+                if ipivot[k]-qn1<qn0:
                     if abs(t)>=abs(a[j][k]):
                         continue
                     ir=j
                     ic=k
                     t=a[j][k]
-                elif ipivot[k]-1>0:
+                elif ipivot[k]-qn1>qn0:
                     return
     
-        ipivot[ic]=ipivot[ic]+1
+        ipivot[ic]=ipivot[ic]+qn1
         if ir!=ic:
             det=-det
             for l in range(n):
@@ -52,15 +52,15 @@ def qnmatinv(a:qnm.Qnmat,n:np.int64): # qnmatrix inversion
         index[i][1]=ic
         ipivot[i]=a[ic][ic]
         det=det*ipivot[i]
-        a[ic][ic]=1.0
+        a[ic][ic]=qn1  #1.0
         for l in range(n):
             a[ic][l]=a[ic][l]/ipivot[i]
 
         for l1 in range(n):
             if l1==ic:
                 continue
-            t=a[l1][ic]
-            a[l1][ic]=0.0
+            t=qnn.copy(a[l1][ic])
+            a[l1][ic]=qn0  #0.0
             for l in range(n):
                 a[l1][l]=a[l1][l]-a[ic][l]*t
     for i in range(n):

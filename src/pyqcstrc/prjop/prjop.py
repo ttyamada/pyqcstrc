@@ -12,32 +12,33 @@ import pyqcstrc.qnndarray.qnndarray as qna
 
 # for octagonal QCs
 #class Qnprj_Octa(np.ndarray):
-class Qnprj_Octa(qna.QnNdarray):
-    def __new__(cls):
+#class Qnprj_Octa(qna.QnNdarray):
+class Qnprj_Octa(qnm.Qnmat):
+    def __new__(cls) : 
+        global n,N;
         n=5
         N=2
-        shape=(n,n)
-        return super().__new__(cls,shape,N)
+        return super().__new__(cls,n,N)
+        #shape=(n,n)
+        #return super().__new__(cls,shape,N)
 
     def __init__(self):
-        n=5
-        N=2
         M0=qnn.Qnnum(np.array([ 0, 0, 1]),N) #  0
         M1=qnn.Qnnum(np.array([ 1, 0, 1]),N) #  1
         M2=qnn.Qnnum(np.array([-1, 0, 1]),N) # -1
         M3=qnn.Qnnum(np.array([ 0, 1, 2]),N) #  sqrt(2)/2
         M4=qnn.Qnnum(np.array([ 0,-1, 2]),N) # -sqrt(2)/2
-        self=qnm.Qnmat(n,N)
-        #mt=np.array([\
+        #self=qnm.Qnmat(n,N)
         #np.array([\
-        mt=[\
+        #mt=[\
+        mt=np.array([\
            [M1,M0,M1,M0,M0],\
            [M3,M3,M4,M3,M0],\
            [M0,M1,M0,M2,M0],\
            [M4,M3,M3,M3,M0],\
            [M0,M0,M0,M0,M1]\
-        ]
-        #],dtype=qnn.Qnnum)
+        ],dtype=qnn.Qnnum)
+        #]
         for i in range(n):
             for j in range(n):
                 self[i][j]=mt[i][j]
@@ -51,17 +52,20 @@ class Qnprj_Octa(qna.QnNdarray):
 
 # for decagonal QCs
 #class Qnprj_Deca(np.ndarray):
-class Qnprj_Deca(qna.QnNdarray):
+#class Qnprj_Deca(qna.QnNdarray):
+class Qnprj_Deca(qnm.Qnmat):
     def __new__(cls):
+        global n,N
         n=5
         N=5
-        shape=(n,n)
-        return super().__new__(cls,shape,N)
+        return super().__new__(cls,n,N)
+        #shape=(n,n)
+        #return super().__new__(cls,shape,N)
 
     # note that this use orthorhombic coordinate system
     def __init__(self):
-        n=5
-        N=5
+        #n=5
+        #N=5
         qn2=qnn.Qnnum([2,0,1],N)   #  2
         M0=qnn.Qnnum([ 0, 0, 1],N) #  0
         M1=qnn.Qnnum([ 1, 0, 1],N) #  1
@@ -71,16 +75,16 @@ class Qnprj_Deca(qna.QnNdarray):
         M5=M4*M4 # tau^-2
         M6=M4-qn2
         M7=-M3-qn2
-        self=qnm.Qnmat(n,N)
-        #self=np.array([\
-        mt=[\
+        #self=qnm.Qnmat(n,N)
+        #mt=[\
+        mt=np.array([\
            [M6,M4,M7,M5,M0],\
            [M7,M5,M6,-M4,M0],\
            [M7,-M5,M6,M4,M0],\
            [M6,-M4,M7,-M5,M0],\
            [M0,M0,M0,M0,M1]\
-        ]
-        #],dtype=qnn.Qnnum)
+        ],dtype=qnn.Qnnum)
+        #]
         for i in range(n):
             for j in range(n):
                 self[i][j]=mt[i][j]
@@ -91,16 +95,19 @@ class Qnprj_Deca(qna.QnNdarray):
 
 # for dodecagonal QCs
 #class Qnprj_Dode(np.ndarray):
-class Qnprj_Dode(qna.QnNdarray):
+#class Qnprj_Dode(qna.QnNdarray):
+class Qnprj_Dode(qnm.Qnmat):
     def __new__(cls):
+        global n,N
         n=5
         N=3
-        shape=(n,n)
-        return super().__new__(cls,shape,N)
+        return super().__new__(cls,n,N)
+        #shape=(n,n)
+        #return super().__new__(cls,shape,N)
 
     def __init__(self):
-        n=5
-        N=3
+        #n=5
+        #N=3
         M0=qnn.Qnnum(np.array([ 0, 0, 1]),N) #0
         M1=qnn.Qnnum(np.array([ 1, 0, 1]),N) # 1
         M2=qnn.Qnnum(np.array([-1, 0, 1]),N) #-1
@@ -110,17 +117,16 @@ class Qnprj_Dode(qna.QnNdarray):
         M6=qnn.Qnnum(np.array([ 0,-1, 2]),N) # -sqrt(3)/2
         #M5=np.array([ 0, 1, 1]) # sqrt(3)
         #M6=np.array([ 0,-1, 1]) # -sqrt(3)
-        self=qnm.Qnmat(n,N)
-        #self=np.array([\
-        mt=[\
+        #self=qnm.Qnmat(n,N)
+        #mt=[\
+        mt=np.array([\
            [M5,M2,M6,M5,M0],\
            [M1,M0,M1,M0,M0],\
            [M0,M1,M0,M1,M0],\
            [M4,M5,M4,M6,M0],\
            [M0,M0,M0,M0,M1]\
-        ]
-        
-        #],dtype=qnn.Qnnum)
+        ],dtype=qnn.Qnnum)
+        #]
         #prj=qnm.copy(self)
         for i in range(n):
             for j in range(n):
@@ -131,33 +137,36 @@ class Qnprj_Dode(qna.QnNdarray):
 
 # for icosahedral QCs
 #class Qnprj_Icos(npndarray):
-class Qnprj_Icos(qna.QnNdarray):
+#class Qnprj_Icos(qna.QnNdarray):
+class Qnprj_Icos(qnm.Qnmat):
     def __new__(cls):
-        n=5
-        N=3
-        shape=(n,n)
-        return super().__new__(cls,shape,N)
-    
-    def __init__(self):
+        global n,N
         n=6
         N=5
+        return super().__new__(cls,n,N)
+        #shape=(n,n)
+        #return super().__new__(cls,shape,N)
+    
+    def __init__(self):
+        #n=6
+        #N=5
         M0=qnn.Qnnum([ 0, 0, 1],N) #  0 in 'TAU-style'
         M1=qnn.Qnnum([ 1, 0, 1],N) #  1
         M2=qnn.Qnnum([-1, 0, 1],N) # -1
         M3=qnn.Qnnum([ 1, 1, 2],N) #  tau=(1+sqrt(5))/2
         M4=qnn.Qnnum([-1,-1, 2],N) # -tau
         
-        self=qnm.Qnmat(n,N)
-        #self=np.array([\
-        mt=[\
+        #self=qnm.Qnmat(n,N)
+        #mt=[\
+        mt=np.array([\
            [M1,M3,M3,M0,M2,M0],\
            [M3,M0,M0,M1,M3,M1],\
            [M0,M1,M2,M4,M0,M3],\
            [M3,M2,M2,M0,M4,M0],\
            [M2,M0,M0,M3,M2,M3],\
            [M0,M3,M4,M1,M0,M2]\
-        ]
-        #],dtype=qnn.Qnnum)
+        ],dtype=qnn.Qnnum)
+        #]
         
         for i in range(n):
             for j in range(n):
@@ -350,41 +359,50 @@ if __name__ == '__main__':
     # test for qnnum projection operators
     N=2
     prj4=Qnprj_Octa() # qnnum projection operator
-    print("prj4.shape",prj4.shape)
-    print("prj4.ndim",prj4.ndim)
+    #print("prj4.shape",prj4.shape)
+    #print("prj4.ndim",prj4.ndim)
     #print_prj("Octa",prj4)
-    #qnm.printqnm("prj4",prj4)  #???
+    qnm.printqnm("prj4",prj4)  #
+    qna.printqndm("prj4",prj4)  #
     
     N=5
     prj3=Qnprj_Deca() # float projection operator
-    print("prj3.shape",prj3.shape)
-    print("prj3.ndim",prj3.ndim)
+    #print("prj3.shape",prj3.shape)
+    #print("prj3.ndim",prj3.ndim)
     #print_prj("Deca",prj3)
+    qnm.printqnm("prj3",prj3)  #
+    qna.printqndm("prj3",prj3)  #
+    
     N=3
     prj5=Qnprj_Dode() # float projection operator
-    print("prj5.shape",prj5.shape)
-    print("prj5.ndim",prj5.ndim)
+    #print("prj5.shape",prj5.shape)
+    #print("prj5.ndim",prj5.ndim)
     #print_prj("Dode",prj5)
     
     N=5
     prj2=Qnprj_Icos() # float projection operator
-    print("prj5.shape",prj2.shape)
-    print("prj4.ndim",prj2.ndim)
+    #print("prj2.shape",prj2.shape)
+    #print("prj2.ndim",prj2.ndim)
     #print_prj("Dode",prj5)
-
+    qnm.printqnm("prj2",prj2)  #
+    qna.printqndm("prj2",prj2)  #
 
     # check qnmatinv
     N=2
     n=5
     prj3=Qnprj_Octa()
-    print("prj3.shape",prj3.shape)
-    print("prj3.ndim",prj3.ndim)
+    #print("prj3.shape",prj3.shape)
+    #print("prj3.ndim",prj3.ndim)
     #qnn.printqnn("prj3[0][0].N",prj3[0][0].N)
     #qnm.printqnm("prj3",prj3)
+    qnm.printqnm("prj3",prj3)  #
+    qna.printqndm("prj3",prj3)  #
     
     prji3=Qnprj_Octa() # copy for matinv
-    print("prji3.shape",prji3.shape)
-    print("prji3.ndim",prji3.ndim)
+    #print("prji3.shape",prji3.shape)
+    #print("prji3.ndim",prji3.ndim)
+    qnm.printqnm("prji3",prji3)  #
+    qna.printqndm("prji3",prji3)  #
     mth.qnmatinv(prji3,n)
     qnm.printqnm("prji3",prji3)
     

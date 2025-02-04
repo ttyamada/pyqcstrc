@@ -54,11 +54,15 @@ class Qnnum:
     def __neg__(self):
         return neg(self)
     
-def copy(a,b):
-    b.n[0]=copy(a.n[0])
-    b.n[1]=copy(a,n[1])
-    b.n[2]=copy(a,n[2])
-    b.N=copy(a.N)
+def copy(a):
+    #return np.copy(a)
+    N=a.N
+    self=Qnnum([0,0,1],N)
+    self.n[0]=copy(a.n[0])
+    self.n[1]=copy(a.n[1])
+    self.n[2]=copy(a.n[2])
+    self.N=N
+    return self
     
 def add(a, b):
     #print("a1",a.n[0],"a2",a.n[1],"a3",a.n[2])

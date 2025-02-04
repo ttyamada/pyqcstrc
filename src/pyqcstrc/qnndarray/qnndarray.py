@@ -24,8 +24,8 @@ class QnNdarray(np.ndarray): # only for ndim=2
 # only ndim=1,2,3
 def printqndm(str:str, qnm:QnNdarray):
     ndim=qnm.ndim
-    print("qnm.ndim",qnm.ndim)
-    print("qnm.shape",qnm.shape)
+    #print("qnm.ndim",qnm.ndim) # for test
+    #print("qnm.shape",qnm.shape) # for test
     print(str)
     if ndim==1: # for a vector
         for i in range(qnm.shape[0]):
