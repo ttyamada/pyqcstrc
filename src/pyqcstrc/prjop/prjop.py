@@ -13,11 +13,15 @@ import pyqcstrc.qnndarray.qnndarray as qna
 # for octagonal QCs
 #class Qnprj_Octa(np.ndarray):
 class Qnprj_Octa(qna.QnNdarray):
-    def __new__(cls,n:np.int64,N:np.int64):
+    def __new__(cls):
+        n=5
+        N=2
         shape=(n,n)
         return super().__new__(cls,shape,N)
 
-    def __init__(self, n:np.int64, N:np.int64):
+    def __init__(self):
+        n=5
+        N=2
         M0=qnn.Qnnum(np.array([ 0, 0, 1]),N) #  0
         M1=qnn.Qnnum(np.array([ 1, 0, 1]),N) #  1
         M2=qnn.Qnnum(np.array([-1, 0, 1]),N) # -1
@@ -38,7 +42,7 @@ class Qnprj_Octa(qna.QnNdarray):
             for j in range(n):
                 self[i][j]=mt[i][j]
         #self.set_mt(mt)
-        prj=qnm.copy(self)
+        #prj=copy(self)
  
         print("self.ndim",self.ndim) # fpr test
         print("self.shape",self.shape) # fpr test
@@ -48,12 +52,16 @@ class Qnprj_Octa(qna.QnNdarray):
 # for decagonal QCs
 #class Qnprj_Deca(np.ndarray):
 class Qnprj_Deca(qna.QnNdarray):
-    def __new__(cls, n:np.int64, N:np.int64):
+    def __new__(cls):
+        n=5
+        N=5
         shape=(n,n)
         return super().__new__(cls,shape,N)
 
     # note that this use orthorhombic coordinate system
-    def __init__(self,n:np.int64, N:np.int64):
+    def __init__(self):
+        n=5
+        N=5
         qn2=qnn.Qnnum([2,0,1],N)   #  2
         M0=qnn.Qnnum([ 0, 0, 1],N) #  0
         M1=qnn.Qnnum([ 1, 0, 1],N) #  1
@@ -85,11 +93,15 @@ class Qnprj_Deca(qna.QnNdarray):
 # for dodecagonal QCs
 #class Qnprj_Dode(np.ndarray):
 class Qnprj_Dode(qna.QnNdarray):
-    def __new__(cls, n:np.int64, N:np.int64):
+    def __new__(cls):
+        n=5
+        N=3
         shape=(n,n)
         return super().__new__(cls,shape,N)
 
     def __init__(self,n:np.int64, N:np.int64):
+        n=5
+        N=3
         M0=qnn.Qnnum(np.array([ 0, 0, 1]),N) #0
         M1=qnn.Qnnum(np.array([ 1, 0, 1]),N) # 1
         M2=qnn.Qnnum(np.array([-1, 0, 1]),N) #-1
@@ -122,7 +134,15 @@ class Qnprj_Dode(qna.QnNdarray):
 # for icosahedral QCs
 #class Qnprj_Icos(npndarray):
 class Qnprj_Icos(qna.QnNdarray):
-    def __init__(self, n:np.int64, N:np.int64):
+    def __new__(cls):
+        n=5
+        N=3
+        shape=(n,n)
+        return super().__new__(cls,shape,N)
+    
+    def __init__(self):
+        n=6
+        N=5
         M0=qnn.Qnnum([ 0, 0, 1],N) #  0 in 'TAU-style'
         M1=qnn.Qnnum([ 1, 0, 1],N) #  1
         M2=qnn.Qnnum([-1, 0, 1],N) # -1
@@ -144,7 +164,7 @@ class Qnprj_Icos(qna.QnNdarray):
         for i in range(n):
             for j in range(n):
                 self[i][j]=mt[i][j]
-        prj=qnm.copy(self)
+        prj=copy(self)
  
         qnm.printqnm("Qnprj_Icos self",self) # for test
         print("self.ndim",self.ndim) # fpr test

@@ -62,3 +62,14 @@ if __name__ == '__main__':
     print("qndm.ndim",qndm.ndim)
     print("qndm.shape",qndm.shape)
     printqndm("zero qnmat",qndm)
+    
+    qndmi=copy(qndm) # copy of qnmi
+    print("qndmi.ndim",qndmi.ndim)
+    print("qndmi.shape",qndmi.shape)
+    printqndm("zero qnmat",qndmi)
+    
+    qndma=QnNdarray((2,n,n),N)
+    print("qndma.ndim",qndma.ndim)
+    print("qndma.shape",qndma.shape)
+    printqndm("qndma",qndma)
+    

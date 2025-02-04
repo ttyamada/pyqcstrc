@@ -1,6 +1,7 @@
 import sys
 import numpy as np
 from numpy.typing import NDArray
+import pyqcstrc.qnndarray.qnndarray as qna
 
 class Qnnum:
     def __init__(self, n: np.array, N: np.int64):
@@ -52,6 +53,12 @@ class Qnnum:
     
     def __neg__(self):
         return neg(self)
+    
+def copy(a,b):
+    b.n[0]=copy(a.n[0])
+    b.n[1]=copy(a,n[1])
+    b.n[2]=copy(a,n[2])
+    b.N=copy(a.N)
     
 def add(a, b):
     #print("a1",a.n[0],"a2",a.n[1],"a3",a.n[2])
@@ -168,9 +175,10 @@ def leq(a, b):
     else:
         return False
     
-def neg(self):
-    self.n[0]=-self.n[0]
-    self.n[1]=-self.n[1]
+def neg(self,a):
+    self.n[0]=-a.n[0]
+    self.n[1]=-a.n[1]
+    self.n[2]=a.n[2]
     return self
 
 def abs(a:Qnnum):
@@ -232,12 +240,24 @@ def printqnn(str:str,a:Qnnum):
 if __name__ == '__main__':
     # test
     N=np.int64(2)
-    qnn=Qnnum([0,0,1],N)
-    printqnn("qnn.zero",qnn)
-    qnn=Qnnum([1,0,1],N)
-    printqnn("qnn.one",qnn)
-    qnn=Qnnum([0,1,1],N)
-    printqnn("qnn.sqrt(2)",qnn)
-    
+    qnn0=Qnnum([0,0,1],N)
+    printqnn("qnn0",qnn0)
+    qnn1=Qnnum([1,0,1],N)
+    printqnn("qnn1",qnn1)
+    qnn2=copy(qnn1)
+    printqnn("qnn2",qnn2)
+    if(qnn1==qnn2):
+        print("qnn1==qnn2")
+    print("qnn1==qnn2",qnn1==qnn2)
+    print("qnn0==qnn1",qnn0==qnn1)
+    print("qnn0>qnn1",qnn0>qnn1)
+    print("qnn0<qnn1",qnn0<qnn1)
+    qnn4=Qnnum([1,1,2],N)
+    printqnn("qnn4",qnn4)
+    print("qnn4>qnn1",qnn4>qnn1)
+    print("qnn4<qnn1",qnn4<qnn1)
+    print("qnn4==qnn1",qnn4==qnn1)
+    qnn5=-qnn4
+    print("-qnn4",qnn5)
     
  

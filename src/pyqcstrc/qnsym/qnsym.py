@@ -8,39 +8,58 @@ import pyqcstrc.qnmath.qnmath as qmt
 import pyqcstrc.qnndarray.qnndarray as qna
 #import pyqcstrc.qnclass.qnmath
 
-class Qnsym_Octa:
+class Qnsym_Octa(qna.QnNdarray):
+    def __new__(cls):
+        nr=16
+        n=5
+        N=2
+        shape=(nr,n,n)
+        print("shape in __new__",shape) # for test
+        return super().__new__(cls,shape,N)
+        
     def __init__(self):
         # generators R8 and M
+        nr=16
         n=5
         N=2
         # two generating elements
-        r8= np.zeros((n, n))  # nxn integer rotation matrix
-        rm = np.zeros((n, n)) # nxn integer rotation matrix
+        r8= np.zeros((n, n),dtype=np.int64)  # nxn integer rotation matrix
+        rm = np.zeros((n, n),dtype=np.int64) # nxn integer rotation matrix
         r8[0][1]=1; r8[1][2]=1; r8[2][3]=1; r8[3][0]=-1 # R8 
         rm[1][2]=1; rm[2][1]=1; rm[0][3]=1; rm[3][0]=1 # M
-        nr=16
         shape=(nr,n,n) # for nr nxn rotation matrices
-        r=qna.QnNdarray(shape,N)
-        #r=np.zeros((nr, n, n)) # this should be array of int matrix
-        set_r(r8,8,rm,2,r,n,nr) # set all integer symmetry operators r
+        print("shape in __init__",shape) # for test
+        r=np.zeros(shape,dtype=np.int64) # nD int array
+        print("r.shape",r.shape) # fpr test
+        set_r(r8,8,rm,2,r) # set all integer symmetry operators r
 
         qnmr=intr2qnmr(r,n,N,nr)  # integer rotation operators for qnr (qnmat rotation operator)
         prj0=prj.Qnprj_Octa()
+        #prji=copy(prj0)
         prji=prj.Qnprj_Octa()
         print("prji.shape",prji.shape) # fpr test
-        qnm.printqnm("prji",prji,2) # for test
+        qna.printqndm("prji",prji) # for test
+        
         qmt.qnmatinv(prji,n)
-        qnr=get_qnr(prj0,prji,n,N,ord)  # block diagonakl symmetry operator for ext and int comp.
-        self=qnr
+        
+        qnr=get_qnr(prj0,prji,self)  # block diagonakl symmetry operator for ext and int comp.
         #self.qnmrq=qnmrq
         #self.n=n
         #self.N=N
         #self.ord=ord
     
 # for decagonal QCs
-class Qnsym_Deca:
+class Qnsym_Deca(qna.QnNdarray):
+    def __new__(cls):
+        nr=20
+        n=5
+        N=5
+        shape=(nr,n,n)
+        return super().__new__(cls,shape,N)
+        
     def __init__(self):
         # gemeratprs R10 and M
+        nr=20
         n=5
         N=5
         # two generating elements
@@ -50,36 +69,41 @@ class Qnsym_Deca:
         r10[1][0]=1; r10[1][1]=1; r10[1][2]=1; r10[1][3]=1 # R10
         r10[2][3]=1; r10[3][1]=-1 #R10 
         rm[0][3]=1; rm[3][0]=1; rm[1][2]=1; rm[2][1]=1 # M
-        nr=20
         #r=np.zeros((nr, n, n))
         shape=(nr,n,n) # for nr nxn rotation matrices
-        r=qna.QnNdarray(shape,N)
-        set_r(r10,10,rm,2,r,n,nr)  # set all integer rotation matrices
-        N=5 # for sqrt(5)
+        print("shape",shape) # for test
+        r=np.array(shape,dtype=np.int63)
+        set_r(r10,10,rm,2,r)  # set all integer rotation matrices
         qnmr=intr2qnmr(r,n,N,nr)  # integer rotation operators to qnmat rotation operator
         prj0=prj.Qnprj_Deca()
         prji=prj.Qnprj_Deca()
         qmt.qnmatinv(prji,n)
-        qnr=get_qnr(prj0,prji,n,N,nr)  # block diagonakl symmetry operator for ext and int comp.
-        self=qnr
+        get_qnr(prj0,prji,self)  # block diagonakl symmetry operator for ext and int comp.
+        #self=qnr
         #self.order=nr
     
 
 ## for dodecagonal QCs
-class Qnsym_Dode:
+class Qnsym_Dode(qna.QnNdarray):
+    def __new__(cls):
+        nr=24
+        n=5
+        N=3
+        shape=(nr,n,n)
+        return super().__new__(cls,shape,N)
+    
     def __init__(self):
         # generators R8 and M
+        nr=24
         n=5
         N=3
         # two generating elements
         r12= np.zeros((n, n)); rm = np.zeros((n, n)) # 6x6 integer rotation matrix
         r12[0][1]=1; r12[1][2]=1; r12[2][3]=1; r12[3][0]=-1; r12[3][2]=1 # R12 
         rm[1][2]=1; rm[2][1]=1; rm[0][3]=1; rm[3][0]=1 # M
-        nr=24
-        #r=np.zeros((nr, n, n))
         shape=(nr,n,n) # for nr nxn rotation matrices
-        r=qna.QnNdarray(shape,N)
-        set_r(r12,12,rm,2,r,n,nr)  # set all integer rotation matrices
+        r=np.array(shape,dtype=np.int64)
+        set_r(r12,12,rm,2,r)  # set all integer rotation matrices
         N=3 # for sqrt(3)
         qnmr=intr2qnmr(r,n,N,nr)  # integer rotation operators to qnmat rotation operator
         prj0=prj.Qnprj_Dode()
@@ -89,7 +113,7 @@ class Qnsym_Dode:
         self=qnr
         #self.order=nr
     
-def get_qnr(prj,prji,n,N,nr):
+def get_qnr(prj,prji,nr,n,N):
     qmt.qnmatinv(prji,n) # inverse matrix of prj
     qm0=qnm.Qnmat(n,N) # nxn qn zeromatrix
     qnr=[qm0]*nr # qnmatrix array
@@ -101,7 +125,10 @@ def get_qnr(prj,prji,n,N,nr):
     
 # gemerate all rotation matrices from
 # two generating elements
-def set_r(rg1,ng1,rg2,ng2,r,n,nr):
+def set_r(rg1,ng1,rg2,ng2,r):
+    print("r.shape",r.shape)  # for test
+    nr=r.shape[0]
+    n=r.shape[1]
     r[0]=np.copy(rg1)
     for i in range(ng1-1):
         r[i+1]=get_r(rg1,r[i],n)

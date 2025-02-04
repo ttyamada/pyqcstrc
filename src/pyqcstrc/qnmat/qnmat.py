@@ -54,22 +54,22 @@ def unitm(n:np.int64, N: np.int64):
     for i in range(n):
         qnm[i][i]=qn1
         
-def copy(qnm: Qnmat) -> Qnmat:
-    return np.copy(qnm)
-#   original code
-    n=qnm.shape[0]
-    N=qnm[0][0].N
-    qnr=Qnmat(n,N)
-    print("qnr.n",n,"qnr.N",N,"qnr.shape",shape)
-    for i in range(n):
-        for j in range(n):
-            qnr[i][j]=qnn.copy(qnm[i][j])
-            
-    print("qnr.n",qnr.shape[0]) # for test
-    print("qnr.N",qnr.N) # fpr test
-    print("qnr.shape",qnr.shape) # fpr test
-    
-    return qnr
+#def copy(qnm: Qnmat) -> Qnmat:
+#    return np.copy(qnm)
+##   original code
+#    n=qnm.shape[0]
+#    N=qnm[0][0].N
+#    qnr=Qnmat(n,N)
+#    print("qnr.n",n,"qnr.N",N,"qnr.shape",shape)
+#    for i in range(n):
+#        for j in range(n):
+#            qnr[i][j]=qnn.copy(qnm[i][j])
+#            
+#    print("qnr.n",qnr.shape[0]) # for test
+#    print("qnr.N",qnr.N) # fpr test
+#    print("qnr.shape",qnr.shape) # fpr test
+#    
+#    return qnr
 
 def int2qnm(r:np.ndarray,n:np.int64,N: np.int64):
     qnr=Qnmat(n,N)
