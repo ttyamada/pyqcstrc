@@ -406,6 +406,9 @@ if __name__ == '__main__':
     mth.qnmatinv(prji3,n)
     qnm.printqnm("prji3",prji3)
     
+    unitm=prji3@prj3
+    qnm.printqnm("untm",unitm)
+    
     #check_ltv(n,N)
 
                     

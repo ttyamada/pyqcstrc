@@ -141,7 +141,8 @@ def matmul(ma1: Qnmat, ma2: Qnmat) -> Qnmat:
     elif n1==2 and n2==2:
         N=ma1[0][0].N
         qn0=qnn.Qnnum([0,0,1],N) # qnnumber zero
-        ma3=zeromat(qn0,la1,la4) #"qnnumber zero vector"
+        #ma3=zerom(qn0,la1,la4) #"qnnumber zero vector"
+        ma3=zerom(qn0,la1) #"qnnumber zero vector"
         for i in range(la1):
             for j in range(la4):
                 for k in range(la2):
