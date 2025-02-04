@@ -44,9 +44,9 @@ class Qnprj_Octa(qna.QnNdarray):
         #self.set_mt(mt)
         #prj=copy(self)
  
-        print("self.ndim",self.ndim) # fpr test
-        print("self.shape",self.shape) # fpr test
-        print("self.shape[0]",self.shape[0]) # for test
+        #print("self.ndim",self.ndim) # fpr test
+        #print("self.shape",self.shape) # fpr test
+        #print("self.shape[0]",self.shape[0]) # for test
         qnm.printqnm("Qnprj_Octa self",self) # for test
 
 # for decagonal QCs
@@ -84,11 +84,10 @@ class Qnprj_Deca(qna.QnNdarray):
         for i in range(n):
             for j in range(n):
                 self[i][j]=mt[i][j]
-        prj=qnm.copy(self)
-
+        #prj=qnm.copy(self)
         qnm.printqnm("Qnprj_Deca self",self) # for test
-        print("self.ndim",self.ndim) # fpr test
-        print("self.shape",self.shape) # fpr test
+        #print("self.ndim",self.ndim) # fpr test
+        #print("self.shape",self.shape) # fpr test
 
 # for dodecagonal QCs
 #class Qnprj_Dode(np.ndarray):
@@ -99,7 +98,7 @@ class Qnprj_Dode(qna.QnNdarray):
         shape=(n,n)
         return super().__new__(cls,shape,N)
 
-    def __init__(self,n:np.int64, N:np.int64):
+    def __init__(self):
         n=5
         N=3
         M0=qnn.Qnnum(np.array([ 0, 0, 1]),N) #0
@@ -122,14 +121,13 @@ class Qnprj_Dode(qna.QnNdarray):
         ]
         
         #],dtype=qnn.Qnnum)
-        prj=qnm.copy(self)
+        #prj=qnm.copy(self)
         for i in range(n):
             for j in range(n):
                 self[i][j]=mt[i][j]
         qnm.printqnm("Qnprj_Dode self",self) # for test
-        print("self.ndim",self.ndim) # fpr test
-        print("self.shape",self.shape) # fpr test
-        qnm.printqnm("Qnprj_Octa self",self) # for test
+        #print("self.ndim",self.ndim) # fpr test
+        #print("self.shape",self.shape) # fpr test
 
 # for icosahedral QCs
 #class Qnprj_Icos(npndarray):
@@ -164,11 +162,11 @@ class Qnprj_Icos(qna.QnNdarray):
         for i in range(n):
             for j in range(n):
                 self[i][j]=mt[i][j]
-        prj=copy(self)
+        #prj=copy(self)
  
         qnm.printqnm("Qnprj_Icos self",self) # for test
-        print("self.ndim",self.ndim) # fpr test
-        print("self.shape",self.shape) # fpr test
+        #print("self.ndim",self.ndim) # fpr test
+        #print("self.shape",self.shape) # fpr test
         
 
 #class Prj_Octa:
@@ -351,42 +349,42 @@ def print_prj(str:str,prj:qnm.Qnmat):
 if __name__ == '__main__':
     # test for qnnum projection operators
     N=2
-    prj4=Qnprj_Octa(5,N) # qnnum projection operator
+    prj4=Qnprj_Octa() # qnnum projection operator
     print("prj4.shape",prj4.shape)
-    print("prj4.shape",prj4.ndim)
+    print("prj4.ndim",prj4.ndim)
     #print_prj("Octa",prj4)
     #qnm.printqnm("prj4",prj4)  #???
     
     N=5
-    prj3=Qnprj_Deca(5,N) # float projection operator
+    prj3=Qnprj_Deca() # float projection operator
     print("prj3.shape",prj3.shape)
-    print("prj3.shape",prj3.ndim)
+    print("prj3.ndim",prj3.ndim)
     #print_prj("Deca",prj3)
     N=3
-    prj5=Qnprj_Dode(5,N) # float projection operator
+    prj5=Qnprj_Dode() # float projection operator
     print("prj5.shape",prj5.shape)
-    print("prj5.shape",prj5.ndim)
+    print("prj5.ndim",prj5.ndim)
     #print_prj("Dode",prj5)
     
     N=5
-    prj2=Qnprj_Icos(6,N) # float projection operator
+    prj2=Qnprj_Icos() # float projection operator
     print("prj5.shape",prj2.shape)
-    print("prj4.shape",prj2.ndim)
+    print("prj4.ndim",prj2.ndim)
     #print_prj("Dode",prj5)
 
 
     # check qnmatinv
     N=2
     n=5
-    prj3=Qnprj_Octa(n,N)
+    prj3=Qnprj_Octa()
     print("prj3.shape",prj3.shape)
-    print("prj3.shape",prj3.ndim)
+    print("prj3.ndim",prj3.ndim)
     #qnn.printqnn("prj3[0][0].N",prj3[0][0].N)
     #qnm.printqnm("prj3",prj3)
     
-    prji3=Qnprj_Octa(n,N) # copy for matinv
+    prji3=Qnprj_Octa() # copy for matinv
     print("prji3.shape",prji3.shape)
-    print("prji3.shape",prji3.ndim)
+    print("prji3.ndim",prji3.ndim)
     mth.qnmatinv(prji3,n)
     qnm.printqnm("prji3",prji3)
     

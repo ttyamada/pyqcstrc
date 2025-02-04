@@ -20,9 +20,9 @@ class Qnmat(qna.QnNdarray):
         for i in range(self.shape[0]):
             for j in range(self.shape[1]):
                 self[i][j]=qn0
-        print("self.shape",self.shape)
-        print("self.ndim",self.ndim)
-        print("self.dtype",self.dtype)
+        #print("self.shape",self.shape)
+        #print("self.ndim",self.ndim)
+        #print("self.dtype",self.dtype)
         #printqnm("Qnmat self",self) # for test
 
     def __add__(ma1, ma2):  #  for ma1+ma2

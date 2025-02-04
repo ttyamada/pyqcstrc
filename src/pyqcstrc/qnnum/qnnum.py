@@ -175,10 +175,10 @@ def leq(a, b):
     else:
         return False
     
-def neg(self,a):
-    self.n[0]=-a.n[0]
-    self.n[1]=-a.n[1]
-    self.n[2]=a.n[2]
+def neg(self):
+    self.n[0]=-self.n[0]
+    self.n[1]=-self.n[1]
+    self.n[2]=self.n[2]
     return self
 
 def abs(a:Qnnum):

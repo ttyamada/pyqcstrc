@@ -14,7 +14,7 @@ class Qnsym_Octa(qna.QnNdarray):
         n=5
         N=2
         shape=(nr,n,n)
-        print("shape in __new__",shape) # for test
+        #print("shape in __new__",shape) # for test
         return super().__new__(cls,shape,N)
         
     def __init__(self):
@@ -28,19 +28,17 @@ class Qnsym_Octa(qna.QnNdarray):
         r8[0][1]=1; r8[1][2]=1; r8[2][3]=1; r8[3][0]=-1 # R8 
         rm[1][2]=1; rm[2][1]=1; rm[0][3]=1; rm[3][0]=1 # M
         shape=(nr,n,n) # for nr nxn rotation matrices
-        print("shape in __init__",shape) # for test
+        #print("shape in __init__",shape) # for test
         r=np.zeros(shape,dtype=np.int64) # nD int array
-        print("r.shape",r.shape) # fpr test
+        #print("r.shape",r.shape) # fpr test
         set_r(r8,8,rm,2,r) # set all integer symmetry operators r
-
-        qnmr=intr2qnmr(r,n,N,nr)  # integer rotation operators for qnr (qnmat rotation operator)
+        print_r(r)  #; exit() # for test
+        
         prj0=prj.Qnprj_Octa()
-        #prji=copy(prj0)
         prji=prj.Qnprj_Octa()
-        print("prji.shape",prji.shape) # fpr test
         qna.printqndm("prji",prji) # for test
         
-        qmt.qnmatinv(prji,n)
+        qmt.qnmatinv(prji,n) # get inversion matrix
         
         qnr=get_qnr(prj0,prji,self)  # block diagonakl symmetry operator for ext and int comp.
         #self.qnmrq=qnmrq
@@ -63,8 +61,8 @@ class Qnsym_Deca(qna.QnNdarray):
         n=5
         N=5
         # two generating elements
-        r10= np.zeros((n, n))
-        rm = np.zeros((n, n)) # nxn integer rotation matrix
+        r10= np.zeros((n, n),dtype=np.int64)
+        rm = np.zeros((n, n),dtype=np.int64) # nxn integer rotation matrix
         r10[0][3]=1; #R10
         r10[1][0]=1; r10[1][1]=1; r10[1][2]=1; r10[1][3]=1 # R10
         r10[2][3]=1; r10[3][1]=-1 #R10 
@@ -98,7 +96,8 @@ class Qnsym_Dode(qna.QnNdarray):
         n=5
         N=3
         # two generating elements
-        r12= np.zeros((n, n)); rm = np.zeros((n, n)) # 6x6 integer rotation matrix
+        r12= np.zeros((n, n),dtype=np.int64)
+        rm = np.zeros((n, n),dtype=np.int64) # 6x6 integer rotation matrix
         r12[0][1]=1; r12[1][2]=1; r12[2][3]=1; r12[3][0]=-1; r12[3][2]=1 # R12 
         rm[1][2]=1; rm[2][1]=1; rm[0][3]=1; rm[3][0]=1 # M
         shape=(nr,n,n) # for nr nxn rotation matrices
@@ -124,28 +123,44 @@ def get_qnr(prj,prji,nr,n,N):
     return qnr
     
 # gemerate all rotation matrices from
-# two generating elements
+# only for two generating elements
 def set_r(rg1,ng1,rg2,ng2,r):
-    print("r.shape",r.shape)  # for test
+    #print("r.shape",r.shape)  # for test
     nr=r.shape[0]
     n=r.shape[1]
-    r[0]=np.copy(rg1)
+    r[0]=np.identity(n,dtype=np.int64) # this should be a unit matrix
     for i in range(ng1-1):
         r[i+1]=get_r(rg1,r[i],n)
-    for j in range(ng2):
+    for j in range(ng1):
         r[j+ng1]=get_r(rg2,r[j-1+ng1],n)
         
 # matrix multiple
 # this can be replaced by r1*r2
 # when r1 and r2 are qnmatrices
 def get_r(r1,r2,n):
-    r=np.zeros((n, n))
+    r=np.zeros((n, n),dtype=np.int64)
     for i in range(n):
         for j in range(n):
             for k in range(n):
                 r[i][j]+=r1[i][k]*r2[k][j]
         
     return r
+
+def print_r(r):
+    shape=r.shape
+    ndim=r.ndim
+    #print("r.shape",r.shape)
+    #print("r.ndim",ndim)
+    nr=shape[0]
+    n=shape[1]
+    for i in range(nr):
+        for j in range(n):
+            print("[ ",end=" ")
+            for k in range(n):
+                print(r[i][j][k],end=" ")
+            print("]")
+        print(" ")
+
 
 # integer matrix to qnnumber matrix transformation
 def intr2qnmr(r,n,N,nr):

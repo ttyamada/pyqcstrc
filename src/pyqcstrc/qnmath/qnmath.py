@@ -3,6 +3,7 @@ import numpy as np
 import pyqcstrc.qnnum.qnnum as qnn
 import pyqcstrc.qnvec.qnvec as qnv
 import pyqcstrc.qnmat.qnmat as qnm
+import pyqcstrc.qnndarray.qnndarray as qna
 
 def abs(a:qnn.Qnnum):
     N=a[0][0].N
