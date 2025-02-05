@@ -46,7 +46,7 @@ def qnmatinv(a_i:qnm.Qnmat,n:np.int64): # qnmatrix inversion
                     ic=k
                     t=qnn.copy(a[j][k])
                 elif ipivot[k]>0: #elif ipivot[k]-1>0:
-                    return
+                    return a
     
         ipivot[ic]=ipivot[ic]+1
         if ir!=ic:
@@ -81,6 +81,7 @@ def qnmatinv(a_i:qnm.Qnmat,n:np.int64): # qnmatrix inversion
             t=a[k][ir]
             a[k][ir]=qnn.copy(a[k][ic])
             a[k][ic]=t
+    #qnm.printqnm("a in qnmatinv",a)  # for test
     return a
 
 # fpr check float version     
@@ -113,7 +114,7 @@ def matinv_f(a_i:np.matrix,n:np.int64): # qnmatrix inversion
                     ic=k
                     t=np.copy(a[j][k])
                 elif ipivot[k]>0: #elif ipivot[k]-1>0:
-                    return
+                    return a
     
         ipivot[ic]=ipivot[ic]+1
         if ir!=ic:

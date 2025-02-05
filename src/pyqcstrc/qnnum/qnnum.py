@@ -179,11 +179,11 @@ def leq(a, b):
     else:
         return False
     
-def neg(self):
-    self.n[0]=-self.n[0]
-    self.n[1]=-self.n[1]
-    self.n[2]=self.n[2]
-    return self
+def neg(a):
+    #print("a.n[0]",a.n[0],"a.n[1]",a.n[1],"a.n[2]",a.n[2],"a.N",a.N) # for test
+    b=Qnnum([-a.n[0],-a.n[1],a.n[2]],a.N) # -self
+    #printqnn("b",b)  # for test
+    return b
 
 def abs(a:Qnnum):
     if a.n[0]+a.n[1]*np.sqrt(a.N)<0:
@@ -263,7 +263,8 @@ if __name__ == '__main__':
     print("qnn4>qnn1",qnn4>qnn1)
     print("qnn4<qnn1",qnn4<qnn1)
     print("qnn4==qnn1",qnn4==qnn1)
+    
     qnn5=-qnn4
-    print("-qnn4",qnn5)
+    printqnn("-qnn4",qnn5)
     
  
