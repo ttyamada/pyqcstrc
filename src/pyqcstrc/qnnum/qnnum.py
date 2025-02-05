@@ -204,7 +204,7 @@ def qn2npa(a):
 def qn2flt(a):
     return (a.n[0]+a.n[1]*np.sqrt(a.N))/a.n[2]
 
-def int2qnn(i:np.int64,N:np.int64):
+def int2qn(i:np.int64,N:np.int64):
     #N=self.N
     return Qnnum([i,0,1],N)
 

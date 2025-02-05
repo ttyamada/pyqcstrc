@@ -282,6 +282,9 @@ def prjop_init(isys:np.int64):
     elif(isys==5): # projection operator dodecagonal
         prj=Qnprj_Dode()
 
+def copy(qna1: qnm.Qnmat):
+    return np.copy(qna1)
+
 # for class cls cls should be icos octa, deca or dode
 def prjop(v: qnv.Qnvec) -> qnv.Qnvec:
     qnm.printqnm("prj",prj)
@@ -354,6 +357,13 @@ def print_prj(str:str,prj:qnm.Qnmat):
     b=qnm.copy(prj)
     print(str)
     qnm.printqnm("str",b)
+    
+def printfm(str,prj3f,n):
+    print(str)
+    for i in range(n):
+        for j in range(n):
+            print(prj3f[i][j],end=" ")
+        print()
 
 if __name__ == '__main__':
     # test for qnnum projection operators
@@ -398,7 +408,8 @@ if __name__ == '__main__':
     qnm.printqnm("prj3",prj3)  #
     qna.printqndm("prj3",prj3)  #
     
-    prji3=Qnprj_Octa() # copy for matinv
+    #prji3=Qnprj_Octa() # copy for matinv
+    prji3=copy(prj3) #for matinv
     #print("prji3.shape",prji3.shape)
     #print("prji3.ndim",prji3.ndim)
     qnm.printqnm("prji3",prji3)  #
@@ -409,7 +420,21 @@ if __name__ == '__main__':
     unitm=prji3@prj3
     qnm.printqnm("untm",unitm)
     
-    #check_ltv(n,N)
+    prj3f=np.ndarray((n,n),dtype=float)
+    for i in range(n):
+        for j in range(n):
+            prj3f[i][j]=qnn.qn2flt(prj3[i][j])
+            
+    prji3f=np.copy(prj3f)
+    printfm("prj3f",prj3f,n)
+    printfm("prji3f",prji3f,n)
+    
+    mth.matinv_f(prji3f,n)
+    printfm("prji3f",prji3f,n)
+        
+    unitmf=prji3f@prj3f
+    printfm("unitmf",unitmf,n)
+    
 
                     
                     

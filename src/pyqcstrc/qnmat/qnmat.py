@@ -13,9 +13,6 @@ class Qnmat(qna.QnNdarray):
         #return super().__new__(cls,shape,dtype=qnn.Qnnum)
 
     def __init__(self,n:np.int64, N:np.int64):
-        #shape=(n,n)
-        #self=qna.QnNdarray(shape,N)
-        #self=super().__init__(shape,N)
         qn0=qnn.Qnnum([0,0,1],N)
         for i in range(self.shape[0]):
             for j in range(self.shape[1]):
@@ -50,9 +47,13 @@ def zerom(n:np.int64, N: np.int64):
 
 def unitm(n:np.int64, N: np.int64):
     qn1=qnn.Qnnum([1,0,1],N)
-    qnm=zerom(n,N)
+    qnm=Qnmat(n,N)
     for i in range(n):
         qnm[i][i]=qn1
+    return qnm
+        
+def copy(qna1: Qnmat):
+    return np.copy(qna1)
         
 #def copy(qnm: Qnmat) -> Qnmat:
 #    return np.copy(qnm)
@@ -123,51 +124,10 @@ def isub(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
     return ma1
     
 # for ma1@ma2 (ma1 and ma2 should be qnvec or qnmat)
-def matmul(ma1: Qnmat, ma2: Qnmat) -> Qnmat: 
-    la1=ma1.shape[0]
-    la2=ma1.shape[1]
-    la3=ma2.shape[0]
-    la4=ma2.shape[1]
-    n1=ma1.ndim
-    n2=ma2.ndim
-    print("la1",la1,"la2",la2,"la3",la3,"n1",n1,"n2",n2)
-    if n1==1 and n2==1: # inner product of qnvec
-        N=ma1[0].N
-        qnzero=qnn.Qnnum([0,0,1],N) # qnnumber zero
-        sum=qnzero
-        for i in range(la1[0]):
-            sum=sum+ma1[i]*ma2[i]
-            return sum
-    elif n1==2 and n2==2:
-        N=ma1[0][0].N
-        qn0=qnn.Qnnum([0,0,1],N) # qnnumber zero
-        #ma3=zerom(qn0,la1,la4) #"qnnumber zero vector"
-        ma3=zerom(qn0,la1) #"qnnumber zero vector"
-        for i in range(la1):
-            for j in range(la4):
-                for k in range(la2):
-                    #ma3.mt[i]+=ma1.mt[i][j]*ma2.mt[j]
-                    ma3[i][j]=ma3[i][j]+ma1[i][k]*ma2[k][j]
-        return ma3
-    elif n1==2 and n2==1 : # qnmat@qnvec
-        N=ma2[0].N
-        qnzero=qnn.Qnnum([0,0,1],N) # qnnumber zero
-        ma3=zerov(qnzero,la1) #"qnnumber zero vector"
-        for i in range(la1):
-            for j in range(la2):
-                #ma3.mt[i]+=ma1.mt[i][j]*ma2.mt[j]
-                ma3[i]=ma3[i]+ma1[i][j]*ma2[j]
-        return ma3
-    elif n1==1 and n2==2 : # qnvec@qnmat
-        N=ma1[0].N
-        qnzero=qnn.Qnnum([0,0,1],N) # qnnumber zero
-        ma3=zerov(qnzero,la1) #"qnnumber zero vector"
-        for i in range(la1):
-            for j in range(la3):
-                #ma3.mt[i]+=ma1.mt[j]*ma2.mt[j][i]
-                ma3.mt[i]=ma3[i]+ma1[j]*ma2[j][i]
-        return ma3
-                
+def matmul(ma1: Qnmat, ma2: Qnmat, dtype=qnn.Qnnum) -> Qnmat: 
+    np.matmul(ma1,ma2,dtype=qnn.Qnnum)
+
+          
 # for similarity transformation
 # not confirmed yet
 def matrixpow(ma: Qnmat, n: int) -> Qnmat:
@@ -194,8 +154,6 @@ def matrixpow(ma: Qnmat, n: int) -> Qnmat:
         print('matrix has not regular shape')
         return 
 
-
-    
 def qnm2npa(a):
     # Qnmatrix to np.array converter
     la=a.shape #len(a)
@@ -260,4 +218,21 @@ if __name__ == '__main__':
     qnm=Qnmat(n,N) # nxn qmnum zero matrix
     print("qnm.ndim",qnm.ndim)
     print("qnm.shape",qnm.shape)
-    printqnm("zero qnmat",qnm)
+    printqnm("qnm",qnm)
+    
+    qnm1=copy(qnm)
+    print("qnm1.ndim",qnm1.ndim)
+    print("qnm1.shape",qnm1.shape)
+    printqnm("qnm1",qnm1)
+    
+    unm1=unitm(n,N) # nxn qmnum zero matrix
+    print("unm1.ndim",unm1.ndim)
+    print("unm1.shape",unm1.shape)
+    printqnm("unm1",unm1)
+    
+    unm2=unitm(n,N) # nxn qmnum zero matrix
+    print("unm2.ndim",unm2.ndim)
+    print("unm2.shape",unm2.shape)
+    printqnm("unm2",unm2)
+    
+    unm3=unm2@unm1

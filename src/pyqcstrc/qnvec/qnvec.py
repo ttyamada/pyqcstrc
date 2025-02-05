@@ -7,15 +7,11 @@ import pyqcstrc.qnndarray.qnndarray as qna
 #class Qnvec(np.ndarray):
 #class Qnvec(np.ndarray):
 class Qnvec(qna.QnNdarray):
-    #def __new__(cls, n:np.int64, N:np.int64):
-    #    shape=(n)
-    #    return super().__new__(cls,shape,dtype=qnn.Qnnum)
+    def __new__(cls, n:np.int64, N:np.int64):
+        shape=(n)
+        return super().__new__(cls,shape,dtype=qnn.Qnnum)
     
     def __init__(self, n:np.int64, N:np.int64):
-        #self=np.empty(shape=(n),dtype=qnn.Qnnum) # 1D array
-        shape=(n)
-        #self=qna.QnNdarray(shape,N)
-        self=super().__init__(shape,N)
         qn0=qnn.Qnnum([0,0,1],N) #int2qnn(0,N)
         for i in range(self.shape[0]):
             self[i]=qn0
