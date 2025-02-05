@@ -410,10 +410,10 @@ def det_matrix(mtx: qnm.Qnmat) -> qnn.Qnnum:
 
 # this should be a function
 def matrixtr(mtx: qnm.Qnmat) -> qnm.Qnmat:
-    """ replace mtx with its transposed matrix"""
+    """ return transposed matrix of mtx """
     N=mtx[0][0].N
     n=mtx.shape[0]
-    mtxt=qnm.Qnmat(mtx.shape,N)
+    mtxt=qnm.Qnmat(n,N)
     for i in range(n):
         for j in range(n):
             mtxt[i][j]=qnn.copy(mtx[j][i])

@@ -25,8 +25,8 @@ class Qnsym_Octa(qna.QnNdarray):
         # two generating elements
         r8= np.zeros((n, n),dtype=np.int64)  # nxn integer rotation matrix
         rm = np.zeros((n, n),dtype=np.int64) # nxn integer rotation matrix
-        r8[0][1]=1; r8[1][2]=1; r8[2][3]=1; r8[3][0]=-1 # R8 
-        rm[1][2]=1; rm[2][1]=1; rm[0][3]=1; rm[3][0]=1 # M
+        r8[0][1]=1; r8[1][2]=1; r8[2][3]=1; r8[3][0]=-1; r8[4][4]=1 # R8 
+        rm[1][2]=1; rm[2][1]=1; rm[0][3]=1; rm[3][0]=1;rm[4][4]=1 # M
         shape=(nr,n,n) # for nr nxn rotation matrices
         #print("shape in __init__",shape) # for test
         r=np.zeros(shape,dtype=np.int64) # nD int array
@@ -37,11 +37,8 @@ class Qnsym_Octa(qna.QnNdarray):
         prj0=prj.Qnprj_Octa()       
         prji=qmt.qnmatinv(prj0,n) # get inversion matrix of prj
         # r : int array
-        self=get_qnr(prj0,prji,r,nr,n)  # block diagonakl symmetry operator for ext and int comp.
-        #self.qnmrq=qnmrq
-        #self.n=n
-        #self.N=N
-        #self.ord=ord
+        self=qna.copy(get_qnr(prj0,prji,r,nr,n))  # block diagonakl symmetry operator for ext and int comp.
+        print("Octa self.shape",self.shape)
     
 # for decagonal QCs
 class Qnsym_Deca(qna.QnNdarray):
@@ -62,8 +59,8 @@ class Qnsym_Deca(qna.QnNdarray):
         rm = np.zeros((n, n),dtype=np.int64) # nxn integer rotation matrix
         r10[0][3]=1; #R10
         r10[1][0]=1; r10[1][1]=1; r10[1][2]=1; r10[1][3]=1 # R10
-        r10[2][3]=1; r10[3][1]=-1 #R10 
-        rm[0][3]=1; rm[3][0]=1; rm[1][2]=1; rm[2][1]=1 # M
+        r10[2][3]=1; r10[3][1]=-1;r10[4][4]=1  #R10 
+        rm[0][3]=1; rm[3][0]=1; rm[1][2]=1; rm[2][1]=1;rm[4][4]=1 # M
         #r=np.zeros((nr, n, n))
         shape=(nr,n,n) # for nr nxn rotation matrices
         print("shape",shape) # for test
@@ -73,8 +70,8 @@ class Qnsym_Deca(qna.QnNdarray):
         prj0=prj.Qnprj_Deca()
         prji=qmt.qnmatinv(prj0,n) # get inversion matrix of prj
         # r : int array
-        self=get_qnr(prj0,prji,r,nr,n)  # block diagonakl symmetry operator for ext and int comp.
-        #self=qnr
+        self=qna.copy(get_qnr(prj0,prji,r,nr,n))  # block diagonakl symmetry operator for ext and int comp.
+        print("self.shape",self.shape) # for test
         #self.order=nr
     
 
@@ -95,8 +92,8 @@ class Qnsym_Dode(qna.QnNdarray):
         # two generating elements
         r12= np.zeros((n, n),dtype=np.int64)
         rm = np.zeros((n, n),dtype=np.int64) # 6x6 integer rotation matrix
-        r12[0][1]=1; r12[1][2]=1; r12[2][3]=1; r12[3][0]=-1; r12[3][2]=1 # R12 
-        rm[1][2]=1; rm[2][1]=1; rm[0][3]=1; rm[3][0]=1 # M
+        r12[0][1]=1; r12[1][2]=1; r12[2][3]=1; r12[3][0]=-1; r12[3][2]=1;r12[4][4]=1 # R12 
+        rm[1][2]=1; rm[2][1]=1; rm[0][3]=1; rm[3][0]=1;rm[4][4]=1 # M
         shape=(nr,n,n) # for nr nxn rotation matrices
         r=np.array(shape,dtype=np.int64)
         set_r(r12,12,rm,2,r)  # set all integer rotation matrices
@@ -108,7 +105,7 @@ class Qnsym_Dode(qna.QnNdarray):
         qnr=get_qnr(prj0,prji,r,nr,n)  # block diagonakl symmetry operator for ext and int comp.
         prji=prj.Qnprj_Dode()
         qmt.qnmatinv(prji,n)
-        self=get_qnr(prj0,prji,n,N,nr)
+        self=qna.copy(get_qnr(prj0,prji,n,N,nr))
         #self.order=nr
     
 def get_qnr(prj,prji,r,nr,n):
@@ -117,7 +114,10 @@ def get_qnr(prj,prji,r,nr,n):
     prjt=qmt.matrixtr(prj)  # transposed prj matrix
     prjit=qmt.matrixtr(prji) # transposed prji matrix 
     for i in range(nr):
-        qnr[i]=qnm.copy(prjt@r[i]@prjit)  # qnmat x intmat nesessary
+        rqn=qnm.intm2qnm(r[i],n,N)
+        #qnr[i]=qnm.copy(prjt@rqn@prjit)  # qnmat x intmat nesessary
+        qnr[i]=prjt@rqn@prjit  # qnmat x intmat nesessary
+        qnm.printqnm("qnr[i]",qnr[i])
     return qnr
     
 # gemerate all rotation matrices from
@@ -167,37 +167,26 @@ def intr2qnmr(r,n,N,nr):
         qnmr[i]=qnm.intm2qnm(r[i],n,N) # qnmat for i-th rotation operator r[i]
     return qnmr
 
-def test_wt(str:str,nr,a:qna.QnNdarray):
+def test_wt(str:str,qnr:qna.QnNdarray):
+    nr=qnr.shape[0]
     print("nr",nr)
     print(str)
     for i in range(nr):
-        qnm.printqnm("Qnsym_",str,a.qnr[i])
+        qnm.printqnm("Qnsym_",qnr[i])
         
 # for test
 if __name__ == '__main__':
     # test for qnnum projection operators
-    isys=4
-    n=5
-    N=2
-    a=Qnsym_Octa() # octagonal
-    n=a.n
-    print("a.n",n)
-    qnm.printqnm("Octa a",a,n)
+    qnr=Qnsym_Octa() # octagonal symmetry operator
+    test_wt("Octa",qnr)
     #for i in range(nr):
     #    qnm.printqnm("Qnsym_Octa",a.qnr[i])
     
-    isys=3
-    n=5
-    N=5
-    a=Qnsym_Deca() # decagonal
-    nr=a.order
-    test_wt("Deca",nr,a)
+    qnr=Qnsym_Deca() # decagonal
+    test_wt("Deca",qnr)
 
-    isys=5
-    n=5
-    N=3
-    a=Qnsym_Dode() # dodecagonal
+    qnr=Qnsym_Dode() # dodecagonal
     nr=a.order
-    test_wt("Dode",nr,a)
+    test_wt("Dode",qnr)
 
         

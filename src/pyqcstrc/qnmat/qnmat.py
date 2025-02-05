@@ -61,7 +61,7 @@ def copy(qnm: Qnmat) -> Qnmat:
     n=qnm.shape[0]
     N=qnm[0][0].N
     qnr=Qnmat(n,N)
-    print("qnr.N",qnr[0][0].N,"qnr.shape",qnr.shape,"ndim",qnr.ndim) # for test
+    #print("qnr.N",qnr[0][0].N,"qnr.shape",qnr.shape,"ndim",qnr.ndim) # for test
     for i in range(n):
         for j in range(n):
             qnr[i][j]=qnn.copy(qnm[i][j])
@@ -172,7 +172,7 @@ def intm2qnm(a:np.array,n:np.int64,N:np.int64):
     b=Qnmat(n,N) #qnnum zero vector
     for i in range(n):
         for j in range(n):
-            b[i][j]=qnn.int2qnn(a[i][j],N)
+            b[i][j]=qnn.int2qn(a[i][j],N)
     return b
 
 #def printqnm(str:str,qnm:Qnmat):
