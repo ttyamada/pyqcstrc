@@ -395,28 +395,29 @@ def det_matrix(mtx: qnm.Qnmat) -> qnn.Qnnum:
     determinant in qnnumber
     """
     N=mtx[0][0].N
-    t3=qnn.Qnmtrx([0,0,1],N) # zero qnnumber
-    t3=t3+mtx[0][0]*mtx[1][1]*mtx[2][2]
-    t3=t3+mtx[0][1]*mtx[1][2]*mtx[2][0]    
-    t3=t3+mtx[0][2]*mtx[1][0]*mtx[2][1]
-    t3=t3-mtx[0][2]*mtx[1][1]*mtx[2][0]
-    t3=t3-mtx[0][1]*mtx[1][0]*mtx[2][2]    
-    t3=t3-mtx[0][0]*mtx[1][2]*mtx[2][1]
+    shape=ntx.shape
+    if shape[0]!=3:
+        print("shape of mtx in det_matrix should be (3,3) but",shape); exit(0)
+    det=qnn.Qnmtrx([0,0,1],N) # zero qnnumber
+    det=det+mtx[0][0]*mtx[1][1]*mtx[2][2]
+    det=det+mtx[0][1]*mtx[1][2]*mtx[2][0]    
+    det=det+mtx[0][2]*mtx[1][0]*mtx[2][1]
+    det=det-mtx[0][2]*mtx[1][1]*mtx[2][0]
+    det=det-mtx[0][1]*mtx[1][0]*mtx[2][2]    
+    det=det-mtx[0][0]*mtx[1][2]*mtx[2][1]
 
-    return t3
+    return det
 
-def matrixtr(mtx: qnm.Qnmat):
+# this should be a function
+def matrixtr(mtx: qnm.Qnmat) -> qnm.Qnmat:
     """ replace mtx with its transposed matrix"""
-    n=mtx.n
     N=mtx[0][0].N
-    mt=[qn0]*mtx.shape
-    mtt=qnm.Qnmat(mt,n,N)
+    n=mtx.shape[0]
+    mtxt=qnm.Qnmat(mtx.shape,N)
     for i in range(n):
         for j in range(n):
-            mtt[j][i]=mtx[i][j]
-    for i in range(n):
-        for j in range(n):
-            mtx[i][j]=mtt[i][j]
+            mtxt[i][j]=qnn.copy(mtx[j][i])
+    return mtxt
         
 
 if __name__ == '__main__':
