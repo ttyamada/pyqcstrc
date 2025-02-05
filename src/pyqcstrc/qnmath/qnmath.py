@@ -16,9 +16,12 @@ def abs(a:qnn.Qnnum):
 #def qnmatinv(a:qnm.Qnmat,n:np.int64):
 #    return np.linalg.inv(a)
     
-def qnmatinv(a:qnm.Qnmat,n:np.int64): # qnmatrix inversion
-    # a is replaced by its inversion matrix
-    # n is the order of a (nxn qnnumber matrix)
+# this should be a function for @ operator
+def qnmatinv(a_i:qnm.Qnmat,n:np.int64): # qnmatrix inversion
+    # return inversion matrix of a_i
+    # n is the order of a_i (nxn qnnumber matrix)
+    a=qnm.copy(a_i)
+    #a=np.copy(a_i)
     pivot=np.ndarray(n,dtype=qnn.Qnnum)
     ipivot=np.ndarray(n,dtype=np.int64) 
     index=np.ndarray((n,2),dtype=np.int64)
@@ -78,11 +81,14 @@ def qnmatinv(a:qnm.Qnmat,n:np.int64): # qnmatrix inversion
             t=a[k][ir]
             a[k][ir]=qnn.copy(a[k][ic])
             a[k][ic]=t
+    return a
 
-# fpr check float version       
-def matinv_f(a:np.matrix,n:np.int64): # qnmatrix inversion
-    # a is replaced by its inversion matrix
+# fpr check float version     
+# this should be a function for @ operator  
+def matinv_f(a_i:np.matrix,n:np.int64): # qnmatrix inversion
+    # return inversion matrix of a_i
     # n is the order of a (nxn qnnumber matrix)
+    a=np.copy(a_i)
     pivot=np.ndarray(n,dtype=float)
     ipivot=np.ndarray(n,dtype=np.int64) 
     index=np.ndarray((n,2),dtype=np.int64)
@@ -142,6 +148,7 @@ def matinv_f(a:np.matrix,n:np.int64): # qnmatrix inversion
             t=a[k][ir]
             a[k][ir]=np.copy(a[k][ic])
             a[k][ic]=t
+    return a
        
 def qsort(x:qnv.Qnvec,ip:np.array,nx: np.int64):
     #     quick sort (ascending order of x)

@@ -193,7 +193,9 @@ def abs(a:Qnnum):
 def copy(a:Qnnum) -> Qnnum:
     n=np.copy(a.n) # a.n : int list
     N=a.N
+    #print("a",a.n[0],a.n[1],a.n[2]) # for test
     b=Qnnum(n,N)
+    #print("b",b.n[0],b.n[1],b.n[2]) # for test
     #b.n1=np.copy(a.n1); b.n2=np.copy(a.n2); b.n3=np.copy(a.n3)
     return b
 

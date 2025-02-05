@@ -52,25 +52,20 @@ def unitm(n:np.int64, N: np.int64):
         qnm[i][i]=qn1
     return qnm
         
-def copy(qna1: Qnmat):
-    return np.copy(qna1)
+#def copy(qna1: Qnmat):
+#    return np.copy(qna1)
         
-#def copy(qnm: Qnmat) -> Qnmat:
+def copy(qnm: Qnmat) -> Qnmat:
 #    return np.copy(qnm)
-##   original code
-#    n=qnm.shape[0]
-#    N=qnm[0][0].N
-#    qnr=Qnmat(n,N)
-#    print("qnr.n",n,"qnr.N",N,"qnr.shape",shape)
-#    for i in range(n):
-#        for j in range(n):
-#            qnr[i][j]=qnn.copy(qnm[i][j])
-#            
-#    print("qnr.n",qnr.shape[0]) # for test
-#    print("qnr.N",qnr.N) # fpr test
-#    print("qnr.shape",qnr.shape) # fpr test
-#    
-#    return qnr
+#   original code
+    n=qnm.shape[0]
+    N=qnm[0][0].N
+    qnr=Qnmat(n,N)
+    print("qnr.N",qnr[0][0].N,"qnr.shape",qnr.shape,"ndim",qnr.ndim) # for test
+    for i in range(n):
+        for j in range(n):
+            qnr[i][j]=qnn.copy(qnm[i][j])
+    return qnr
 
 def int2qnm(r:np.ndarray,n:np.int64,N: np.int64):
     qnr=Qnmat(n,N)
@@ -125,9 +120,9 @@ def isub(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
     
 # for ma1@ma2 (ma1 and ma2 should be qnvec or qnmat)
 def matmul(ma1: Qnmat, ma2: Qnmat, dtype=qnn.Qnnum) -> Qnmat: 
-    np.matmul(ma1,ma2,dtype=qnn.Qnnum)
+    ma3=np.matmul(ma1,ma2,dtype=qnn.Qnnum)
+    return ma3
 
-          
 # for similarity transformation
 # not confirmed yet
 def matrixpow(ma: Qnmat, n: int) -> Qnmat:
@@ -183,7 +178,16 @@ def intm2qnm(a:np.array,n:np.int64,N:np.int64):
 #def printqnm(str:str,qnm:Qnmat):
 #def printqnm(str:str,qna:QnNdarray):
 def printqnm(str:str,qnm:qna.QnNdarray):
+    #ndim=2  # 
     ndim=qnm.ndim
+    shape=qnm.shape
+    #if shape[1]==0:
+    #    ndim=1
+    #elif shape[2]==0:
+    #    ndim=2
+    #else:
+    #    ndim=3
+
     print(str)
     if ndim==1:
         for i in range(qnm.shape[0]):

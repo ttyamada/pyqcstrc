@@ -283,8 +283,16 @@ def prjop_init(isys:np.int64):
         prj=Qnprj_Dode()
 
 def copy(qna1: qnm.Qnmat):
-    return np.copy(qna1)
-
+    #return np.copy(qna1,dtype=qnn.Qnnum)
+    return qnm.copy(qna1)
+    #shape=qna1.shape
+    #N=qna1[0][0].N
+    #qna2=qnm.zerom(shape,N)
+    #for i in range(shape[0]):
+    #    for j in range(shape[1]):
+    #        qna2[i][j]=qnn.copy(qna1[i][j])
+    #return qna2
+            
 # for class cls cls should be icos octa, deca or dode
 def prjop(v: qnv.Qnvec) -> qnv.Qnvec:
     qnm.printqnm("prj",prj)
@@ -364,76 +372,61 @@ def printfm(str,prj3f,n):
         for j in range(n):
             print(prj3f[i][j],end=" ")
         print()
+    print()
+        
+def qnm2flnm(prj:qnm.Qnmat):
+    n=prj.shape[0]
+    prjf=np.ndarray((n,n),dtype=float)
+    for i in range(n):
+        for j in range(n):
+            a=prj[i][j]
+            #print("a",a.n[0],a.n[1],a.n[2])  # for test
+            prjf[i][j]=qnn.qn2flt(a)
+            #print("f",prjf[i][j])  # for test
+    return prjf
 
 if __name__ == '__main__':
     # test for qnnum projection operators
     N=2
     prj4=Qnprj_Octa() # qnnum projection operator
-    #print("prj4.shape",prj4.shape)
-    #print("prj4.ndim",prj4.ndim)
-    #print_prj("Octa",prj4)
     qnm.printqnm("prj4",prj4)  #
-    qna.printqndm("prj4",prj4)  #
+    #qna.printqndm("prj4",prj4)  #
     
     N=5
     prj3=Qnprj_Deca() # float projection operator
-    #print("prj3.shape",prj3.shape)
-    #print("prj3.ndim",prj3.ndim)
-    #print_prj("Deca",prj3)
     qnm.printqnm("prj3",prj3)  #
-    qna.printqndm("prj3",prj3)  #
+    #qna.printqndm("prj3",prj3)  #
     
     N=3
     prj5=Qnprj_Dode() # float projection operator
-    #print("prj5.shape",prj5.shape)
-    #print("prj5.ndim",prj5.ndim)
-    #print_prj("Dode",prj5)
-    
+    qnm.printqnm("prj5",prj3)  #
+    #qna.printqndm("prj5",prj3)  #
+
     N=5
     prj2=Qnprj_Icos() # float projection operator
-    #print("prj2.shape",prj2.shape)
-    #print("prj2.ndim",prj2.ndim)
-    #print_prj("Dode",prj5)
     qnm.printqnm("prj2",prj2)  #
-    qna.printqndm("prj2",prj2)  #
+    #qna.printqndm("prj2",prj2)  #
 
     # check qnmatinv
     N=2
     n=5
     prj3=Qnprj_Octa()
-    #print("prj3.shape",prj3.shape)
-    #print("prj3.ndim",prj3.ndim)
-    #qnn.printqnn("prj3[0][0].N",prj3[0][0].N)
-    #qnm.printqnm("prj3",prj3)
     qnm.printqnm("prj3",prj3)  #
-    qna.printqndm("prj3",prj3)  #
+
+    prj3f=qnm2flnm(prj3)
+    printfm("prj3f",prj3f,n)
     
-    #prji3=Qnprj_Octa() # copy for matinv
-    prji3=copy(prj3) #for matinv
-    #print("prji3.shape",prji3.shape)
-    #print("prji3.ndim",prji3.ndim)
-    qnm.printqnm("prji3",prji3)  #
-    qna.printqndm("prji3",prji3)  #
-    mth.qnmatinv(prji3,n)
+    prji3f=mth.matinv_f(prj3f,n)
+    #prji3f=np.linalg.inv(prj3f)
+    printfm("prji3f",prji3f,n)
+    unitmf=prji3f@prj3f
+    printfm("unitmf",unitmf,n)
+    
+    prji3=mth.qnmatinv(prj3,n)
     qnm.printqnm("prji3",prji3)
-    
     unitm=prji3@prj3
     qnm.printqnm("untm",unitm)
     
-    prj3f=np.ndarray((n,n),dtype=float)
-    for i in range(n):
-        for j in range(n):
-            prj3f[i][j]=qnn.qn2flt(prj3[i][j])
-            
-    prji3f=np.copy(prj3f)
-    printfm("prj3f",prj3f,n)
-    printfm("prji3f",prji3f,n)
-    
-    mth.matinv_f(prji3f,n)
-    printfm("prji3f",prji3f,n)
-        
-    unitmf=prji3f@prj3f
-    printfm("unitmf",unitmf,n)
     
 
                     
