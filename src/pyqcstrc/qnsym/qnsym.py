@@ -42,7 +42,7 @@ class Qnsym_Octa(qna.QnNdarray):
         prji=qmt.qnmatinv(prj0,n) # get inversion matrix of prj
         # r : int array
         self=qna.copy(get_qnr(prj0,prji,r,nr,n))  # block diagonakl symmetry operator for ext and int comp.
-        print("Octa self.shape",self.shape)
+        #qnm.printqnm("Octa self.shape",self.shape)
     
 # for decagonal QCs
 class Qnsym_Deca(qna.QnNdarray):
@@ -80,7 +80,7 @@ class Qnsym_Deca(qna.QnNdarray):
         prji=qmt.qnmatinv(prj0,n) # get inversion matrix of prj
         # r : int array
         self=qna.copy(get_qnr(prj0,prji,r,nr,n))  # block diagonakl symmetry operator for ext and int comp.
-        print("self.shape",self.shape) # for test
+        #qnm.printqnm("self.shape",self.shape) # for test
         #self.order=nr
     
 
@@ -114,9 +114,9 @@ class Qnsym_Dode(qna.QnNdarray):
         prj0=prj.Qnprj_Dode()
         prji=qmt.qnmatinv(prj0,n) # get inversion matrix of prj
         # r : int array
-        qnr=get_qnr(prj0,prji,r,nr,n)  # block diagonakl symmetry operator for ext and int comp.
-        prji=prj.Qnprj_Dode()
-        qmt.qnmatinv(prji,n)
+        #qnr=get_qnr(prj0,prji,r,nr,n)  # block diagonakl symmetry operator for ext and int comp.
+        #prji=prj.Qnprj_Dode()
+        #qmt.qnmatinv(prji,n)
         self=qna.copy(get_qnr(prj0,prji,r,nr,n))
         #self.order=nr
         
@@ -150,12 +150,12 @@ class Qnsym_Icos(qna.QnNdarray):
         set_r(rg,ord,r)  # set all integer rotation matrices
         print_r(r)  #; exit() # for test
         
-        prj0=prj.Qnprj_Dode()
+        prj0=prj.Qnprj_Icos()
         prji=qmt.qnmatinv(prj0,n) # get inversion matrix of prj
         # r : int array
-        qnr=get_qnr(prj0,prji,r,nr,n)  # block diagonakl symmetry operator for ext and int comp.
-        prji=prj.Qnprj_Dode()
-        qmt.qnmatinv(prji,n)
+        #qnr=get_qnr(prj0,prji,r,nr,n)  # block diagonakl symmetry operator for ext and int comp.
+        #prji=prj.Qnprj_Icos()
+        #qmt.qnmatinv(prji,n)
         self=qna.copy(get_qnr(prj0,prji,r,nr,n))
         #self.order=nr
     
@@ -168,7 +168,8 @@ def get_qnr(prj,prji,r,nr,n):
         rqn=qnm.intm2qnm(r[i],n,N)
         #qnr[i]=qnm.copy(prjt@rqn@prjit)  # qnmat x intmat nesessary
         qnr[i]=prjt@rqn@prjit  # qnmat x intmat nesessary
-        qnm.printqnm("qnr[i]",qnr[i])
+        str="# "+format(i+1)
+        qnm.printqnm(str,qnr[i])
     return qnr
     
 # gemerate all rotation matrices from
