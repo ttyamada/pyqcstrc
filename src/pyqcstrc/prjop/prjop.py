@@ -120,7 +120,7 @@ class Qnprj_Dode(qnm.Qnmat):
         #self=qnm.Qnmat(n,N)
         #mt=[\
         mt=np.array([\
-           [M5,M2,M6,M5,M0],\
+           [M5,M4,M6,M4,M0],\
            [M1,M0,M1,M0,M0],\
            [M0,M1,M0,M1,M0],\
            [M4,M5,M4,M6,M0],\
