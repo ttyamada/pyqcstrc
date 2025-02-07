@@ -9,6 +9,7 @@ import random
 import pyqcstrc.qnnum.qnnum as qnn
 import pyqcstrc.qnvec.qnvec as qnv
 import pyqcstrc.qnmat.qnmat as qnm
+import pyqcstrc.prjop.prjop as prj
 
 #TAU=np.sqrt(3)/2.0
 #SQRT3=np.sqrt(3)
@@ -696,14 +697,14 @@ def projection_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
         set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
     """
     num=len(vns)
-    m=[] # array of qnvec ???
+    shape=vns.shape
+    m=np.zeros(shape,dtype=qnn.Qnnum)
     for i in range(num):
-        m[i]=projection_numerical(vns[i])
+        m[i]=prj.prjop_i(vns[i])
     return m
     
-# equivalent to qnv2fot
 def projection3_numerical(vn: qnv.Qnvec) -> float:
-    return qnv.qnv2flt(vn)
+    return prj.prjop_i(vn)
 #    """perpendicular component of a 6D lattice vector in direct space.
 #    
 #    Parameters
@@ -728,15 +729,25 @@ def projection3_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
     vsn: array
         set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
     """
-    num=len(vns)
-    #m=np.zeros((num,3),dtype=np.float64)
-    #m=np.zeros((num,2),dtype=np.float64)
-    N=vns[0].N
-    n=6
-    qv=qnv.Qnvec(n,N)
-    m=[qv]*num
-    for i in range(num):
-        m[i]=projection3_numerical(vns[i])
+    shape=vns.shape
+    nc=shape[0]
+    n=shape[1]
+    N=vns[0][0].N
+    print("N",N)
+    #if N==2:
+    #    prj0=prj.Qnprj_Octa()
+    #elif N==5:
+    #    prj0=prj.Qnprj_Deca()
+    #elif N==3:
+    #    prj0=prj.Qnprj_Dode()
+    
+    if n==5:
+        ni=3
+    else:
+        ni=2
+    m=np.zeros((nc,ni),dtype=qnn.Qnnum)
+    for i in range(nc):
+        m[i]=projection3_numerical(vns[i])  # projection of nD lattice coordinates onto internal space
     return m
 
 def projection_numerical_phason(vn: qnv.Qnvec,mat: qnm.Qnmat) -> qnv.Qnvec:

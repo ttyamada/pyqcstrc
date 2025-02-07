@@ -9,15 +9,15 @@ import pyqcstrc.qnndarray.qnndarray as qna
 class Qnvec(qna.QnNdarray):
     def __new__(cls, n:np.int64, N:np.int64):
         shape=(n)
-        return super().__new__(cls,shape,dtype=qnn.Qnnum)
+        return super().__new__(cls,shape,N)
     
     def __init__(self, n:np.int64, N:np.int64):
         qn0=qnn.Qnnum([0,0,1],N) #int2qnn(0,N)
         for i in range(self.shape[0]):
             self[i]=qn0
-        print("self.shape",self.shape)  # for test
-        print("self.ndim",self.ndim)    # for test
-        print("self.dtype",self.dtype)  # for test
+        #print("self.shape",self.shape)  # for test
+        #print("self.ndim",self.ndim)    # for test
+        #print("self.dtype",self.dtype)  # for test
 
     def __add__(a, b):
         return add(a,b)
@@ -34,24 +34,32 @@ class Qnvec(qna.QnNdarray):
     def __truediv__(a,b): # b should be int
         if isinstance(b, int):
             return div_vector_i(a,b)
+        
+def anyv(n,N,vec:qnn.Qnnum):
+    qnv=Qnvec(n,N)
+    for i in range(n):
+        qnv[i]=vec[i]
+    return qnv
     
 def zerov(n:np.int64,N:np.int64): # qnnumber zero vector
     qnv=Qnvec(n,N)
     return qnv
 
 def add(v1:Qnvec, v2:Qnvec) -> Qnvec:
-    a=np.empty(v1.shape, dtype=qnn.Qnnum)
-    la=v1.shape
-    for i in range(la[0]):
-        a[i]=v1[i]+v2[i]  #add(v1[i],v2[i])
-    return Qnvec(a)
+    n=v1.shape[0]
+    N=v1[0].N
+    a=Qnvec(n,N)
+    for i in range(n):
+        a[i]=v1[i]+v2[i]
+    return a
 
 def sub(v1:Qnvec, v2:Qnvec)-> Qnvec:
-    a=np.empty(v1.shape, dtype=qnn.Qnnum)
-    la=v1.shape
-    for i in range(la[0]):
-        a[i]=v1[i]-v2[i]  #add(v1[i],v2[i])
-    return Qnvec(a)
+    n=v1.shape[0]
+    N=v1[0].N
+    a=Qnvec(n,N)
+    for i in range(n):
+        a[i]=v1[i]-v2[i]
+    return a
 
 def mul_vector_i(v:Qnvec, coeff:int):
     if v.ndim==1:
@@ -234,27 +242,30 @@ def printqnv2(str:str,qnv1:Qnvec,qnv2:Qnvec):
 if __name__ == '__main__':
     # test
     N=2 # octagonal
-    n=5
-    
+    n=3
+
     M0=qnn.Qnnum([0,0,1],N)
     M1=qnn.Qnnum([1,0,1],N)
     M2=qnn.Qnnum([0,1,1],N)
+    vec1=np.array([M0,M1,M2],dtype=qnn.Qnnum)    
+    vec2=np.array([M0,M1,M2],dtype=qnn.Qnnum)
+    vec3=np.array([M1,M2,M0],dtype=qnn.Qnnum)
+    qnv1=anyv(n,N,vec1)
+    qnv2=anyv(n,N,vec2)
+    qnv3=anyv(n,N,vec3)
     
-    qnv1=np.array([M0,M1,M2])
-    qnv2=np.array([M1,M2,M0])
-    print("qnv1.shape",qnv1.shape)
-    print("qnv1.ndim",qnv1.ndim)
     printqnv("qnv1",qnv1)
     printqnv("qnv2",qnv2)
-    
-    qnv3=qnv1+qnv2
-    qnv4=qnv1-qnv2
     printqnv("qnv3",qnv3)
-    printqnv("qnv4",qnv4)
     
-    qnv5=dot(qnv1,qnv2)
-    qnn.printqnn("qnv5",qnv5)
+    qnv4=qnv1+qnv2
+    qnv5=qnv1-qnv3
+    printqnv("qnv1+qnv2",qnv4)
+    printqnv("qnv1-qnv3",qnv5)
     
-    qnv6=cros(qnv1,qnv2)
-    printqnv("qnv6",qnv6)
+    qnn1=dot(qnv1,qnv3)
+    qnn.printqnn("dot(qnv1,qnv3)",qnn1)
+    
+    qnv6=cros(qnv1,qnv3)
+    printqnv("cross(qnv1,qnv3)",qnv6)
     

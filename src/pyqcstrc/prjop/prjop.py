@@ -15,9 +15,10 @@ import pyqcstrc.qnndarray.qnndarray as qna
 #class Qnprj_Octa(qna.QnNdarray):
 class Qnprj_Octa(qnm.Qnmat):
     def __new__(cls) : 
-        global n,N;
+        global n,N,isys
         n=5
         N=2
+        isys=4
         return super().__new__(cls,n,N)
  
     def __init__(self):
@@ -27,7 +28,6 @@ class Qnprj_Octa(qnm.Qnmat):
         M3=qnn.Qnnum(np.array([ 0, 1, 2]),N) #  sqrt(2)/2
         M4=qnn.Qnnum(np.array([ 0,-1, 2]),N) # -sqrt(2)/2
         #self=qnm.Qnmat(n,N)
-        #np.array([\
         #mt=[\
         mt=np.array([\
            [M1,M0,M1,M0,M0],\
@@ -41,15 +41,17 @@ class Qnprj_Octa(qnm.Qnmat):
             for j in range(n):
                 self[i][j]=mt[i][j]
         qnm.printqnm("Qnprj_Octa prj",self) # for test
+        #prj=self
 
 # for decagonal QCs
 #class Qnprj_Deca(np.ndarray):
 #class Qnprj_Deca(qna.QnNdarray):
 class Qnprj_Deca(qnm.Qnmat):
     def __new__(cls):
-        global n,N
+        global n,N,isys
         n=5
         N=5
+        isys=3
         return super().__new__(cls,n,N)
  
     # note that this use orthorhombic coordinate system
@@ -63,7 +65,7 @@ class Qnprj_Deca(qnm.Qnmat):
         M5=M4*M4 # tau^-2
         M6=M4-qn2
         M7=-M3-qn2
-        #self=qnm.Qnmat(n,N)
+
         #mt=[\
         mt=np.array([\
            [M6,M4,M7,M5,M0],\
@@ -77,6 +79,7 @@ class Qnprj_Deca(qnm.Qnmat):
             for j in range(n):
                 self[i][j]=mt[i][j]
         qnm.printqnm("Qnprj_Deca prj",self) # for test
+        #prj=self
         #print("self.ndim",self.ndim) # fpr test
         #print("self.shape",self.shape) # fpr test
 
@@ -85,9 +88,10 @@ class Qnprj_Deca(qnm.Qnmat):
 #class Qnprj_Dode(qna.QnNdarray):
 class Qnprj_Dode(qnm.Qnmat):
     def __new__(cls):
-        global n,N
+        global n,N,isys
         n=5
         N=3
+        isys=5
         return super().__new__(cls,n,N)
 
     def __init__(self):
@@ -113,6 +117,7 @@ class Qnprj_Dode(qnm.Qnmat):
             for j in range(n):
                 self[i][j]=mt[i][j]
         qnm.printqnm("Qnprj_Dode prj",self) # for test
+        #prj=self
         #print("self.ndim",self.ndim) # fpr test
         #print("self.shape",self.shape) # fpr test
 
@@ -121,9 +126,10 @@ class Qnprj_Dode(qnm.Qnmat):
 #class Qnprj_Icos(qna.QnNdarray):
 class Qnprj_Icos(qnm.Qnmat):
     def __new__(cls):
-        global n,N
+        global n,N,isys
         n=6
         N=5
+        isys=2
         return super().__new__(cls,n,N)
     
     def __init__(self):
@@ -148,20 +154,22 @@ class Qnprj_Icos(qnm.Qnmat):
             for j in range(n):
                 self[i][j]=mt[i][j]
         qnm.printqnm("Qnprj_Icos prj",self) # for test
+        #prj=self
         #print("self.ndim",self.ndim) # fpr test
         #print("self.shape",self.shape) # fpr test
         
 
 
 def prjop_init(isys:np.int64):
+    global prj0
     if(isys==2): # projection operator for icosahedral
-        prj=Qnprj_Icos()
+        prj0=Qnprj_Icos()
     elif(isys==3): # projection operator for decagonal
-        prj=Qnprj_Deca()
+        prj0=Qnprj_Deca()
     elif(isys==4): # projection operator for octagonal
-        prj=Qnprj_Octa()
+        prj0=Qnprj_Octa()
     elif(isys==5): # projection operator dodecagonal
-        prj=Qnprj_Dode()
+        prj0=Qnprj_Dode()
 
 def copy(qna1: qnm.Qnmat):
     #return np.copy(qna1,dtype=qnn.Qnnum)
@@ -178,22 +186,28 @@ def copy(qna1: qnm.Qnmat):
 def prjop(v: qnv.Qnvec) -> qnv.Qnvec:
     qnm.printqnm("prj",prj)
     qnv.printqnv("v",v)
-    vei=v@prj  #@v # vt assumed to be qnvec
+    vei=v@prj0  #@v # vt assumed to be qnvec
     return vei
 
 # projection into external space for class cls
 def prjop_e(v:qnv.Qnvec) -> qnv.Qnvec:
     vei=v@prj  #@v # vt assumed to be qnvec
-    return vei[1:3]
+    if isys>2: # dihedral
+        return vei[0:1],vei[4]
+    elif isys==2: # icosahedral
+        return vei[0:2]
 
 # projection into internal space for class cls
 def prjop_i(v: qnv.Qnvec) -> qnv.Qnvec:
-    vei=v@prj  #@v
-    return vei[4:6]
+    vei=v@prj0  #@v
+    if isys>2: # dihedral
+        return vei[2:3]
+    elif isys==2: # icosahedral
+        return vei[3:5]
 
 # alias for prjop_i
 def projection3(v: qnv.Qnvec) -> qnv.Qnvec:
-    return prjop_i(prj,v)
+    return prjop_i(v)
 
 def projection_numerical(vn: qnv.Qnvec) -> qnv.Qnvec:
     return prjop(vn)

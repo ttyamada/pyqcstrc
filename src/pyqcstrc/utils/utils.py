@@ -14,8 +14,9 @@ import pyqcstrc.qnnum.qnnum as qnn
 import pyqcstrc.qnvec.qnvec as qnv
 #import pyqcstrc.qnmat.qnmat as qnm
 #import pyqcstrc.prjop.prjop as prj
-import pyqcstrc.qnmath.qnmath as qnt
+import pyqcstrc.qnmath.qnmath as qnmt
 import pyqcstrc.qnclass.numericalc as num
+import pyqcstrc.prjop.prjop as prj
 
 def shift_object(obj: qnv.Qnvec, shift: qnv.Qnvec) -> qnv.Qnvec:
     """shift an object
@@ -841,90 +842,85 @@ def middle_position(pos1: qnv.Qnvec,pos2 :qnv.Qnvec):
     return out
 
 if __name__ == '__main__':
-    
-    # test
-    
-    import random
-    
-    def generate_random_value():
-        """ generate value in TAU-style
-        """
-        nmax=10
-        v=np.zeros((3),dtype=np.int64)
-        for i1 in range(2):
-            v[i1]=random.randrange(-nmax,nmax) # a and b in (a+b*TAU)/c.
-        v[2]=random.randrange(1,nmax) # c in (a+b*TAU)/c.
-        return v
         
-    def generate_random_vector(ndim=6):
-        """ generate ndim vector in TAU-style
-        ndim: dimension of vectors
-        """
-        nmax=10
-        v=np.zeros((ndim,3), dtype=np.int64)
-        for i1 in range(ndim):
-            v[i1]=generate_random_value()
-        return v
-        
-    def generate_random_vectors(n,ndim=6):
-        """
-        num: number of generated vectors.
-        ndim: dimension of vectors
-        """
-        v=np.zeros((n,ndim,3), dtype=np.int64)
-        for i1 in range(n):
-            v[i1]=generate_random_vector(ndim)
-        return v
-    
-    def generate_random_triangle():
-        return generate_random_vectors(3)
-    
-    
-    
-    #================
-    # ソートのテスト
-    #================
     N=2 # for octagonal
-    n=2
+    n=3
     ns=3
-    qn0=qnn.Qnnum([0,0,1],N)
-    qn1=qnn.Qnnum([1,0,1],N)
-    qn2=qnn.Qnnum([0,1,1],N)
-    qn3=qnn.Qnnum([1,1,2],N)
-    qv0=qnv.Qnvec(n,N)
-    vns=np.array((ns),dtype=qnv.Qnvec)  #[qv0]*ns
-    for i in range(ns):
-        vns[i]=qnv.Qnvec(n,N)
-    vns[0].vt=[qn0,qn1]
-    vns[1].vt=[qn1,qn2]
-    vns[2].vt=[qn1,qn3]
+    M0=qnn.Qnnum([0,0,1],N)
+    M1=qnn.Qnnum([1,0,1],N)
+    M2=qnn.Qnnum([0,1,1],N)
+    M3=qnn.Qnnum([1,1,2],N)
+    
+    qnv0=np.zeros(ns,dtype=qnv.Qnvec) 
+    qnv0[0]=qnv.anyv(n,N,[M2,M3,M0])
+    qnv0[1]=qnv.anyv(n,N,[M0,M1,M2])
+    qnv0[2]=qnv.anyv(n,N,[M1,M2,M0])
+
+    qnc0=qnv.cros(qnv0[0],qnv0[1])
+    qnv.printqnv("qnc0",qnc0)
+    qnn.printqnn("dot(qnc0,qnv0[0])",qnv.dot(qnc0,qnv0[0])) # this should be zero
+    qnn.printqnn("dot(qnc0,qnv0[1])",qnv.dot(qnc0,qnv0[1])) # this should be zero
+    qnn.printqnn("dot(qnc0,qnv0[2])",qnv.dot(qnc0,qnv0[2])) # this should be non-zero
+     #[qv0]*ns
     #vts=generate_random_vectors(nset)  # this shoykd be vnvector
     #vns=num.get_internal_component_sets_numerical(vts)
     #qnv.printqnv("vns",vns)
-    for vn in vns:
-        qnv.printqnv("vn",vn)
+    for i in range(ns):
+        str="qnv0["+format(i)+"]"
+        qnv.printqnv(str,qnv0[i])
     print('\n')
     #print(vts.shape)
+    vinp=np.zeros(ns,dtype=qnn.Qnnum)
+    for i in range(ns):
+        vinp[i]=qnv.dot(qnv0[i],qnv0[i])
+        qnn.printqnn("dot(qnvo[i],qnv0[i])",vinp[i])
+    ip=np.zeros(ns,dtype=np.int64)
+    vts1=qnmt.qsort(vinp,ip,ns) # use qnmath
+    print("ip",ip)
+    qnv.printqnv("vinp",vinp)
+    qnv.printqnv("vts1",vts1)
     
-    vts1=qnt.sort_vctors(vns,ip,ns) # use qnmath
-    vns1=num.get_internal_component_sets_numerical(vts1)
-    for vn in vns1:
-        qnv.printqnv("vn",vn)
+    # nD lattice vector for defining ODs
+    n=5
+    N=2
+    # 8 corner vectors for AB tiling OD
+    vts2=np.zeros((8,n),dtype=qnn.Qnnum) # for octagon for Ammann-Beenker tiling
+    M0=qnn.Qnnum([0,0,1],N)
+    M1=qnn.Qnnum([1,0,2],N)  # 1
+    M2=qnn.Qnnum([-1,0,2],N) # -1
+    M3=qnn.Qnnum([0,1,4],N)  # sqrt(2)/2
+    M4=qnn.Qnnum([0,-1,4],N) # -sqrt(2)/2
+    # AB OD edge vectors in qnnum
+    vts2[0]=qnv.anyv(n,N,[M1,M0,M0,M1,M0]) #(1 0 0 1 0)/2
+    vts2[1]=qnv.anyv(n,N,[M0,M0,M2,M1,M0]) #(0 0 -1 1 0)/2
+    vts2[2]=qnv.anyv(n,N,[M0,M1,M2,M0,M0]) #(0 1 -1 0 0)/2
+    vts2[3]=qnv.anyv(n,N,[M2,M1,M0,M0,M0]) #(-1 1 0 0 0)/2
+    vts2[4]=qnv.anyv(n,N,[M2,M0,M0,M2,M0]) #(-1 0 0 -1 0)/2
+    vts2[5]=qnv.anyv(n,N,[M0,M0,M1,M2,M0]) #(0 0 1 -1 0)/2
+    vts2[6]=qnv.anyv(n,N,[M0,M2,M1,M0,M0]) #(0 -1 1 0 0)/2
+    vts2[7]=qnv.anyv(n,N,[M1,M2,M0,M0,M0]) #(1 -1 0 0 0)/2
+    
+    isys=4
+    prj.prjop_init(isys)
+    vns2=num.get_internal_component_sets_numerical(vts2) # perp space components
+    for i in range(8):
+        str="vts2["+format(i+1)+"]"
+        qnv.printqnv(str,vts2[i])
     
     #================
     # 重複のテスト
     #================
     nset=5
     #vst=generate_random_vectors(nset)
-    vst=np.array((nset),dtype=qnv.Qnvec)
-    for i in range(nset):
-        vst[i]=qnv.Qnvec(n,N)
+    vst=np.zeros(nset,dtype=qnv.Qnvec)
+    #for i in range(nset):
+    #    vst[i]=qnv.Qnvec(n,N)
     # set vt values
-    vst[0].vt=[qn0,qn1]
-    vst[1].vt=[qn1,qn2]
-    vst[2].vt=[qn1,qn3]
-    vst[3].vt=[qn0,qn3]
-    vst[4].vt=[qn2,qn1]
+    vst[0]=[M0,M1]
+    vst[1]=[M1,M2]
+    vst[2]=[M1,M3]
+    vst[3]=[M0,M3]
+    vst[4]=[M2,M1]
     
     vst_d3=np.concatenate([vst,vst]) # doubling dim3 vectors
     vst_d4=np.stack([vst_d3,vst_d3]) # doubling dim4 vectors

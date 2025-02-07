@@ -240,3 +240,14 @@ if __name__ == '__main__':
     printqnm("unm2",unm2)
     
     unm3=unm2@unm1
+    printqnm("unm2@unm1",unm3)
+    M0=qnn.Qnnum([0,0,1],N)
+    M1=qnn.Qnnum([1,0,1],N)
+    M2=qnn.Qnnum([0,1,1],N)
+    M3=qnn.Qnnum([1,1,2],N)
+    M4=qnn.Qnnum([1,-1,2],N)
+    qnv1=qnv.anyv(n,N,[M0,M1,M2,M3,M4])
+    qnv.printqnv("qnv1",qnv1)
+    qnv2=unm2@qnv1
+    qnv.printqnv("qnv2",qnv2)
+    
