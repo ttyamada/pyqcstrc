@@ -3,7 +3,7 @@ import numpy as np
 import pyqcstrc.qnnum.qnnum as qnn
 import pyqcstrc.qnvec.qnvec as qnv
 import pyqcstrc.qnmat.qnmat as qnm
-import pyqcstrc.qnmath.qnmath as mth
+import pyqcstrc.qnmath.qnmath as qmt
 import pyqcstrc.qnndarray.qnndarray as qna
 
 #N=2
@@ -158,18 +158,20 @@ class Qnprj_Icos(qnm.Qnmat):
         #print("self.ndim",self.ndim) # fpr test
         #print("self.shape",self.shape) # fpr test
         
-
-
 def prjop_init(isys:np.int64):
-    global prj0
+    global prj0,prji
     if(isys==2): # projection operator for icosahedral
         prj0=Qnprj_Icos()
+        prji=qmt.qnmatinv(prj0,6) # get inversion matrix of prj
     elif(isys==3): # projection operator for decagonal
         prj0=Qnprj_Deca()
+        prji=qmt.qnmatinv(prj0,5) # get inversion matrix of prj
     elif(isys==4): # projection operator for octagonal
         prj0=Qnprj_Octa()
+        prji=qmt.qnmatinv(prj0,5) # get inversion matrix of prj
     elif(isys==5): # projection operator dodecagonal
         prj0=Qnprj_Dode()
+        prji=qmt.qnmatinv(prj0,5) # get inversion matrix of prj
 
 def copy(qna1: qnm.Qnmat):
     #return np.copy(qna1,dtype=qnn.Qnnum)
@@ -311,13 +313,13 @@ if __name__ == '__main__':
     prj3f=qnm2flnm(prj3)
     printfm("prj3f",prj3f,n)
     
-    prji3f=mth.matinv_f(prj3f,n)
+    prji3f=qmt.matinv_f(prj3f,n)
     #prji3f=np.linalg.inv(prj3f)
     printfm("prji3f",prji3f,n)
     unitmf=prji3f@prj3f
     printfm("unitmf",unitmf,n)
     
-    prji3=mth.qnmatinv(prj3,n)
+    prji3=qmt.qnmatinv(prj3,n)
     qnm.printqnm("prji3",prji3)
     unitm=prji3@prj3
     qnm.printqnm("untm",unitm)
