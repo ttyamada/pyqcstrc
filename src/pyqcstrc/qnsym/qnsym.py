@@ -56,8 +56,6 @@ class Qnsym_Deca(qna.QnNdarray):
         return super().__new__(cls,shape,N)
         
     def __init__(self):
-        # gemeratprs R10 and M
-  
         ng=3
         # three generating elements
         rg=np.zeros((ng,n,n),dtype=np.int64)
@@ -95,8 +93,6 @@ class Qnsym_Dode(qna.QnNdarray):
         return super().__new__(cls,shape,N)
     
     def __init__(self):
-        # generators R8 and M
- 
         ng=3
         # two generating elements
         rg= np.zeros((ng,n,n),dtype=np.int64)
@@ -132,8 +128,6 @@ class Qnsym_Icos(qna.QnNdarray):
         return super().__new__(cls,shape,N)
     
     def __init__(self):
-        # generators R8 and M
-
         ng=5 # five generators R5 R3 R2_x R2_y I
         # two generating elements
         rg= np.zeros((ng,n,n),dtype=np.int64)
@@ -170,11 +164,13 @@ def rtoqnr(r):
 def qnsym_init(isys):
     global qnr  # symmetry operator for external and internal space comp. of nD vector
     if isys==2:
-        qnr=Qnsym_Icos()
+        qnr=Qnsym_Icos() #Pn35
     elif isys==3:
-        qnr=Qnsym_Deca()
+        qnr=Qnsym_Deca() #P10mm
     elif isys==4:
-        qnr=Qnsym_Dode()
+        qnr=Qnsym_Octa() #P8mm
+    elif isys==5:
+        qnr=Qnsym_Dode() #P12mm
         
 def set_mpltbl(r): # r: integer rotation matrices in nD lattice
     global mpltbl
