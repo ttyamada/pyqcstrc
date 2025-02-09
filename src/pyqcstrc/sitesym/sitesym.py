@@ -13,7 +13,7 @@ import pyqcstrc.qnsym.qnsym as qns
 import pyqcstrc.lattice.lattice as lt
 
 
-def site_symmetry(x,qnr,brv) -> np.ndarray: # return irs
+def site_symmetry(x:qnv.Qnvec,qnr:qnm.Qnmat,brv) -> np.ndarray: # return irs
     """symmetry operator insixwa irs in the site symmetry group G.
     
     Args:
@@ -29,7 +29,7 @@ def site_symmetry(x,qnr,brv) -> np.ndarray: # return irs
     #a=np.zeros((len(symop),6,3),dtype=np.int64)
 
     n=len(x)
-    N=x[0].N
+    N=x.N
     a=np.zeros((len(qnr),n),dtype=qnn.Qnnum)
 
     irs=[]
@@ -73,7 +73,7 @@ def coset(irs) -> np.array: # return coset representativ indices in symop
     print("idx",isk[0:m]) # for test
     return isk
 
-def equivalent_positions(x,brv,isk) -> qnv.vector:
+def equivalent_positions(x,brv,isk) -> qnv.Qnvec:
     """
     siteに対して点群の対称性を施したサイトのうち、並進操作のみで結ばれない位置を求める。
         適切な名前を決める必要がある！！！
@@ -124,8 +124,12 @@ if __name__ == '__main__':
     prj.prjop_init(isys)
     qns.qnsym_init(isys)
     x=qnv.zerov(n,N)
-    qnr=qns.qnr
-    irs=site_symmetry(x,qnr0,brv)
+    qnv.printqnv("x",x)
+    #qnr=qns.qnr # symmetry operators
+    nr=qns.nr
+    for i in range(nr):
+        qnm.printqnm("qnr[i]",qns.qnr[i])
+    irs=site_symmetry(x,qnr,brv)
     print("irs",irs)
     
     x1=qnv.zerov(n,N)           #(0,0,0,0,0)

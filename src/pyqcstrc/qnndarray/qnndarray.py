@@ -23,7 +23,10 @@ class QnNdarray(np.ndarray):
         
 def copy(qna1: QnNdarray):
     return np.copy(qna1)
-        
+
+def zeros(shape):
+    np.zeros(shape,dtype=qnn.Qnnum)
+
 # only ndim=1,2,3
 def printqndm(str:str, qnm:QnNdarray):
     ndim=qnm.ndim

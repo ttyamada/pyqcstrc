@@ -8,11 +8,15 @@ import pyqcstrc.qnndarray.qnndarray as qna
 #class Qnvec(np.ndarray):
 class Qnvec(qna.QnNdarray):
     def __new__(cls, n:np.int64, N:np.int64):
+        global shape
         shape=(n)
         return super().__new__(cls,shape,N)
     
     def __init__(self, n:np.int64, N:np.int64):
         qn0=qnn.Qnnum([0,0,1],N) #int2qnn(0,N)
+        self.n=n
+        self.N=N
+        self.shape=shape
         for i in range(self.shape[0]):
             self[i]=qn0
         #print("self.shape",self.shape)  # for test
@@ -35,11 +39,17 @@ class Qnvec(qna.QnNdarray):
         if isinstance(b, int):
             return div_vector_i(a,b)
         
-def anyv(n,N,vec:qnn.Qnnum):
+def zeros(shape):
+    np.zeros(shape,dtype=qnn.Qnnum)
+
+def anyv(n:np.int64,N:np.int64,vec:qnn.Qnnum):
     qnv=Qnvec(n,N)
     for i in range(n):
         qnv[i]=vec[i]
     return qnv
+
+def copy(v1: Qnvec):
+    return np.copy(v1)
     
 def zerov(n:np.int64,N:np.int64): # qnnumber zero vector
     qnv=Qnvec(n,N)
@@ -241,31 +251,49 @@ def printqnv2(str:str,qnv1:Qnvec,qnv2:Qnvec):
     
 if __name__ == '__main__':
     # test
-    N=2 # octagonal
-    n=3
-
-    M0=qnn.Qnnum([0,0,1],N)
-    M1=qnn.Qnnum([1,0,1],N)
-    M2=qnn.Qnnum([0,1,1],N)
-    vec1=np.array([M0,M1,M2],dtype=qnn.Qnnum)    
-    vec2=np.array([M0,M1,M2],dtype=qnn.Qnnum)
-    vec3=np.array([M1,M2,M0],dtype=qnn.Qnnum)
-    qnv1=anyv(n,N,vec1)
-    qnv2=anyv(n,N,vec2)
-    qnv3=anyv(n,N,vec3)
+    def qnvec_tst(str,n,N):
+        print(str)
+        print("n",n,"N",N)
+        M0=qnn.Qnnum([0,0,1],N)
+        M1=qnn.Qnnum([1,0,1],N)
+        M2=qnn.Qnnum([0,1,1],N)
+        if n==5:
+            vec1=np.array([M0,M1,M2,M0,M1],dtype=qnn.Qnnum)    
+            vec2=np.array([M0,M1,M2,M0,M1],dtype=qnn.Qnnum)
+            vec3=np.array([M1,M2,M0,M1,M2],dtype=qnn.Qnnum)
+        elif n==6:
+            vec1=np.array([M0,M1,M2,M0,M1,M2],dtype=qnn.Qnnum)    
+            vec2=np.array([M0,M1,M2,M0,M1,M2],dtype=qnn.Qnnum)
+            vec3=np.array([M1,M2,M0,M1,M2,M0],dtype=qnn.Qnnum)
+        qnv1=anyv(n,N,vec1)
+        qnv2=anyv(n,N,vec2)
+        qnv3=anyv(n,N,vec3)
     
-    printqnv("qnv1",qnv1)
-    printqnv("qnv2",qnv2)
-    printqnv("qnv3",qnv3)
+        printqnv("qnv1",qnv1)
+        printqnv("qnv2",qnv2)
+        printqnv("qnv3",qnv3)
     
-    qnv4=qnv1+qnv2
-    qnv5=qnv1-qnv3
-    printqnv("qnv1+qnv2",qnv4)
-    printqnv("qnv1-qnv3",qnv5)
+        qnv4=qnv1+qnv2
+        qnv5=qnv1-qnv3
+        printqnv("qnv1+qnv2",qnv4)
+        printqnv("qnv1-qnv3",qnv5)
     
-    qnn1=dot(qnv1,qnv3)
-    qnn.printqnn("dot(qnv1,qnv3)",qnn1)
+        qnn1=dot(qnv1,qnv3)
+        qnn.printqnn("dot(qnv1,qnv3)",qnn1)
     
-    qnv6=cros(qnv1,qnv3)
-    printqnv("cross(qnv1,qnv3)",qnv6)
+        qnv6=cros(qnv1,qnv3)
+        printqnv("cross(qnv1,qnv3)",qnv6)
+    
+    n=5
+    N=2
+    qnvec_tst("octagonal",n,N) # octagonal
+    N=5
+    qnvec_tst("decagonal",n,N) # octabonal
+    N=3
+    qnvec_tst("dodecagonal",n,N) # octabonal
+    n=6
+    N=5
+    qnvec_tst("icosahedral",n,N) # octabonal
+    
+    
     

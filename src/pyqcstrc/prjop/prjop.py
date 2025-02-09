@@ -29,7 +29,7 @@ class Qnprj_Octa(qnm.Qnmat):
         M4=qnn.Qnnum(np.array([ 0,-1, 2]),N) # -sqrt(2)/2
         #self=qnm.Qnmat(n,N)
         #mt=[\
-        mt=np.array([\
+        prj0=np.array([\
            [M1,M0,M1,M0,M0],\
            [M3,M3,M4,M3,M0],\
            [M0,M1,M0,M2,M0],\
@@ -37,10 +37,15 @@ class Qnprj_Octa(qnm.Qnmat):
            [M0,M0,M0,M0,M1]\
         ],dtype=qnn.Qnnum)
         #]
-        for i in range(n):
-            for j in range(n):
-                self[i][j]=mt[i][j]
-        qnm.printqnm("Qnprj_Octa prj",self) # for test
+        #for i in range(n):
+        #    for j in range(n):
+        #        prj0[i][j]=mt[i][j]
+        qnm.printqnm("Qnprj_Octa prj",prj0) # for 
+        self.prj0=prj0
+        self.prji=qmt.qnmatinv(prj0,n) # get inversion matrix of prj
+        self.n=n
+        self.N=N
+        self.shape=(n,n)
         #prj=self
 
 # for decagonal QCs
@@ -67,7 +72,7 @@ class Qnprj_Deca(qnm.Qnmat):
         M7=-M3-qn2
 
         #mt=[\
-        mt=np.array([\
+        prj0=np.array([\
            [M6,M4,M7,M5,M0],\
            [M7,M5,M6,-M4,M0],\
            [M7,-M5,M6,M4,M0],\
@@ -75,10 +80,15 @@ class Qnprj_Deca(qnm.Qnmat):
            [M0,M0,M0,M0,M1]\
         ],dtype=qnn.Qnnum)
         #]
-        for i in range(n):
-            for j in range(n):
-                self[i][j]=mt[i][j]
-        qnm.printqnm("Qnprj_Deca prj",self) # for test
+        #for i in range(n):
+        #    for j in range(n):
+        #        prj0[i][j]=mt[i][j]
+        qnm.printqnm("Qnprj_Deca prj",prj0) # for test
+        self.prj0=prj0
+        self.prji=qmt.qnmatinv(prj0,n) # get inversion matrix of prj
+        self.n=n
+        self.N=N
+        self.shape=(n,n)
         #prj=self
         #print("self.ndim",self.ndim) # fpr test
         #print("self.shape",self.shape) # fpr test
@@ -104,7 +114,7 @@ class Qnprj_Dode(qnm.Qnmat):
         M6=qnn.Qnnum(np.array([ 0,-1, 2]),N) # -sqrt(3)/2
 
         #mt=[\
-        mt=np.array([\
+        prj0=np.array([\
            [M5,M4,M6,M4,M0],\
            [M1,M0,M1,M0,M0],\
            [M0,M1,M0,M1,M0],\
@@ -113,10 +123,15 @@ class Qnprj_Dode(qnm.Qnmat):
         ],dtype=qnn.Qnnum)
         #]
 
-        for i in range(n):
-            for j in range(n):
-                self[i][j]=mt[i][j]
-        qnm.printqnm("Qnprj_Dode prj",self) # for test
+        #for i in range(n):
+        #    for j in range(n):
+        #        prj0[i][j]=mt[i][j]
+        qnm.printqnm("Qnprj_Dode prj",prj0) # for test
+        self.prj0=prj0
+        self.prji=qmt.qnmatinv(prj0,n) # get inversion matrix of prj
+        self.n=n
+        self.N=N
+        self.shape=(n,n)
         #prj=self
         #print("self.ndim",self.ndim) # fpr test
         #print("self.shape",self.shape) # fpr test
@@ -140,7 +155,7 @@ class Qnprj_Icos(qnm.Qnmat):
         M4=qnn.Qnnum([-1,-1, 2],N) # -tau
 
         #mt=[\
-        mt=np.array([\
+        prj0=np.array([\
            [M1,M3,M0,M3,M2,M0],\
            [M3,M0,M1,M2,M0,M3],\
            [M3,M0,M2,M2,M0,M4],\
@@ -150,28 +165,29 @@ class Qnprj_Icos(qnm.Qnmat):
         ],dtype=qnn.Qnnum)
         #]
         
-        for i in range(n):
-            for j in range(n):
-                self[i][j]=mt[i][j]
-        qnm.printqnm("Qnprj_Icos prj",self) # for test
-        #prj=self
+        #for i in range(n):
+        #    for j in range(n):
+        #        prj0[i][j]=mt[i][j]
+        qnm.printqnm("Qnprj_Icos prj0",prj0) # for test
+        self.prj0=prj0
+        self.prji=qmt.qnmatinv(prj0,n) # get inversion matrix of prj
+        self.n=n
+        self.N=N
+        self.shape=(n,n)
         #print("self.ndim",self.ndim) # fpr test
         #print("self.shape",self.shape) # fpr test
         
 def prjop_init(isys:np.int64):
-    global prj0,prji
+    #global prj0,prji,n,N
     if(isys==2): # projection operator for icosahedral
-        prj0=Qnprj_Icos()
-        prji=qmt.qnmatinv(prj0,6) # get inversion matrix of prj
+        prj=Qnprj_Icos()
     elif(isys==3): # projection operator for decagonal
-        prj0=Qnprj_Deca()
-        prji=qmt.qnmatinv(prj0,5) # get inversion matrix of prj
+        prj=Qnprj_Deca()
     elif(isys==4): # projection operator for octagonal
-        prj0=Qnprj_Octa()
-        prji=qmt.qnmatinv(prj0,5) # get inversion matrix of prj
+        prj=Qnprj_Octa()
     elif(isys==5): # projection operator dodecagonal
-        prj0=Qnprj_Dode()
-        prji=qmt.qnmatinv(prj0,5) # get inversion matrix of prj
+        prj=Qnprj_Dode()
+    return prj
 
 def copy(qna1: qnm.Qnmat):
     #return np.copy(qna1,dtype=qnn.Qnnum)
@@ -254,7 +270,7 @@ def print_prj(str:str,prj:qnm.Qnmat):
     #print(prj)
     print(str)
     n=prj.shape[0]
-    N=prj[0][0].N
+    N=prj.N
     print("n",n,"N",N)
     
     qnm.printqnm(str,prj)
@@ -284,45 +300,68 @@ def qnm2flnm(prj:qnm.Qnmat):
 
 if __name__ == '__main__':
     # test for qnnum projection operators
-    N=2
-    prj4=Qnprj_Octa() # qnnum projection operator
-    qnm.printqnm("prj4",prj4)  #
+    def prj_tst(isys):
+        prjop_init(isys)
+        print("isys",isys)
+        qnm.printqnm("prj0",prj0)
+        #prji=qmt.qnmatinv(prj0,n)
+        qnm.printqnm("prji",prji)
+        unitm=prji@prj0
+        qnm.printqnm("untm",unitm)
+        
+        prjf=qnm2flnm(prj0)
+        printfm("prjf",prjf,n)
+        #prjif=qnm2flnm(prji)
+        prjif=qmt.matinv_f(prjf,n)
+        #prji3f=np.linalg.inv(prj3f)
+        printfm("prjif",prjif,n)
+        unitmf=prjif@prjf
+        printfm("unitmf",unitmf,n)
+    
+
+    
+    prj_tst(4)
+    prj_tst(3)
+    prj_tst(5)
+    prj_tst(2)
+    #N=2
+    #prj4=Qnprj_Octa() # qnnum projection operator
+    #qnm.printqnm("prj4",prj4)  #
     #qna.printqndm("prj4",prj4)  #
     
-    N=5
-    prj3=Qnprj_Deca() # float projection operator
-    qnm.printqnm("prj3",prj3)  #
+    #N=5
+    #prj3=Qnprj_Deca() # float projection operator
+    #qnm.printqnm("prj3",prj3)  #
     #qna.printqndm("prj3",prj3)  #
     
-    N=3
-    prj5=Qnprj_Dode() # float projection operator
-    qnm.printqnm("prj5",prj3)  #
+    #N=3
+    #prj5=Qnprj_Dode() # float projection operator
+    #qnm.printqnm("prj5",prj3)  #
     #qna.printqndm("prj5",prj3)  #
 
-    N=5
-    prj2=Qnprj_Icos() # float projection operator
-    qnm.printqnm("prj2",prj2)  #
+    #N=5
+    #prj2=Qnprj_Icos() # float projection operator
+    #qnm.printqnm("prj2",prj2)  #
     #qna.printqndm("prj2",prj2)  #
 
     # check qnmatinv
-    N=2
-    n=5
-    prj3=Qnprj_Octa()
-    qnm.printqnm("prj3",prj3)  #
+    #N=2
+    #n=5
+    #prj3=Qnprj_Octa()
+    #qnm.printqnm("prj3",prj3)  #
 
-    prj3f=qnm2flnm(prj3)
-    printfm("prj3f",prj3f,n)
+    #prj3f=qnm2flnm(prj3)
+    #printfm("prj3f",prj3f,n)
     
-    prji3f=qmt.matinv_f(prj3f,n)
-    #prji3f=np.linalg.inv(prj3f)
-    printfm("prji3f",prji3f,n)
-    unitmf=prji3f@prj3f
-    printfm("unitmf",unitmf,n)
+    #prji3f=qmt.matinv_f(prj3f,n)
+    #printfm("prji3f",prji3f,n)
+    #unitmf=prji3f@prj3f
+    #printfm("unitmf",unitmf,n)
     
-    prji3=qmt.qnmatinv(prj3,n)
-    qnm.printqnm("prji3",prji3)
-    unitm=prji3@prj3
-    qnm.printqnm("untm",unitm)
+    #prji3=qmt.qnmatinv(prj3,n)
+    #qnm.printqnm("prji3",prji3)
+    #unitm=prji3@prj3
+    #qnm.printqnm("untm",unitm)
     
     
 

@@ -56,13 +56,24 @@ class Qnnum:
     
 def copy(a):
     #return np.copy(a)
+    #original code
     N=a.N
     self=Qnnum([0,0,1],N)
-    self.n[0]=copy(a.n[0])
-    self.n[1]=copy(a.n[1])
-    self.n[2]=copy(a.n[2])
+    self.n[0]=np.copy(a.n[0])
+    self.n[1]=np.copy(a.n[1])
+    self.n[2]=np.copy(a.n[2])
     self.N=N
     return self
+
+#def copy(a:Qnnum) -> Qnnum:
+#    n=np.copy(a.n) # a.n : int list
+#    N=a.N
+#    #print("a",a.n[0],a.n[1],a.n[2]) # for test
+#    b=Qnnum(n,N)
+#    #print("b",b.n[0],b.n[1],b.n[2]) # for test
+#    #b.n1=np.copy(a.n1); b.n2=np.copy(a.n2); b.n3=np.copy(a.n3)
+#    return b
+
     
 def add(a, b):
     #print("a1",a.n[0],"a2",a.n[1],"a3",a.n[2])
@@ -189,15 +200,6 @@ def abs(a:Qnnum):
     if a.n[0]+a.n[1]*np.sqrt(a.N)<0:
         return neg(a)
     return a
-
-def copy(a:Qnnum) -> Qnnum:
-    n=np.copy(a.n) # a.n : int list
-    N=a.N
-    #print("a",a.n[0],a.n[1],a.n[2]) # for test
-    b=Qnnum(n,N)
-    #print("b",b.n[0],b.n[1],b.n[2]) # for test
-    #b.n1=np.copy(a.n1); b.n2=np.copy(a.n2); b.n3=np.copy(a.n3)
-    return b
 
 # Qnnumber to np.array converter
 def qn2npa(a):

@@ -36,7 +36,11 @@ class Qnsym_Octa(qna.QnNdarray):
         #print("r.shape",r.shape) # fpr test
         set_r(rg,ord,r) # set all integer symmetry operators r
         print_r(r)  #; exit() # for test
-        self=qna.copy(rtoqnr(r))
+        self.qnr=qna.copy(rtoqnr(r))
+        self.nr=nr
+        self.n=n
+        self.N=N
+        self.shape=shape
         
         #prj0=prj.prj0    
         #prji=prj.prji
@@ -73,7 +77,11 @@ class Qnsym_Deca(qna.QnNdarray):
         r=np.zeros(shape,dtype=np.int64)
         set_r(rg,ord,r)  # set all integer rotation matrices
         print_r(r)  #; exit() # for test
-        self=qna.copy(rtoqnr(r))
+        self.qnr=qna.copy(rtoqnr(r))
+        self.nr=nr
+        self.n=n
+        self.N=N
+        self.shape=shape
         
         #prj0=prj.prj0    
         #prji=prj.prji
@@ -106,8 +114,13 @@ class Qnsym_Dode(qna.QnNdarray):
         r=np.zeros(shape,dtype=np.int64)
         set_r(rg,ord,r)  # set all integer rotation matrices
         print_r(r)  #; exit() # for test
-        self=qna.copy(rtoqnr(r))
+        self.qnr=qna.copy(rtoqnr(r))
+        self.nr=nr
+        self.n=n
+        self.N=N
+        self.shape=shape
         
+
         #prj0=prj.prj0    
         #prji=prj.prji
         #qnr=get_qnr(prj0,prji,r,nr,n)  # block diagonakl symmetry operator for ext and int comp.
@@ -144,8 +157,11 @@ class Qnsym_Icos(qna.QnNdarray):
         r=np.zeros(shape,dtype=np.int64)
         set_r(rg,ord,r)  # set all integer rotation matrices
         print_r(r)  #; exit() # for test
-        self=qna.copy(rtoqnr(r))
-
+        self.qnr=qna.copy(rtoqnr(r))
+        self.nr=nr
+        self.n=n
+        self.N=N
+        self.shape=shape
         # r : int array
         #qnr=get_qnr(prj0,prji,r,nr,n)  # block diagonakl symmetry operator for ext and int comp.
         #prji=prj.Qnprj_Icos()
@@ -157,20 +173,23 @@ def rtoqnr(r):
     shape=r.shape # (nr,n,n)
     nr=shape[0]
     n=shape[1]
-    prj0=prj.prj0    
-    prji=prj.prji
     return get_qnr(prj0,prji,r,nr,n)
     
 def qnsym_init(isys):
-    global qnr  # symmetry operator for external and internal space comp. of nD vector
+    global prj0,prji
+    #global qns  # symmetry operators for external and internal space comp. of nD vector
+    prjt=prj.prjop_init(isys)
+    prj0=prjt.prj0
+    prji=prjt.prji
     if isys==2:
-        qnr=Qnsym_Icos() #Pn35
+        qns=Qnsym_Icos() #Pn35
     elif isys==3:
-        qnr=Qnsym_Deca() #P10mm
+        qns=Qnsym_Deca() #P10mm
     elif isys==4:
-        qnr=Qnsym_Octa() #P8mm
+        qns=Qnsym_Octa() #P8mm
     elif isys==5:
-        qnr=Qnsym_Dode() #P12mm
+        qns=Qnsym_Dode() #P12mm
+    return qns
         
 def set_mpltbl(r): # r: integer rotation matrices in nD lattice
     global mpltbl
@@ -274,30 +293,35 @@ def intr2qnmr(r,n,N,nr):
         qnmr[i]=qnm.intm2qnm(r[i],n,N) # qnmat for i-th rotation operator r[i]
     return qnmr
 
-def test_wt(str:str,qnr:qna.QnNdarray):
-    nr=qnr.shape[0]
+def test_wt(str:str,qns:qna.QnNdarray):
+    nr=qns.nr
     print("nr",nr)
     print(str)
     for i in range(nr):
-        qnm.printqnm("qnr[i]",qnr[i])
+        qnm.printqnm("qnr[i]",qns.qnr[i])
         
 # for test
 if __name__ == '__main__':
     # test for qnnum projection operators
-    prj.prjop_init(isys=4)
-    qnr=Qnsym_Octa() # octagonal symmetry operator
-    #test_wt("Octa",qnr)
-    #for i in range(nr):
-    #    qnm.printqnm("Qnsym_Octa",a.qnr[i])
-    prj.prjop_init(isys=3)
-    qnr=Qnsym_Deca() # decagonal
-    #test_wt("Deca",qnr)
+    isys=4
+    prj4=prj.prjop_init(isys)
+    qns4=qnsym_init(isys)
+    test_wt("Octa",qns4)
 
-    prj.prjop_init(isys=5)
-    qnr=Qnsym_Dode() # dodecagonal
-    #test_wt("Dode",qnr)
-    prj.prjop_init(isys=2)
-    qnr=Qnsym_Icos() # icosahedral
-    #test_wt("Dode",qnr)
+    isys=3
+    prj3=prj.prjop_init(isys)
+    qns3=qnsym_init(isys)
+    test_wt("Deca",qns3)
+
+    isys=5
+    prj5=prj.prjop_init(isys)
+    qns5=qnsym_init(isys)
+    test_wt("Dode",qns5)
+    
+    isys=2
+    prj2=prj.prjop_init(isys)
+    qns2=qnsym_init(isys)
+    test_wt("Icos",qns2)
+    
 
         
