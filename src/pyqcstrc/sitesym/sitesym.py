@@ -36,7 +36,7 @@ def site_symmetry(x:qnv.Qnvec,qns:qnm.Qnmat,brv) -> np.ndarray: # return irs
     mpltbl=qns.mpltbl
     a=np.zeros((nr,n),dtype=qnn.Qnnum)
 
-    irs=[]
+    irs=np.zeros(0,dtype=np.int64)
     tr=lt.get_tr(brv,n,N)
     traop=lt.get_tr(brv,n,N)  # centering translation vectors including zero vector
     for i in range(nr):
@@ -45,36 +45,57 @@ def site_symmetry(x:qnv.Qnvec,qns:qnm.Qnmat,brv) -> np.ndarray: # return irs
         for tr in traop:
             b=a[i]+tr
             if np.all(b==x):
-                irs.append(i)
+                irs=np.append(irs,i)
             else:
                 pass
     #print('irs',irs)
     return irs
-        
+
+# new symmetry operator index
+def newl(ics,ns0):
+    #print("ics",ics,"ns0",ns0) # for test
+    for i in range(ns0):
+        if i not in ics:
+            return i
+    print("new i not found")
+    print("ics",ics)
+    exit()
+                
 def coset(irs) -> np.array: # return coset representativ indices in symop
     """
     irs: iste symmetry operator index in qnr
     isk: index for coset representatives
     """
-    # number of site symmetry operators
-    ng0=nr
-    ng1=len(irs)
-    #op0=np.zeros((nr,n,n))
-    #op0[0]=np.unitm(n) # nxn unit matrix
-    idxt=np.zeros(ng0,dtype=np.int64)
-    isk=[]
-    m=0
-    for i in range(ng0):
-        if idxt[i]==0:
-            isk.append(i) # coset representative
-            m+=1
-            for j in range(ng1):
-                for k in range(ng1):
-                    if mpltbl[i][j]==k:
-                        idxt[k]=1
-                        break
-    print("m",m)
-    print("isk",isk[0:m]) # for test
+    # number of site symmetry operators    
+    ns0=nr        # order of point group
+    ns1=len(irs)  # order of site symmetry group
+    
+    print("irs",irs)
+    idxt=np.zeros(ns0,dtype=np.int64)
+    isk=np.zeros(0,dtype=np.int64)  # coset representative indices
+    ics=np.zeros(0,dtype=np.int64)  # all coset indices
+    nc=(np.int64)(ns0/ns1) # number of cosets
+    print("nc",nc) # number of 
+    for k in range(nc):
+        print("k",k) # for test
+        if k==0:
+            isk=np.append(0,isk)  # identity operator
+            for j in range(ns1):
+                ics=np.append(ics,irs[j])
+            #print("len(ics)",len(ics)) # for test
+            #print("ics",ics) # for test
+        else:
+            i=newl(ics,ns0) #new element not included in ics
+            #print("i",i) # for test
+            isk=np.append(isk,i)
+            lics=len(ics)
+            #print("lics",lics) # for test
+            for j in irs:
+                m=qns.mpltbl[i,j]
+                #print("i",i,"ics[j]",ics[j],"m",m) # for test
+                ics=np.append(ics,m)
+    print("len(isk)",len(isk))
+    print("isk",isk) # for test
     return isk
 
 def equivalent_positions(x:qnv.Qnvec,brv,isk:np.ndarray) -> qnv.Qnvec:
@@ -129,6 +150,7 @@ if __name__ == '__main__':
     prj5=prj.prjop_init(isys)
     qns5=qns.qnsym_init(isys)
     x0=qnv.zerov(n,N)
+    x0[0]=qnn.Qnnum([1,0,2],N)  #(1/2,0,0,0,0)
     qnv.printqnv("x0",x0)
     #qnr=qns.qnr # symmetry operators
     nr=qns5.nr

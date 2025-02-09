@@ -220,10 +220,13 @@ def set_mpltbl(r:np.ndarray): # r: integer rotation matrices in nD lattice
 def wt_mpltbl():
     shape=mpltbl.shape
     n=(int)(shape[0]/2)
+    print("mpltbl 1st block")
     for i in range(n):
-        print("mpltbl",mpltbl[i][0:n])
+        print("",mpltbl[i][0:n])
+    print("mpltbl 2nd block")
+    for i in range(n):
+        print("",mpltbl[i][n:n*2])
     
-
 def get_qnr(prj,prji,r,nr,n):
     N=prj[0][0].N
     qnr=qna.QnNdarray((nr,n,n),N)
