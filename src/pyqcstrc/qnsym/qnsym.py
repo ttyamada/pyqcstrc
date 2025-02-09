@@ -193,12 +193,9 @@ def qnsym_init(isys):
         qns=Qnsym_Octa() #P8mm
     elif isys==5:
         qns=Qnsym_Dode() #P12mm
-    nr=qns.nr
-    n=qns.n
-    N=qns.N
     shape=qns.shape
-    r=qns.r
-    set_mpltbl(r) # 
+    set_mpltbl(qns.r) # 
+    qns.mpltbl=mpltbl
     return qns
 
 def is_equal(r1,r2):
@@ -218,7 +215,14 @@ def set_mpltbl(r:np.ndarray): # r: integer rotation matrices in nD lattice
                 rt=r[i]@r[j]
                 if is_equal(rt,r[k]):  # ???
                     mpltbl[i][j]=k
-    print("mpltbl",mpltbl)
+    wt_mpltbl() # for test
+
+def wt_mpltbl():
+    shape=mpltbl.shape
+    n=(int)(shape[0]/2)
+    for i in range(n):
+        print("mpltbl",mpltbl[i][0:n])
+    
 
 def get_qnr(prj,prji,r,nr,n):
     N=prj[0][0].N
@@ -230,7 +234,7 @@ def get_qnr(prj,prji,r,nr,n):
         #qnr[i]=qnm.copy(prjt@rqn@prjit)  # qnmat x intmat nesessary
         qnr[i]=prjt@rqn@prjit  # qnmat x intmat nesessary
         str="# "+format(i+1)
-        qnm.printqnm(str,qnr[i])
+        #qnm.printqnm(str,qnr[i]) # for test
     return qnr
     
 # gemerate all rotation matrices from
