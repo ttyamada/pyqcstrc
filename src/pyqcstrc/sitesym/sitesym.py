@@ -13,7 +13,8 @@ import pyqcstrc.qnsym.qnsym as qns
 import pyqcstrc.lattice.lattice as lt
 
 
-def site_symmetry(x:qnv.Qnvec,qnr:qnm.Qnmat,brv) -> np.ndarray: # return irs
+def site_symmetry(x:qnv.Qnvec,qns:qnm.Qnmat,brv) -> np.ndarray: # return irs
+    global nr,n,N,mpltbl
     """symmetry operator insixwa irs in the site symmetry group G.
     
     Args:
@@ -30,12 +31,15 @@ def site_symmetry(x:qnv.Qnvec,qnr:qnm.Qnmat,brv) -> np.ndarray: # return irs
 
     n=len(x)
     N=x.N
-    a=np.zeros((len(qnr),n),dtype=qnn.Qnnum)
+    nr=qns.nr
+    qnr=qns.qnr
+    mpltbl=qns.mpltbl
+    a=np.zeros((nr,n),dtype=qnn.Qnnum)
 
     irs=[]
     tr=lt.get_tr(brv,n,N)
     traop=lt.get_tr(brv,n,N)  # centering translation vectors including zero vector
-    for i in range(len(qnr)):
+    for i in range(nr):
         op=qnr[i]
         a[i]=op@x    
         for tr in traop:
@@ -52,15 +56,12 @@ def coset(irs) -> np.array: # return coset representativ indices in symop
     irs: iste symmetry operator index in qnr
     isk: index for coset representatives
     """
-    ln0=len(qnr) # number of symmetry operators
     ln1=len(irs) # number of site symmetry operators
-    shape=qnr.shape # (ng,n,n)
-    ng0=shape[0]
-    n=shape[1]
+    ng0=nr
     ng1=len(irs)
-    op0=np.zeros((ln0,n,n))
-    op0[0]=symop[0] # nxn unit matrix
-    idxt=np.zeros(ln0,dtype=np.int64)
+    #op0=np.zeros((nr,n,n))
+    #op0[0]=np.unitm(n) # nxn unit matrix
+    idxt=np.zeros(ng0,dtype=np.int64)
     isk=[]
     m=0
     for i in range(ng0):
@@ -121,20 +122,20 @@ if __name__ == '__main__':
     brv='p'
     N=5
     n=5
-    prj.prjop_init(isys)
-    qns.qnsym_init(isys)
+    prj5=prj.prjop_init(isys)
+    qns5=qns.qnsym_init(isys)
     x=qnv.zerov(n,N)
     qnv.printqnv("x",x)
     #qnr=qns.qnr # symmetry operators
-    nr=qns.nr
+    nr=qns5.nr
     for i in range(nr):
-        qnm.printqnm("qnr[i]",qns.qnr[i])
-    irs=site_symmetry(x,qnr,brv)
+        qnm.printqnm("qnr[i]",qns5.qnr[i])
+    irs=site_symmetry(x,qns5,brv)
     print("irs",irs)
     
     x1=qnv.zerov(n,N)           #(0,0,0,0,0)
     x1[0]=qnn.Qnnum([1,0,2],N)  #(1/2,0,0,0,0)
-    irs=site_symmetry(x1,qnr,brv) 
+    irs=site_symmetry(x1,qns5,brv) 
     isk=coset(irs)
     xeq=equivalent_positions_in_unit_cell(x1,isk)
     qnv.printqnv("xeq",xeq)

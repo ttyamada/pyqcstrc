@@ -36,6 +36,7 @@ class Qnsym_Octa(qna.QnNdarray):
         #print("r.shape",r.shape) # fpr test
         set_r(rg,ord,r) # set all integer symmetry operators r
         print_r(r)  #; exit() # for test
+        self.r=r
         self.qnr=qna.copy(rtoqnr(r))
         self.nr=nr
         self.n=n
@@ -77,6 +78,7 @@ class Qnsym_Deca(qna.QnNdarray):
         r=np.zeros(shape,dtype=np.int64)
         set_r(rg,ord,r)  # set all integer rotation matrices
         print_r(r)  #; exit() # for test
+        self.r=r
         self.qnr=qna.copy(rtoqnr(r))
         self.nr=nr
         self.n=n
@@ -114,6 +116,7 @@ class Qnsym_Dode(qna.QnNdarray):
         r=np.zeros(shape,dtype=np.int64)
         set_r(rg,ord,r)  # set all integer rotation matrices
         print_r(r)  #; exit() # for test
+        self.r=r
         self.qnr=qna.copy(rtoqnr(r))
         self.nr=nr
         self.n=n
@@ -157,6 +160,7 @@ class Qnsym_Icos(qna.QnNdarray):
         r=np.zeros(shape,dtype=np.int64)
         set_r(rg,ord,r)  # set all integer rotation matrices
         print_r(r)  #; exit() # for test
+        self.r=r
         self.qnr=qna.copy(rtoqnr(r))
         self.nr=nr
         self.n=n
@@ -176,7 +180,7 @@ def rtoqnr(r):
     return get_qnr(prj0,prji,r,nr,n)
     
 def qnsym_init(isys):
-    global prj0,prji
+    global prj0,prji,nr,n,N,shape
     #global qns  # symmetry operators for external and internal space comp. of nD vector
     prjt=prj.prjop_init(isys)
     prj0=prjt.prj0
@@ -189,17 +193,30 @@ def qnsym_init(isys):
         qns=Qnsym_Octa() #P8mm
     elif isys==5:
         qns=Qnsym_Dode() #P12mm
+    nr=qns.nr
+    n=qns.n
+    N=qns.N
+    shape=qns.shape
+    r=qns.r
+    set_mpltbl(r) # 
     return qns
+
+def is_equal(r1,r2):
+    for i in range(n):
+        for j in range(n):
+            if r1[i][j]!=r2[i][j]:
+                return False
+    return True
         
-def set_mpltbl(r): # r: integer rotation matrices in nD lattice
+def set_mpltbl(r:np.ndarray): # r: integer rotation matrices in nD lattice
     global mpltbl
-    shape=r.shape
-    nr=shape[0]
-    mpltbl=np.zeros((n,n),dtype=np.int64)
+    mpltbl=np.zeros((nr,nr),dtype=np.int64)
+    rt=np.zeros((n,n),dtype=np.int64)
     for i in range(nr):
         for j in range(nr):
             for k in range(nr):
-                if r[i]@r[j]==r[k]:
+                rt=r[i]@r[j]
+                if is_equal(rt,r[k]):  # ???
                     mpltbl[i][j]=k
     print("mpltbl",mpltbl)
 
