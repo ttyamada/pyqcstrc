@@ -146,6 +146,9 @@ def remove_doubling(vts: qnv.Qnvec) -> qnv.Qnvec:
     obj: array
         set of 6-dimensional vectors in TAU-style
     """
+    return np.unique(vts) 
+
+    # original code
     ndim=vts.ndim
     if ndim==4:
         n1,n2,_,_=vts.shape
@@ -171,6 +174,9 @@ def remove_doubling_in_perp_space(vts: qnv.Qnvec) -> qnv.Qnvec:
     vts: array
         set of 6-dimensional vectors in TAU-style
     """
+    return np.unique(vts)
+
+    # original code
     ndim=vts.ndim
     if ndim==4:
         n1,n2,_,_=vts.shape

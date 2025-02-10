@@ -178,7 +178,7 @@ class Qnprj_Icos(qnm.Qnmat):
         #print("self.shape",self.shape) # fpr test
         
 def prjop_init(isys:np.int64):
-    #global prj0,prji,n,N
+    global prj0,prji
     if(isys==2): # projection operator for icosahedral
         prj=Qnprj_Icos()
     elif(isys==3): # projection operator for decagonal
@@ -187,6 +187,8 @@ def prjop_init(isys:np.int64):
         prj=Qnprj_Octa()
     elif(isys==5): # projection operator dodecagonal
         prj=Qnprj_Dode()
+    prj0=prj.prj0
+    prji=prj.prji
     return prj
 
 def copy(qna1: qnm.Qnmat):
@@ -209,7 +211,7 @@ def prjop(v: qnv.Qnvec) -> qnv.Qnvec:
 
 # projection into external space for class cls
 def prjop_e(v:qnv.Qnvec) -> qnv.Qnvec:
-    vei=v@prj  #@v # vt assumed to be qnvec
+    vei=v@prj0  #@v # vt assumed to be qnvec
     if isys>2: # dihedral
         return vei[0:1],vei[4]
     elif isys==2: # icosahedral
