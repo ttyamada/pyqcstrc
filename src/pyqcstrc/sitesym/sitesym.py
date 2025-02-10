@@ -176,6 +176,23 @@ if __name__ == '__main__':
     xeq2=equivalent_positions(x1,brv,isk1,r0)
     qnv.printqnv("xeq2",xeq2)
     
+    x2=qnv.zerov(n,N)           #(0,0,0,0,0)
+    x2[0]=qnn.Qnnum([1,0,1],N)  #(1/2,0,0,0,0)
+    x2[1]=qnn.Qnnum([1,0,2],N)
+    irs2=site_symmetry(x2,qns5,brv) 
+    isk2=coset(irs2)
+    xeq3=equivalent_positions(x2,brv,isk2,r0)
+    qnv.printqnv("xeq3",xeq3)
+    
+    x3=qnv.zerov(n,N)           #(0,0,0,0,0)
+    x3[0]=qnn.Qnnum([1,0,1],N)  #(1/2,0,0,0,0)
+    x3[1]=qnn.Qnnum([1,0,2],N)
+    x3[4]=qnn.Qnnum([1,0,4],N)
+    irs3=site_symmetry(x3,qns5,brv) 
+    isk3=coset(irs3)
+    xeq4=equivalent_positions(x3,brv,isk3,r0)
+    qnv.printqnv("xeq4",xeq4)
+    
     
     #symmetry operators in the site symmetry group G and its left coset decomposition.
     #

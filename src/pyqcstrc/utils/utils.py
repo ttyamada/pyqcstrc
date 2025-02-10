@@ -12,9 +12,7 @@ import time
 
 import pyqcstrc.qnnum.qnnum as qnn
 import pyqcstrc.qnvec.qnvec as qnv
-#import pyqcstrc.qnmat.qnmat as qnm
-#import pyqcstrc.prjop.prjop as prj
-import pyqcstrc.qnmath.qnmath as qnmt
+import pyqcstrc.qnmath.qnmath as qmt
 import pyqcstrc.qnclass.numericalc as num
 import pyqcstrc.prjop.prjop as prj
 
@@ -567,7 +565,7 @@ def sort_vctors(vts: qnv.Qnvec) -> qnv.Qnvec:
     
     ln=len(vns)
     ip=[0]*ln
-    qnmth.qsort(vns,ip,ln)  # qsort in qnmath
+    qmt.qsort(vns,ip,ln)  # qsort in qnmath
     #tmp=np.argsort(vns,axis=0)
 
     #tmp=vns[np.argsort(vns[:,0])]
@@ -597,7 +595,7 @@ def sort_obj(obj: qnv.Qnvec) -> qnv.Qnvec:
     #indx=centroids[np.argsort(centroids[:,0])] # returns index
     ln=len(centroids)
     index=[0]*ln
-    qnmth.qsort(centroids,indx,ln) # get index
+    qmt.qsort(centroids,indx,ln) # get index
     
     for i1 in range(n1):
         out[i1]=tmp[indx[i1][0]]
@@ -875,7 +873,7 @@ if __name__ == '__main__':
         vinp[i]=qnv.dot(qnv0[i],qnv0[i])
         qnn.printqnn("dot(qnvo[i],qnv0[i])",vinp[i])
     ip=np.zeros(ns,dtype=np.int64)
-    vts1=qnmt.qsort(vinp,ip,ns) # use qnmath
+    vts1=qmt.qsort(vinp,ip,ns) # use qnmath
     print("ip",ip)
     qnv.printqnv("vinp",vinp)
     qnv.printqnv("vts1",vts1)
