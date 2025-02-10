@@ -29,13 +29,13 @@ class Qnsym_Octa(qna.QnNdarray):
         rg[0][0][1]=1; rg[0][1][2]=1; rg[0][2][3]=1; rg[0][3][0]=-1; rg[0][4][4]=1 # R8 
         rg[1][1][2]=1; rg[1][2][1]=1; rg[1][0][3]=1; rg[1][3][0]=1;rg[1][4][4]=1 # M
         rg[2][0][0]=-1;rg[2][1][1]=-1;rg[2][2][2]=-1;rg[2][3][3]=-1;rg[2][4][4]=-1 # I
-        print_r(rg)
+        #print_r(rg)  # for test
         
         #print("shape in __init__",shape) # for test
         r=np.zeros(shape,dtype=np.int64) # nD int array
         #print("r.shape",r.shape) # fpr test
         set_r(rg,ord,r) # set all integer symmetry operators r
-        print_r(r)  #; exit() # for test
+        #print_r(r)  # for test
         self.r=r
         self.qnr=qna.copy(rtoqnr(r))
         self.nr=nr
@@ -71,13 +71,13 @@ class Qnsym_Deca(qna.QnNdarray):
         rg[0][2][0]=-1;rg[0][3][1]=-1;rg[0][4][4]=1 
         rg[1][0][3]=1; rg[1][3][0]=1; rg[1][1][2]=1; rg[1][2][1]=1;rg[1][4][4]=1 # M
         rg[2][0][0]=-1;rg[2][1][1]=-1;rg[2][2][2]=-1;rg[2][3][3]=-1;rg[2][4][4]=-1 # I
-        print_r(rg)
+        #print_r(rg)  # for test
         
         #r=np.zeros((nr, n, n))
         print("shape",shape) # for test
         r=np.zeros(shape,dtype=np.int64)
         set_r(rg,ord,r)  # set all integer rotation matrices
-        print_r(r)  #; exit() # for test
+        #print_r(r)  # for test
         self.r=r
         self.qnr=qna.copy(rtoqnr(r))
         self.nr=nr
@@ -111,11 +111,11 @@ class Qnsym_Dode(qna.QnNdarray):
         rg[0][0][1]=1; rg[0][1][2]=1; rg[0][2][3]=1; rg[0][3][0]=-1; rg[0][3][2]=1;rg[0][4][4]=1 # R12 
         rg[1][0][3]=1; rg[1][1][2]=1; rg[1][2][1]=1; rg[1][3][0]=1;rg[1][4][4]=1 # M
         rg[2][0][0]=-1;rg[2][1][1]=-1;rg[2][2][2]=-1;rg[2][3][3]=-1;rg[2][4][4]=-1 # I
-        print_r(rg)
+        #print_r(rg)  # for test
         
         r=np.zeros(shape,dtype=np.int64)
         set_r(rg,ord,r)  # set all integer rotation matrices
-        print_r(r)  #; exit() # for test
+        #print_r(r)  # for test
         self.r=r
         self.qnr=qna.copy(rtoqnr(r))
         self.nr=nr
@@ -155,11 +155,11 @@ class Qnsym_Icos(qna.QnNdarray):
         rg[3][0][1]=1;rg[3][1][2]=1; rg[3][2][0]=1; rg[3][3][5]=1;rg[3][4][3]=-1; rg[3][5][4]=-1# 3
         rg[4][0][0]=-1;rg[4][1][1]=-1; rg[4][2][2]=-1; rg[4][3][3]=-1;rg[4][4][4]=-1; rg[4][5][5]=-1# I
         #shape=(nr,n,n) # for nr nxn -rotation matrices
-        print_r(rg)
+        #print_r(rg)  # for test
         
         r=np.zeros(shape,dtype=np.int64)
         set_r(rg,ord,r)  # set all integer rotation matrices
-        print_r(r)  #; exit() # for test
+        #print_r(r)  # for test
         self.r=r
         self.qnr=qna.copy(rtoqnr(r))
         self.nr=nr
@@ -236,10 +236,18 @@ def get_qnr(prj,prji,r,nr,n):
         rqn=qnm.intm2qnm(r[i],n,N)
         #qnr[i]=qnm.copy(prjt@rqn@prjit)  # qnmat x intmat nesessary
         qnr[i]=prjt@rqn@prjit  # qnmat x intmat nesessary
-        str="# "+format(i+1)
+        #str="# "+format(i+1) # for test
         #qnm.printqnm(str,qnr[i]) # for test
     return qnr
-    
+
+def get_qnr0(r,nr,n,N):
+    qnr0=qna.QnNdarray((nr,n,n),N)
+    for i in range(nr):
+        qnr0[i]=qnm.intm2qnm(r[i],n,N)
+        #str="# "+format(i+1) # for test
+        #qnm.printqnm(str,qnr[i]) # for test
+    return qnr0
+
 # gemerate all rotation matrices from
 def mpso(r1,m1,r2,m2,m3,n):
     r2[m3]=r1[m1]@r2[m2]
@@ -309,6 +317,16 @@ def print_r(r):
             print("]")
         print(" ")
 
+def print_r0(r0):
+    shape=r0.shape
+    ndim=r0.ndim
+    #print("r.shape",r.shape)
+    #print("r.ndim",ndim)
+    nr=shape[0]
+    n=shape[1]
+    for i in range(nr):
+        print("#",i+1)
+        qnm.printqnm("",r0[i])
 
 # integer matrix to qnnumber matrix transformation
 def intr2qnmr(r,n,N,nr):

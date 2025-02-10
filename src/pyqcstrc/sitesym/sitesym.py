@@ -14,7 +14,7 @@ import pyqcstrc.lattice.lattice as lt
 
 
 def site_symmetry(x:qnv.Qnvec,qns:qnm.Qnmat,brv) -> np.ndarray: # return irs
-    global nr,n,N,mpltbl
+    global nr,n,N,mpltbl,r
     """symmetry operator insixwa irs in the site symmetry group G.
     
     Args:
@@ -34,6 +34,7 @@ def site_symmetry(x:qnv.Qnvec,qns:qnm.Qnmat,brv) -> np.ndarray: # return irs
     nr=qns.nr
     qnr=qns.qnr
     mpltbl=qns.mpltbl
+    r=qns.r
     a=np.zeros((nr,n),dtype=qnn.Qnnum)
 
     irs=np.zeros(0,dtype=np.int64)
@@ -77,7 +78,7 @@ def coset(irs) -> np.array: # return coset representativ indices in symop
     nc=(np.int64)(ns0/ns1) # number of cosets
     print("nc",nc) # number of 
     for k in range(nc):
-        print("k",k) # for test
+        #print("k",k) # for test
         if k==0:
             isk=np.append(0,isk)  # identity operator
             for j in range(ns1):
@@ -98,32 +99,31 @@ def coset(irs) -> np.array: # return coset representativ indices in symop
     print("isk",isk) # for test
     return isk
 
-def equivalent_positions(x:qnv.Qnvec,brv,isk:np.ndarray) -> qnv.Qnvec:
+def equivalent_positions(x:np.ndarray,brv,isk:np.ndarray, r0:np.ndarray) -> qnv.Qnvec:
     """
     siteに対して点群の対称性を施したサイトのうち、並進操作のみで結ばれない位置を求める。
         適切な名前を決める必要がある！！！
     """
     print('equivalent_positions()')
     qnv.printqnv('x',x) # site : lattice coordinates
-    ng=len(isk)
-    print("ng",ng)
+    neq=len(isk)
+    print("neq",neq)
     n=len(x)
-    xs=qnv.zeros((ng,n))
-    ro=qns.r
-    for i in range(ng):
-        xs[i]=ro[isk[i]]@x
+    xs=np.zeros((neq,n),dtype=qnn.Qnnum)
+    for i in range(neq):
+        xs[i]=r0[isk[i]]@x
         
     return xs
 
-def equivalent_positions_in_unit_cell(x:qnv.Qnvec,brv,isk:np.ndarray) -> qnv.Qnvec:
+def equivalent_positions_in_unit_cell(x:qnv.Qnvec,brv,isk:np.ndarray,r0:np.ndarray) -> qnv.Qnvec:
     """
          単位胞内にある等価なサイトを得る。
     """
-    xs=equivalent_positions(x,brv,isk)
-    xs=reduce(xs,brv) # -0.5 <=x[i] <0.5
+    xs=equivalent_positions(x,brv,isk,r0)
+    xs=reduce_x(xs,brv) # -0.5 <=x[i] <0.5
     return xs
     
-def reduce_x(xs,brv):
+def reduce_x(xs:np.ndarray,brv):
     nv=len(xs)
     N=xs[0][0].N
     shape=xs.shape
@@ -154,20 +154,27 @@ if __name__ == '__main__':
     qnv.printqnv("x0",x0)
     #qnr=qns.qnr # symmetry operators
     nr=qns5.nr
+    r=qns5.r
     #for i in range(nr):
     #    qnm.printqnm("qnr[i]",qns5.qnr[i])
     irs0=site_symmetry(x0,qns5,brv)
     print("irs0",irs0)
     isk0=coset(irs0)
-    xeq0=equivalent_positions_in_unit_cell(x0,brv,isk0)
+    r0=qns.get_qnr0(r,nr,n,N)
+    
+    xeq0=equivalent_positions(x0,brv,isk0,r0)
     qnv.printqnv("xeq0",xeq0)
+    
+    xeq1=equivalent_positions_in_unit_cell(x0,brv,isk0,r0)
+    qnv.printqnv("xeq1",xeq1)
     
     x1=qnv.zerov(n,N)           #(0,0,0,0,0)
     x1[0]=qnn.Qnnum([1,0,2],N)  #(1/2,0,0,0,0)
+    x1[1]=qnn.Qnnum([1,0,2],N)
     irs1=site_symmetry(x1,qns5,brv) 
     isk1=coset(irs1)
-    xeq1=equivalent_positions_in_unit_cell(x1,isk1)
-    qnv.printqnv("xeq1",xeq1)
+    xeq2=equivalent_positions(x1,brv,isk1,r0)
+    qnv.printqnv("xeq2",xeq2)
     
     
     #symmetry operators in the site symmetry group G and its left coset decomposition.
