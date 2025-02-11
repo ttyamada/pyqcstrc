@@ -2,6 +2,7 @@ import sys
 import numpy as np
 from numpy.typing import NDArray
 import pyqcstrc.qnnum.qnnum as qnn
+import pyqcstrc.qnvec.qnvec as qnv
 import pyqcstrc.qnndarray.qnndarray as qna
 
 #class Qnvec(np.ndarray):
@@ -39,6 +40,12 @@ class Qnvec(qna.QnNdarray):
         if isinstance(b, int):
             return div_vector_i(a,b)
         
+    def __eq__(a, b):
+        return eq(a,b)
+    
+    def __not__(a,b):
+        return not_eq(a,b)
+        
 def zeros(shape):
     np.zeros(shape,dtype=qnn.Qnnum)
 
@@ -54,6 +61,9 @@ def copy(v1: Qnvec):
 def zerov(n:np.int64,N:np.int64): # qnnumber zero vector
     qnv=Qnvec(n,N)
     return qnv
+
+def zerovs(nv):
+    np.zeros(nv,dtype=Qnvec)
 
 def add(v1:Qnvec, v2:Qnvec) -> Qnvec:
     n=v1.shape[0]
@@ -247,6 +257,29 @@ def printqnv2(str:str,qnv1:Qnvec,qnv2:Qnvec):
     for i in range(n2):
         j=qnv1[i]
         print(qnn.qn2npa(j),end="]")
+        
+def printqnvs(str:str,qnv1:qnv.Qnvec):
+    shape=qnv1.shape
+    print("shape",shape)
+    n1=shape[0]
+    for j in range(n1):
+        print(str+"["+format(j)+"]",end=" ")
+        printqnv("",qnv1[j])
+     
+def eq(qnv1:Qnvec, qnv2:Qnvec):
+    n=qnv1.n
+    for i in range(n):
+        if qnv1[i]!=qnv2[i]:
+            return False
+    return True
+
+def not_eq(qnv1:Qnvec, qnv2:Qnvec):
+    n=qnv1.n
+    for i in range(n):
+        if qnv1[i]!=qnv2[i]:
+            return True
+    return False
+    
     
     
 if __name__ == '__main__':
@@ -283,6 +316,23 @@ if __name__ == '__main__':
     
         qnv6=cros(qnv1,qnv3)
         printqnv("cross(qnv1,qnv3)",qnv6)
+        
+        print("qnv1==qnv2",qnv1==qnv2)
+        print("qnv1==qnv3",qnv1==qnv3)
+        
+        qnvs=np.zeros(1,dtype=Qnvec)
+        qnvt=np.zeros(1,dtype=Qnvec)
+        qnvs[0]=qnv1          # this is OK
+        
+        qnvt[0]=qnv2  # this is necessary
+        qnvs=np.append(qnvs,qnvt)
+
+        qnvt[0]=qnv3 # this is necessary
+        qnvs=np.append(qnvs,qnvt)
+
+        print("qnvs.shape",qnvs.shape)
+        printqnvs("qnvs",qnvs)
+        
     
     n=5
     N=2

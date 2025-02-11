@@ -730,9 +730,9 @@ def projection3_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
         set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
     """
     shape=vns.shape
+    n=vns[0].n
+    N=vns[0].N
     nc=shape[0]
-    n=shape[1]
-    N=vns[0][0].N
     print("N",N)
     #if N==2:
     #    prj0=prj.Qnprj_Octa()

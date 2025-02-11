@@ -146,20 +146,34 @@ def remove_doubling(vts: qnv.Qnvec) -> qnv.Qnvec:
     obj: array
         set of 6-dimensional vectors in TAU-style
     """
-    return np.unique(vts) 
+    #return np.unique(vts) 
 
     # original code
     ndim=vts.ndim
-    if ndim==4:
-        n1,n2,_,_=vts.shape
-        num=n1*n2
-        vts=vts.reshape(num,6,3)
-        return np.unique(vts,axis=0) # write unique for qnvector array
-    elif ndim==3:
-        return np.unique(vts,axis=0) # 
-    else:
-        print('ndim should be 3 or 4.')
-        return 
+    shape=vts.shape
+    dtype=vts.dtype
+    print("ndim",ndim,"shape",shape,"dtype",dtype)
+    vt0=np.zeros(1,dtype=qnv.Qnvec)
+    #vt0=qnv.zerovs(1)
+    vt0[0]=vts[0]
+    print("vt0.shape",vt0.shape)
+    for i in range(shape[0]):
+        print("i",i)
+        if i==0:
+            print("vt0.shape",vt0.shape)
+        else:
+            for j in range(vt0.shape[0]):
+                print("i",i,"j",j)
+                qnv.printqnv("vts[i]",vts[i]) # for test
+                qnv.printqnv("vt0[j]",vt0[j]) # for test
+                if vts[i]==vt0[j]:  # this does not work
+                    continue
+                else:
+                    vts=np.append(vt0,vts[i])
+                    break
+        qnv.printqnvs("vt0",vt0)
+    qnv.printqnvs("vt0",vt0)  # for test
+    return vt0
 
 def remove_doubling_in_perp_space(vts: qnv.Qnvec) -> qnv.Qnvec:
     """Remove 6d coordinates which is doubled in Eperp.
@@ -176,34 +190,8 @@ def remove_doubling_in_perp_space(vts: qnv.Qnvec) -> qnv.Qnvec:
     """
     return np.unique(vts)
 
-    # original code
-    ndim=vts.ndim
-    if ndim==4:
-        n1,n2,_,_=vts.shape
-        num=n1*n2
-        vst=vts.reshape(num,6,3)
-    elif ndim==3:
-        #num,_,_=vts.shape
+    for i in range(num):
         pass
-    
-    # first run remove_doubling()
-    vts=remove_doubling(vts)
-    num=len(vts) # length of qnvec array
-    
-    # then, remove doubling in perp space.
-    #a=np.zeros((num,3,3),dtype=np.int64)
-    a=[qnv]*(num,3) 
-    for i in range(num):
-        a[i]=prj.projection3(vts[i])
-    b=np.unique(a,return_index=True,axis=0)[1] # write unique for qnvec array
-    num=len(b)
-    N=vts[0].N
-    qn0=qnn.Qnvec([0,0,1],N)
-    #a=np.zeros((num,6,3),dtype=np.int64)
-    a=np.array((num),dtype=qnv.Qnvec)  #[qn0]*(num,6)
-    for i in range(num):
-        a[i]=vts[b[i]]
-    return a
 
 #----------------------------
 # Edges
@@ -859,36 +847,37 @@ if __name__ == '__main__':
     qnv0[0]=qnv.anyv(n,N,[M2,M3,M0])
     qnv0[1]=qnv.anyv(n,N,[M0,M1,M2])
     qnv0[2]=qnv.anyv(n,N,[M1,M2,M0])
+    for i in range(3):
+        qnv.printqnv("qnv0["+format(i)+"]",qnv0[i])
 
     qnc0=qnv.cros(qnv0[0],qnv0[1])
     qnv.printqnv("qnc0",qnc0)
-    qnn.printqnn("dot(qnc0,qnv0[0])",qnv.dot(qnc0,qnv0[0])) # this should be zero
-    qnn.printqnn("dot(qnc0,qnv0[1])",qnv.dot(qnc0,qnv0[1])) # this should be zero
-    qnn.printqnn("dot(qnc0,qnv0[2])",qnv.dot(qnc0,qnv0[2])) # this should be non-zero
-     #[qv0]*ns
-    #vts=generate_random_vectors(nset)  # this shoykd be vnvector
-    #vns=num.get_internal_component_sets_numerical(vts)
-    #qnv.printqnv("vns",vns)
-    for i in range(ns):
-        str="qnv0["+format(i)+"]"
-        qnv.printqnv(str,qnv0[i])
-    print('\n')
+    for i in range(3):
+        qnn.printqnn("dat(qnc0,qnv0["+format(i)+"])",qnv.dot(qnc0,qnv0[i]))
+    #qnn.printqnn("dot(qnc0,qnv0[0])",qnv.dot(qnc0,qnv0[0])) # this should be zero
+    #qnn.printqnn("dot(qnc0,qnv0[1])",qnv.dot(qnc0,qnv0[1])) # this should be zero
+    #qnn.printqnn("dot(qnc0,qnv0[2])",qnv.dot(qnc0,qnv0[2])) # this should be non-zero
+
+    
+    
     #print(vts.shape)
     vinp=np.zeros(ns,dtype=qnn.Qnnum)
     for i in range(ns):
         vinp[i]=qnv.dot(qnv0[i],qnv0[i])
-        qnn.printqnn("dot(qnvo[i],qnv0[i])",vinp[i])
+    qnn.printqnns("vinp",vinp)
+    
+    #qnn.printqnn("dot(qnvo[i],qnv0[i])",vinp[i])
     ip=np.zeros(ns,dtype=np.int64)
     vts1=qmt.qsort(vinp,ip,ns) # use qnmath
     print("ip",ip)
-    qnv.printqnv("vinp",vinp)
+    qnn.printqnns("vinp",vinp)
     qnv.printqnv("vts1",vts1)
     
     # nD lattice vector for defining ODs
     n=5
     N=2
     # 8 corner vectors for AB tiling OD
-    vts2=np.zeros((8,n),dtype=qnn.Qnnum) # for octagon for Ammann-Beenker tiling
+    vts2=np.zeros((8),dtype=qnv.Qnvec) # for octagon for Ammann-Beenker tiling
     M0=qnn.Qnnum([0,0,1],N)
     M1=qnn.Qnnum([1,0,2],N)  # 1
     M2=qnn.Qnnum([-1,0,2],N) # -1
@@ -903,20 +892,24 @@ if __name__ == '__main__':
     vts2[5]=qnv.anyv(n,N,[M0,M0,M1,M2,M0]) #(0 0 1 -1 0)/2
     vts2[6]=qnv.anyv(n,N,[M0,M2,M1,M0,M0]) #(0 -1 1 0 0)/2
     vts2[7]=qnv.anyv(n,N,[M1,M2,M0,M0,M0]) #(1 -1 0 0 0)/2
+    qnv.printqnvs("vts2",vts2)
     
     isys=4
     prj.prjop_init(isys)
+    
+    # calculate internal space components of vts2
     vns2=num.get_internal_component_sets_numerical(vts2) # perp space components
-    for i in range(8):
-        str="vts2["+format(i+1)+"]"
-        qnv.printqnv(str,vts2[i])
+    qnv.printqnvs("vts2",vts2)
+    #for i in range(8):
+    #    str="vts2["+format(i)+"]"
+    #    qnv.printqnv(str,vts2[i])
     
     #================
     # 重複のテスト
     #================
-    nset=5
+    n=5
     #vst=generate_random_vectors(nset)
-    vst=np.zeros(nset,dtype=qnv.Qnvec)
+    vst=np.zeros((n,2),dtype=qnv.Qnvec)
     #for i in range(nset):
     #    vst[i]=qnv.Qnvec(n,N)
     # set vt values
@@ -925,18 +918,25 @@ if __name__ == '__main__':
     vst[2]=[M1,M3]
     vst[3]=[M0,M3]
     vst[4]=[M2,M1]
+    print("vst.shape",vst.shape)
+    qnv.printqnvs("vst",vst)
+    #for i in range(n):
+    #    str="vst["+format(i)+"]"
+    #    qnv.printqnv(str,vst[i])
     
-    vst_d3=np.concatenate([vst,vst]) # doubling dim3 vectors
-    vst_d4=np.stack([vst_d3,vst_d3]) # doubling dim4 vectors
+    vst_d3=np.concatenate([vst,vst]) # doubling vst vectors
+    vst_d4=np.stack([vst_d3,vst_d3]) # doubling vst_d3 vectors
+    n1,n2,n3=vst_d4.shape
+    num=n1*n2
+    vst_d5=vst_d4.reshape(num,n3)
+    print("vst_d5.shape",vst_d5.shape)
+    qnv.printqnvs("vst_d5",vst_d5)
     
-    a=remove_doubling(vst_d4)
-    if len(a)==nset:
-        print('remove_doubling: pass')
-    else:
-        print('remove_doubling: error')
+    a=remove_doubling(vst_d5)
+    qnv.printqnvs("a",a)
         
     a=remove_doubling_in_perp_space(vst_d4)
-    if len(a)==nset:
+    if len(a)==n:
         print('remove_doubling_in_perp_space: pass')
     else:
         print('remove_doubling_in_perp_space: error')
@@ -947,7 +947,11 @@ if __name__ == '__main__':
     #triangle=generate_random_triangle()
     
     # generate triangles
+    triangle=np.zeros(3,dtype=qnv.Qnvec)
+    print("triangle.shape",triangle.shape)
+    qnv.printqnv("vst[0]",vst[0])
     triangle=[vst[0],vst[1],vst[2]]
+    print("triangle.shape",triangle.shape)
     # doubled tetrahedon
     obj=np.stack([triangle,triangle]) # doubled tetrahedon
     #generator_surface_1(obj)
@@ -956,7 +960,9 @@ if __name__ == '__main__':
     obj=triangle
     
     #surface=generator_surface_1(obj.reshape(1,3,6,3))
-    surface=obj.reshape(1,3,6,3)
+    #surface=obj.reshape(1,3,6,3)
+    print("obj.shape",obj.shape)
+    surface=obj.reshape(1,3,6)
     #generator_edge(surface)
     generator_all_edges(surface)
     

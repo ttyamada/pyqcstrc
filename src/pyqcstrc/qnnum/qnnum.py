@@ -245,6 +245,11 @@ def flt2qn(qr:float,N:np.int64) -> Qnnum:
 def printqnn(str:str,a:Qnnum):
     print(str,"[",a.n[0],a.n[1],a.n[2],"]")
     
+def printqnns(str:str,a:np.ndarray):
+    for i in range(a.shape[0]):
+        print(str,"[",a[i].n[0],a[i].n[1],a[i].n[2],"]")
+    
+    
 if __name__ == '__main__':
     # test
     N=np.int64(2)
