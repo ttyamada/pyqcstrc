@@ -12,7 +12,7 @@ try:
     #import pyqcstrc.qnmath.qnmath as math8
     import pyqcstrc.qnmath.qnmath as math1
     import pyqcstrc.octa2.utils as utils
-    import pyqcstrc.qnclass.numericalc as numericalc
+    import pyqcstrc.numeric.numericalc as numericalc
     import pyqcstrc.qnsym.qnsym as symmetry
     import pyqcstrc.octa2.intsct as intsct
 except ImportError:

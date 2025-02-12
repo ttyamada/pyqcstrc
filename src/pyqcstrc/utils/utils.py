@@ -13,7 +13,7 @@ import time
 import pyqcstrc.qnnum.qnnum as qnn
 import pyqcstrc.qnvec.qnvec as qnv
 import pyqcstrc.qnmath.qnmath as qmt
-import pyqcstrc.qnclass.numericalc as num
+import pyqcstrc.numeric.numericalc as num
 import pyqcstrc.prjop.prjop as prj
 
 def shift_object(obj: qnv.Qnvec, shift: qnv.Qnvec) -> qnv.Qnvec:
@@ -153,26 +153,26 @@ def remove_doubling(vts: qnv.Qnvec) -> qnv.Qnvec:
     shape=vts.shape
     dtype=vts.dtype
     print("ndim",ndim,"shape",shape,"dtype",dtype)
-    vt0=np.zeros(1,dtype=qnv.Qnvec)
-    #vt0=qnv.zerovs(1)
-    vt0[0]=vts[0]
+    vt0=qnv.zerovs((shape[0]))
     print("vt0.shape",vt0.shape)
+    ni=0
     for i in range(shape[0]):
-        print("i",i)
+        vtsi=vts[i]
         if i==0:
-            print("vt0.shape",vt0.shape)
+            #vt0=np.append(vt0,vts[0])
+            vt0[0]=vts[0]
+            ni=ni+1
         else:
-            for j in range(vt0.shape[0]):
-                print("i",i,"j",j)
-                qnv.printqnv("vts[i]",vts[i]) # for test
-                qnv.printqnv("vt0[j]",vt0[j]) # for test
-                if vts[i]==vt0[j]:  # this does not work
-                    continue
-                else:
-                    vts=np.append(vt0,vts[i])
-                    break
-        qnv.printqnvs("vt0",vt0)
-    qnv.printqnvs("vt0",vt0)  # for test
+            isk=False
+            for j in range(ni):
+                if vts[i]==vt0[j]:
+                    isk=True
+            if not isk:
+                #vt0=np.append(vt0,vts[i],axis=0) # independent one
+                vt0[ni]=vts[i]
+                qnv.printqnv("vt0[ni]",vt0[ni])
+                ni=ni+1
+    #qnv.printqnvs("vt0",vt0)  # for test
     return vt0
 
 def remove_doubling_in_perp_space(vts: qnv.Qnvec) -> qnv.Qnvec:
@@ -221,14 +221,14 @@ def generator_all_edges(obj: qnv.Qnvec) -> qnv.Qnvec:
     """
     
     # (1) preparing a list of edges
-    n1,n2,_,_=obj.shape
-    N=obj[0].vt[0].N
-    qn0=qnn.Qnnum([0,0,1],N)
+    n1,n2=obj.shape
+    print("n1",n1,"n2",n2)
     if n2==3:
         #edges=np.zeros((n1,3,2,6,3),dtype=np.int64)
-        edges=np.array((n1,3),dtype=qnv.Qnvec)  #[qn0]*(n1,3,2,6)
+        edges=np.zeros((n1,n2),dtype=qnv.Qnvec)  #[qn0]*(n1,3,2,6)
         i1=0
         for triangle in obj:
+            qnv.printqnv("triangle",triangle)
             edges[i1]=get_triangle_edge(triangle)
             i1+=1
         return edges  #edges.reshape(n1*3,2,6)  #edges.reshape(n1*3,2,6,3)
@@ -877,7 +877,7 @@ if __name__ == '__main__':
     n=5
     N=2
     # 8 corner vectors for AB tiling OD
-    vts2=np.zeros((8),dtype=qnv.Qnvec) # for octagon for Ammann-Beenker tiling
+    vts2=qnv.zerovs((8)) # for octagon for Ammann-Beenker tiling
     M0=qnn.Qnnum([0,0,1],N)
     M1=qnn.Qnnum([1,0,2],N)  # 1
     M2=qnn.Qnnum([-1,0,2],N) # -1
@@ -909,30 +909,24 @@ if __name__ == '__main__':
     #================
     n=5
     #vst=generate_random_vectors(nset)
-    vst=np.zeros((n,2),dtype=qnv.Qnvec)
+    vst=qnv.zerovs((n))
     #for i in range(nset):
     #    vst[i]=qnv.Qnvec(n,N)
     # set vt values
-    vst[0]=[M0,M1]
-    vst[1]=[M1,M2]
-    vst[2]=[M1,M3]
-    vst[3]=[M0,M3]
-    vst[4]=[M2,M1]
+    vst[0]=qnv.anyv(2,N,[M0,M1])
+    vst[1]=qnv.anyv(2,N,[M1,M2])
+    vst[2]=qnv.anyv(2,N,[M1,M3])
+    vst[3]=qnv.anyv(2,N,[M0,M3])
+    vst[4]=qnv.anyv(2,N,[M2,M1])
     print("vst.shape",vst.shape)
     qnv.printqnvs("vst",vst)
-    #for i in range(n):
-    #    str="vst["+format(i)+"]"
-    #    qnv.printqnv(str,vst[i])
     
     vst_d3=np.concatenate([vst,vst]) # doubling vst vectors
-    vst_d4=np.stack([vst_d3,vst_d3]) # doubling vst_d3 vectors
-    n1,n2,n3=vst_d4.shape
-    num=n1*n2
-    vst_d5=vst_d4.reshape(num,n3)
-    print("vst_d5.shape",vst_d5.shape)
-    qnv.printqnvs("vst_d5",vst_d5)
+    qnv.printqnvs("vst_d3",vst_d3)
+    #vst_d4=np.stack([vst_d3,vst_d3]) # doubling vst_d3 vectors
+    #qnv.printqnvs("vst_d4",vst_d4)
     
-    a=remove_doubling(vst_d5)
+    a=remove_doubling(vst_d3)
     qnv.printqnvs("a",a)
         
     a=remove_doubling_in_perp_space(vst_d4)
@@ -947,22 +941,27 @@ if __name__ == '__main__':
     #triangle=generate_random_triangle()
     
     # generate triangles
-    triangle=np.zeros(3,dtype=qnv.Qnvec)
+    triangle=qnv.zerovs(3)
     print("triangle.shape",triangle.shape)
     qnv.printqnv("vst[0]",vst[0])
-    triangle=[vst[0],vst[1],vst[2]]
-    print("triangle.shape",triangle.shape)
-    # doubled tetrahedon
-    obj=np.stack([triangle,triangle]) # doubled tetrahedon
+    qnv.printqnv("vst[1]",vst[1])
+    qnv.printqnv("vst[2]",vst[2])
+    triangle[0]=vst[0]
+    triangle[1]=vst[1]
+    triangle[2]=vst[2] # 3 vectors define a triangle
+    qnv.printqnvs("triangle",triangle) # triangle
+    # doubled triangle
+    obj=np.concatenate([triangle,triangle]) # doubled triangle
     #generator_surface_1(obj)
     
     # a tetrahedon
-    obj=triangle
+    #obj=triangle
     
     #surface=generator_surface_1(obj.reshape(1,3,6,3))
     #surface=obj.reshape(1,3,6,3)
     print("obj.shape",obj.shape)
-    surface=obj.reshape(1,3,6)
+    #surface=obj.reshape(1,6)
+    surface=obj
     #generator_edge(surface)
     generator_all_edges(surface)
     

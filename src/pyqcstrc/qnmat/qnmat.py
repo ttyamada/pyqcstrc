@@ -46,11 +46,14 @@ class Qnmat(qna.QnNdarray):
             for j in range(n):
                 self.mt[i][j]=qnn.copy(mt[i][j]) # copy qnnum
 
-def zerom(n:np.int64, N: np.int64):
+def zerom(n:np.int64, N: np.int64) -> Qnmat:
     qnm=Qnmat(n,N)
     return qnm
 
-def unitm(n:np.int64, N: np.int64):
+def zeroms(shape,n:np.int64,N:np.int64) -> Qnmat: # qnmat ndarray
+    return np.zeros(shape,dtype=Qnmat)
+
+def unitm(n:np.int64, N: np.int64) -> Qnmat:
     qn1=qnn.Qnnum([1,0,1],N)
     qnm=Qnmat(n,N)
     for i in range(n):
@@ -69,7 +72,7 @@ def copy(qnm: Qnmat) -> Qnmat:
     #        qnm1[i][j]=qnn.copy(qnm[i][j])
     #return qnm1
 
-def int2qnm(r:np.ndarray,n:np.int64,N: np.int64):
+def int2qnm(r:np.ndarray,n:np.int64,N: np.int64) -> Qnmat:
     qnr=Qnmat(n,N)
     for i in range(n):
         for j in range(n):
@@ -151,7 +154,7 @@ def matrixpow(ma: Qnmat, n: int) -> Qnmat:
         print('matrix has not regular shape')
         return 
 
-def qnm2npa(a):
+def qnm2npa(a) -> np.ndarray:
     # Qnmatrix to np.array converter
     la=a.shape #len(a)
     b=np.zeros(la[0],la[1],3) #la x la qnnum matrix 
@@ -160,7 +163,7 @@ def qnm2npa(a):
             b[i][j]=[a[i][j].n[0],a[i][j].n[1],a[i][j].n[2]]
     return b
 
-def qnm2flt(a):
+def qnm2flt(a) -> np.ndarray:
     la=a.shape #len(a)
     b=np.zeros(la[0],la[1],3)  #la x la qnnum matrix 
     N=a[0].N
@@ -170,7 +173,7 @@ def qnm2flt(a):
     return b
 
 # get qnmat from int matrix
-def intm2qnm(a:np.array,n:np.int64,N:np.int64):
+def intm2qnm(a:np.array,n:np.int64,N:np.int64) -> Qnmat:
     b=Qnmat(n,N) #qnnum zero vector
     for i in range(n):
         for j in range(n):

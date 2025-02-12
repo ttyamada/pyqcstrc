@@ -46,25 +46,22 @@ class Qnvec(qna.QnNdarray):
     def __not__(a,b):
         return not_eq(a,b)
         
-def zeros(shape):
-    np.zeros(shape,dtype=qnn.Qnnum)
+def zerovs(shape) -> Qnvec:  # qnvec ndarray
+    return np.zeros(shape,dtype=Qnvec)
 
-def anyv(n:np.int64,N:np.int64,vec:qnn.Qnnum):
+def zerov(n:np.int64,N:np.int64)->Qnvec: # qnnumber zero vector
+    qnv=Qnvec(n,N)
+    return qnv
+
+def anyv(n:np.int64,N:np.int64,vec:qnn.Qnnum)->Qnvec:
     qnv=Qnvec(n,N)
     for i in range(n):
         qnv[i]=vec[i]
     return qnv
 
-def copy(v1: Qnvec):
+def copy(v1: Qnvec) -> Qnvec:
     return np.copy(v1)
     
-def zerov(n:np.int64,N:np.int64): # qnnumber zero vector
-    qnv=Qnvec(n,N)
-    return qnv
-
-def zerovs(nv):
-    np.zeros(nv,dtype=Qnvec)
-
 def add(v1:Qnvec, v2:Qnvec) -> Qnvec:
     n=v1.shape[0]
     N=v1[0].N
@@ -81,7 +78,7 @@ def sub(v1:Qnvec, v2:Qnvec)-> Qnvec:
         a[i]=v1[i]-v2[i]
     return a
 
-def mul_vector_i(v:Qnvec, coeff:int):
+def mul_vector_i(v:Qnvec, coeff:int) -> qnv.Qnvec:
     if v.ndim==1:
         n=v.shape
         N=v.N
@@ -93,7 +90,7 @@ def mul_vector_i(v:Qnvec, coeff:int):
         print('incorrect shape')
         return
 
-def mul_vector_qn(v:Qnvec, coeff:qnn.Qnnum):
+def mul_vector_qn(v:Qnvec, coeff:qnn.Qnnum) -> Qnvec:
     if v.ndim==1:
         n=v.shape
         N=v.N
@@ -105,7 +102,7 @@ def mul_vector_qn(v:Qnvec, coeff:qnn.Qnnum):
         print('incorrect shape')
         return
 
-def mul_vectors_i(vs:Qnvec, coeff:int):
+def mul_vectors_i(vs:Qnvec, coeff:int) -> Qnvec:
     if vs.ndim==2:
         n=vs.shape[0]
         N=vs[0].N
@@ -133,7 +130,7 @@ def mul_vectors_qn(vs:Qnvec, coeff:qnn.Qnnum):
         print('incorrect shape')
         return
 
-def div_vector_i(v:Qnvec, coeff: int):
+def div_vector_i(v:Qnvec, coeff: int) -> Qnvec:
     if v.ndim==1:
         a=np.zeros(v.shape,dtype=np.int64)
         la=v.shape

@@ -18,7 +18,7 @@ import pyqcstrc.utils.utils as utils
 import pyqcstrc.qnnum.qnnum as qnn
 import pyqcstrc.qnvec.qnvec as qnv
 import pyqcstrc.qnmat.qnmat as qnm
-import pyqcstrc.qnclass.numericalc as numericalc
+import pyqcstrc.numeric.numericalc as num
 import pyqcstrc.utils.utils as utils
 import pyqcstrc.vesta.vesta as vesta
 import pyqcstrc.qnsym.qnsym as qns
@@ -270,7 +270,7 @@ def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
         #--------
         fatm.write('%d \'Em\' 1 %d 1 2.0 0. 0. 1.0 0. 0. 0.\n'%(serial_number,serial_number))
         
-        vn=numericalc.numerical_vector(vrtx0)
+        vn=num.numerical_vector(vrtx0)
         fatm.write('x=  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f\n'%(\
         vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
         
@@ -283,7 +283,7 @@ def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
         #--------
         fpod.write('%d %d %d \'comment\'\n'%(serial_number,len(vtxs),2))
         for vtx in vtxs:
-            vn=numericalc.numerical_vector(vtx)
+            vn=num.numerical_vector(vtx)
             fpod.write('ej=  %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f\n'%(\
             vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
         #
@@ -365,7 +365,7 @@ def write_podatm(obj, position, vlist=[0], path='.', basename='tmp', shift=[0., 
             #(position[3][0]+position[3][1]*TAU)/(position[3][2]),\
             #(position[4][0]+position[4][1]*TAU)/(position[4][2]),\
             #(position[5][0]+position[5][1]*TAU)/(position[5][2])))
-            p=numericalc.numerical_vector(position)
+            p=num.numerical_vector(position)
             fatm.write('x=  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f\n'%(\
             p[0],p[1],p[2],p[3],p[4],p[5]))
             
@@ -379,7 +379,7 @@ def write_podatm(obj, position, vlist=[0], path='.', basename='tmp', shift=[0., 
             #(a[3][0]+a[3][1]*TAU)/(a[3][2])+shft[3],\
             #(a[4][0]+a[4][1]*TAU)/(a[4][2])+shft[4],\
             #(a[5][0]+a[5][1]*TAU)/(a[5][2])+shft[5]))
-            a=numericalc.numerical_vector(a)
+            a=num.numerical_vector(a)
             fatm.write('xi=  %8.6f  %8.6f  %8.6f  %8.6f  %8.6f  %8.6f  0.000000  v=1.0\n'%(\
             a[0],a[1],a[2],a[3],a[4],a[5]))
             fatm.write('isyd=1\n')
@@ -429,7 +429,7 @@ def write_podatm(obj, position, vlist=[0], path='.', basename='tmp', shift=[0., 
                 #(b[4][0]+b[4][1]*TAU)/(b[4][2])-(a[4][0]+a[4][1]*TAU)/(a[4][2]),\
                 #(b[5][0]+b[5][1]*TAU)/(b[5][2])-(a[5][0]+a[5][1]*TAU)/(a[5][2])))
                 b=math1.sub_vectors(b,a)
-                b=numericalc.numerical_vector(b)
+                b=num.numerical_vector(b)
                 """ 5次元ベクトルから7次元ベクトルへの変換　一意に決まらない!?
                 
                 fpod.write('ej=  %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f\n'%(\
@@ -511,9 +511,9 @@ def simple_hand_step1(obj, path, basename_tmp):
         for i1 in range(len(a)):
             xyz=math1.projection3(a[i1])
             f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-            (numericalc.numeric_value(xyz),\
-            numericalc.numeric_value(xyz),\
-            numericalc.numeric_value(xyz),\
+            (num.numeric_value(xyz),\
+            num.numeric_value(xyz),\
+            num.numeric_value(xyz),\
             i1,\
             a[i1][0][0],a[i1][0][1],a[i1][0][2],\
             a[i1][1][0],a[i1][1][1],a[i1][1][2],\
@@ -618,7 +618,7 @@ def qcstrc(apar,cpar,mystrc,path,basename,phason_matrix,n1max,n5max,origin_shift
     print('  point group:',pg)
     for strc in mystrc:
         obj,wsite,atom,shift=strc
-        wsiten=numericalc.numerical_vector(wsite)
+        wsiten=num.numerical_vector(wsite)
         print('   wsite: %4.3f %4.3f %4.3f %4.3f %4.3f'%(wsiten[0],wsiten[1],wsiten[2],wsiten[3],wsiten[4]))
         #num_stsym=symmetry.site_symmetry(wsite,dim,pg)
         #num_coset=symmetry.coset(wsite,dim,pg)
@@ -704,7 +704,7 @@ def qcstrc(apar,cpar,mystrc,path,basename,phason_matrix,n1max,n5max,origin_shift
     ########## To HERE ##########
     """
     
-    generated_strc=numericalc.strc(objs,pos,phason_matrix,n1max,n5max,eshift,origin_shift,verbose)
+    generated_strc=num.strc(objs,pos,phason_matrix,n1max,n5max,eshift,origin_shift,verbose)
     f=open('%s/%s.xyz'%(path,basename),'w', encoding="utf-8", errors="ignore")
     f.write('%d\n'%(len(generated_strc)))
     f.write('%s.xyz\n'%(basename))

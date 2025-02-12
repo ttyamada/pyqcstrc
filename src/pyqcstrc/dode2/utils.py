@@ -9,9 +9,9 @@ import pyqcstrc.qnvec.qnvec as qnv
 import pyqcstrc.qnmat.qnmat as qnm
 import pyqcstrc.prjop.prjop as prjop
 import pyqcstrc.qnmath.qnmath as qnmth
-import pyqcstrc.qnclass.numericalc as numericalc
+import pyqcstrc.numeric.numericalc as num
 
-#from pyqcstrc.qnclass.qnmath import (add,
+#from pyqcstrc.numeric.qnmath import (add,
 #                                sub,
 #                                mul,
 #                                div,
@@ -36,7 +36,7 @@ import pyqcstrc.qnclass.numericalc as numericalc
 #                                centroid,
 #                                coplanar_check,
 #                                )
-#from pyqcstrc.dode2.numericalc import (numeric_value,
+#from pyqcstrc.dode2.num import (numeric_value,
 #                                    numerical_vector,
 #                                    numerical_vectors,
 #                                    point_on_segment,
@@ -221,7 +221,7 @@ def remove_doubling_in_perp_space(vts: qnv.Qnvec) -> qnv.Qnvec:
     
     # then, remove doubling in perp space.
     #a=np.zeros((num,3,3),dtype=np.int64)
-    a=[qnv]*(num,3) 
+    a=np.zeros((num,3),dtype=qnv.Qnvec) 
     for i in range(num):
         a[i]=projection3(vts[i])
     b=np.unique(a,return_index=True,axis=0)[1] # write unique for qnvec array
@@ -261,7 +261,7 @@ def generator_all_edges(obj: qnv.Qnvec) -> qnv.Qnvec:
     """
     
     # (1) preparing a list of edges
-    n1,n2,_,_=obj.shape
+    n1,n2=obj.shape
     N=obj[0].vt[0].N
     qn0=qnn.Qnnum([0,0,1],N)
     if n2==3:
@@ -849,7 +849,7 @@ def coplanar_check_two_triangles(triange1: qnv.Qnvec, triange2: qnv.Qnvec) -> bo
     vtx=remove_doubling_in_perp_space(vtx)
     
     #if coplanar_check(vtx): # in ico2.math1
-    if coplanar_check_numeric_tau(vtx): # in ico2.numericalc
+    if coplanar_check_numeric_tau(vtx): # in ico2.num
         return True # coplanar
     else:
         return False

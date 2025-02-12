@@ -5,7 +5,7 @@ import numpy as np
 
 import pyqcstrc.qnmath.qnmath as qnm
 import pyqcstrc.utils.utils as utl
-import pyqcstrc.qnclass.numericalc as num
+import pyqcstrc.numeric.numericalc as num
 import pyqcstrc.intsct.intsct as ints
 #import pyqcstrc.qnsym.qnsym as qnsym
 #import pyqcstrc.dode2.intsct as intsct
@@ -549,7 +549,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             for vrtx in vertices:
                 xyz = qnm.projection3(vrtx)
                 print('%4d A        A%d  1.0000    %8.6f %8.6f %8.6f        1'%\
-                (i2+1,i2+1,num.numeric_value(xyz[0]),numericalc.numeric_value(xyz[1]),numericalc.numeric_value(xyz[2])), file=f)
+                (i2+1,i2+1,num.numeric_value(xyz[0]),num.numeric_value(xyz[1]),num.numeric_value(xyz[2])), file=f)
                 i2+=1
                 print('                             0.000000    0.000000    0.000000  0.00', file=f)
             print('  0 0 0 0 0 0 0\
@@ -768,11 +768,11 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
                 vt[4][0],vt[4][1],vt[4][2],\
                 vt[5][0],vt[5][1],vt[5][2]))
         v=utl.obj_area_6d(obj)
-        f.write('volume = %d %d %d (%8.6f)\n'%(v[0],v[1],v[2],numericalc.numeric_value(v)))
+        f.write('volume = %d %d %d (%8.6f)\n'%(v[0],v[1],v[2],num.numeric_value(v)))
         for i1,triangle in enumerate(obj):
             v=utl.triangle_area_6d(triangle)
             f.write('%3d-the triangle, %d %d %d (%8.6f)\n'\
-                    %(i1,v[0],v[1],v[2],numericalc.numeric_value(v)))
+                    %(i1,v[0],v[1],v[2],num.numeric_value(v)))
         f.closed
         return 0
     
@@ -1196,7 +1196,7 @@ def write_podatm(obj, position, vlist=[0], path='.', basename='tmp', shift=[0., 
             #(position[3][0]+position[3][1]*TAU)/(position[3][2]),\
             #(position[4][0]+position[4][1]*TAU)/(position[4][2]),\
             #(position[5][0]+position[5][1]*TAU)/(position[5][2])))
-            p=numericalc.numerical_vector(position)
+            p=num.numerical_vector(position)
             fatm.write('x=  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f\n'%(\
             p[0],p[1],p[2],p[3],p[4],p[5]))
             
@@ -1210,7 +1210,7 @@ def write_podatm(obj, position, vlist=[0], path='.', basename='tmp', shift=[0., 
             #(a[3][0]+a[3][1]*TAU)/(a[3][2])+shft[3],\
             #(a[4][0]+a[4][1]*TAU)/(a[4][2])+shft[4],\
             #(a[5][0]+a[5][1]*TAU)/(a[5][2])+shft[5]))
-            a=numericalc.numerical_vector(a)
+            a=num.numerical_vector(a)
             fatm.write('xi=  %8.6f  %8.6f  %8.6f  %8.6f  %8.6f  %8.6f  0.000000  v=1.0\n'%(\
             a[0],a[1],a[2],a[3],a[4],a[5]))
             fatm.write('isyd=1\n')
@@ -1260,7 +1260,7 @@ def write_podatm(obj, position, vlist=[0], path='.', basename='tmp', shift=[0., 
                 #(b[4][0]+b[4][1]*TAU)/(b[4][2])-(a[4][0]+a[4][1]*TAU)/(a[4][2]),\
                 #(b[5][0]+b[5][1]*TAU)/(b[5][2])-(a[5][0]+a[5][1]*TAU)/(a[5][2])))
                 b=math1.sub_vectors(b,a)
-                b=numericalc.numerical_vector(b)
+                b=num.numerical_vector(b)
                 """ 5次元ベクトルから7次元ベクトルへの変換　一意に決まらない!?
                 
                 fpod.write('ej=  %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f\n'%(\

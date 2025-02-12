@@ -11,7 +11,7 @@ import pyqcstrc.qnvec.qnvec as qnv
 import pyqcstrc.qnmat.qnmat as qnm
 import pyqcstrc.qnmath.qnmath
 #import pyqcstrc.dode2.qnmath8
-import pyqcstrc.qnclass.numericalc
+import pyqcstrc.numeric.numericalc
 
 #sys.path.append('.')
 #from numericalc import coplanar_check_numeric_tau

@@ -54,6 +54,9 @@ class Qnnum:
     def __neg__(self):
         return neg(self)
     
+def zeros(shape,n,N): # qnnum ndarray
+    return np.zeros(shape,dtype=Qnnum)
+    
 def copy(a):
     #return np.copy(a)
     #original code

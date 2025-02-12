@@ -11,7 +11,7 @@ import itertools
 import pyqcstrc.qnnum.qnnum as qnnum
 import pyqcstrc.qnvec.qnvec as qnvec
 import pyqcstrc.qnmat.qnmat as qnmat
-import pyqcstrc.qnclass.numericalc as numericalc
+import pyqcstrc.numeric.numericalc as num
 import pyqcstrc.intsec.intsec as intsec
 
 #from pyqcstrc.dode2.math1 import (projection3,

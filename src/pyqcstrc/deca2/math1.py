@@ -8,7 +8,8 @@ import numpy as np
 from numpy.typing import NDArray
 #sys.path.append('.')
 #from numericalc import coplanar_check_numeric_tau
-from pyqcstrc.octa2.numericalc import coplanar_check_numeric_tau
+#from pyqcstrc.octa2.numericalc import coplanar_check_numeric_tau
+import pyqcstrc.octa2.numeric as num
 
 # equivalent to matmul(ma1,v)
 def mtrixcal(m1: NDArray[np.int64],m2: NDArray[np.int64],m3: NDArray[np.int64],
@@ -222,7 +223,7 @@ if __name__ == '__main__':
     
     import random
     sys.path.append('.')
-    import numericalc
+    import qnstrc.octa2.numeric as num
     """
     from numericalc import (numeric_value,
                             numerical_vector,
@@ -240,11 +241,11 @@ if __name__ == '__main__':
         """checking basic arithmetic operations in SQRT5-style.
         """
         flg=0
-        a1=numericalc.numeric_value(a)
-        b1=numericalc.numeric_value(b)
+        a1=num.numeric_value(a)
+        b1=num.numeric_value(b)
         
         c=add(a,b)
-        c1=numericalc.numeric_value(c)
+        c1=num.numeric_value(c)
         c2=a1+b1
         if abs(c1-c2)<eps:
             flg+=1
@@ -252,7 +253,7 @@ if __name__ == '__main__':
             print('+')
             
         c=sub(a,b)
-        c1=numericalc.numeric_value(c)
+        c1=num.numeric_value(c)
         c2=a1-b1
         if abs(c1-c2)<eps:
             flg+=1
@@ -260,7 +261,7 @@ if __name__ == '__main__':
             print('-')
             
         c=mul(a,b)
-        c1=numericalc.numeric_value(c)
+        c1=num.numeric_value(c)
         c2=a1*b1
         if abs(c1-c2)<eps:
             flg+=1
@@ -268,7 +269,7 @@ if __name__ == '__main__':
             print('*')
             
         c=div(a,b)
-        c1=numericalc.numeric_value(c)
+        c1=num.numeric_value(c)
         c2=a1/b1
         if abs(c1-c2)<eps:
             flg+=1
@@ -331,13 +332,13 @@ if __name__ == '__main__':
     # 積：定数xベクトル
     flg=0
     const=np.array([1,1,2])
-    nconst=numericalc.numeric_value(const)
+    nconst=num.numeric_value(const)
     for _ in range(ncycle):
         v1=generate_random_vector()
-        nv1=numericalc.numerical_vector(v1)
+        nv1=num.numerical_vector(v1)
         a=nv1*nconst
         v=mul_vector(v1,const)
-        b=numericalc.numerical_vector(v)
+        b=num.numerical_vector(v)
         if np.allclose(a,b):
             pass
         else:
@@ -351,14 +352,14 @@ if __name__ == '__main__':
     nset=5
     flg=0
     const=np.array([1,1,2])
-    nconst=numericalc.numeric_value(const)
+    nconst=num.numeric_value(const)
     for _ in range(ncycle):
         vs=generate_random_vectors(nset)
         mvs=mul_vectors(vs,const)
         for i in range(len(vs)):
-            nv1=numericalc.numerical_vector(vs[i])
+            nv1=num.numerical_vector(vs[i])
             a=nv1*nconst
-            b=numericalc.numerical_vector(mvs[i])
+            b=num.numerical_vector(mvs[i])
             if np.allclose(a,b):
                 pass
             else:
@@ -374,12 +375,12 @@ if __name__ == '__main__':
         v1=generate_random_vector()
         v2=generate_random_vector()
         #
-        n1=numericalc.numerical_vector(v1)
-        n2=numericalc.numerical_vector(v2)
+        n1=num.numerical_vector(v1)
+        n2=num.numerical_vector(v2)
         a=n1+n2
         #
         v=add_vectors(v1,v2)
-        b=numericalc.numerical_vector(v)
+        b=num.numerical_vector(v)
         #print(b)
         if np.allclose(a,b):
             pass
@@ -396,12 +397,12 @@ if __name__ == '__main__':
         v1=generate_random_vector()
         v2=generate_random_vector()
         #
-        n1=numericalc.numerical_vector(v1)
-        n2=numericalc.numerical_vector(v2)
+        n1=num.numerical_vector(v1)
+        n2=num.numerical_vector(v2)
         a=n1-n2
         #
         v=sub_vectors(v1,v2)
-        b=numericalc.numerical_vector(v)
+        b=num.numerical_vector(v)
         #print(b)
         if np.allclose(a,b):
             pass
@@ -418,12 +419,12 @@ if __name__ == '__main__':
         v1=generate_random_vector(3)
         v2=generate_random_vector(3)
         #
-        n1=numericalc.numerical_vector(v1)
-        n2=numericalc.numerical_vector(v2)
+        n1=num.numerical_vector(v1)
+        n2=num.numerical_vector(v2)
         a=np.cross(n1,n2)
         #
         v=outer_product(v1,v2)
-        b=numericalc.numerical_vector(v)
+        b=num.numerical_vector(v)
         #print(b)
         if np.allclose(a,b):
             pass
@@ -440,12 +441,12 @@ if __name__ == '__main__':
         v1=generate_random_vector(3)
         v2=generate_random_vector(3)
         #
-        n1=numericalc.numerical_vector(v1)
-        n2=numericalc.numerical_vector(v2)
+        n1=num.numerical_vector(v1)
+        n2=num.numerical_vector(v2)
         a=np.dot(n1,n2)
         #
         v=inner_product(v1,v2)
-        b=numericalc.numeric_value(v)
+        b=num.numeric_value(v)
         #print(b)
         if abs(a-b)<eps:
             pass

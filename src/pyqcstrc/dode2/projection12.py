@@ -4,7 +4,7 @@ import random
 import pyqcstrc.qnnum.qnnum as qnn
 import pyqcstrc.qnvec.qnvec as qnv
 import pyqcstrc.qnmat.qnmat as qnm
-import pyqcstrc.qnclass.qnmath
+import pyqcstrc.qnmath.qnmath as qmt
 
 def projection_numerical_par(vn:qnv.Qnvec) -> qnv.Qnvec:
     

@@ -9,7 +9,7 @@ import sys
 import numpy as np
 import pyqcstrc.occdom.occdom as od
 import pyqcstrc.qnsym.qnsym as sym
-import pyqcstrc.qnclass.numericalc as num
+import pyqcstrc.numeric.numericalc as num
 
 from matplotlib.patches import Circle, Wedge, Polygon
 from matplotlib.collections import PatchCollection
