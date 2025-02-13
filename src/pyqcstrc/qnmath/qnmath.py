@@ -387,7 +387,7 @@ def centroid_obj(obj: qnv.Qnvec) -> qnv.Qnvec:
     tmp=tmp*len
     return tmp
 
-def det_matrix(mtx: qnm.Qnmat) -> qnn.Qnnum:
+def det_matrix_3d(mtx: qnm.Qnmat) -> qnn.Qnnum:
     """Determinant of 3x3 matrix, mtx, in qnnumber
     
     Parameters
@@ -402,7 +402,7 @@ def det_matrix(mtx: qnm.Qnmat) -> qnn.Qnnum:
     N=mtx[0][0].N
     shape=ntx.shape
     if shape[0]!=3:
-        print("shape of mtx in det_matrix should be (3,3) but",shape); exit(0)
+        print("shape of mtx in det_matrix_3d should be (3,3) but",shape); exit(0)
     det=qnn.Qnmtrx([0,0,1],N) # zero qnnumber
     det=det+mtx[0][0]*mtx[1][1]*mtx[2][2]
     det=det+mtx[0][1]*mtx[1][2]*mtx[2][0]    
@@ -412,6 +412,28 @@ def det_matrix(mtx: qnm.Qnmat) -> qnn.Qnnum:
     det=det-mtx[0][0]*mtx[1][2]*mtx[2][1]
 
     return det
+
+def det_matrix_2d(mtx: qnm.Qnmat) -> qnn.Qnnum:
+    """Determinant of 3x3 matrix, mtx, in qnnumber
+    
+    Parameters
+    ----------
+    mtx: array
+        2x2 matrix in qnnumer
+
+    Returns
+    -------
+    determinant in qnnumber
+    """
+    N=mtx.N
+    shape=ntx.shape
+    if shape[0]!=2:
+        print("shape of mtx in det_matrix_2d should be (3,3) but",shape); exit(0)
+    det=qnn.Qnmtrx([0,0,1],N) # zero qnnumber
+    det=det+mtx[0][0]*mtx[1][1]
+    det=det-mtx[0][1]*mtx[1][0]
+    return det
+
 
 # this should be a function
 def matrixtr(mtx: qnm.Qnmat) -> qnm.Qnmat:

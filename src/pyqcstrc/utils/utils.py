@@ -6,12 +6,14 @@
 import sys
 import numpy as np
 from numpy.typing import NDArray
-from scipy.spatial import Delaunay
+#from scipy.spatial import Delaunay
+import pyqcstrc.pyDelaunay2D.pyDelaunay2D as dln
 import itertools
 import time
 
 import pyqcstrc.qnnum.qnnum as qnn
 import pyqcstrc.qnvec.qnvec as qnv
+import pyqcstrc.qnmat.qnmat as qnm
 import pyqcstrc.qnmath.qnmath as qmt
 import pyqcstrc.numeric.numericalc as num
 import pyqcstrc.prjop.prjop as prj
@@ -24,9 +26,9 @@ def shift_object(obj: qnv.Qnvec, shift: qnv.Qnvec) -> qnv.Qnvec:
     if obj.ndim==4:
         obj_new=np.array(obj.shape,dtype=qnv.Qnvec)  #[qn0]*obj.shape
         i1=0
-        for triangle in obj:
+        for tri in obj:
             i2=0
-            for vertex in triangle:
+            for vertex in tri:
                 obj_new[i1][i2]=vertex+shift
                 i2+=1
             i1+=1
@@ -55,14 +57,14 @@ def obj_area_6d(obj: qnv.Qnvec) -> qnn.Qnnum:
     ndim=obj.ndim # ndim qn vector
     w=qn0
     if ndim==4:
-        for triangle in obj:
-            v=triangle_area_6d(triangle)
+        for tri in obj:
+            v=triangle_area_6d(tri)
             w=w+v
         return w
     elif ndim==5:
         for tset in obj:
-            for triangle in tset:
-                v=triangle_area_6d(triangle)
+            for tri in tset:
+                v=triangle_area_6d(tri)
                 w=w+v
         return w
     elif ndim==3:
@@ -71,12 +73,49 @@ def obj_area_6d(obj: qnv.Qnvec) -> qnn.Qnnum:
         print('object has an incorrect shape!')
         return 
 
-def triangle_area_6d(triangle: qnv.Qnvec) -> qnn.Qnnum:
+def triangle_area_2d(tri: qnv.Qnvec) -> qnn.Qnnum:
+    N=tri[0].N
+    qnv=qnv.zerovs(2)
+    qnm=qnm.zerom(2,N)
+    for i in range(2):
+        qnm[i][0]=tri[i+1][0]-tri[0][0]
+        qnm[i][1]=tri[i+1][1]-tri[1][0]
+    det=qmt.det_matrix_2d(qnm)
+    return qnn.abs(det)/2
+    
+def triangle_sqarea_3d(tri: qnv.Qnvec) -> qnn.Qnnum:
+    N=tri[0].N
+    qnv=qnv.zerovs(3)
+    qnv[0]=tri[1]-tri[0]
+    qnv[1]=tri[2]-tri[0]
+    qnv[2]=cros(qnv[0],qnv[1])
+    det=dot(qnv[2],qnv[2]) 
+    return det/4  # squared area of a triangle
+
+def tetrahedron_volume(tet: NDArray[np.float64]) -> qnn.Qnnum:
+    """This function returns volume of a tetrahedron
+        
+    Parameters
+    ----------
+    tetrahedron: array
+        vertex coordinates of the tetrahedron, xyz0,xyz1,xyz2,xyz3
+    """
+    N=tetrahedron[0].N
+    n=3
+    qnm=qnm.zeros((n,N))
+    for i in range(n):
+        qnm[i][0]=tet[i+1][0]-tet[0][0]
+        qnm[i][1]=tet[i+1][1]-tet[0][1]
+        qnm[i][2]=tet[i+1][2]-tet[0][2]
+    det = qtm.det_matrix_3d(qnm)
+    return qnn.abs(det)/6
+
+def triangle_area_6d(tri: qnv.Qnvec) -> qnn.Qnnum:
     """Calculate volume of triangle in TAU style.
     
     Parameters
     ----------
-    obj: array
+    tri: array
         6d vectors of triangle vertices in TAU-style.
     
     Returns
@@ -84,13 +123,13 @@ def triangle_area_6d(triangle: qnv.Qnvec) -> qnn.Qnnum:
     area: array
         Area in TAU-style.
     """
-    N=triangle[0].vt[0].N
-    ndim=triangle.ndim
+    N=tri[0].vt[0].N
+    ndim=tri.ndim
     qn0=qnn.Qnnum([0,0,1],N)
     if ndim==3:
         #print('triangle',triangle)
-        vts=np.array((ndim),dtype=qnv.Qnvec)  #[qn0]*(3,3,3)
-        for i,vt in enumerate(triangle):
+        vts=qnv.zerovs((ndim))  #[qn0]*(3,3)
+        for i,vt in enumerate(tri):
             vts[i]=prj.projection3(vt)
         return triangle_area(vts)
     else:
@@ -100,6 +139,7 @@ def triangle_area_6d(triangle: qnv.Qnvec) -> qnn.Qnnum:
 #######################
 ###  To be checked  ###
 #######################
+# this can be replaced by triangle_sqarea_3d
 def triangle_area(vts: qnv.Qnvec) -> qnn.Qnnum:
     """Calculate area of a triangle in TAU style.
     
@@ -115,20 +155,14 @@ def triangle_area(vts: qnv.Qnvec) -> qnn.Qnnum:
     """
     v1=vts[1]-vts[0]
     v2=vts[2]-vts[0]
-    
     v=cross(v1,v2)
-    
-    #a1=v[2][0]
-    #a2=v[2][1]
-    #a3=v[2][2]
-    N=vts[0].vt[0].N
-    qn0=qnn.Qnnum([0,0,1],N)
-    qn1=qnn.Qnnum([1,0,2],N)
-    
-    if v[2] < qn0:  #a1+a2*TAU<0.0: # to avoid negative volume...
-        return -v[2]*qn1  #mul(v[2],np.array([-1,0,2]))
+    det=dot(v,v)
+    N=vts[0].N
+    qn0=qnn.Qnnum([0,0,1],N)    
+    if det < qn0:  #a1+a2*TAU<0.0: # to avoid negative volume...
+        return -det/4 #mul(v[2],np.array([-1,0,2]))
     else:
-        return v[2]*qn1  #mul(v[2],np.array([1,0,2]))
+        return det/4  #mul(v[2],np.array([1,0,2]))
 
 #----------------------------
 # Remove doubling
@@ -146,9 +180,7 @@ def remove_doubling(vts: qnv.Qnvec) -> qnv.Qnvec:
     obj: array
         set of 6-dimensional vectors in TAU-style
     """
-    #return np.unique(vts) 
-
-    # original code
+    
     ndim=vts.ndim
     shape=vts.shape
     dtype=vts.dtype
@@ -159,8 +191,7 @@ def remove_doubling(vts: qnv.Qnvec) -> qnv.Qnvec:
     for i in range(shape[0]):
         vtsi=vts[i]
         if i==0:
-            #vt0=np.append(vt0,vts[0])
-            vt0[0]=vts[0]
+            vt0[ni]=vts[i]
             ni=ni+1
         else:
             isk=False
@@ -168,15 +199,13 @@ def remove_doubling(vts: qnv.Qnvec) -> qnv.Qnvec:
                 if vts[i]==vt0[j]:
                     isk=True
             if not isk:
-                #vt0=np.append(vt0,vts[i],axis=0) # independent one
                 vt0[ni]=vts[i]
-                qnv.printqnv("vt0[ni]",vt0[ni])
+                #qnv.printqnv("vt0[ni]",vt0[ni])
                 ni=ni+1
-    #qnv.printqnvs("vt0",vt0)  # for test
-    return vt0
+    return vt0[0:ni]
 
 def remove_doubling_in_perp_space(vts: qnv.Qnvec) -> qnv.Qnvec:
-    """Remove 6d coordinates which is doubled in Eperp.
+    """Remove 2D or 3d coordinates which is doubled in Eperp.
     
     Parameters
     ----------
@@ -186,12 +215,14 @@ def remove_doubling_in_perp_space(vts: qnv.Qnvec) -> qnv.Qnvec:
     Returns
     -------
     vts: array
-        set of 6-dimensional vectors in TAU-style
+        set of 2-or 3-dimensional vectors in TAU-style
     """
-    return np.unique(vts)
+    return remove_doubling(vts)
+    
+    #return np.unique(vts)
 
-    for i in range(num):
-        pass
+    #for i in range(num):
+    #    pass
 
 #----------------------------
 # Edges
@@ -211,7 +242,7 @@ def generator_all_edges(obj: qnv.Qnvec) -> qnv.Qnvec:
     Parameters
     ----------
     obj: array
-        set of triangles
+        set of triangles or tetrahedra
     
     Returns
     -------
@@ -219,21 +250,23 @@ def generator_all_edges(obj: qnv.Qnvec) -> qnv.Qnvec:
         set of edges in TAU-style.
     
     """
-    
     # (1) preparing a list of edges
     n1,n2=obj.shape
     print("n1",n1,"n2",n2)
     if n2==3:
         #edges=np.zeros((n1,3,2,6,3),dtype=np.int64)
-        edges=np.zeros((n1,n2),dtype=qnv.Qnvec)  #[qn0]*(n1,3,2,6)
+        edges=qnv.zerovs((n1,n2))  #[qn0]*(n1,3,2,6)
         i1=0
-        for triangle in obj:
-            qnv.printqnv("triangle",triangle)
-            edges[i1]=get_triangle_edge(triangle)
+        for tri in obj:
+            qnv.printqnv("triangle",tri)
+            edges[i1]=get_triangle_edge(tri)
             i1+=1
         return edges  #edges.reshape(n1*3,2,6)  #edges.reshape(n1*3,2,6,3)
+    elif n2==4:
+        print("edges of tetrahedron is not implemented yet")
+        return 
     else:
-        print('obj should be a set of trianges')
+        print('obj should be a set of trianges or tetrahedra')
         return 
 
 ### WIP: to be checked ###
@@ -241,7 +274,7 @@ def generator_unique_edges(obj: qnv.Qnvec) -> qnv.Qnvec:
     """Return unique egdes in Object
     
     """
-    n1,n2,_,_=obj.shape
+    n1,n2=obj.shape
     
     # (1) preparing a list of edges
     if n2==3: # obj is set of trianges
@@ -272,7 +305,7 @@ def generator_unique_edges(obj: qnv.Qnvec) -> qnv.Qnvec:
         a[i1]=edges[b[i1]]
     return a
 
-def get_triangle_edge(triangle: qnv.Qnvec) -> qnv.Qnvec:
+def get_triangle_edge(tri: qnv.Qnvec) -> qnv.Qnvec:
     """Return three edges of triange.
     """
     # three edges of triange: 0-1, 0-2, 1-2
@@ -282,7 +315,7 @@ def get_triangle_edge(triangle: qnv.Qnvec) -> qnv.Qnvec:
     [1,2]] 
     
     # Three egdes of the triangl.
-    N=triangle[0][0].vt[0].N
+    N=tri[0][0].vt[0].N
     qn0=qnn.Qnnum([0,0,1],N)
     #a=np.zeros((3,2,6,3),dtype=np.int64)
     a=np.array((3,2),dtype=qnv.Qnvec)  #[qn0]*(3,2,6)
@@ -290,7 +323,7 @@ def get_triangle_edge(triangle: qnv.Qnvec) -> qnv.Qnvec:
     for k in comb:
         i2=0
         for l in k:
-            a[i1][i2]=triangle[l]
+            a[i1][i2]=tri[l]
             i2+=1
         i1+=1
     return a
@@ -313,11 +346,11 @@ def generate_convex_hull(obj: qnv.Qnvec) -> qnv.Qnvec:
     
     """
     # 1
-    #triangle_surface=generator_surface_1(obj)
-    triangle_surface=obj
-    #print('triangle_surface.shape:',triangle_surface.shape)
+    #tri_surface=generator_surface_1(obj)
+    tri_surface=obj
+    #print('tri_surface.shape:',tri_surface.shape)
     # 2
-    edge_surface=surface_cleaner(triangle_surface)
+    edge_surface=surface_cleaner(tri_surface)
     #print('edge_surface.shape:',edge_surface.shape)
     
     # 3
@@ -511,10 +544,10 @@ def equivalent(obj1: qnv.Qnvec, obj2: qnv.Qnvec) -> bool:
     else:
         return 
 
-def equivalent_triangles(triangle1: qnv.Qnvec, triangle2: qnv.Qnvec) -> bool:
+def equivalent_triangles(tri1: qnv.Qnvec, tri2: qnv.Qnvec) -> bool:
     """Checking whether triangle1 and triangle2 are equivalent or not.
     """
-    a=np.vstack([triangle1,triangle2])
+    a=np.concatenate([tri1,tri2])  #np.vstack([tri1,tri2])
     a=remove_doubling_in_perp_space(a)
     if len(a)==3:
         return True # equivalent traiangle
@@ -545,10 +578,9 @@ def equivalent_vertices(vertex1: qnv.Qnvec, vertex2: qnv.Qnvec) -> bool:
 def sort_vctors(vts: qnv.Qnvec) -> qnv.Qnvec:
     """
     sort vectors in TAU-style
-    
     sort the coordinates (xi,yi,zi) such that the xi in the order.
     """
-    #n1,n2,_=vts.shape
+    n1,n2,_=vts.shape
     #out=np.zeros(vts.shape,dtype=np.int64)
     #ln=len(vts)
     N=vts[0].vt[0].N
@@ -558,26 +590,28 @@ def sort_vctors(vts: qnv.Qnvec) -> qnv.Qnvec:
     vns=num.get_internal_component_sets_numerical(vts)
     
     ln=len(vns)
-    ip=[0]*ln
+    ip=np.zeros(ln,dtype=np.int64)  #[0]*ln
     qmt.qsort(vns,ip,ln)  # qsort in qnmath
     #tmp=np.argsort(vns,axis=0)
-
     #tmp=vns[np.argsort(vns[:,0])]
+    out=qnv.zeros(n1)
     for i1 in range(n1):
-        out[i1]=vts[tmp[i1][0]]
+        out[i1]=vts[ip[i1][0]]  #vts[tmp[i1][0]]
     return out
 
 def sort_obj(obj: qnv.Qnvec) -> qnv.Qnvec:
     """
-    sort triangle in an object
+    sort triangles in an object
     """
     #out=np.zeros(vts.shape,dtype=np.int64)
     shape=obj.shape
     out=np.array(shape,dtype=qnv.Qnvec)  #[qn0]*vts.shape
     #centroids=np.zeros(len(obj),dtype=np.float64)
-    centroids=np.array(shape,dtype=qnv.Qnvec)  #[qn0]*len(obj)
+    #centroids=np.array(shape,dtype=qnv.Qnvec)  #[qn0]*len(obj)
     #tmp=np.zeros((obj.shape,3),dtype=np.int64)
-    tmp=np.array(shape,dtype=qnv.Qnvec)  #[qn0]*obj.shape
+    #tmp=np.array(shape,dtype=qnv.Qnvec)  #[qn0]*obj.shape
+    centroids=qnv.zeros(shape)
+    tmp=qnv.zeros(shape)
     
     # 各triangleの頂点xyzをx順にソートすると同時に重心を求めておく。
     for i1 in range(len(obj)):
@@ -600,7 +634,7 @@ def sort_obj(obj: qnv.Qnvec) -> qnv.Qnvec:
 #----------------------------
 def decomposition(tmp2v: qnv.Qnvec):
     try:
-        tri=Delaunay(tmp2v)
+        tri=dln.Delaunay(tmp2v) # Delaunay triangulation
     except:
         print('error in decomposition')
         return 
@@ -611,15 +645,15 @@ def decomposition(tmp2v: qnv.Qnvec):
     return out
 
 def triangulation_points(points: qnv.Qnvec):
-    
     #tmp=np.zeros((len(points),2),dtype=np.float64)
     N=points[0].vt[0].N
     qn0=qnn.Qnnum([0,0,1],N)
-    tmp=[qm0]*(len(points),2)
+    tmp=qnv.zeros(len(points)) #[qm0]*(len(points),2) 2D vector
     for i1,p in enumerate(points):
-        v=prj.projection3(p)
-        v=num.numerical_vector(v)
-        tmp[i1]=v[:2]
+        v=prj.projection3(p)  # internal space components of p
+        #v=num.numerical_vector(v)
+        #tmp[i1]=v[:2]
+        tmp[i1]=v # copy v to tmp
         
     ltmp=decomposition(tmp)
     if np.all(ltmp==None):
@@ -628,8 +662,8 @@ def triangulation_points(points: qnv.Qnvec):
         counter=0
         for i in ltmp:
             #tmp3=np.array([points[i[0]],points[i[1]],points[i[2]]]).reshape(3,6,3)
-            tmp3=np.array([points[i[0]],points[i[1]],points[i[2]]]).reshape(3,6)
-            vol=triangle_area_6d(tmp3)
+            tmp3=np.array([points[i[0]],points[i[1]],points[i[2]]]).reshape(3,6) # triangle
+            vol=triangle_area_6d(tmp3) # volume (area) of a triangle
             if vol[0]==0 and vol[1]==0:
                 pass
             else:
@@ -671,7 +705,7 @@ def remove_vectors(vts1: qnv.Qnvec, vts2: qnv.Qnvec) -> qnv.Qnvec:
         N=vts1[0].N
         qn0=qnn.Qnnum([0,0,1],N)
         #out=np.zeros((len(lst),6,3),dtype=np.int64)
-        out=np.array(num,dtype=qnv.Qnvec)  #[qn0]*(len(lst),6)
+        out=qnv.zerovs(num)  #[qn0]*(len(lst),6)
         for i1 in range(len(lst)):
             out[i1]=vts1[lst[i1]]
         return out
@@ -694,7 +728,7 @@ def remove_vector(vts: qnv.Qnvec, vt: qnv.Qnvec) -> qnv.Qnvec:
         #out=np.zeros((len(lst),6,3),dtype=np.int64)
         N=vts[0].N
         qn0=qnn.Qnvec([0,0,1],N)
-        out=np.array(shape,dtype=qnv.Qnvec)  #[qn0]*(len(lst),6)
+        out=qnv.zerovs(shape)  #[qn0]*(len(lst),6)
         for i1 in range(len(lst)):
             out[i1]=vts[lst[i1]]
         return out
@@ -712,46 +746,46 @@ def merge_two_triangles_in_obj(obj: qnv.Qnvec) -> qnn.Qnnum:
     num=len(obj)
     return obj
 
-def merge_two_triangles(triangle_1: qnv.Qnvec, triangle_2: qnv.Qnvec) -> qnv.Qnvec:
+def merge_two_triangles(tri_1: qnv.Qnvec, tri_2: qnv.Qnvec) -> qnv.Qnvec:
     """Return merged tetrahedra.
     """
-    if check_connectivity_triangles(triangle_1,triangle_2): # triangle1とtriangle2が共通する辺を持つ場合
-        vtx1=remove_vectors(triangle_1,triangle_2) # triangle1からtriangle1とtriangle2の共通頂点を消す --> 頂点1
-        vtx2=remove_vectors(triangle_2,triangle_1) # triangle2からtriangle1とtriangle2の共通頂点を消す --> 頂点2
-        vtx_common=get_common_edge_in_two_triangles(triangle_1,triangle_2) # triangle1とtriangle2の共通する辺
+    if check_connectivity_triangles(tri_1,tri_2): # triangle1とtriangle2が共通する辺を持つ場合
+        vtx1=remove_vectors(tri_1,tri_2) # triangle1からtriangle1とtriangle2の共通頂点を消す --> 頂点1
+        vtx2=remove_vectors(tri_2,tri_1) # triangle2からtriangle1とtriangle2の共通頂点を消す --> 頂点2
+        vtx_common=get_common_edge_in_two_triangles(tri_1,tri_2) # triangle1とtriangle2の共通する辺
         line_segment=np.vstack([vtx1,vtx2])# 頂点1と頂点２を繋いだ辺
         flg=0
         for vtx in vtx_common:
             # 2つのtriangesを一つのtriangeに結合できる時、その頂点は上の辺の2つの頂点のうち1つの頂点と頂点1と頂点２。
             if point_on_segment(vtx,line_segment):
                 tmp=remove_vector(vtx_common,vtx)
-                triange_new=np.stack(tmp,line_segment)
+                tri_new=np.stack(tmp,line_segment)
                 flg+=1
                 break
         else:
             pass
         if flg!=0:
-            return triange_new
+            return tri_new
         else:
             return 
     else:
         return 
     
-def check_connectivity_triangles(triangle_1: qnv.Qnvec, triangle_2: qnv.Qnvec) -> bool:
+def check_connectivity_triangles(tri_1: qnv.Qnvec, tri_2: qnv.Qnvec) -> bool:
     """Checking whether triangle_1 and _2 are sharing an edge or not.
     """
-    a=np.vstack([triangle_1,triangle_1])
+    a=np.vstack([tri_1,tri_1])
     a=remove_doubling_in_perp_space(a)
     if len(a)==4:
         return True # common edge
     else:
         return False # not commom edge
 
-def get_common_edge_in_two_triangles(triangle_1: qnv.Qnvec, triangle_2: qnv.Qnvec) -> qnv.Qnvec:
+def get_common_edge_in_two_triangles(tri_1: qnv.Qnvec, tri_2: qnv.Qnvec) -> qnv.Qnvec:
     """ Return common edge of two connected triangles.
     """
-    edge1=get_triangle_edge(triangle_1)
-    edge2=get_triangle_edge(triangle_2)
+    edge1=get_triangle_edge(tri_1)
+    edge2=get_triangle_edge(tri_2)
     
     count=0
     for edge_1 in edges1:
@@ -800,7 +834,7 @@ def two_segment_into_one(line_segment_1: qnv.Qnvec, line_segment_2:qnv.Qnvec) ->
     else:
         return 
 
-def coplanar_check_two_triangles(triange1: qnv.Qnvec, triange2: qnv.Qnvec) -> bool:
+def coplanar_check_two_triangles(tri_1: qnv.Qnvec, tri_2: qnv.Qnvec) -> bool:
     """Checking whether two triangles are coplanar or not.
     
     Note
@@ -810,7 +844,7 @@ def coplanar_check_two_triangles(triange1: qnv.Qnvec, triange2: qnv.Qnvec) -> bo
     
     vtxはソートされており、coplanar_checkやcoplanar_check_numeric_tauでの外積計算の際に小さい値になるとcoplanar判定を間違うので注意。
     """
-    vtx=np.vstack([triange1,triange2])
+    vtx=np.vstack([tri_1,tri_2])
     vtx=remove_doubling_in_perp_space(vtx)
     
     #if coplanar_check(vtx): # in ico2.math1
@@ -922,14 +956,26 @@ if __name__ == '__main__':
     qnv.printqnvs("vst",vst)
     
     vst_d3=np.concatenate([vst,vst]) # doubling vst vectors
+    print("vst_d3.shape",vst_d3.shape) # for test
     qnv.printqnvs("vst_d3",vst_d3)
     #vst_d4=np.stack([vst_d3,vst_d3]) # doubling vst_d3 vectors
     #qnv.printqnvs("vst_d4",vst_d4)
     
     a=remove_doubling(vst_d3)
     qnv.printqnvs("a",a)
-        
-    a=remove_doubling_in_perp_space(vst_d4)
+    
+    # projection operator
+    qnm.printqnm("prj.prj0",prj.prj0)
+    
+    vst_d4=np.concatenate([vts2,vts2])  # 5D vectors
+    qnv.printqnvs("vst_d4",vst_d4)
+                  
+    vst_d5=qnv.zerovs((16,2)) #???
+    for i in range(16):
+        vst_d5[i]=prj.prjop_i(vst_d4[i]) # 
+    qnv.printqnvs("vst_d5",vst_d5)
+    
+    a=remove_doubling_in_perp_space(vst_d5)
     if len(a)==n:
         print('remove_doubling_in_perp_space: pass')
     else:
@@ -941,17 +987,17 @@ if __name__ == '__main__':
     #triangle=generate_random_triangle()
     
     # generate triangles
-    triangle=qnv.zerovs(3)
-    print("triangle.shape",triangle.shape)
+    tri=qnv.zerovs(3)
+    print("triangle.shape",tri.shape)
     qnv.printqnv("vst[0]",vst[0])
     qnv.printqnv("vst[1]",vst[1])
     qnv.printqnv("vst[2]",vst[2])
-    triangle[0]=vst[0]
-    triangle[1]=vst[1]
-    triangle[2]=vst[2] # 3 vectors define a triangle
-    qnv.printqnvs("triangle",triangle) # triangle
+    tri[0]=vst[0]
+    tri[1]=vst[1]
+    tri[2]=vst[2] # 3 vectors define a triangle
+    qnv.printqnvs("triangle",tri) # triangle
     # doubled triangle
-    obj=np.concatenate([triangle,triangle]) # doubled triangle
+    obj=np.concatenate([tri,tri]) # doubled triangle
     #generator_surface_1(obj)
     
     # a tetrahedon
