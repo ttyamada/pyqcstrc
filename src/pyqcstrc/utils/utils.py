@@ -932,6 +932,7 @@ if __name__ == '__main__':
     prj.prjop_init(isys)
     
     # calculate internal space components of vts2
+    print("vts2.shape",vts2.shape)
     vns2=num.get_internal_component_sets_numerical(vts2) # perp space components
     qnv.printqnvs("vts2",vts2)
     #for i in range(8):
@@ -970,12 +971,22 @@ if __name__ == '__main__':
     vst_d4=np.concatenate([vts2,vts2])  # 5D vectors
     qnv.printqnvs("vst_d4",vst_d4)
                   
-    vst_d5=qnv.zerovs((16,2)) #???
+    vst_d5=qnv.zerovs((16))
     for i in range(16):
-        vst_d5[i]=prj.prjop_i(vst_d4[i]) # 
+        vst_d5[i]=prj.prjop(vst_d4[i]) # 
     qnv.printqnvs("vst_d5",vst_d5)
     
-    a=remove_doubling_in_perp_space(vst_d5)
+    vst_d6=qnv.zerovs((16))
+    for i in range(16):
+        vst_d6[i]=prj.prjop_e(vst_d4[i]) # 
+    qnv.printqnvs("vst_d6",vst_d6)
+    
+    vst_d7=qnv.zerovs((16))
+    for i in range(16):
+        vst_d7[i]=prj.prjop_i(vst_d4[i]) # 
+    qnv.printqnvs("vst_d7",vst_d7)
+    
+    a=remove_doubling_in_perp_space(vst_d4)
     if len(a)==n:
         print('remove_doubling_in_perp_space: pass')
     else:

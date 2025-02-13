@@ -204,26 +204,33 @@ def copy(qna1: qnm.Qnmat):
             
 # for class cls cls should be icos octa, deca or dode
 def prjop(v: qnv.Qnvec) -> qnv.Qnvec:
-    qnm.printqnm("prj",prj)
-    qnv.printqnv("v",v)
+    #qnm.printqnm("prj",prj0)
+    #qnv.printqnv("v",v)
     vei=v@prj0  #@v # vt assumed to be qnvec
     return vei
 
 # projection into external space for class cls
 def prjop_e(v:qnv.Qnvec) -> qnv.Qnvec:
     vei=v@prj0  #@v # vt assumed to be qnvec
+    ve=qnv.zerovs(3)
     if isys>2: # dihedral
-        return vei[0:1],vei[4]
+        ve[0]=vei[0]; ve[1]=vei[1]; ve[2]=vei[4]
+        return ve
     elif isys==2: # icosahedral
-        return vei[0:2]
+        ve[0]=vei[0]; ve[1]=vei[1]; ve[2]=vei[2]
+        return ve
 
 # projection into internal space for class cls
 def prjop_i(v: qnv.Qnvec) -> qnv.Qnvec:
     vei=v@prj0  #@v
     if isys>2: # dihedral
-        return vei[2:3]
+        vi=qnv.zerovs(2)
+        vi[0]=vei[2]; vi[1]=vei[3]
+        return vi
     elif isys==2: # icosahedral
-        return vei[3:5]
+        vi=qnv.zerovs(3)
+        vi[0]=vei[3]; vi[1]=vei[4]; vi[2]=vei[5]
+        return vi
 
 # alias for prjop_i
 def projection3(v: qnv.Qnvec) -> qnv.Qnvec:

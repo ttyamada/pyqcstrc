@@ -741,10 +741,10 @@ def projection3_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
     #elif N==3:
     #    prj0=prj.Qnprj_Dode()
     
-    if n==5:
-        ni=3
-    else:
+    if n==5:  # dihedral
         ni=2
+    elif n==6: # icosahedral
+        ni=3
     m=np.zeros((nc,ni),dtype=qnn.Qnnum)
     for i in range(nc):
         m[i]=projection3_numerical(vns[i])  # projection of nD lattice coordinates onto internal space
