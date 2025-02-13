@@ -236,6 +236,7 @@ def prjop_i(v: qnv.Qnvec) -> qnv.Qnvec:
 def projection3(v: qnv.Qnvec) -> qnv.Qnvec:
     return prjop_i(v)
 
+# alias for prjop
 def projection_numerical(vn: qnv.Qnvec) -> qnv.Qnvec:
     return prjop(vn)
 
@@ -248,12 +249,13 @@ def projection_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
         m[i]=projection_numerical(vns[i])
     return m
 
-def projection_numerical_par(vn: qnv.Qnvec) -> qnv.Qnvec:
-    return prjop(prj,vn)
+# alias for prjop_e
+def projection_numerical_par(v: qnv.Qnvec) -> qnv.Qnvec:
+    return prjop_e(v)
 
-# alias for prjop(vt)
-def get_internal_component_numerical(vt: qnv.Qnvec) -> qnv.Qnvec:
-    return prjop_i(vt)
+# alias for prjop_i
+def get_internal_component_numerical(v: qnv.Qnvec) -> qnv.Qnvec:
+    return prjop_i(v)
 
 def check_ltv(n,N):
     # check lattice vector external and internal space components

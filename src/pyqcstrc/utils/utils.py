@@ -986,7 +986,9 @@ if __name__ == '__main__':
         vst_d7[i]=prj.prjop_i(vst_d4[i]) # 
     qnv.printqnvs("vst_d7",vst_d7)
     
-    a=remove_doubling_in_perp_space(vst_d4)
+    print("vst_d7.shape",vst_d7.shape)
+    #a=remove_doubling_in_perp_space(vst_d7) # this does not work?
+    a=remove_doubling(vst_d7) # this does not work?
     if len(a)==n:
         print('remove_doubling_in_perp_space: pass')
     else:
