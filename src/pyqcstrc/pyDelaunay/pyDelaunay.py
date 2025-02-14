@@ -1,12 +1,10 @@
 import sys, os, math
-import numpy as np
-import pyqcstrc.qnnum.qnnum as qnn   # for qnnumber
-import pyqcstrc.qnmath.qnmath as qmt # for dot product
 
 #Function for determining the circumcircle of any three points
 def circumcircle(tri):
+		
 	try:
-		D = ((tri[0][0]-tri[2][0])*(tri[1][1]-tri[2][1])-(tri[1][0]- tri[2][0])*(tri[0][1]-tri[2][1]))
+		D = ((tri[0][0]-tri[2][0])*(tri[1][1]-tri[2][1])-(tri[1][0]-tri[2][0])*(tri[0][1]-tri[2][1]))
 		
 		center_x = (((tri[0][0]-tri[2][0])*(tri[0][0]+tri[2][0])+(tri[0][1]-tri[2][1])*(tri[0][1]+tri[2][1]))/ \
 				 2*(tri[1][1]-tri[2][1])-((tri[1][0]-tri[2][0])*(tri[1][0]+tri[2][0])+(tri[1][1]-tri[2][1]) * \
@@ -16,9 +14,11 @@ def circumcircle(tri):
 				 2*(tri[0][0]-tri[2][0])-((tri[0][0]-tri[2][0])*(tri[0][0]+tri[2][0])+(tri[0][1]-tri[2][1]) * \
 				(tri[0][1]+tri[2][1]))/ 2*(tri[1][0]-tri[2][0]))/D
 		
-		radius = math.sqrt ((tri[2][0] - center_x)**2 + (tri[2][1] - center_y)**2 )
+		#radius = math.sqrt ((tri[2][0] - center_x)**2 + (tri[2][1] - center_y)**2 )
+		radius2 = ((tri[2][0] - center_x)**2 + (tri[2][1] - center_y)**2 )
 		
-		return [[center_x, center_y], radius]
+		#return [[center_x, center_y], radius]
+		return [[center_x, center_y], radius2] # point and squared radius
 	except:
 		print("Divide By Zero error")
 		print(tri)
@@ -29,15 +29,17 @@ def pointInCircle(point, circle):
 	#This is pretty simple; just find the distance between the point and the center.
 	# If it's less than or equal to the radius, the point is inside the circle
 	
-	d = math.sqrt( math.pow(point[0] - circle[0][0], 2) + math.pow(point[1] - circle[0][1],2) )
-	if d < circle[1]:
+	#d = math.sqrt( math.pow(point[0] - circle[0][0], 2) + math.pow(point[1] - circle[0][1],2) )
+	d2 = ( math.pow(point[0] - circle[0][0], 2) + math.pow(point[1] - circle[0][1],2) )
+	#if d < circle[1]:
+	if d2 < circle[1]: # circle[0] circle[1] should be a point and squared radius
 		return True
 	else:
 		return False
 	
 #Basic Point class
 class Point():
-	def __init__(self, x, y):
+	def __init__(self, x, y): # x and y coordinates of a point
 		self._x = x
 		self._y = y
 	
@@ -56,7 +58,7 @@ class Point():
 
 #Basic Edge class
 class Edge():
-	def __init__(self, a, b):
+	def __init__(self, a, b): # two points
 		if a is not b:
 			self._a = a
 			self._b = b
@@ -125,7 +127,7 @@ class Edge():
 class Triangle():
 	
 	#Cannot create a triangle if any two points are the same
-	def __init__(self, a, b, c):
+	def __init__(self, a, b, c):  # three points
 		if a is not b and a is not c:
 			self._a = a
 		if b is not a and b is not c:
@@ -253,7 +255,8 @@ class Graph():
 	# no other points lie within the circumcircle of the triangle)
 	def triangleIsDelaunay(self, triangle):
 		tri = [ triangle._a.pos(), triangle._b.pos(), triangle._c.pos() ]
-		cc = circumcircle(tri)
+		cc = circumcircle(tri) # center and radius of circumcircle
+		#cc = circumcircle2(tri) # center and radius of circumcircle
 		for x in self._points:
 			#print(x.pos())
 			#If we get the divide-by-zero error, we assume the triangle is non-Delaunay
@@ -310,3 +313,4 @@ class Graph():
 				if x.isEqual(y):
 					self._edges.remove(y)
 					continue
+				

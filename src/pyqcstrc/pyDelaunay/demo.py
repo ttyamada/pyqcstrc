@@ -1,4 +1,4 @@
-from python_delaunay import Graph, Point, Edge, Triangle
+from pyDelaunay import Graph, Point, Edge, Triangle
 import random
 import sys
 import pygame
