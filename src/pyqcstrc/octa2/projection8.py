@@ -2,10 +2,10 @@
 import numpy as np
 from numpy.typing import NDArray
 import random
-import pyqcstrc.qnnum.qnnum as qnn
-import pyqcstrc.qnvec.qnvec as qnv
-import pyqcstrc.qnmat.qnmat as qnm
-import pyqcstrc.numeric.qnmath
+#import pyqcstrc.qnnum.qnnum as qnn
+#import pyqcstrc.qnvec.qnvec as qnv
+#import pyqcstrc.qnmat.qnmat as qnm
+#import pyqcstrc.numeric.qnmath
 
 def projection_numerical_par(vn:qnv.Qnvec) -> qnv.Qnvec:
     

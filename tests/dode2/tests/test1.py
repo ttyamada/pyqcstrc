@@ -8,9 +8,10 @@
 #import os
 import sys
 import numpy as np
-#import pyqcstrc.dode2.qnmath12 as qnmath
+import pyqcstrc.dode2.occupation_domain as od
+#import pyqcstrc.dode2.qnmath12 as math
 #import pyqcstrc.qnmath.qnmath as qnm
-import pyqcstrc.occdom.occdom as od
+#import pyqcstrc.occdom.occdom as od
 #import pyqcstrc.towods.twoods as ods
 #import pyqcstrc.prjop.prjop as prj
 

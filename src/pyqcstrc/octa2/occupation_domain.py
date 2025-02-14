@@ -10,11 +10,17 @@ import sys
 import numpy as np
 try:
     #import pyqcstrc.qnmath.qnmath as math8
-    import pyqcstrc.qnmath.qnmath as math1
-    import pyqcstrc.octa2.utils as utils
-    import pyqcstrc.numeric.numericalc as numericalc
-    import pyqcstrc.qnsym.qnsym as symmetry
-    import pyqcstrc.octa2.intsct as intsct
+    import pyqcstrc.octa2.math1 as math1 # use original code
+    import pyqcstrc.octa2.utils as utils # use original code
+    import pyqcstrc.octa2.numericalc as numericalc # use original code
+    import pyqcstrc.octa2.symmetry as symmetry # use original code
+    import pyqcstrc.octa2.intsct as intsct # use original code
+
+    #import pyqcstrc.qnmath.qnmath as math1
+    #import pyqcstrc.octa2.utils as utils
+    #import pyqcstrc.numeric.numericalc as numericalc
+    #import pyqcstrc.qnsym.qnsym as symmetry
+    #import pyqcstrc.octa2.intsct as intsct
 except ImportError:
     print('import error\n')
 
