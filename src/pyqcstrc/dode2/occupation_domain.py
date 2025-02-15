@@ -8,29 +8,21 @@ import timeit
 import os
 import sys
 import numpy as np
-#try:
-#import pyqcstrc.qnmath.qnmath as qnmath #math12
-import pyqcstrc.dode2.math1 as math1
-import pyqcstrc.dode2.utils as utils
-import pyqcstrc.dode2.symmetry as symmetry
-import pyqcstrc.dode2.intsct as intsct
-#import pyqcstrc.dode2.projection12 as proj
-import pyqcstrc.qnnum.qnnum as qnn
-import pyqcstrc.qnvec.qnvec as qnv
-import pyqcstrc.qnmat.qnmat as qnm
-import pyqcstrc.numeric.numericalc as num
-import pyqcstrc.utils.utils as utils
-import pyqcstrc.vesta.vesta as vesta
-    
-#except ImportError:
-#    print('import error\n')
+try:
+    import pyqcstrc.dode2.math1 as math1
+    import pyqcstrc.dode2.utils as utils
+    import pyqcstrc.dode2.numericalc as numericalc
+    import pyqcstrc.dode2.symmetry as symmetry
+    import pyqcstrc.dode2.intsct as intsct
+except ImportError:
+    print('import error\n')
 
 TAU=np.sqrt(3)/2.0
 
-def volume(obj:qnv.Qnvec):
+def volume(obj):
     return utils.obj_area_6d(obj)
 
-def symmetric(obj: qnv.Qnvec,centre : qnv.Qnvec,pg :qnv.Qnvec):
+def symmetric(obj,centre,pg):
     """
     Generate symmterical occupation domain by symmetric elements on the asymmetric unit.
     
@@ -55,7 +47,7 @@ def symmetric(obj: qnv.Qnvec,centre : qnv.Qnvec,pg :qnv.Qnvec):
         print('object has an incorrect shape!')
         return 
 
-def symmetric_0(obj: qnv.Qnvec,centre: qnv.Qnvec ,indx_symop : np.int64,pg : qnv.Qnvec):
+def symmetric_0(obj,centre,indx_symop,pg):
     """
     Generate symmtericic occupation domain by applying symmetric elements on the asymmetric unit.
     
@@ -78,7 +70,7 @@ def symmetric_0(obj: qnv.Qnvec,centre: qnv.Qnvec ,indx_symop : np.int64,pg : qnv
         print('object has an incorrect shape!')
         return 
 
-def shift(obj: qnv.Qnvec,shift : qnv.Qnvec):
+def shift(obj,shift):
     """
     Shift the occupation domain.
     
@@ -266,7 +258,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \nSTRUC', file=f)
             for i2,vrtx in enumerate(vertices):
                 xyz = math1.projection3(vrtx)
-                xyz=num.numerical_vector(xyz)
+                xyz=numericalc.numerical_vector(xyz)
                 print('%4d A        A%d  1.0000    %8.6f %8.6f %8.6f        1'%\
                 (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
                 print('                             0.000000    0.000000    0.000000  0.00', file=f)
@@ -465,7 +457,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
                 \nSTRUC', file=f)
                 for i2,vertx in enumerate(obj1):
                     xyz=math1.projection3(vertx)
-                    xyz=num.numerical_vector(xyz)
+                    xyz=numericalc.numerical_vector(xyz)
                     print('%4d Xx        Xx%d  1.0000    %8.6f %8.6f %8.6f        1'%\
                     (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
                     print('                             0.000000    0.000000    0.000000  0.00', file=f)
@@ -686,7 +678,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             for vrtx in vertices:
                 xyz = math1.projection3(vrtx)
                 print('%4d A        A%d  1.0000    %8.6f %8.6f %8.6f        1'%\
-                (i2+1,i2+1,num.numeric_value(xyz[0]),num.numeric_value(xyz[1]),num.numeric_value(xyz[2])), file=f)
+                (i2+1,i2+1,numericalc.numeric_value(xyz[0]),numericalc.numeric_value(xyz[1]),numericalc.numeric_value(xyz[2])), file=f)
                 i2+=1
                 print('                             0.000000    0.000000    0.000000  0.00', file=f)
             print('  0 0 0 0 0 0 0\
@@ -892,11 +884,11 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         i1=0
         for i1,triangle in enumerate(obj):
             for i2,vt in enumerate(triangle):
-                v=proj.projection3(vt)
+                v=math1.projection3(vt)
                 f.write('Xx %8.6f %8.6f %8.6f # %3d-the triangle %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-                (num.numeric_value(v[0]),\
-                num.numeric_value(v[1]),\
-                num.numeric_value(v[2]),\
+                (numericalc.numeric_value(v[0]),\
+                numericalc.numeric_value(v[1]),\
+                numericalc.numeric_value(v[2]),\
                 i1,i2,\
                 vt[0][0],vt[0][1],vt[0][2],\
                 vt[1][0],vt[1][1],vt[1][2],\
@@ -905,11 +897,11 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
                 vt[4][0],vt[4][1],vt[4][2],\
                 vt[5][0],vt[5][1],vt[5][2]))
         v=utils.obj_area_6d(obj)
-        f.write('volume = %d %d %d (%8.6f)\n'%(v[0],v[1],v[2],num.numeric_value(v)))
+        f.write('volume = %d %d %d (%8.6f)\n'%(v[0],v[1],v[2],numericalc.numeric_value(v)))
         for i1,triangle in enumerate(obj):
             v=utils.triangle_area_6d(triangle)
             f.write('%3d-the triangle, %d %d %d (%8.6f)\n'\
-                    %(i1,v[0],v[1],v[2],num.numeric_value(v)))
+                    %(i1,v[0],v[1],v[2],numericalc.numeric_value(v)))
         f.closed
         return 0
     
@@ -933,9 +925,9 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
             for i2,vt in enumerate(edge):
                 v=math1.projection3(vt)
                 f.write('Xx %8.6f %8.6f %8.6f # %3d-the edge %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-                (num.numeric_value(v[0]),\
-                num.numeric_value(v[1]),\
-                num.numeric_value(v[2]),\
+                (numericalc.numeric_value(v[0]),\
+                numericalc.numeric_value(v[1]),\
+                numericalc.numeric_value(v[2]),\
                 i1,i2,\
                 vt[0][0],vt[0][1],vt[0][2],\
                 vt[1][0],vt[1][1],vt[1][2],\
@@ -967,9 +959,9 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
             for point in range(len(triangle)):
                 v=math1.projection3(point)
                 f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # # # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-                (num.numeric_value(v[0]),\
-                num.numeric_value(v[1]),\
-                num.numeric_value(v[2]),\
+                (numericalc.numeric_value(v[0]),\
+                numericalc.numeric_value(v[1]),\
+                numericalc.numeric_value(v[2]),\
                 counter,\
                 point[0][0],point[0][1],point[0][2],\
                 point[1][0],point[1][1],point[1][2],\
@@ -1000,9 +992,9 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         for i1,point in enumerate(obj):
             v=math1.projection3(point)
             f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # # # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-            (num.numeric_value(v[0]),\
-            num.numeric_value(v[1]),\
-            num.numeric_value(v[2]),\
+            (numericalc.numeric_value(v[0]),\
+            numericalc.numeric_value(v[1]),\
+            numericalc.numeric_value(v[2]),\
             i1,\
             point[0][0],point[0][1],point[0][2],\
             point[1][0],point[1][1],point[1][2],\
@@ -1238,7 +1230,7 @@ def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
         #--------
         fatm.write('%d \'Em\' 1 %d 1 2.0 0. 0. 1.0 0. 0. 0.\n'%(serial_number,serial_number))
         
-        vn=num.numerical_vector(vrtx0)
+        vn=numericalc.numerical_vector(vrtx0)
         fatm.write('x=  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f\n'%(\
         vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
         
@@ -1251,7 +1243,7 @@ def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
         #--------
         fpod.write('%d %d %d \'comment\'\n'%(serial_number,len(vtxs),2))
         for vtx in vtxs:
-            vn=num.numerical_vector(vtx)
+            vn=numericalc.numerical_vector(vtx)
             fpod.write('ej=  %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f\n'%(\
             vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
         #
@@ -1333,7 +1325,7 @@ def write_podatm(obj, position, vlist=[0], path='.', basename='tmp', shift=[0., 
             #(position[3][0]+position[3][1]*TAU)/(position[3][2]),\
             #(position[4][0]+position[4][1]*TAU)/(position[4][2]),\
             #(position[5][0]+position[5][1]*TAU)/(position[5][2])))
-            p=num.numerical_vector(position)
+            p=numericalc.numerical_vector(position)
             fatm.write('x=  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f\n'%(\
             p[0],p[1],p[2],p[3],p[4],p[5]))
             
@@ -1347,7 +1339,7 @@ def write_podatm(obj, position, vlist=[0], path='.', basename='tmp', shift=[0., 
             #(a[3][0]+a[3][1]*TAU)/(a[3][2])+shft[3],\
             #(a[4][0]+a[4][1]*TAU)/(a[4][2])+shft[4],\
             #(a[5][0]+a[5][1]*TAU)/(a[5][2])+shft[5]))
-            a=num.numerical_vector(a)
+            a=numericalc.numerical_vector(a)
             fatm.write('xi=  %8.6f  %8.6f  %8.6f  %8.6f  %8.6f  %8.6f  0.000000  v=1.0\n'%(\
             a[0],a[1],a[2],a[3],a[4],a[5]))
             fatm.write('isyd=1\n')
@@ -1397,7 +1389,7 @@ def write_podatm(obj, position, vlist=[0], path='.', basename='tmp', shift=[0., 
                 #(b[4][0]+b[4][1]*TAU)/(b[4][2])-(a[4][0]+a[4][1]*TAU)/(a[4][2]),\
                 #(b[5][0]+b[5][1]*TAU)/(b[5][2])-(a[5][0]+a[5][1]*TAU)/(a[5][2])))
                 b=math1.sub_vectors(b,a)
-                b=num.numerical_vector(b)
+                b=numericalc.numerical_vector(b)
                 """ 5次元ベクトルから7次元ベクトルへの変換　一意に決まらない!?
                 
                 fpod.write('ej=  %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f\n'%(\
@@ -1479,9 +1471,9 @@ def simple_hand_step1(obj, path, basename_tmp):
         for i1 in range(len(a)):
             xyz=math1.projection3(a[i1])
             f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-            (num.numeric_value(xyz),\
-            num.numeric_value(xyz),\
-            num.numeric_value(xyz),\
+            (numericalc.numeric_value(xyz),\
+            numericalc.numeric_value(xyz),\
+            numericalc.numeric_value(xyz),\
             i1,\
             a[i1][0][0],a[i1][0][1],a[i1][0][2],\
             a[i1][1][0],a[i1][1][1],a[i1][1][2],\
@@ -1586,7 +1578,7 @@ def qcstrc(apar,cpar,mystrc,path,basename,phason_matrix,n1max,n5max,origin_shift
     print('  point group:',pg)
     for strc in mystrc:
         obj,wsite,atom,shift=strc
-        wsiten=num.numerical_vector(wsite)
+        wsiten=numericalc.numerical_vector(wsite)
         print('   wsite: %4.3f %4.3f %4.3f %4.3f %4.3f'%(wsiten[0],wsiten[1],wsiten[2],wsiten[3],wsiten[4]))
         #num_stsym=symmetry.site_symmetry(wsite,dim,pg)
         #num_coset=symmetry.coset(wsite,dim,pg)
@@ -1672,7 +1664,7 @@ def qcstrc(apar,cpar,mystrc,path,basename,phason_matrix,n1max,n5max,origin_shift
     ########## To HERE ##########
     """
     
-    generated_strc=num.strc(objs,pos,phason_matrix,n1max,n5max,eshift,origin_shift,verbose)
+    generated_strc=numericalc.strc(objs,pos,phason_matrix,n1max,n5max,eshift,origin_shift,verbose)
     f=open('%s/%s.xyz'%(path,basename),'w', encoding="utf-8", errors="ignore")
     f.write('%d\n'%(len(generated_strc)))
     f.write('%s.xyz\n'%(basename))

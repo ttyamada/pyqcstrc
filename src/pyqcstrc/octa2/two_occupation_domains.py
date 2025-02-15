@@ -8,8 +8,6 @@ import timeit
 import os
 import sys
 import numpy as np
-#import pyqcstrc.qnmath.qnmath as qnmath  #math1
-#import pyqcstrc.numeric.numericalc as numericalc
 try:
     import pyqcstrc.octa2.math1 as math1
     import pyqcstrc.octa2.intsct as intsct

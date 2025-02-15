@@ -1,26 +1,16 @@
 #!/usr/bin/env python
-
+#
 # PyQCstrc - Python library for Quasi-Crystal structure
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
-
+#
 import sys
 import numpy as np
 from numpy.typing import NDArray
-
-#import pyqcstrc.qnnum.qnnum as qnn
-#import pyqcstrc.qnvec.qnvec as qnv
-#import pyqcstrc.qnmat.qnmat as qnm
-#import pyqcstrc.qnmath.qnmath
-#import pyqcstrc.dode2.qnmath8
-#import pyqcstrc.numeric.numericalc
-
 #sys.path.append('.')
 #from numericalc import coplanar_check_numeric_tau
-
 from pyqcstrc.octa2.numericalc import coplanar_check_numeric_tau
 
 SQRT2=np.sqrt(2)
-N=2
 
 def add(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     """
@@ -49,88 +39,7 @@ def add(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
         return np.array([-c1,-c2,-c3])
     else:
         return np.array([c1,c2,c3])
-    
-def sub(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
-    """
-    # summation (a+b) in SIN-style
-    
-    Parameters
-    ----------
-    a: array
-        value in SIN-style
-    b: array
-        value in SIN-style
-    
-    Returns
-    -------
-    array
-    """
-    c1=a[0]*b[2]-b[0]*a[2]
-    c2=a[1]*b[2]-b[1]*a[2]
-    c3=a[2]*b[2]
-    x=np.array([c1,c2,c3],dtype=np.int64)
-    g=np.gcd.reduce(x)
-    c1=int(c1/g)
-    c2=int(c2/g)
-    c3=int(c3/g)
-    if c3<0:
-        return np.array([-c1,-c2,-c3])
-    else:
-        return np.array([c1,c2,c3])
-    
-def mul(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
-    """
-    # multiplication (a*b) in SIN-style
-    
-    Parameters
-    ----------
-    a: array
-        value in SIN-style
-    b: array
-        value in SIN-style
-    
-    Returns
-    -------
-    array
-    """
-    c1=a[0]*b[0]+N*a[1]*b[1]
-    c2=a[0]*b[1]+a[1]*b[0]
-    c3=a[2]*b[2]
-    x=np.array([c1,c2,c3],dtype=np.int64)
-    g=np.gcd.reduce(x)
-    c1=int(c1/g)
-    c2=int(c2/g)
-    c3=int(c3/g)
-    if c3<0:
-        return np.array([-c1,-c2,-c3])
-    else:
-        return np.array([c1,c2,c3])
-    
-def div(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
-    """
-    # division (a/b) in SIN-style
-    
-    Parameters
-    ----------
-    a: array
-        value in SQRT3
-    b: array
-        value in SQRT3
-    c: array
-        inverse of b
-    Returns
-    -------
-    array
-    """
-    c1=b[0]*b[2]
-    c2=-b[1]*b[2]
-    c3=b[0]*b[0]-N*b[1]*b[1]
-    c=np.array([c1,c2,c3],dtype=np.int64)
-    if c3==0:
-        print('ERROR_1:division error')
-        return
-    return mul(a,c)
-    
+
 def mul(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     """
     # multiplication (a*b) in SQRT2-style
@@ -146,7 +55,7 @@ def mul(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     -------
     array
     """
-    c1=a[0]*b[0]+N*a[1]*b[1]
+    c1=a[0]*b[0]+2*a[1]*b[1]
     c2=a[0]*b[1]+a[1]*b[0]
     c3=a[2]*b[2]
     x=np.array([c1,c2,c3],dtype=np.int64)
@@ -505,6 +414,13 @@ def dot_product_1(mat1: NDArray[np.int64], mat2:NDArray[np.int64]) -> NDArray[np
         print('incorrect shape found in dot_product')
         return 
 
+
+
+
+
+
+
+
 def projection(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     """projection of a 6d vector onto Epar and Eperp in "SQRT2-style"
     NOTE: coefficient (alpha) of the projection matrix is set to be 1.
@@ -615,7 +531,7 @@ def centroid(obj: NDArray[np.int64]) -> NDArray[np.int64]:
         i2+=1
     return v0
 
-#needless???
+# needless???
 def centroid_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     """geometric center, centroid of tetrahedron, in TAU-style.
 

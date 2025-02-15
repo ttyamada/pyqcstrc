@@ -5,9 +5,7 @@
 #
 import sys
 import itertools
-
-#from pyqcstrc.dode2.math1 import (add, 
-from pyqcstrc.qnmath.qnmath import (add, 
+from pyqcstrc.dode2.math1 import (add, 
                                 matrixpow, 
                                 dot_product, 
                                 dot_product_1, 
@@ -17,9 +15,9 @@ from pyqcstrc.qnmath.qnmath import (add,
 from pyqcstrc.dode2.utils import (remove_doubling_in_perp_space, 
                                 remove_doubling,
                                 )
-from pyqcstrc.dode2.projection import (projection_numerical,
-                                projection3_numerical)
-from pyqcstrc.dode2.numericalc import (numerical_vector,
+from pyqcstrc.dode2.numericalc import (projection_numerical,
+                                projection3_numerical,
+                                numerical_vector,
                                 length_numerical,
                                 )
 import numpy as np
@@ -28,7 +26,7 @@ EPS=1e-6
 V0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
 
 def symop_obj(symop,obj,centre=V0):
-    """ Apply a symmetric operation on an object around given centre. in SQRT3-style
+    """ Apply a symmetric operation on an object around given centre. in TAU-style
     
     """
     ndim=obj.ndim
@@ -48,7 +46,7 @@ def symop_obj(symop,obj,centre=V0):
         return 
 
 def symop_vecs(symop,vts,centre=V0):
-    """ Apply a symmetric operation on set of vectors around given centre. in SQRT3-style
+    """ Apply a symmetric operation on set of vectors around given centre. in TAU-style
     
     """
     out=np.zeros(vts.shape,dtype=np.int64)
@@ -59,7 +57,7 @@ def symop_vecs(symop,vts,centre=V0):
     return out
 
 def symop_vec(symop,vt,centre=V0):
-    """ Apply a symmetric operation on a vector around given centre. in SQRT3-style
+    """ Apply a symmetric operation on a vector around given centre. in TAU-style
     """
     vt=sub_vectors(vt,centre)
     vt=dot_product_1(symop,vt)
@@ -1353,7 +1351,7 @@ if __name__ == '__main__':
                             numeric_value,)
                             
     def generate_random_value():
-        """ generate value in SQRT3-style
+        """ generate value in TAU-style
         """
         nmax=10
         v=np.zeros((3),dtype=np.int64)
@@ -1363,7 +1361,7 @@ if __name__ == '__main__':
         return v
         
     def generate_random_vector(ndim=6):
-        """ generate ndim vector in SQRT3-style
+        """ generate ndim vector in TAU-style
         ndim: dimension of vectors
         """
         nmax=10

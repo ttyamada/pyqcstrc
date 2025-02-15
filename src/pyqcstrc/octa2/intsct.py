@@ -1,20 +1,13 @@
 #!/usr/bin/env python
-
+#
 # PyQCstrc - Python library for Quasi-Crystal structure
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
-
-import sys
+#
+#import sys
 import numpy as np
 from numpy.typing import NDArray
 import time # in object_subtraction_dev1, tetrahedron_not_obj
 import itertools
-
-#import pyqcstrc.qnnum.qnnum as qnnum
-#import pyqcstrc.qnvec.qnvec as qnvec
-#import pyqcstrc.qnmat.qnmat as qnmat
-#import pyqcstrc.numeric.numericalc as numericalc
-#import pyqcstrc.intsec.intsec as intsec
-
 from pyqcstrc.octa2.math1 import (projection3,
                                 centroid, 
                                 centroid_obj,
@@ -426,7 +419,7 @@ def intersection_two_triangles(triangle_1: NDArray[np.int64], triangle_2: NDArra
             else:
                 tmp=np.vstack([tmp,vtx]) # intersecting points
             counter+=1
-            tmp=tmp.reshape(int(len(tmp)/6),6,3) # tab added
+    tmp=tmp.reshape(int(len(tmp)/6),6,3)
     #print('len(tmp):',len(tmp))
     
     # get vertces of triangle_1 that are inside triangle_2
