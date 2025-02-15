@@ -9,11 +9,7 @@
 import sys
 import numpy as np
 import pyqcstrc.dode2.occupation_domain as od
-#import pyqcstrc.dode2.qnmath12 as math
-#import pyqcstrc.qnmath.qnmath as qnm
-#import pyqcstrc.occdom.occdom as od
-#import pyqcstrc.towods.twoods as ods
-#import pyqcstrc.prjop.prjop as prj
+import pyqcstrc.dode2.two_occupation_domains as ods
 
 opath='./test1'
 #xyzpath='../../../xyz/dode'
@@ -24,10 +20,8 @@ opath='./test1'
 # Three 6D vectors which define the asymmetric part of the occupation domain of Nizeki-Gahler dodecagonal tiling.
 # Note that 5-th and 6-th components of each 6D vectors are dummy, and they correspond to Z coordinate in Epar and Eperp, respectively.
 v0=np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
-v1=np.array([[ 0,-1, 3],[ 0, 1, 3],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+v1=np.array([[ 0,-2, 3],[ 0, 2, 3],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
 v2=np.array([[ 0, 0, 1],[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
-#v1=np.array([[ 0,-2, 3],[ 0, 2, 3],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
-#v2=np.array([[ 0, 0, 1],[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
 od_asym=np.vstack([v0,v1,v2]).reshape(1,3,6,3)
 od.write(obj=od_asym, path=opath, basename='od_1_asym', format='xyz')
 
