@@ -2,48 +2,54 @@ import sys, os, math
 import numpy as np
 
 #Basic Point class
-class Point():
+class Point(np.ndarray):
+    def __new__(cls, n:np.int64):
+        global shape
+        shape=(2)
+        return super().__new__(cls,shape)
     
     def __init__(self, p:np.ndarray): # x and y coordinates of a point
-        self=np.zeros((2))
         self[0] = p[0]  #self._x = x
         self[1] = p[1]  #self._y = y
     
     def __eq__(self,b):
-        return isEuqual(self,b)
+        return isEqual_p(self,b)
     
     def __ne__(selfself,b):
-        return not isEuqual(self,b)
+        return not isEuqual_p(self,b)
     
     def __add__(self,b):
-        return add(self,b)
+        return add_p(self,b)
     
     def __sub__(self,b):
-        return sub(self,b)
+        return sub_p(self,b)
     
     #Position of the point
     def pos(self):
         return self  #return [self._x, self._y]
             
-    #Determines if two points are equivalent
-    def isEqual(self, other_point:np.ndarray):
-        #if(self._x == other_point._x and self._y == other_point._y): return True
-        if(self[0] == other_point[0] and self[1] == other_point[1]): return True
-        else: return False
-    
     #Convert the point into a string (for debugging purposes)
     def pointToStr(self:np.ndarray):
         return str(self.pos())
     
-    def add(self,b):
-        for i in range(2):
-            self[i]=self[i]+b[i]
-        return self
+def zerops(shape) -> Point:  # Point array
+    return np.zeros(shape,dtype=Point)
     
-    def sub(self,b):
-        for i in range(2):
-            self[i]=self[i]-b[i]
-        return self
+#Determines if two points are equivalent
+def isEqual_p(self, other_point):
+    #if(self._x == other_point._x and self._y == other_point._y): return True
+    if(self[0] == other_point[0] and self[1] == other_point[1]): return True
+    else: return False
+    
+def add_p(self,b):
+    for i in range(2):
+        self[i]=self[i]+b[i]
+    return self
+    
+def sub_p(self,b):
+    for i in range(2):
+        self[i]=self[i]-b[i]
+    return self
 
 #Basic Edge class
 class Edge():
@@ -54,39 +60,17 @@ class Edge():
             self[1]=b  #self._b = b
             
     def __eq__(self,b):
-        return isEqual(self,b)
+        return isEqual_e(self,b)
     
     def __ne__(selfself,b):
-        return not isEqual(self,b)
+        return not isEqual_e(self,b)
     
     def __add__(self,b):
-        return add(self,b)
+        return add_e(self,b)
     
     def __sub__(self,b):
-        return sub(self,b)
-    
-    #Tests if two edges are equivalent to each other
-    def isEqual(self, other_edge):
-        #if (self._a==(other_edge._a) or self._b==(other_edge._a)) and \
-        #(self._a==(other_edge._b) or self._b==(other_edge._b)):
-        if (self[0]==other_edge[0] or self[1]==other_edge[0]) and \
-        (self[0]==other_edge[1] or self[1]==other_edge[1]):
-            return True
-        elif self == other_edge:
-            return True
-        else:
-            return False
-        
-    def add(self,b):
-        for i in range(2):
-            self[i]=self[i]+b[i]
-        return self
-    
-    def sub(self,b):
-        for i in range(2):
-            self[i]=self[i]-b[i]
-        return self
-    
+        return sub_e(self,b)
+          
     #Converts an edge to a string (for debugging purposes)
     def edgeToStr(self):
         #return str([self._a.pos(), self._b.pos()])
@@ -130,8 +114,8 @@ class Edge():
                     #If the intersection point is one of the edge points, then
                     # an intersection is not considered to have occurred (i.e.,
                     # these are edges connected at the same point)
-                    if self[0]==(int_point) or self[1]==(int_point) or \
-                     other_edge[0]==(int_point) or other_edge[1]==(int_point):
+                    if self[0]==int_point or self[1]==int_point or \
+                     other_edge[0]==int_point or other_edge[1]==int_point:
                         return False
                     
                     #If there is no point, these edges intersect
@@ -143,6 +127,32 @@ class Edge():
             except:
                 #A divide-by-zero error is interpreted as the edges not intersecting
                 return False
+            
+def zeroes(shape) -> Edge:  # Edge array
+    return np.zeros(shape,dtype=Edge)
+
+#Tests if two edges are equivalent to each other         
+def isEqual_e(self, other_edge):
+    #if (self._a==(other_edge._a) or self._b==(other_edge._a)) and \
+    #(self._a==(other_edge._b) or self._b==(other_edge._b)):
+    if (self[0]==other_edge[0] or self[1]==other_edge[0]) and \
+    (self[0]==other_edge[1] or self[1]==other_edge[1]):
+        return True
+    elif self == other_edge:
+        return True
+    else:
+        return False
+        
+def add_e(self,b):
+        for i in range(2):
+            self[i]=self[i]+b[i]
+        return self
+    
+def sub_e(self,b):
+    for i in range(2):
+        self[i]=self[i]-b[i]
+    return self
+  
 
 #Basic Triangle class
 class Triangle():
@@ -155,16 +165,10 @@ class Triangle():
             self[1] = b
         if c is not a and c is not b:
             self[2] = c
-    
-    #Test if any two triangles are equal (defined as sharing all three points)
-    def isEqual(self, other_tri):
-        if (self[0] is other_tri[0] or self[0] is other_tri[1] or \
-        self[0] is other_tri[2]) and (self[1] is other_tri[0] or \
-        self[1] is other_tri[1] or self[1] is other_tri[2]) and \
-        (self[2] is other_tri[0] or self[2] is other_tri[1] or \
-        self[2] is other_tri[2]): return True
-        else: return False
-    
+            
+    def __eq__(self,b):
+        return isEuqual_t(self,b)
+        
     #Prints the triangle in a neat format (for debugging purposes)
     def printTriangle(self):
         print("A: " + self[0].pointToStr() + " B: " + self[1].pointToStr() + " C: " + self[2].pointToStr())
@@ -172,3 +176,16 @@ class Triangle():
     def insert(self,p,a:np.ndarray):
         np.insert(self,p,a)
         return self
+    
+def zerots(shape) -> Triangle:  # Triangle array
+    return np.zeros(shape,dtype=Triangle)
+#Test if any two triangles are equal (defined as sharing all three points)
+def isEqual_t(self, other_tri):
+    if (self[0] is other_tri[0] or self[0] is other_tri[1] or \
+      self[0] is other_tri[2]) and (self[1] is other_tri[0] or \
+      self[1] is other_tri[1] or self[1] is other_tri[2]) and \
+      (self[2] is other_tri[0] or self[2] is other_tri[1] or \
+      self[2] is other_tri[2]):
+        return True
+    else: 
+        return False

@@ -3,7 +3,7 @@ import numpy as np
 import polygon as plg
 
 #Function for determining the circumcircle of any three points
-def circumcircle(tri:np.ndarray):
+def circumcircle(tri:plg.Triangle):
 	edge=np.zeros((4,2))
 	center=np.zeros((2))
 
@@ -30,30 +30,6 @@ def circumcircle(tri:np.ndarray):
 		print("Divide By Zero error")
 		print(tri)
 
-def circumcircle0(tri:np.ndarray): # original
-		
-	try:
-		D = ((tri[0][0]-tri[2][0])*(tri[1][1]-tri[2][1])-(tri[1][0]-tri[2][0])*(tri[0][1]-tri[2][1]))
-		
-		center_x = (((tri[0][0]-tri[2][0])*(tri[0][0]+tri[2][0])+(tri[0][1]-tri[2][1])*(tri[0][1]+tri[2][1]))/ \
-				 2*(tri[1][1]-tri[2][1]) \
-				   -((tri[1][0]-tri[2][0])*(tri[1][0]+tri[2][0])+(tri[1][1]-tri[2][1])*(tri[1][1]+tri[2][1]))/ \
-				 2*(tri[0][1]-tri[2][1]))/D
-		
-		center_y = (((tri[1][0]-tri[2][0])*(tri[1][0]+tri[2][0])+(tri[1][1]-tri[2][1])*(tri[1][1]+tri[2][1]))/ \
-				 2*(tri[0][0]-tri[2][0])-((tri[0][0]-tri[2][0])*(tri[0][0]+tri[2][0])+(tri[0][1]-tri[2][1]) * \
-				(tri[0][1]+tri[2][1]))/ 2*(tri[1][0]-tri[2][0]))/D
-		
-		#radius = math.sqrt ((tri[2][0] - center_x)**2 + (tri[2][1] - center_y)**2 )
-		radius2 = ((tri[2][0] - center_x)**2 + (tri[2][1] - center_y)**2 )
-		
-		#return [[center_x, center_y], radius]
-		return [[center_x, center_y], radius2] # point and squared radius
-	except:
-		print("Divide By Zero error")
-		print(tri)
-
-
 #Determine if any given point lies inside a circle
 def pointInCircle(point:plg.Point, circle:plg.Point):
 	#This is pretty simple; just find the distance between the point and the center.
@@ -72,14 +48,14 @@ def pointInCircle(point:plg.Point, circle:plg.Point):
 class Graph():
 	def __init__(self):
 		
-		#This will be a list of point objects as defined above
-		self._points =  [] # zero array of Points
+		#This will be a list of point objects
+		self._points =  plg.zerops((0))  #[] # zero array of Points
 		
-		#This will be a list of triangle objects as defined above
-		self._triangles = [] # zero array of Triangles
+		#This is a list of edges
+		self._edges = plg.zerots((0))  #[] # zero array of Edges
 		
-		#This is a list of edges as defined above
-		self._edges = [] # zero array of Edges
+		#This is  a list of triangle objects
+		self._triangles = plg.zeroes((0)) #[] # zero array of Triangles
 		
 		#Point boundaries for sorting purposes
 		self._point_min_x = 0
@@ -93,8 +69,8 @@ class Graph():
 		
 		#If the point has an X value lower than any other point
 		if self._point_min_x > point[0] or self._point_min_x == 0:
-			#self._points.insert(0,point)
-			self._points=np.insert(self._points,0,point)
+			#self._points.(0,point)
+			self._points=np.(self._points,0,point)
 			self._point_min_x = point[0]
 			return True
 		
@@ -106,20 +82,20 @@ class Graph():
 		
 		#If the X value is somewhere in the middle
 		else:
-			same_x = []
+			same_x = plg.zerops((0))  #[]
 			for x in self._points:
-				if x.pos()[0] == point[0]:
+				if x()[0] == point[0]:
 					same_x.append(x)
 			
 			#If no point has the same X value as the new point,
-			# find the first point that has a greater X value and insert the new point before it
+			# find the first point that has a greater X value and  the new point before it
 			if len(same_x) == 0:
 				first_greater = 0
 				for x in self._points:
-					if x.pos()[0] > point[0]:
+					if x[0] > point[0]:
 						first_greater = self._points.index(x)
 						break
-				self._points.insert(first_greater, point)
+				self._points.(first_greater, point)
 				return True
 			
 			#If there's only one point in the graph with the same X value,
@@ -127,10 +103,10 @@ class Graph():
 			elif len(same_x) == 1:
 				index = self._points.index(same_x[0])
 				if same_x[0][1] > point[1]:
-					self._points.insert(index - 1, point)
+					self._points.(index - 1, point)
 					return True
 				else:
-					self._points.insert(index + 1, point)
+					self._points.(index + 1, point)
 					return True
 			
 			#If multiple points have the same X value, find where 
@@ -138,18 +114,17 @@ class Graph():
 			else:
 				first_greater_y = 0
 				for x in same_x:
-					if x.pos()[1] > point.pos()[1]:
+					if x[1] > point[1]:
 						first_greater_y = self._points.index(x)
 						break
 				if(first_greater_y != 0):
-					self._points.insert(first_greater_y, point)
+					self._points.(first_greater_y, point)
 					return True
 				else:
-					self._points.insert(self._points.index(same_x[len(same_x) - 1]), point)
+					self._points.(self._points.index(same_x[len(same_x) - 1]), point)
 					return True
 		
 	def addEdge(self, edge):
-		
 		#Check for an equivalent edge in the graph, add it if one doesn't exist
 		for x in self._edges:
 			if x==(edge):
@@ -168,21 +143,21 @@ class Graph():
 		
 		#If not, we can add the triangle to the graph
 		self._triangles.append(triangle)
-		tri = [ triangle._a.pos(), triangle._b.pos(), triangle._c.pos() ]
+		tri = [ triangle._a, triangle._b, triangle._c ]
 		return True
 		
 	#Tests if a given triangle is Delaunay (i.e.,
 	# no other points lie within the circumcircle of the triangle)
 	def triangleIsDelaunay(self, triangle):
-		tri = [ triangle._a.pos(), triangle._b.pos(), triangle._c.pos() ]
+		tri = [ triangle._a, triangle._b, triangle._c ]
 		cc = circumcircle(tri) # center and radius of circumcircle
 		#cc = circumcircle2(tri) # center and radius of circumcircle
 		for x in self._points:
-			#print(x.pos())
+			#print(x)
 			#If we get the divide-by-zero error, we assume the triangle is non-Delaunay
 			if not (x==(triangle._a) and x==(triangle._b) and x==(triangle._c)):
 				try:
-					if pointInCircle(x.pos(), cc):
+					if pointInCircle(x, cc):
 						return False
 				except:
 					return False
@@ -193,7 +168,6 @@ class Graph():
 	# for the Delaunay condition, then marking any edges that intersect, and
 	# removing the longer of the intersecting edges
 	def generateDelaunayMesh(self):
-	
 		#Create every possible triangle and test it for the Delaunay condition
 		for p1 in self._points:
 			for p2 in self._points:
@@ -214,7 +188,7 @@ class Graph():
 				self.addEdge(Edge(t[2], t[0]))
 				
 		#Checking for intersecting edges
-		bad_edges = []
+		bad_edges = plg.zeroes((0))  #[]
 		for e1 in self._edges:
 			for e2 in self._edges:
 				if not e1==(e2):

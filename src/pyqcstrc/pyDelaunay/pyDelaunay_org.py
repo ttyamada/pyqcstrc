@@ -1,21 +1,22 @@
 import sys, os, math
+import numpy as np
 
 #Function for determining the circumcircle of any three points
-def circumcircle(tri):
+def circumcircle(tri:np.float32):
 		
 	try:
-		D = ((tri[0][0]-tri[2][0])*(tri[1][1]-tri[2][1])-(tri[1][0]-tri[2][0])*(tri[0][1]-tri[2][1]))
+		D:np.float32 = ((tri[0][0]-tri[2][0])*(tri[1][1]-tri[2][1])-(tri[1][0]-tri[2][0])*(tri[0][1]-tri[2][1]))
 		
-		center_x = (((tri[0][0]-tri[2][0])*(tri[0][0]+tri[2][0])+(tri[0][1]-tri[2][1])*(tri[0][1]+tri[2][1]))/ \
+		center_x:np.float32 = (((tri[0][0]-tri[2][0])*(tri[0][0]+tri[2][0])+(tri[0][1]-tri[2][1])*(tri[0][1]+tri[2][1]))/ \
 				 2*(tri[1][1]-tri[2][1])-((tri[1][0]-tri[2][0])*(tri[1][0]+tri[2][0])+(tri[1][1]-tri[2][1]) * \
 				 (tri[1][1]+tri[2][1]))/2*(tri[0][1]-tri[2][1]))/D
 		
-		center_y = (((tri[1][0]-tri[2][0])*(tri[1][0]+tri[2][0])+(tri[1][1]-tri[2][1])*(tri[1][1]+tri[2][1]))/ \
+		center_y:np.float32 = (((tri[1][0]-tri[2][0])*(tri[1][0]+tri[2][0])+(tri[1][1]-tri[2][1])*(tri[1][1]+tri[2][1]))/ \
 				 2*(tri[0][0]-tri[2][0])-((tri[0][0]-tri[2][0])*(tri[0][0]+tri[2][0])+(tri[0][1]-tri[2][1]) * \
 				(tri[0][1]+tri[2][1]))/ 2*(tri[1][0]-tri[2][0]))/D
 		
 		#radius = math.sqrt ((tri[2][0] - center_x)**2 + (tri[2][1] - center_y)**2 )
-		radius2 = ((tri[2][0] - center_x)**2 + (tri[2][1] - center_y)**2 )
+		radius2:np.float32 = ((tri[2][0] - center_x)**2 + (tri[2][1] - center_y)**2 )
 		
 		#return [[center_x, center_y], radius]
 		return [[center_x, center_y], radius2] # point and squared radius
@@ -25,12 +26,12 @@ def circumcircle(tri):
 
 
 #Determine if any given point lies inside a circle
-def pointInCircle(point, circle):
+def pointInCircle(point:np.float32, circle:np.float32):
 	#This is pretty simple; just find the distance between the point and the center.
 	# If it's less than or equal to the radius, the point is inside the circle
 	
 	#d = math.sqrt( math.pow(point[0] - circle[0][0], 2) + math.pow(point[1] - circle[0][1],2) )
-	d2 = ( math.pow(point[0] - circle[0][0], 2) + math.pow(point[1] - circle[0][1],2) )
+	d2:np.float32 = ( math.pow(point[0] - circle[0][0], 2) + math.pow(point[1] - circle[0][1],2) )
 	#if d < circle[1]:
 	if d2 < circle[1]: # circle[0] circle[1] should be a point and squared radius
 		return True
@@ -39,32 +40,32 @@ def pointInCircle(point, circle):
 	
 #Basic Point class
 class Point():
-	def __init__(self, x, y): # x and y coordinates of a point
-		self._x = x
-		self._y = y
+	def __init__(self, x:np.float32, y:np.float32): # x and y coordinates of a point
+		self._x:np.float32 = x
+		self._y:np.float32 = y
 	
 	#Position of the point
-	def pos(self):
+	def pos(self:np.float32):
 		return [self._x, self._y]
 			
 	#Determines if two points are equivalent
-	def isEqual(self, other_point):
+	def isEqual(self:np.float32, other_point:np.float32):
 		if(self._x == other_point._x and self._y == other_point._y): return True
 		else: return False
 	
 	#Convert the point into a string (for debugging purposes)
-	def pointToStr(self):
+	def pointToStr(self:np.float32):
 		return str(self.pos())
 
 #Basic Edge class
 class Edge():
-	def __init__(self, a, b): # two points
+	def __init__(self:np.float32, a:np.float32, b:np.float32): # two points
 		if a is not b:
 			self._a = a
 			self._b = b
 	
 	#Tests if two edges are equivalent to each other
-	def isEqual(self, other_edge):
+	def isEqual(self:np.float32, other_edge:np.float32):
 		if (self._a.isEqual(other_edge._a) or self._b.isEqual(other_edge._a)) and \
 		(self._a.isEqual(other_edge._b) or self._b.isEqual(other_edge._b)):
 			return True
@@ -74,37 +75,37 @@ class Edge():
 			return False
 	
 	#Converts an edge to a string (for debugging purposes)
-	def edgeToStr(self):
+	def edgeToStr(self:np.float32):
 		return str([self._a.pos(), self._b.pos()])
 	
 	#Calculate the length of an edge
-	def length(self):
+	def length(self:np.float32):
 		return math.sqrt( math.pow(self._b.pos()[0] - self._a.pos()[0],2) + \
 			math.pow(self._b.pos()[1] - self._a.pos()[1],2))
 	
 	#Determine if two edges intersect
-	def edgeIntersection(self, other_edge):
+	def edgeIntersection(self:np.float32, other_edge:np.float32):
 
 		if self.isEqual(other_edge):
 			return False
 		else:
 			try:
-				x1 = self._a.pos()[0]
-				x2 = self._b.pos()[0]
-				x3 = other_edge._a.pos()[0]
-				x4 = other_edge._b.pos()[0]
-				y1 = self._a.pos()[1]
-				y2 = self._b.pos()[1]
-				y3 = other_edge._a.pos()[1]
-				y4 = other_edge._b.pos()[1]
-				t = (((x1 - x3)*(y3 - y4)) - ((y1 - y3)*(x3 - x4))) / (((x1 - x2)*(y3 - y4)) - ((y1 - y2)*(x3 - x4)))
-				u = (((x2 - x1)*(y1 - y3)) - ((y2 - y1)*(x1 - x3))) / (((x1 - x2)*(y3 - y4)) - ((y1 - y2)*(x3 - x4)))
+				x1:np.float32 = self._a.pos()[0]
+				x2:np.float32 = self._b.pos()[0]
+				x3:np.float32 = other_edge._a.pos()[0]
+				x4:np.float32 = other_edge._b.pos()[0]
+				y1:np.float32 = self._a.pos()[1]
+				y2:np.float32 = self._b.pos()[1]
+				y3:np.float32 = other_edge._a.pos()[1]
+				y4:np.float32 = other_edge._b.pos()[1]
+				t:np.float32 = (((x1 - x3)*(y3 - y4)) - ((y1 - y3)*(x3 - x4))) / (((x1 - x2)*(y3 - y4)) - ((y1 - y2)*(x3 - x4)))
+				u:np.float32 = (((x2 - x1)*(y1 - y3)) - ((y2 - y1)*(x1 - x3))) / (((x1 - x2)*(y3 - y4)) - ((y1 - y2)*(x3 - x4)))
 				
 				#If 0 <= t <= 1 or 0 <= u <= 1, then an intersection occurs. 
 				if (t >= 0 and t <= 1) and (u >= 0 and u <= 1):
-					int_x = int(x1 + t*(x2 - x1))
-					int_y = int(y1 + t*(y2 - y1))
-					int_point = Point(int_x, int_y)
+					int_x:np.int32 = int(x1 + t*(x2 - x1))
+					int_y:np.int32 = int(y1 + t*(y2 - y1))
+					int_point:np.int32 = Point(int_x, int_y)
 					
 					#If the intersection point is one of the edge points, then
 					# an intersection is not considered to have occurred (i.e.,
@@ -127,7 +128,7 @@ class Edge():
 class Triangle():
 	
 	#Cannot create a triangle if any two points are the same
-	def __init__(self, a, b, c):  # three points
+	def __init__(self:np.float32, a:np.float32, b:np.float32, c:np.float32):  # three points
 		if a is not b and a is not c:
 			self._a = a
 		if b is not a and b is not c:
@@ -136,7 +137,7 @@ class Triangle():
 			self._c = c
 	
 	#Test if any two triangles are equal (defined as sharing all three points)
-	def isEqual(self, other_tri):
+	def isEqual(self:np.float32, other_tri:np.float32):
 		if (self._a is other_tri._a or self._a is other_tri._b or \
 		self._a is other_tri._c) and (self._b is other_tri._a or \
 		self._b is other_tri._b or self._b is other_tri._c) and \
@@ -145,27 +146,30 @@ class Triangle():
 		else: return False
 	
 	#Prints the triangle in a neat format (for debugging purposes)
-	def printTriangle(self):
+	def printTriangle(self:np.float32):
 		print("A: " + self._a.pointToStr() + " B: " + self._b.pointToStr() + " C: " + self._c.pointToStr())
 
 #Graph class
 class Graph():
-	def __init__(self):
+	def __init__(self:np.float32):
 		
 		#This will be a list of point objects as defined above
-		self._points = []
+		#self._points = []
+		self._points = np.zeros((0,2),dtype=np.float32)
 		
 		#This will be a list of triangle objects as defined above
-		self._triangles = []
+		#self._triangles = []
+		self._triangles = np.zeros((0,3,2),dtype=np.float32)
 		
 		#This is a list of edges as defined above
-		self._edges = []
+		#self._edges = []
+		self._edges = np.zeros((0,2,2),dtype=np.float32)
 		
 		#Point boundaries for sorting purposes
-		self._point_min_x = 0
-		self._point_max_x = 0
+		self._point_min_x:np.float32 = 0
+		self._point_max_x:np.float32 = 0
 		
-	def addPoint(self, point):
+	def addPoint(self:np.float32, point:np.float32):
 	
 		#Check to see if an equivalent point exists
 		for x in self._points:
@@ -186,7 +190,7 @@ class Graph():
 		
 		#If the X value is somewhere in the middle
 		else:
-			same_x = []
+			same_x:np.float32 = []
 			for x in self._points:
 				if x.pos()[0] == point.pos()[0]:
 					same_x.append(x)
@@ -228,7 +232,7 @@ class Graph():
 					self._points.insert(self._points.index(same_x[len(same_x) - 1]), point)
 					return True
 		
-	def addEdge(self, edge):
+	def addEdge(self:np.float32, edge:np.float32):
 		
 		#Check for an equivalent edge in the graph, add it if one doesn't exist
 		for x in self._edges:
@@ -240,7 +244,7 @@ class Graph():
 	#Adds a triangle to the list of triangles and returns true 
 	#if successful, checking if it is equal to any other triangle.
 	# Returns false if an equivalent triangle exists
-	def addTriangle(self, triangle):
+	def addTriangle(self:np.float32, triangle:np.float32):
 		
 		#First check if an equivalent triangle already exists
 		for x in self._triangles:
@@ -253,7 +257,7 @@ class Graph():
 		
 	#Tests if a given triangle is Delaunay (i.e.,
 	# no other points lie within the circumcircle of the triangle)
-	def triangleIsDelaunay(self, triangle):
+	def triangleIsDelaunay(self:np.float32, triangle:np.float32):
 		tri = [ triangle._a.pos(), triangle._b.pos(), triangle._c.pos() ]
 		cc = circumcircle(tri) # center and radius of circumcircle
 		#cc = circumcircle2(tri) # center and radius of circumcircle
@@ -272,7 +276,7 @@ class Graph():
 	#Generates the complete Delaunay mesh by testing every possible triangle
 	# for the Delaunay condition, then marking any edges that intersect, and
 	# removing the longer of the intersecting edges
-	def generateDelaunayMesh(self):
+	def generateDelaunayMesh(self:np.float32):
 	
 		#Create every possible triangle and test it for the Delaunay condition
 		for p1 in self._points:
@@ -294,7 +298,7 @@ class Graph():
 				self.addEdge(Edge(t._c, t._a))
 				
 		#Checking for intersecting edges
-		bad_edges = []
+		bad_edges:np.float32 = []
 		for e1 in self._edges:
 			for e2 in self._edges:
 				if not e1.isEqual(e2):
