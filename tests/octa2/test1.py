@@ -8,8 +8,8 @@
 import os
 import sys
 import numpy as np
-import pyqcstrc.octa2.occupation_domain as od # use original code
-import pyqcstrc.octa2.two_occupation_domains as ods # use original code
+import octa2.occupation_domain as od # use original code
+import octa2.two_occupation_domains as ods # use original code
 #import pyqcstrc.occdom.occdom as od
 #import pyqcstrc.twoods.twoods as ods
 

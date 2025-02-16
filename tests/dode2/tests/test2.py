@@ -9,8 +9,8 @@
 import sys
 import numpy as np
 #import pyqcstrc.numeric.qnmath12 as qnmath
-import pyqcstrc.qnsymm.qnsym as sym
-import pyqcstrc.numeric.numericalc as num
+import qnsymm.qnsym as sym
+import numeric.numericalc as num
 #import pyqcstrc.prjop.prjop as prj
 
 verbose=0

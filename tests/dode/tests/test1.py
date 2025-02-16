@@ -8,8 +8,8 @@
 #import os
 import sys
 import numpy as np
-import pyqcstrc.dode2.occupation_domain_cython as od
-import pyqcstrc.dode.two_occupation_domains as ods
+import dode2.occupation_domain_cython as od
+import dode.two_occupation_domains as ods
 
 opath='./test1'
 #xyzpath='../../../xyz/dode'

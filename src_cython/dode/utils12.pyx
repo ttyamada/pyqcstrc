@@ -7,8 +7,8 @@ import numpy as np
 cimport numpy as np
 cimport cython
 
-from pyqcstrc.dode.math12 cimport dot_product, outer_product, projection, projection3, add, sub, mul, div
-from pyqcstrc.dode.numericalc12 cimport point_on_segment, inout_occupation_domain_numerical
+from dode.math12 cimport dot_product, outer_product, projection, projection3, add, sub, mul, div
+from dode.numericalc12 cimport point_on_segment, inout_occupation_domain_numerical
 
 DTYPE_double = np.float64
 #DTYPE_int = int

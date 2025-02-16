@@ -2,7 +2,7 @@
 import sys
 import numpy as np
 #from pyqcstrc.qnnum import qnnum
-import pyqcstrc.qnnum.qnnum as qnn
+import qnnum.qnnum as qnn
 
 def chkop(qn1,qn2):
     print("qn1+qn2",qnn.qn2npa(qn1+qn2))

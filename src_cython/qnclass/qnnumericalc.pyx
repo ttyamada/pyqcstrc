@@ -7,9 +7,9 @@ cimport cython
 cimport numpy as np
 from numpy.typing cimport NDArray
 cimport random
-cimport pyqcstrc.qnnum.qnnum as qnn
-cimport pyqcstrc.qnvec.qnvec as qnv
-cimport pyqcstrc.qnmat.qnmat as qnm
+cimport qnnum.qnnum as qnn
+cimport qnvec.qnvec as qnv
+cimport qnmat.qnmat as qnm
 
 cdef coplanar_check_numeric_tau(pts: qnv.Qnvec, num_iteration: mp.int64=5) -> bool:
     """check the points (pts) are in coplanar or not

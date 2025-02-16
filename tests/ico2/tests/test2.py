@@ -10,10 +10,10 @@ import numpy as np
 import time
 
 try:
-    import pyqcstrc.ico2.occupation_domain as od
-    import pyqcstrc.ico2.two_occupation_domains as tod
-    import pyqcstrc.ico2.intsct as intsct
-    import pyqcstrc.ico2.utils as utils
+    import ico2.occupation_domain as od
+    import ico2.two_occupation_domains as tod
+    import ico2.intsct as intsct
+    import ico2.utils as utils
 except ImportError:
     print('import error\n')
 

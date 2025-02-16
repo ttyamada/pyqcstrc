@@ -6,9 +6,9 @@
 import sys
 import numpy as np
 try:
-    from pyqcstrc.ico2.strc import (strc,
+    from ico2.strc import (strc,
                                     )
-    import pyqcstrc.ico2.occupation_domain as od
+    import ico2.occupation_domain as od
 except ImportError:
     print('import error\n')
 

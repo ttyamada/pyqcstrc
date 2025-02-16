@@ -7,9 +7,9 @@ import numpy as np
 cimport numpy as np
 cimport cython
 
-from pyqcstrc.dode.numericalc12 cimport projection_numerical,inout_occupation_domain_numerical,inout_occupation_domain_phason_numerical
-from pyqcstrc.dode.numericalc12 cimport projection_1_numerical, get_internal_component_numerical, projection_numerical_phason_1
-from pyqcstrc.dode.numericalc12 cimport projection_2_numerical
+from dode.numericalc12 cimport projection_numerical,inout_occupation_domain_numerical,inout_occupation_domain_phason_numerical
+from dode.numericalc12 cimport projection_1_numerical, get_internal_component_numerical, projection_numerical_phason_1
+from dode.numericalc12 cimport projection_2_numerical
 
 DTYPE_double = np.float64
 #DTYPE_int = int

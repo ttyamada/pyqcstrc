@@ -8,9 +8,9 @@ from scipy.spatial import Delaunay
 cimport numpy as np
 cimport cython
 
-from pyqcstrc.dode.math12 cimport projection3, dot_product, add, sub, mul, div
-from pyqcstrc.dode.utils12 cimport triangle_area_6d, obj_area_6d, remove_doubling_dim4_in_perp_space, remove_doubling_dim3_in_perp_space
-from pyqcstrc.dode.numericalc12 cimport inside_outside_triangle, check_intersection_two_triangles, check_intersection_line_segment_triangle, check_intersection_two_segment_numerical
+from dode.math12 cimport projection3, dot_product, add, sub, mul, div
+from dode.utils12 cimport triangle_area_6d, obj_area_6d, remove_doubling_dim4_in_perp_space, remove_doubling_dim3_in_perp_space
+from dode.numericalc12 cimport inside_outside_triangle, check_intersection_two_triangles, check_intersection_line_segment_triangle, check_intersection_two_segment_numerical
 
 DTYPE_double = np.float64
 #DTYPE_int = int

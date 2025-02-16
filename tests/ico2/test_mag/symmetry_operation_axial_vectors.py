@@ -6,13 +6,13 @@
 import sys
 import numpy as np
 try:
-    from pyqcstrc.ico2.strc import (strc,
+    from ico2.strc import (strc,
                                     )
-    import pyqcstrc.ico2.occupation_domain as od
-    import pyqcstrc.ico2.symmetry as symmetry
-    import pyqcstrc.ico2.math1 as math1
-    import pyqcstrc.ico2.numericalc as numericalc
-    import pyqcstrc.ico2.symmetry_numerical as symmetry_numerical
+    import ico2.occupation_domain as od
+    import ico2.symmetry as symmetry
+    import ico2.math1 as math1
+    import ico2.numericalc as numericalc
+    import ico2.symmetry_numerical as symmetry_numerical
 except ImportError:
     print('import error\n')
 import matplotlib.pyplot as plt

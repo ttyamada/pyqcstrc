@@ -8,8 +8,8 @@ import timeit
 import os
 import sys
 import numpy as np
-import pyqcstrc.icosah.occupation_domain as od
-import pyqcstrc.icosah.two_occupation_domains as ods
+import icosah.occupation_domain as od
+import icosah.two_occupation_domains as ods
 
 POS0=np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
 POS_B1=np.array([[ 1, 0, 1],[ 1, 0, 1],[ 1, 0, 1],[ 0, 0, 1],[-1, 0, 1],[ 0, 0, 1]]) # b_1

@@ -7,8 +7,8 @@ import numpy as np
 cimport numpy as np
 cimport cython
 
-from pyqcstrc.dode.math12 cimport add,sub
-from pyqcstrc.dode.utils12 cimport remove_doubling_dim3, remove_doubling_dim3_in_perp_space
+from dode.math12 cimport add,sub
+from dode.utils12 cimport remove_doubling_dim3, remove_doubling_dim3_in_perp_space
 
 DTYPE_double = np.float64
 #DTYPE_int = int

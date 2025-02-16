@@ -8,9 +8,9 @@ import timeit
 import os
 import sys
 import numpy as np
-import pyqcstrc.ico2.occupation_domain as od
-import pyqcstrc.ico2.two_occupation_domains as ods
-import pyqcstrc.ico2.symmetry as sym
+import ico2.occupation_domain as od
+import ico2.two_occupation_domains as ods
+import ico2.symmetry as sym
 
 import pyqcstrc.ico2.utils as utils
 
