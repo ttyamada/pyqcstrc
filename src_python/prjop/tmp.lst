@@ -1,0 +1,9 @@
+self.shape 5 5
+self.n 5
+Traceback (most recent call last):
+  File "/linux1/akiji/git/pyqcstrc/src/pyqcstrc/prjop/prjop.py", line 255, in <module>
+    prj=Qnprj_Octa() # qnnum projection operator
+  File "/linux1/akiji/git/pyqcstrc/src/pyqcstrc/prjop/prjop.py", line 28, in __init__
+    self.mt=qnmt.set_mt(MT) # matrix of qnnum (qnmat)
+            ^^^^
+NameError: name 'qnmt' is not defined. Did you mean: 'qnm'?
