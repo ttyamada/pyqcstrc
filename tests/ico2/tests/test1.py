@@ -7,7 +7,9 @@ import os
 import sys
 #sys.path.append('../')
 import numpy as np
+from numpy.typing import NDArray
 import time
+from ico2.two_occupation_domains import intersection
 
 try:
     import ico2.occupation_domain as od
@@ -57,7 +59,7 @@ if __name__ == "__main__":
     print('Intersection starts')
     start=time.time()
     ###
-    common=tod.intersection(strt_aysmmetric,strt_sym_pos1)
+    common=intersection(strt_aysmmetric,strt_sym_pos1)
     ###
     end=time.time()
     time_diff=end-start
