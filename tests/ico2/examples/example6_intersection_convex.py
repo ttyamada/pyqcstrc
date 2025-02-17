@@ -12,7 +12,7 @@ import ico2.occupation_domain as od
 import ico2.two_occupation_domains as ods
 import ico2.symmetry as sym
 
-import pyqcstrc.ico2.utils as utils
+import ico2.utils as utils
 
 # Vertices of tetrahedron, v0,v1,v2,v3, which
 # defines the asymmetric part of OD

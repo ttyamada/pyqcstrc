@@ -8,11 +8,11 @@ import timeit
 import os
 import sys
 import numpy as np
-import pyqcstrc.ico2.occupation_domain as od
-import pyqcstrc.ico2.two_occupation_domains as ods
-import pyqcstrc.qnnum.qnnum as qnn
-import pyqcstrc.qnvec.qnvec as qnv
-import pyqcstrc.qnmat.qnmat as qnm
+import ico2.occupation_domain as od
+import ico2.two_occupation_domains as ods
+import qnnum.qnnum as qnn
+import qnvec.qnvec as qnv
+import qnmat.qnmat as qnm
 
 M0=qnn.Qnnum([0,0,1],N) # 0
 M1=qnn.Qnnum([1,0,2],N) # 1/2

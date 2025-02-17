@@ -10,6 +10,7 @@ import sys
 import numpy as np
 import ico2.occupation_domain as od
 import ico2.two_occupation_domains as ods
+import ico2.intsct as intsct
 
 # Vertices of tetrahedron, v0,v1,v2,v3, which
 # defines the asymmetric part.
