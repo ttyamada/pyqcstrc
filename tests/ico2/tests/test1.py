@@ -7,13 +7,15 @@ import os
 import sys
 #sys.path.append('../')
 import numpy as np
+from numpy.typing import NDArray
 import time
+from ico2.two_occupation_domains import intersection
 
 try:
-    import pyqcstrc.ico2.occupation_domain as od
-    import pyqcstrc.ico2.two_occupation_domains as tod
-    import pyqcstrc.ico2.utils as utils
-    #import pyqcstrc.ico2.numericalc as numericalc
+    import ico2.occupation_domain as od
+    import ico2.two_occupation_domains as tod
+    import ico2.utils as utils
+    #import ico2.numericalc as numericalc
 except ImportError:
     print('import error\n')
     
@@ -57,7 +59,7 @@ if __name__ == "__main__":
     print('Intersection starts')
     start=time.time()
     ###
-    common=tod.intersection(strt_aysmmetric,strt_sym_pos1)
+    common=intersection(strt_aysmmetric,strt_sym_pos1)
     ###
     end=time.time()
     time_diff=end-start

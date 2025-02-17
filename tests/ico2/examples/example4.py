@@ -8,8 +8,8 @@ import timeit
 import os
 import sys
 import numpy as np
-import pyqcstrc.ico2.occupation_domain as od
-import pyqcstrc.ico2.two_occupation_domains as ods
+import ico2.occupation_domain as od
+import ico2.two_occupation_domains as ods
 
 V0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
 BC = np.array([[ 1, 0, 2],[ 1, 0, 2],[ 1, 0, 2],[ 1, 0, 2],[ 1, 0, 2],[ 1, 0, 2]])

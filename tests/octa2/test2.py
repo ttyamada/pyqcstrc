@@ -8,8 +8,8 @@
 import os
 import sys
 import numpy as np
-import pyqcstrc.occdom.occdom as od
-import pyqcstrc.twoods.twoods as ods
+import occdom.occdom as od
+import twoods.twoods as ods
 
 opath='./test2'
 try:

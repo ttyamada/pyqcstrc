@@ -1,8 +1,8 @@
 cimport sys
 cimport numpy as np
-cimport pyqcstrc.qnnum.qnnum as qnn
-cimport pyqcstrc.qnvec.qnvec as qnv
-cimport pyqcstrc.qnmat.qnmat as qnm
+cimport qnnum.qnnum as qnn
+cimport qnvec.qnvec as qnv
+cimport qnmat.qnmat as qnm
 #from goto cimport with_goto
 
 cdef abs(a:qnn.Qnnum):

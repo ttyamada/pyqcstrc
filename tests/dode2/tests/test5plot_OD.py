@@ -7,9 +7,9 @@
 import os
 import sys
 import numpy as np
-import pyqcstrc.occdom.occdom as od
-import pyqcstrc.qnsym.qnsym as sym
-import pyqcstrc.numeric.numericalc as num
+import occdom.occdom as od
+import qnsym.qnsym as sym
+import numeric.numericalc as num
 
 from matplotlib.patches import Circle, Wedge, Polygon
 from matplotlib.collections import PatchCollection

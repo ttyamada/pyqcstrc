@@ -8,8 +8,8 @@ import timeit
 import os
 import sys
 import numpy as np
-import pyqcstrc.icosah.occupation_domain as od
-import pyqcstrc.icosah.two_occupation_domains as ods
+import icosah.occupation_domain as od
+import icosah.two_occupation_domains as ods
 
 # --------------------------------------
 # PREDIFINED 6D POSITIONs in TAU style

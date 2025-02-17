@@ -1,10 +1,10 @@
 #test qnmath operations
 import sys
 import numpy as np
-import pyqcstrc.qnnum.qnnum as qnn
-import pyqcstrc.qnvec.qnvec as qnv
-import pyqcstrc.qnmat.qnmat as qnm
-import pyqcstrc.prjop.prjop as pro
+import qnnum.qnnum as qnn
+import qnvec.qnvec as qnv
+import qnmat.qnmat as qnm
+import prjop.prjop as pro
 
 def chkop(qnv1,qnv2,qnm1,N):
     qnv.printqnv("qnv1+qnv2",qnv1+qnv2)

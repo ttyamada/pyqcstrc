@@ -1,7 +1,7 @@
 cimport sys
 cimport numpy as np
 from numpy.typing cimport NDArray
-cimport pyqcstrc.qnnum.qnnum as qnn
+cimport qnnum.qnnum as qnn
 #from pyqcstrc.qnvec cimport qnvec
 
 class Qnvec:

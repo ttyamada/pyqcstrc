@@ -8,7 +8,7 @@
 #import os
 import sys
 import numpy as np
-import pyqcstrc.occdom.occdom as od
+import occdom.occdom as od
 
 opath='./test3'
 xyzpath='./test1'

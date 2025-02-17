@@ -8,8 +8,8 @@ import timeit
 import os
 import sys
 import numpy as np
-import pyqcstrc.ico2.occupation_domain as od
-import pyqcstrc.ico2.two_occupation_domains as ods
+import ico2.occupation_domain as od
+import ico2.two_occupation_domains as ods
 
 # Vertices of tetrahedron, v0,v1,v2,v3, which
 # defines the asymmetric part of OD

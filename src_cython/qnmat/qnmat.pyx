@@ -1,8 +1,8 @@
 cimport cython
 cimport sys
 cimport numpy as np
-cimport pyqcstrc.qnnum.qnnum as qnn
-cimport pyqcstrc.qnvec.qnvec as qnv
+cimport qnnum.qnnum as qnn
+cimport qnvec.qnvec as qnv
 from numpy.typing cimport NDArray
 
 class Qnmat:
