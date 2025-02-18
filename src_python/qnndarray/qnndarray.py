@@ -57,36 +57,61 @@ def printqndm(str:str, qnm:QnNdarray):
     else:
         print("ord in printqnm should be 1, 2 or 3 but",ord); exit()
         
-if __name__ == '__main__':
-    # test
+def add_vectors(vt1: QnNdarray, vt2:QnNdarray) -> QnNdarray:
+    """Composition of two vectors, v1+v2
     
-    N=2
-    n=5
-    print("n=",n)
-    shape=(n,n)
-    qndm=QnNdarray(shape,N) # nxn qmnum zero matrix
-    print("qndm.ndim",qndm.ndim)
-    print("qndm.shape",qndm.shape)
-    printqndm("zero qnmat",qndm)
+    Parameters
+    ----------
+    vt1: array
+        a vector in SIN-style
+    vt2: array,
+        a scalar in SIN-style
     
-    N=2
-    n=5
-    nr=10
-    print("n=",n)
-    shape=(nr,n,n)
-    qndm=QnNdarray(shape,N) # nxn qmnum zero matrix
-    print("qndm.ndim",qndm.ndim)
-    print("qndm.shape",qndm.shape)
-    for i in range(nr):
-        printqndm("zero qnmat",qndm[i])
+    Returns
+    -------
+    Composition of two vectors: array in SIN-style
+    
+    """
+    a=np.zeros(vt1.shape,dtype=qnn.Qnnum)
+    for i in range(len(vt1)):
+        a[i]=add(vt1[i],vt2[i])
+    return a
+
+def sub_vectors(vt1: QnNdarray, vt2:QnNdarray) -> QnNdarray:
+    """Subtraction of two vectors, v1-v2
+    
+    Parameters
+    ----------
+    vt1: array
+        a vector in SIN-style
+    vt2: array,
+        a scalar in SIN-style
+    
+    Returns
+    -------
+    Subtraction of two vectors: array in SIN-style
+    """
+    if vt1.ndim==2 and vt2.ndim==2:
+        const=np.array([-1,0,1],dtype=qnn.Qnnum)
+        vt2=mul_vector(vt2,const)
+        return add_vectors(vt1,vt2)
+    else:
+        print('incorrect shape')
+        return
+    
+def shift_vectors(vs:Qnvec, v:Qnvec) -> Qnvec:
+    if vs.ndim==1:  #3:
+        a=np.zeros(vs.shape,dtype=qnn.Qnvec)
+        la=vs.shape
+        for i,v1 in enumerate(vs):  #range(la[0]):
+            a[i]=add_vectors(v1,v)
+        return a
+    elif vs.ndim==2:  #4:
+        a=np.zeros(vs.shape,dtype=qnn.Qnvec)
+        for i1,v1 in enumerate(vs):
+            for i2,v2 in enumerate(v1):
+                a[i1][i2]=add_vectors(v2,v)
+    else:
+        print('incorrect shape')
+        return
         
-    qndmi=copy(qndm) # copy of qnmi
-    print("qndmi.ndim",qndmi.ndim)
-    print("qndmi.shape",qndmi.shape)
-    printqndm("zero qnmat",qndmi)
-    
-    qndma=QnNdarray((2,n,n),N)
-    print("qndma.ndim",qndma.ndim)
-    print("qndma.shape",qndma.shape)
-    printqndm("qndma",qndma)
-    

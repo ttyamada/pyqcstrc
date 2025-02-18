@@ -379,8 +379,9 @@ def centroid_obj(obj: qnv.Qnvec) -> qnv.Qnvec:
     
     #  geometric center, centroid of OBJ
     N=obj[0].N
-    n=qnv.shape[0]
-    len=qnn.Qnnum([1,0,len(obj)],N)  # 1/len(obj)
+    shape=qnv.shape
+    n=shape[1]
+    len=shape[0]  # 1/len(obj)
     tmp=qnv.Qnvec(n,N) # zero vector
     for thd in obj:
         tmp=tmp+thd
@@ -399,8 +400,8 @@ def det_matrix_3d(mtx: qnm.Qnmat) -> qnn.Qnnum:
     -------
     determinant in qnnumber
     """
-    N=mtx[0][0].N
-    shape=ntx.shape
+    N=mtx.N
+    shape=mtx.shape
     if shape[0]!=3:
         print("shape of mtx in det_matrix_3d should be (3,3) but",shape); exit(0)
     det=qnn.Qnmtrx([0,0,1],N) # zero qnnumber
@@ -426,7 +427,7 @@ def det_matrix_2d(mtx: qnm.Qnmat) -> qnn.Qnnum:
     determinant in qnnumber
     """
     N=mtx.N
-    shape=ntx.shape
+    shape=mtx.shape
     if shape[0]!=2:
         print("shape of mtx in det_matrix_2d should be (3,3) but",shape); exit(0)
     det=qnn.Qnmtrx([0,0,1],N) # zero qnnumber
@@ -447,34 +448,3 @@ def matrixtr(mtx: qnm.Qnmat) -> qnm.Qnmat:
     return mtxt
         
 
-if __name__ == '__main__':
-    nr=10
-    N=2 # for octagonal
-    shape=(nr)
-    
-    fn=[0.0]*nr
-    for i in range(nr):
-        print(fn[i])
-        
-    ip=[0]*nr
-    for i in range(nr):
-        #qn[i]=qnn.int2qnn(nr-1-i,N)
-        fn[i]=(float)(nr-1-i)
-        print("fn[i]",fn[i])
-        #print()
-    qsort_f(fn,ip,nr)
-    for i in range(nr):
-        print(fn[i])
-        
-    qn=qna.QnNdarray(shape,N)
-    ip=[0]*nr
-    for i in range(nr):
-        #qn[i]=qnn.int2qnn(nr-1-i,N)
-        qn[i]=qnn.Qnnum([nr-1-i,1,2],N)
-        qnn.printqnn("qn[i]",qn[i])
-    print()
-    qsort(qn,ip,nr)
-    for i in range(nr):
-        qnn.printqnn("qn[i]",qn[i])
-        
-        

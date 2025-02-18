@@ -1,5 +1,6 @@
 import sys, os, math
 import numpy as np
+from typing import Self
 
 #Basic Point class
 class Point(np.ndarray):
@@ -12,16 +13,16 @@ class Point(np.ndarray):
         self[0] = p[0]  #self._x = x
         self[1] = p[1]  #self._y = y
     
-    def __eq__(self,b):
+    def __eq__(self,b:Self):
         return isEqual_p(self,b)
     
-    def __ne__(selfself,b):
+    def __ne__(self,b:Self):
         return not isEuqual_p(self,b)
     
-    def __add__(self,b):
+    def __add__(self,b:Self):
         return add_p(self,b)
     
-    def __sub__(self,b):
+    def __sub__(self,b:Self):
         return sub_p(self,b)
     
     #Position of the point
@@ -29,40 +30,44 @@ class Point(np.ndarray):
         return self  #return [self._x, self._y]
             
     #Convert the point into a string (for debugging purposes)
-    def pointToStr(self:np.ndarray):
+    def pointToStr(self):
         return str(self.pos())
     
 def zerops(shape) -> Point:  # Point array
     return np.zeros(shape,dtype=Point)
     
 #Determines if two points are equivalent
-def isEqual_p(self, other_point):
+def isEqual_p(self:Point, other_point:Point):
     #if(self._x == other_point._x and self._y == other_point._y): return True
     if(self[0] == other_point[0] and self[1] == other_point[1]): return True
     else: return False
     
-def add_p(self,b):
+def add_p(self:Point,b:Point):
     for i in range(2):
         self[i]=self[i]+b[i]
     return self
     
-def sub_p(self,b):
+def sub_p(self:Point,b:Point):
     for i in range(2):
         self[i]=self[i]-b[i]
     return self
 
 #Basic Edge class
-class Edge():
+class Edge(np.ndarray):
+    def __new__(cls, n:np.int64):
+        global shape
+        shape=(2)
+        return super().__new__(cls,shape)
 
     def __init__(self, a:Point, b:Point): # two points
         if a != b:
             self[0]=a  #self._a = a
             self[1]=b  #self._b = b
             
-    def __eq__(self,b):
+    def __eq__(self,b:Self):
         return isEqual_e(self,b)
     
-    def __ne__(selfself,b):
+    def __ne__(self,b:Self):
         return not isEqual_e(self,b)
     
     def __add__(self,b):
@@ -155,7 +160,12 @@ def sub_e(self,b):
   
 
 #Basic Triangle class
-class Triangle():
+class Triangle(np.ndarray):
+    
+    def __new__(cls, n:np.int64):
+        global shape
+        shape=(3)
+        return super().__new__(cls,shape)
     
     #Cannot create a triangle if any two points are the same
     def __init__(self, a:Point, b:Point, c:Point):  # three points
@@ -180,7 +190,7 @@ class Triangle():
 def zerots(shape) -> Triangle:  # Triangle array
     return np.zeros(shape,dtype=Triangle)
 #Test if any two triangles are equal (defined as sharing all three points)
-def isEqual_t(self, other_tri):
+def isEqual_t(self:Triangle, other_tri:Triangle):
     if (self[0] is other_tri[0] or self[0] is other_tri[1] or \
       self[0] is other_tri[2]) and (self[1] is other_tri[0] or \
       self[1] is other_tri[1] or self[1] is other_tri[2]) and \

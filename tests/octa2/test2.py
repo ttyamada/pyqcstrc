@@ -8,8 +8,10 @@
 import os
 import sys
 import numpy as np
-import occdom.occdom as od
-import twoods.twoods as ods
+#import occdom.occdom as od
+#import twoods.twoods as ods
+from occdom import occdom
+from twoods import twoods
 
 opath='./test2'
 try:

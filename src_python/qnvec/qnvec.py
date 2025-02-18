@@ -4,6 +4,7 @@ from numpy.typing import NDArray
 import qnnum.qnnum as qnn
 import qnvec.qnvec as qnv
 import qnndarray.qnndarray as qna
+from typing import Self
 
 #class Qnvec(np.ndarray):
 #class Qnvec(np.ndarray):
@@ -24,26 +25,26 @@ class Qnvec(qna.QnNdarray):
         #print("self.ndim",self.ndim)    # for test
         #print("self.dtype",self.dtype)  # for test
 
-    def __add__(a, b):
+    def __add__(a:Self, b:Self):
         return add(a,b)
     
-    def __sub__(a, b):
+    def __sub__(a:Self, b:Self):
         return sub(a,b)
     
-    def __mul__(a, b): # b should be int or qnnum
+    def __mul__(a:Self, b:Self): # b should be int or qnnum
         if isinstance(b, int):
             return mul_vector_i(a,b)
         elif isinstance(b, qnn.Qnnum):
             return mul_vector_qn(a,b)
         
-    def __truediv__(a,b): # b should be int
+    def __truediv__(a:Self,b:Self): # b should be int
         if isinstance(b, int):
             return div_vector_i(a,b)
         
-    def __eq__(a, b):
+    def __eq__(a:Self, b:Self):
         return eq(a,b)
     
-    def __not__(a,b):
+    def __not__(a:Self,b:Self):
         return not_eq(a,b)
         
 def zerovs(shape) -> Qnvec:  # qnvec ndarray
@@ -140,23 +141,6 @@ def div_vector_i(v:Qnvec, coeff: int) -> Qnvec:
     else:
         print('incorrect shape')
         return
-
-
-def shift_vectors(vs:Qnvec, v:Qnvec) -> Qnvec:
-    if vs.ndim==1:  #3:
-        a=np.zeros(vs.shape,dtype=qnn.Qnvec)
-        la=vs.shape
-        for i,v1 in enumerate(vs):  #range(la[0]):
-            a[i]=add_vectors(v1,v)
-        return a
-    elif vs.ndim==2:  #4:
-        a=np.zeros(vs.shape,dtype=qnn.Qnvec)
-        for i1,v1 in enumerate(vs):
-            for i2,v2 in enumerate(v1):
-                a[i1][i2]=add_vectors(v2,v)
-    else:
-        print('incorrect shape')
-        return
     
 # cros == outer_product (cross product) 
 def cros(v1:Qnvec, v2:Qnvec) -> Qnvec:
@@ -190,7 +174,7 @@ def dot(v1:Qnvec, v2:Qnvec) -> qnn.Qnnum:
     
 # equivalent to cross
 def outer_product(v1:Qnvec, v2:Qnvec)-> Qnvec:
-    return cross(v1,v2)
+    return cros(v1,v2)
 
 # equivalent to dot
 def inner_product(v1:Qnvec, v2:Qnvec) -> qnn.Qnnum:
@@ -276,71 +260,6 @@ def not_eq(qnv1:Qnvec, qnv2:Qnvec):
         if qnv1[i]!=qnv2[i]:
             return True
     return False
-    
-    
-    
-if __name__ == '__main__':
-    # test
-    def qnvec_tst(str,n,N):
-        print(str)
-        print("n",n,"N",N)
-        M0=qnn.Qnnum([0,0,1],N)
-        M1=qnn.Qnnum([1,0,1],N)
-        M2=qnn.Qnnum([0,1,1],N)
-        if n==5:
-            vec1=np.array([M0,M1,M2,M0,M1],dtype=qnn.Qnnum)    
-            vec2=np.array([M0,M1,M2,M0,M1],dtype=qnn.Qnnum)
-            vec3=np.array([M1,M2,M0,M1,M2],dtype=qnn.Qnnum)
-        elif n==6:
-            vec1=np.array([M0,M1,M2,M0,M1,M2],dtype=qnn.Qnnum)    
-            vec2=np.array([M0,M1,M2,M0,M1,M2],dtype=qnn.Qnnum)
-            vec3=np.array([M1,M2,M0,M1,M2,M0],dtype=qnn.Qnnum)
-        qnv1=anyv(n,N,vec1)
-        qnv2=anyv(n,N,vec2)
-        qnv3=anyv(n,N,vec3)
-    
-        printqnv("qnv1",qnv1)
-        printqnv("qnv2",qnv2)
-        printqnv("qnv3",qnv3)
-    
-        qnv4=qnv1+qnv2
-        qnv5=qnv1-qnv3
-        printqnv("qnv1+qnv2",qnv4)
-        printqnv("qnv1-qnv3",qnv5)
-    
-        qnn1=dot(qnv1,qnv3)
-        qnn.printqnn("dot(qnv1,qnv3)",qnn1)
-    
-        qnv6=cros(qnv1,qnv3)
-        printqnv("cross(qnv1,qnv3)",qnv6)
-        
-        print("qnv1==qnv2",qnv1==qnv2)
-        print("qnv1==qnv3",qnv1==qnv3)
-        
-        qnvs=np.zeros(1,dtype=Qnvec)
-        qnvt=np.zeros(1,dtype=Qnvec)
-        qnvs[0]=qnv1          # this is OK
-        
-        qnvt[0]=qnv2  # this is necessary
-        qnvs=np.append(qnvs,qnvt)
-
-        qnvt[0]=qnv3 # this is necessary
-        qnvs=np.append(qnvs,qnvt)
-
-        print("qnvs.shape",qnvs.shape)
-        printqnvs("qnvs",qnvs)
-        
-    
-    n=5
-    N=2
-    qnvec_tst("octagonal",n,N) # octagonal
-    N=5
-    qnvec_tst("decagonal",n,N) # octabonal
-    N=3
-    qnvec_tst("dodecagonal",n,N) # octabonal
-    n=6
-    N=5
-    qnvec_tst("icosahedral",n,N) # octabonal
     
     
     

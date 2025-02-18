@@ -955,8 +955,8 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f.write('%d\n'%(len(obj)))
         f.write('%s\n'%(filename))
         counter=0
-        for triangle in range(len(obj)):
-            for point in range(len(triangle)):
+        for triangle in obj:  #range(len(obj)):
+            for point in triangle: # range(len(triangle)):
                 v=math1.projection3(point)
                 f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # # # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
                 (numericalc.numeric_value(v[0]),\
