@@ -5,6 +5,7 @@
 #
 import sys
 #sys.path.append('.')
+
 from deca2.math1 import (add, 
                                 matrixpow, 
                                 dot_product, 
@@ -155,7 +156,7 @@ def generator_obj_symmetric_obj_specific_symop(obj,centre,index_of_symmetry_oper
         print('object has an incorrect shape!')
         return
     
-def generator_obj_symmetric_triangle_0(obj,centre,symmetry_operation_index):
+def generator_obj_symmetric_triangle_0(obj:NDArray[np.int64],centre,symmetry_operation_index:NDArray[np.int64]):
     """
     """
     mop=decasymop()
@@ -315,7 +316,7 @@ def generator_equivalent_numeric_vectors_specific_symop(vns,index_of_symmetry_op
 ################ 
 # site symmetry
 ################
-def site_symmetry(site,ndim=5):
+def site_symmetry(site:NDArray[np.int64],ndim=5):
     """symmetry operators in the site symmetry group G.
     
     Args:

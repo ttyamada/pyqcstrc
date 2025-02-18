@@ -8,6 +8,7 @@ import numpy as np
 from numpy.typing import NDArray
 import time # in object_subtraction_dev1, tetrahedron_not_obj
 import itertools
+
 from octa2.math1 import (projection3,
                         centroid, 
                         centroid_obj,

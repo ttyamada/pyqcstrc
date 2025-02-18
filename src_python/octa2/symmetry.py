@@ -25,7 +25,7 @@ import numpy as np
 EPS=1e-6
 V0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
 
-def symop_obj(symop,obj,centre):
+def symop_obj(symop:NDArray[np.int64],obj:NDArray[np.int64],centre:NDArray[np.int64]):
     """ Apply a symmetric operation on an object around given centre. in TAU-style
     
     """
@@ -45,7 +45,7 @@ def symop_obj(symop,obj,centre):
         print('object has an incorrect shape!')
         return 
 
-def symop_vecs(symop,vts,centre):
+def symop_vecs(symop:NDArray[np.int64],vts:NDArray[np.int64],centre:NDArray[np.int64]):
     """ Apply a symmetric operation on set of vectors around given centre. in TAU-style
     
     """
@@ -56,14 +56,14 @@ def symop_vecs(symop,vts,centre):
         i+=1
     return out
 
-def symop_vec(symop,vt,centre):
+def symop_vec(symop:NDArray[np.int64],vt:NDArray[np.int64],centre:NDArray[np.int64]):
     """ Apply a symmetric operation on a vector around given centre. in TAU-style
     """
     vt=sub_vectors(vt,centre)
     vt=dot_product_1(symop,vt)
     return add_vectors(vt,centre)
 
-def generator_obj_symmetric_obj(obj,centre,pg=None):
+def generator_obj_symmetric_obj(obj:NDArray[np.int64],centre:NDArray[np.int64],pg=None):
     """
     """
     if obj.ndim==3 or obj.ndim==4:
@@ -88,12 +88,12 @@ def generator_obj_symmetric_obj(obj,centre,pg=None):
         print('object has an incorrect shape!')
         return
 
-def generator_obj_symmetric_triangle(obj,centre,pg=None):
+def generator_obj_symmetric_triangle(obj:NDArray[np.int64],centre:NDArray[np.int64],pg=None):
     """
     """
     return generator_obj_symmetric_obj(obj,centre,pg)
 
-def generator_obj_symmetric_vector_specific_symop(obj,centre,index_of_symmetry_operation,pg=None):
+def generator_obj_symmetric_vector_specific_symop(obj:NDArray[np.int64],centre:NDArray[np.int64],index_of_symmetry_operation:NDArray[np.int64],pg=None):
     """
     vector: triangles
     (6,3)
@@ -112,7 +112,7 @@ def generator_obj_symmetric_vector_specific_symop(obj,centre,index_of_symmetry_o
         print('object has an incorrect shape!')
         return
 
-def generator_obj_symmetric_triangle_specific_symop(obj,centre,index_of_symmetry_operation,pg=None):
+def generator_obj_symmetric_triangle_specific_symop(obj:NDArray[np.int64],centre:NDArray[np.int64],index_of_symmetry_operation:NDArray[np.int64],pg=None):
     """
     triangle: triangles
     (3,6,3)
@@ -131,7 +131,7 @@ def generator_obj_symmetric_triangle_specific_symop(obj,centre,index_of_symmetry
         print('object has an incorrect shape!')
         return
 
-def generator_obj_symmetric_obj_specific_symop(obj,centre,index_of_symmetry_operation,pg=None):
+def generator_obj_symmetric_obj_specific_symop(obj:NDArray[np.int64],centre:NDArray[np.int64],index_of_symmetry_operation:NDArray[np.int64],pg=None):
     """
     obj: a set of triangles
     (n,3,6,3)
@@ -151,24 +151,24 @@ def generator_obj_symmetric_obj_specific_symop(obj,centre,index_of_symmetry_oper
         print('object has an incorrect shape!')
         return
     
-def generator_obj_symmetric_triangle_0(obj,centre,symmetry_operation_index,pg=None):
+def generator_obj_symmetric_triangle_0(obj:NDArray[np.int64],centre:NDArray[np.int64],symmetry_operation_index:NDArray[np.int64],pg=None):
     """
     """
     mop=octasymop_array()
     return symop_obj(mop[symmetry_operation_index],obj,centre)
 
-def generator_obj_symmetric_vec(vectors,centre,pg=None):
+def generator_obj_symmetric_vec(vectors:NDArray[np.int64],centre:NDArray[np.int64],pg=None):
     """
     """
     return generator_obj_symmetric_obj(vectors,centre,pg)
 
-def generator_equivalent_vectors(vectors,centre,pg=None):
+def generator_equivalent_vectors(vectors:NDArray[np.int64],centre:NDArray[np.int64],pg=None):
     """
     """
     a=generator_obj_symmetric_obj(vectors,centre,pg)
     return remove_doubling_in_perp_space(a)
 
-def generator_equivalent_vec(vector,centre,pg=None):
+def generator_equivalent_vec(vector:NDArray[np.int64],centre:NDArray[np.int64],pg=None):
     """
     """
     a=generator_obj_symmetric_obj(vector,centre,pg)
@@ -214,7 +214,7 @@ def octasymop_array():
     return symop
     
     
-def generator_symmetric_vec_specific_symop(vector,centre,index_of_symmetry_operation,pg=None):
+def generator_symmetric_vec_specific_symop(vector:NDArray[np.int64],centre:NDArray[np.int64],symmetry_operation_index:NDArray[np.int64],pg=None):
     mop=octasymop_array()
     return symop_vec(mop[symmetry_operation_index],vector,centre)
     
@@ -223,14 +223,14 @@ def generator_symmetric_vec_specific_symop(vector,centre,index_of_symmetry_opera
 ################ 
 # numeric
 ################
-def generator_equivalent_numeric_vector_specific_symop(vn,index_of_symmetry_operation,pg='-12m2'):
+def generator_equivalent_numeric_vector_specific_symop(vn:NDArray[np.int64],index_of_symmetry_operation:NDArray[np.int64],pg='-12m2'):
     mop=octasymop_array()
     out=np.zeros((len(index_of_symmetry_operation),6),dtype=np.float64)
     for i1 in index_of_symmetry_operation:
         out[i1]=mop[i1]@vn
     return out
     
-def generator_equivalent_numeric_vectors_specific_symop(vns,index_of_symmetry_operation,pg='-12m2'):
+def generator_equivalent_numeric_vectors_specific_symop(vns:NDArray[np.int64],index_of_symmetry_operation:NDArray[np.int64],pg='-12m2'):
     mop=octasymop_array()
     num1=len(index_of_symmetry_operation)
     out=np.zeros((num1,len(vns),6),dtype=np.float64)
@@ -243,7 +243,7 @@ def generator_equivalent_numeric_vectors_specific_symop(vns,index_of_symmetry_op
 #################
 #   Utilities
 #################
-def remove_overlaps(l1):
+def remove_overlaps(l1:NDArray[np.int64]):
     """
     Remove overlap elements in list with set method.
     
@@ -258,7 +258,7 @@ def remove_overlaps(l1):
     l2.sort()
     return l2
     
-def find_overlaps(l1,l2):
+def find_overlaps(l1:NDArray[np.int64],l2:NDArray[np.int64]):
     """find overlap or not btween list1 and list2.
     
     Args:
@@ -278,7 +278,7 @@ def find_overlaps(l1,l2):
 ############################
 # Similarity transformation
 ############################
-def similarity_obj(obj,m):
+def similarity_obj(obj:NDArray[np.int64],m:NDArray[np.int64]):
     """similarity transformation of a triangle
     """
     out=np.zeros(obj.shape,dtype=np.int64)
@@ -286,7 +286,7 @@ def similarity_obj(obj,m):
         out[i1]=similarity_triangle(od,m)
     return out
 
-def similarity_triangle(triangle,m):
+def similarity_triangle(triangle:NDArray[np.int64],m:NDArray[np.int64]):
     """similarity transformation of a triangle
     """
     out=np.zeros(triangle.shape,dtype=np.int64)
@@ -294,14 +294,14 @@ def similarity_triangle(triangle,m):
         out[i1]=similarity_vec(vt,m)
     return out
 
-def similarity_vec(vt,m):
+def similarity_vec(vt:NDArray[np.int64],m:NDArray[np.int64]):
     """similarity transformation of a vector
     """
     vec1=[]
     op=similarity(m)
     return dot_product_1(op,vt)
     
-def similarity(m):
+def similarity(m:NDArray[np.int64]):
     """Similarity transformation of Octagonal QC
     """
     m1=np.array([[ 1, 1, 0,-1, 0, 0],\
@@ -315,7 +315,7 @@ def similarity(m):
 ############################
 # Group
 ############################
-def generate_multiplication_table(a,flag,ndim):
+def generate_multiplication_table(a:NDArray[np.int64],flag:NDArray[np.int64],ndim:np.int64):
     """
     対称行列リストaから積表を求める
     Generation of a multiplication table from symmetry elements,
@@ -334,7 +334,7 @@ def generate_multiplication_table(a,flag,ndim):
     RTOL=1e-02
     ATOL=1e-03
     
-    def translation_one_unit_cel(ndim):
+    def translation_one_unit_cel(ndim:np.int64):
         """
         ユニットセル1つ分だけシフトする。
         並進を含む対称操作が等価かどうか確認するときに用いる。
@@ -389,7 +389,7 @@ def generate_multiplication_table(a,flag,ndim):
             pass
         return lst
     
-    def equivalent(a,b,flag=0,ndim=6):
+    def equivalent(a:NDArray[np.int64],b:NDArray[np.int64],flag=0,ndim=6):
         """
         judge whether symmetric matrices a and b are equivalen or not. 
         Input
@@ -447,7 +447,7 @@ def generate_multiplication_table(a,flag,ndim):
         print('Cannot make multiplication table.')
         return 1
 
-def check_closure(mul_table,combination):
+def check_closure(mul_table:NDArray[np.int64],combination:NDArray[np.int64]):
     # 閉包性(closure)
     counter3 = 0
     num = len(combination)
@@ -465,7 +465,7 @@ def check_closure(mul_table,combination):
     else:
         return False
 
-def check_identity_element(combination,num_identity=0):
+def check_identity_element(combination:NDArray[np.int64],num_identity=0):
     # 単位元(identity element)の存在
     counter1 = 0
     for i2 in range(len(combination)):
@@ -477,7 +477,7 @@ def check_identity_element(combination,num_identity=0):
     else:
         return False
 
-def check_inverse_element(mul_table,num_identity=0):
+def check_inverse_element(mul_table:NDArray[np.int64],num_identity=0):
     # 逆元(inverse element)の存在
     (m,n)=mul_table.shape
     if m == n:
@@ -498,7 +498,7 @@ def check_inverse_element(mul_table,num_identity=0):
     else:
         return False
 
-def check_connectivity(mul_table,combination):
+def check_connectivity(mul_table:NDArray[np.int64],combination:NDArray[np.int64]):
     # 結合律(connectivity)
     counter3=0
     num = len(combination)
@@ -519,7 +519,7 @@ def check_connectivity(mul_table,combination):
     else:
         return False
 
-def check_group(a,flag='SG',ndim=6):
+def check_group(a:NDArray[np.int64],flag='SG',ndim=6):
     """
     """
     table=generate_multiplication_table(a,flag,ndim)
@@ -539,75 +539,189 @@ def check_group(a,flag='SG',ndim=6):
     else:
         return False
 
-if __name__ == '__main__':
-    
-    # test
-    
-    import random
-    from numericalc import (numerical_vectors,
-                            numerical_vector,
-                            numeric_value,)
-                            
-    def generate_random_value():
-        """ generate value in TAU-style
-        """
-        nmax=10
-        v=np.zeros((3),dtype=np.int64)
-        for i1 in range(2):
-            v[i1]=random.randrange(-nmax,nmax) # a and b in (a+b*TAU)/c.
-        v[2]=random.randrange(1,nmax) # c in (a+b*TAU)/c.
-        return v
+def site_symmetry(site,brv,pg,vervose=0):
+    """symmetry operators in the site symmetry group G.
         
-    def generate_random_vector(ndim=6):
-        """ generate ndim vector in TAU-style
-        ndim: dimension of vectors
-        """
-        nmax=10
-        v=np.zeros((ndim,3), dtype=np.int64)
-        for i1 in range(ndim):
-            v[i1]=generate_random_value()
-        return v
+    Args:
+        site (numpy.ndarray):
+            xyz coordinate of the site.
+            The shape is (6,3).
         
-    def generate_random_vectors(n,ndim=6):
-        """
-        num: number of generated vectors.
-        ndim: dimension of vectors
-        """
-        v=np.zeros((n,ndim,3), dtype=np.int64)
-        for i1 in range(n):
-            v[i1]=generate_random_vector(ndim)
-        return v
+    Returns:
+        List of index of symmetry operators of the site symmetry group G (list):
+            The symmetry operators leaves xyz identical.
+    """
     
-    def generate_random_triangle():
-        return generate_random_vectors(3)
+    if vervose>0:
+        print(' site_symmetry()')
+        print('  site:',numerical_vector(site))
+    symop=octasymop_array(pg)
     
-    print("TEST: symop_vec()")
-    symop=dodesymop()
-    vt=generate_random_vector()
-    counter=0
-    cen0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
-    for sop in symop:
-        #
-        # calc using symop_vec
-        svt=symop_vec(sop,vt,cen0)
-        svn1=numerical_vector(svt)
-        #print(svn1)
-        #
-        # calc using no.dot with float values
-        vn=numerical_vector(vt)
-        svn2=np.dot(sop,vn)
-        #print(svn2)
-        if np.allclose(svn1,svn2):
-            pass
-        else:
-            counter+=1
-    if counter==0:
-        print('symop_vec: correct')
+    # サイト周りでvtgに対して対称操作を施す。
+    vtg=np.array([[1,0,3],[0,1,4],[1,0,5],[0,1,6],[1,0,7],[0,0,1]],dtype=np.int64)
+    #vtg=add_vectors(vtg,site)
+    a=np.zeros((len(symop),6,3),dtype=np.int64)
+    for i1,op in enumerate(symop):
+        a[i1]=symop_vec(op,vtg,site)
+        
+    if brv=='p':
+        flag=1
     else:
-        print('symop_vec: worng')
+        pass
+    traop=translation_new(brv,flag)
+    lst=[]
+    for i1,a1 in enumerate(a):
+        # vtgに対して並進を含む全ての対称操作を施す。
+        if vervose>1:
+            print('%3d     a1:'%(i1),numerical_vector(a1))
+        counter1=0
+        for op in symop:
+            tmp1=symop_vec(op,vtg,V0)
+            if np.all(a1==tmp1):
+                counter1=1
+                if vervose>1:
+                    print('      tmp1:',numerical_vector(tmp1))
+                break
+            else:
+                flag1=0
+                for tr in traop:
+                    b=add_vectors(tmp1,tr)
+                    if np.all(a1==b):
+                        flag1=1
+                        #print('         b:',numerical_vector(b))
+                        break
+                    else:
+                        pass
+                if flag1==1:
+                    counter1=1
+                    break
+                else:
+                    pass
+        if counter1==1:
+            lst.append(i1)
+        else:
+            pass
+    if vervose>0:
+        print('  lst:',lst)
+    return lst
+    
+
+def equivalent_positions_in_unit_cell_dev(site:NDArray[np.int64],brv:str,pg,vervose=0):
+    """
+    単位胞内にある等価なサイトを得る。
+    """
+    if vervose>0:
+        print(' equivalent_positions_in_unit_cell()')
+        print('  site:',numerical_vector(site))
+    symop=octasymop_array(pg)
+    eqpos=np.zeros((len(symop),6,3),dtype=np.int64)
+    for i,op in enumerate(symop):
+        eqpos[i]=symop_vec(op,site,centre=V0)
+    if vervose>1:
+        for i,_eqpos in enumerate(eqpos):
+            print('   (%d)'%(i),numerical_vector(_eqpos))
+            
+    # symopを施したサイトに並進操作を施し、単位胞内にあるものを得る。
+    lst_symop_unit_cell=[]
+    lst_symop_site_symm=[]
+    tr=translation_new(brv,flag=1)
+    for i1,_pos in enumerate(eqpos):
+        for i2,_tr in enumerate(tr):
+            pos=add_vectors(_pos,_tr)
+            posn=numerical_vector(pos)
+            if np.all(posn>=0.0) and np.all(posn<1.0):
+                lst_symop_unit_cell.append([i1,i2])
+                if vervose>1:
+                    print('   (%d,%d):'%(i1,i2),numerical_vector(pos))
+                else:
+                    pass
+            else:
+                pass
+        if np.all(_pos==site):
+            lst_symop_site_symm.append(i1)
+        else:
+            pass
+    print('lst_symop_unit_cell')
+    for i in range(len(lst_symop_unit_cell)):
+        print(lst_symop_unit_cell[i])
         
-    nset=4
-    vts=generate_random_vectors(nset)
-    print(vts)
-    svts=symop_vecs(symop[1],vts,cen0)
-    print(svts)
+    print('\nSite symmetry:')
+    print('lst_symop_site_symm')
+    print(lst_symop_site_symm)
+    #for i in range(len(lst_symop_site_symm)):
+    #    print(lst_symop_site_symm[i])
+    
+    # 全対称操作をサイトシンメトリの操作を取り除く
+    a=set(range(len(symop)))
+    b=set(lst_symop_site_symm)-{0}
+    idx_else=list(a-b)
+    print(idx_else)
+    
+    print('lst_symop_unit_cell:',lst_symop_unit_cell)
+    _lst_symop_unit_cell=[]
+    for a in lst_symop_unit_cell:
+        _lst_symop_unit_cell.append(a[0])
+    print('_lst_symop_unit_cell:',_lst_symop_unit_cell)
+    # idx_elseの対称操作のうち、各等価サイトを作る対称操作を調べる。
+    tmp1=[]
+    for idx2 in _lst_symop_unit_cell:
+        
+        _site=symop_vec(symop[idx2],site,V0)
+        tmp=[]
+        for idx1 in idx_else:
+            pos1=symop_vec(symop[idx1],_site,V0)
+            if np.all(pos==pos1):
+                tmp.append(idx1)
+                #break
+            else:
+                pass
+        tmp1.append(tmp)
+        print('  idx_coset',tmp)
+        
+    # いくつかある組み合わせのうち最初のものを選ぶ。
+    idx_coset=[]
+    for i in range(len(tmp1)):
+        #idx_coset.append((tmp1[i][0]))
+        idx_coset.append(tmp1[i])
+    print('idx_coset')
+    print(idx_coset)
+    #if check_coset(site,idx_coset,symop,idx_site):
+    #    return idx_coset
+    #else:
+    #    return 
+    
+# new ver
+def translation_new(brv:str,flag=0):
+    """translational symmetry
+    
+    brv : bravais lattce p,
+            s : superlattice for decagonal quasicrystal
+    """
+    if flag==1:
+        lst=[0,1]
+    elif flag==-1:
+        lst=[-1,0]
+    elif flag==-2:
+        lst=[0]
+    else:
+        lst=[-1,0,1]
+        #lst=[-2,0,2]
+        
+    tr=np.zeros((len(lst)**5,6,3),dtype=np.int64)
+    j1=0
+    for i1 in lst:
+        for i2 in lst:
+            for i3 in lst:
+                for i4 in lst:
+                    for i5 in lst:
+                        tr[j1]=np.array([[i1,0,1],[i2,0,1],[i3,0,1],[i4,0,1],[i5,0,1],[0,0,1]])
+                        j1+=1
+    
+    if brv=='p':
+        return tr
+    else:
+        print('no lattice type selected.')
+        return 
+    
+    
+

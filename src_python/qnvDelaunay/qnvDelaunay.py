@@ -6,67 +6,7 @@ import qnmath.qnmath as qmt # for dot product
 
 # this uses qnnumbers for x y coordinates
 
-#Function for determining the circumcircle of any three points
-def circumcircle(tri:qnv.Qnvec):
-    n=tri[0].n
-    N=tri[0].N
-    center=qnv.zerov(n,N)
-    try:
-        D = ((tri[0][0]-tri[2][0])*(tri[1][1]-tri[2][1])-(tri[1][0]-tri[2][0])*(tri[0][1]-tri[2][1]))
-        
-        center[0] = (((tri[0][0]-tri[2][0])*(tri[0][0]+tri[2][0])+(tri[0][1]-tri[2][1])*(tri[0][1]+tri[2][1]))/ \
-                 2*(tri[1][1]-tri[2][1])-((tri[1][0]-tri[2][0])*(tri[1][0]+tri[2][0])+(tri[1][1]-tri[2][1]) * \
-                 (tri[1][1]+tri[2][1]))/2*(tri[0][1]-tri[2][1]))/D
-        
-        center[1] = (((tri[1][0]-tri[2][0])*(tri[1][0]+tri[2][0])+(tri[1][1]-tri[2][1])*(tri[1][1]+tri[2][1]))/ \
-                 2*(tri[0][0]-tri[2][0])-((tri[0][0]-tri[2][0])*(tri[0][0]+tri[2][0])+(tri[0][1]-tri[2][1]) * \
-                (tri[0][1]+tri[2][1]))/ 2*(tri[1][0]-tri[2][0]))/D
-        
-        #radius = math.sqrt ((tri[2][0] - center.x)**2 + (tri[2][1] - center[1])**2 )
-        radius2 = ((tri[2][0] - center[0])**2 + (tri[2][1] - center[1])**2 )
-        
-        #return [[center.x, center[1]], radius]
-        return [center, radius2] # point and squared radius
-    except:
-        print("Divide By Zero error")
-        print(tri)
-        
-def circumcircle2(tri:qnv.Qnvec):            
-    #tri[0]-tri[2] and tri[1]-tri[2] are edige vectors form tri[2]
-    n=tri[0].n
-    N=tri[0].N
-    center=qnv.zerov(n,N)
-    edg=qnv.zeros((3))
-    edg[0]=tri[0]-tri[2]; edg[1]=tri[1]-tri[2]; edg[2]=tri[1]+tri[2]
-    try:
-        D = (edg[0][0]*edg[1][0]-edg[1][1]*edg[0][1]) # determinant
-        
-        center[0] = ((edg[0][0]*edg[2][0]+edg[0][1]*edg[2][1])/2*edg[1][1] \
-                     -(edg[1][0]*edg[2][0]+edg[0][1]*edg[2][1])/2*edg[0][1])/D
-        
-        center[1] = ((edg[1][0]*edg[2][0]+edg[0][1]*edg2[1][1])/2*edg[0][0] \
-                     -(edg[0][0]*edg[2][0]+edg[0][1]*edg[2][1])/2*edg[1][0])/D
-            
-        #return [[center[0], center[1]], radius]
-        return [center, radius2] # point and squared radius
-    except:
-        print("Divide By Zero error")
 
-
-#Determine if any given point lies inside a circle
-def pointInCircle(point:qnv.Qnvec, circle:qnv.Qnvec):
-    #This is pretty simple; just find the distance between the point and the center.
-    # If it's less than or equal to the radius, the point is inside the circle
-    
-    #d = math.sqrt( math.pow(point[0] - circle[0][0], 2) + math.pow(point[1] - circle[0][1],2) )
-    #d2 = ( math.pow(point[0] - circle[0][0], 2) + math.pow(point[1] - circle[0][1],2) )
-    d2 = qmt.dot(point[0],circle[0])
-    #if d < circle[1]:
-    if d2 < circle[1]: # circle[0] circle[1] should be a point and squared radius
-        return True
-    else:
-        return False
-    
 #Basic Point class
 class Point():
     def __init__(self, x:qnn.Qnnum, y:qnn.Qnnum): # x and y coordinates of a point
@@ -353,4 +293,64 @@ class Graph():
                     self._edges.remove(y)
                     continue
                 
+#Function for determining the circumcircle of any three points
+def circumcircle(tri:qnv.Qnvec):
+    n=tri[0].n
+    N=tri[0].N
+    center=qnv.zerov(n,N)
+    try:
+        D = ((tri[0][0]-tri[2][0])*(tri[1][1]-tri[2][1])-(tri[1][0]-tri[2][0])*(tri[0][1]-tri[2][1]))
+        
+        center[0] = (((tri[0][0]-tri[2][0])*(tri[0][0]+tri[2][0])+(tri[0][1]-tri[2][1])*(tri[0][1]+tri[2][1]))/ \
+                 2*(tri[1][1]-tri[2][1])-((tri[1][0]-tri[2][0])*(tri[1][0]+tri[2][0])+(tri[1][1]-tri[2][1]) * \
+                 (tri[1][1]+tri[2][1]))/2*(tri[0][1]-tri[2][1]))/D
+        
+        center[1] = (((tri[1][0]-tri[2][0])*(tri[1][0]+tri[2][0])+(tri[1][1]-tri[2][1])*(tri[1][1]+tri[2][1]))/ \
+                 2*(tri[0][0]-tri[2][0])-((tri[0][0]-tri[2][0])*(tri[0][0]+tri[2][0])+(tri[0][1]-tri[2][1]) * \
+                (tri[0][1]+tri[2][1]))/ 2*(tri[1][0]-tri[2][0]))/D
+        
+        #radius = math.sqrt ((tri[2][0] - center.x)**2 + (tri[2][1] - center[1])**2 )
+        radius2 = ((tri[2][0] - center[0])**2 + (tri[2][1] - center[1])**2 )
+        
+        #return [[center.x, center[1]], radius]
+        return [center, radius2] # point and squared radius
+    except:
+        print("Divide By Zero error")
+        print(tri)
+        
+def circumcircle2(tri:qnv.Qnvec):            
+    #tri[0]-tri[2] and tri[1]-tri[2] are edige vectors form tri[2]
+    n=tri[0].n
+    N=tri[0].N
+    center=qnv.zerov(n,N)
+    edg=qnv.zeros((3))
+    edg[0]=tri[0]-tri[2]; edg[1]=tri[1]-tri[2]; edg[2]=tri[1]+tri[2]
+    try:
+        D = (edg[0][0]*edg[1][0]-edg[1][1]*edg[0][1]) # determinant
+        
+        center[0] = ((edg[0][0]*edg[2][0]+edg[0][1]*edg[2][1])/2*edg[1][1] \
+                     -(edg[1][0]*edg[2][0]+edg[0][1]*edg[2][1])/2*edg[0][1])/D
+        
+        center[1] = ((edg[1][0]*edg[2][0]+edg[0][1]*edg2[1][1])/2*edg[0][0] \
+                     -(edg[0][0]*edg[2][0]+edg[0][1]*edg[2][1])/2*edg[1][0])/D
+            
+        #return [[center[0], center[1]], radius]
+        return [center, radius2] # point and squared radius
+    except:
+        print("Divide By Zero error")
+
+
+#Determine if any given point lies inside a circle
+def pointInCircle(point:qnv.Qnvec, circle:qnv.Qnvec):
+    #This is pretty simple; just find the distance between the point and the center.
+    # If it's less than or equal to the radius, the point is inside the circle
+    
+    #d = math.sqrt( math.pow(point[0] - circle[0][0], 2) + math.pow(point[1] - circle[0][1],2) )
+    #d2 = ( math.pow(point[0] - circle[0][0], 2) + math.pow(point[1] - circle[0][1],2) )
+    d2 = qmt.dot(point[0],circle[0])
+    #if d < circle[1]:
+    if d2 < circle[1]: # circle[0] circle[1] should be a point and squared radius
+        return True
+    else:
+        return False
     
