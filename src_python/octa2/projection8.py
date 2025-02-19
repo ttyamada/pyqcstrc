@@ -2,6 +2,8 @@
 import numpy as np
 from numpy.typing import NDArray
 import random
+import cython
+
 #import qnnum.qnnum as qnn
 #import qnvec.qnvec as qnv
 #import qnmat.qnmat as qnm

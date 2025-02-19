@@ -1,11 +1,21 @@
 #if __name__ == '__main__':
     
     # test
-    
+import sys
+import itertools
+import cython
+import numpy as np
+
+from numpy.typing import NDArray
+
 import random
 from numericalc import (numerical_vectors,
-                            numerical_vector,
-                            numeric_value,)
+                        numerical_vector,
+                        numeric_value)
+
+from symmetry import (symop_vec,
+                      symop_vecs
+                      )
                             
 def generate_random_value():
     """ generate value in TAU-style

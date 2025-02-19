@@ -5,7 +5,9 @@
 #
 import sys
 import numpy as np
+import cython
 from numpy.typing import NDArray
+
 #sys.path.append('.')
 #from numericalc import coplanar_check_numeric_tau
 from octa2.numericalc import coplanar_check_numeric_tau
@@ -110,11 +112,11 @@ def div(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
             #print('ERROR_2:division error')
             return np.array([0,0,1],dtype=np.int64)
         else:
-            c1:np.int64=(a[0]*b[0]-2*a[1]*b[1])*b[2]
-            c2:np.int64=(a[1]*b[0]-a[0]*b[1])*b[2]
-            c3:np.int64=(b[0]**2-2*b[1]**2)*a[2]
-            x:np.int64=np.array([c1,c2,c3],dtype=np.int64)
-            g:np.int64=np.gcd.reduce(x)
+            c1=(a[0]*b[0]-2*a[1]*b[1])*b[2]
+            c2=(a[1]*b[0]-a[0]*b[1])*b[2]
+            c3=(b[0]**2-2*b[1]**2)*a[2]
+            x=np.array([c1,c2,c3],dtype=np.int64)
+            g=np.gcd.reduce(x)
             if g!=0:
                 c1=int(c1/g)
                 c2=int(c2/g)

@@ -8,10 +8,10 @@
 import os
 import sys
 import numpy as np
-import octa2.occupation_domain as od # use original code
-import octa2.two_occupation_domains as ods # use original code
-#import pyqcstrc.occdom.occdom as od
-#import pyqcstrc.twoods.twoods as ods
+import occupation_domain as od # use original code
+import two_occupation_domains as ods # use original code
+#import occdom.occdom as od
+#import twoods.twoods as ods
 
 opath='./test1'
 try:

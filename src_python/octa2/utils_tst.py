@@ -3,7 +3,12 @@
 
 # test
 
+import numpy as np
+import math1
 import random
+from utils import (get_internal_component_sets_numerical,
+                   remove_doubling_in_perp_space)
+from math1 import (sort_vectors)
 
 def generate_random_value():
     """ generate value in TAU-style

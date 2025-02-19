@@ -8,6 +8,9 @@ import timeit
 import os
 import sys
 import numpy as np
+import cython
+from numpy.typing import NDArray
+
 try:
     import octa2.math1 as math1
     import octa2.utils as utils
@@ -19,10 +22,10 @@ except ImportError:
 
 TAU=np.sqrt(2)
 
-def volume(obj):
+def volume(obj:NDArray[np.int64]):
     return utils.obj_area_6d(obj)
 
-def symmetric(obj,centre,pg=None):
+def symmetric(obj:NDArray[np.int64],centre,pg=None):
     """
     Generate symmterical occupation domain by symmetric elements on the asymmetric unit.
     
@@ -47,7 +50,7 @@ def symmetric(obj,centre,pg=None):
         print('object has an incorrect shape!')
         return 
 
-def symmetric_0(obj,centre,indx_symop,pg=None):
+def symmetric_0(obj:NDArray[np.int64],centre:NDArray[np.int64],indx_symop,pg=None):
     """
     Generate symmtericic occupation domain by applying symmetric elements on the asymmetric unit.
     
@@ -70,7 +73,7 @@ def symmetric_0(obj,centre,indx_symop,pg=None):
         print('object has an incorrect shape!')
         return 
 
-def shift(obj,shift):
+def shift(obj:NDArray[np.int64],shift:NDArray[np.int64]):
     """
     Shift the occupation domain.
     
@@ -92,7 +95,7 @@ def shift(obj,shift):
     """
     return utils.shift_object(obj, shift)
 
-def write(obj=None,path=None,basename=None,format=None,color='k',select=None,verbose=0):
+def write(obj:NDArray[np.int64]=None,path=None,basename=None,format=None,color='k',select=None,verbose=0):
     """
     Export occupation domains.
     
@@ -140,7 +143,7 @@ def write(obj=None,path=None,basename=None,format=None,color='k',select=None,ver
         else:
             return 1
 
-def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0):
+def write_vesta(obj:NDArray[np.int64],path='.',basename='tmp',color='k',select='normal',verbose=0):
     """
     Export occupation domains in VESTA format.
     
@@ -846,7 +849,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
     else:
         return 1
 
-def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
+def write_xyz(obj:NDArray[np.int64],path='.',basename='tmp',select='triangle',verbose=0):
     """
     Export occupation domains in XYZ format.
     
@@ -905,7 +908,7 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f.closed
         return 0
     
-    def generator_xyz_dim4_edge(obj,path,filename):
+    def generator_xyz_dim4_edge(obj:NDArray[np.int64],path,filename):
         """
         Generate object (set of edges) object in XYZ format.
     
@@ -938,7 +941,7 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f.closed
         return 0
     
-    def generator_xyz_dim4_vertex(obj,path,filename):
+    def generator_xyz_dim4_vertex(obj:NDArray[np.int64],path,filename):
         """
         Generate object (set of vertexs) object in XYZ format.
     
@@ -973,7 +976,7 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f.closed
         return 0
     
-    def generator_xyz_dim3_vertex(obj,path,filename):
+    def generator_xyz_dim3_vertex(obj:NDArray[np.int64],path,filename):
         """
         Generate object (set of vertexs) object in XYZ format.
     
@@ -1113,7 +1116,7 @@ def read_xyz(path,basename,select='triangle',verbose=0):
     elif select == 'vertex':
         return tmp.reshape(int(num),6,3)
 
-def simplification(obj,verbose=0):
+def simplification(obj:NDArray[np.int64],verbose=0):
     """
     Simplification of occupation domains.
     
@@ -1151,7 +1154,7 @@ def simplification(obj,verbose=0):
                 print('      simplification: fail')
             return obj
 
-def generate_border_edges(obj):
+def generate_border_edges(obj:NDArray[np.int64]):
     """
     Generate border edges of the occupation domain.
     
@@ -1168,7 +1171,7 @@ def generate_border_edges(obj):
     triangle_surface=utils.generator_surface_1(obj)
     return utils.surface_cleaner(triangle_surface)
 
-def outline(obj):
+def outline(obj:NDArray[np.int64]):
     """
     Generate outline of the occupation domain.
     
@@ -1183,7 +1186,7 @@ def outline(obj):
     return utils.surface_cleaner(obj)
     
 # new in version 0.0.2a2
-def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
+def obj2podatm(obj:NDArray[np.int64],serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
     
     def find_common_vertex(obj):
         #Find common vertex of tetrahedra in obj).
@@ -1268,7 +1271,7 @@ def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
         return 1
 
 ##### WIP
-def write_podatm(obj, position, vlist=[0], path='.', basename='tmp', shift=[0., 0., 0., 0., 0., 0.], verbose=0):
+def write_podatm(obj:NDArray[np.int64], position:NDArray[np.int64], vlist=[0], path='.', basename='tmp', shift=[0., 0., 0., 0., 0., 0.], verbose=0):
     """
     Generate pod and atom files.
     
@@ -1448,7 +1451,7 @@ def write_podatm(obj, position, vlist=[0], path='.', basename='tmp', shift=[0., 
 #########################
 #          WIP          #
 #########################
-def simple_hand_step1(obj, path, basename_tmp):
+def simple_hand_step1(obj:NDArray[np.int64], path, basename_tmp):
     """
     Simplification of occupation domains by hand (step1).
     
@@ -1524,7 +1527,7 @@ def simple_hand_step2(obj, merge_list):
             od1=np.vstack([od1,od2])
     return od1
 
-def similarity(obj,m):
+def similarity(obj:NDArray[np.int64],m):
     """
     obj:
     m: order of similarity transformation
@@ -1654,33 +1657,3 @@ def qcstrc(apar,cpar,mystrc,path,basename,phason_matrix,n1max,n5max,origin_shift
     print('    written in %s/%s.xyz'%(path,basename))
     return 0
 
-if __name__ == "__main__":
-    
-    test_dir='../../tests/dode/test'
-    xyz_dir='../../../xyz/dode'
-    # import asymmetric part of OD(occupation domain) located at origin,0,0,0,0,0,0.
-    od_asym = read_xyz(path=xyz_dir,basename='od_vertex_asymmetric')
-    print(od_asym)
-    
-    pos0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
-    od_sym = symmetric(obj = od_asym, centre = pos0)
-    write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
-    write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
-    
-    # move STRT OD to a position 1 1 1 0 -1 0.
-    #pos_b1=np.array([[ 1, 0, 1],[ 1, 0, 1],[ 1, 0, 1],[ 0, 0, 1],[-1, 0, 1],[ 0, 0, 1]]) # b_1
-    #strt_pos1=shift(obj = strt_sym, shift = pos_b1)
-    #write(pod=strt_pos1, path='.', basename='obj_strt', format='xyz')
-    #write(obj=strt_pos1, path='.', basename='obj_strt', format='vesta', color='b')
-    
-    # intersection of "asymmetric part of strt" and "strt at position pos_b1"
-    #    flag = 0,    with rough intersection chacking (faster)
-    #    flag = 1, without rough intersection chacking
-    #twoODs=TWO_ODs(pod1=strt_asym, pod2=strt_pos1, path='.',filename='common.xyz',flag=0,verbose=0)
-    #intersection=Intersection(pod1=tmp1.reshape(1,4,6,3), pod2=tmp2.reshape(1,4,6,3), path='.',filename='common.xyz',flag=0,verbose=0)
-    #common_part=twoODs.intersection()
-    
-    # export common_part in VESTA formated file.
-    #write(obj=common_part, path='.', basename='common', format='vesta', color='r')
-    
-    
