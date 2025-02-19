@@ -14,6 +14,8 @@ try:
                                         remove_overlaps,
                                         find_overlaps,
                                         similarity,
+                                        similarity_triangle,
+                                        similarity_vec
                                         )
 except ImportError:
     print('import error in symmetry_numerical.py\n')

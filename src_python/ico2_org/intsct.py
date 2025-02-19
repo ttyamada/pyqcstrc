@@ -8,7 +8,8 @@ import numpy as np
 from numpy.typing import NDArray
 import time # in subtraction_two_obj
 import itertools
-
+import cython
+from scipy.spatial import Delaunay
 from ico2.projection import projection3
 from ico2.math1 import (
                         centroid, 
@@ -32,6 +33,7 @@ from ico2.numericalc import (numeric_value,
                                     get_internal_component_sets_numerical,
                                     get_internal_component_numerical,
                                     check_intersection_two_segment_numerical_6d_tau,
+                                    check_intersection_segment_surface_numerical,
                                     check_intersection_segment_surface_numerical_6d_tau,
                                     #check_intersection_segment_surface_numerical,
                                     inside_outside_tetrahedron,
@@ -52,17 +54,19 @@ TAU=(1+np.sqrt(5))/2.0
 EPS=1e-6
 
 def decomposition(p: NDArray[np.int64]) -> NDArray[np.int64]:
+    tmp = []
     try:
+        #tmp=Delaunay(p) 
         tri=Delaunay(p)
     except:
         print('error in decomposition()')
         tmp=[0]
-    else:
-        #for i in range(len(tri.simplices)):
+    #else:
+    #for i in range(len(tri.simplices)):
         #    tet=tri.simplices[i]
         #    tmp.append([tet[0],tet[1],tet[2],tet[3]])
-        for tet in tri.simplices:
-            tmp.append([tet[0],tet[1],tet[2],tet[3]])
+    for tet in tri.simplices:
+        tmp.append([tet[0],tet[1],tet[2],tet[3]])
     return tmp
 
 def ball_radius_obj(obj: NDArray[np.int64], centroid: NDArray[np.int64]) -> float:
@@ -254,7 +258,7 @@ def intersection_two_segment(segment_1: NDArray[np.int64], segment_2: NDArray[np
     
     """
     # check whether two line segments are intersecting or not by numerical calc.
-    flg=check_intersection_two_segment_numerical(segment_1,segment_2)
+    flg=check_intersection_two_segment_numerical_6d_tau(segment_1,segment_2)
     if flg!=3: # intersecting
         # calc in TAU-style
         vec6AB=sub_vectors(segment_1[1],segment_1[0])
@@ -955,7 +959,8 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
             if counter2==0:
                 tmp=vrtx1.reshape(1,6,3)
             else:
-                tmp=np.vstack([tmp1a,[vrtx1]])
+                #tmp=np.vstack([tmp1a,[vrtx1]])
+                tmp=np.vstack([tmp,[vrtx1]])
             counter2+=1
         else:
             pass
@@ -1105,7 +1110,7 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
                         counter+=1
                         break
                 if counter!=0:
-                    beak
+                    break
             tet1=np.vstack([vrtx1_out,edge_common])
             vola=obj_volume_6d(tet1)
             combination=[\

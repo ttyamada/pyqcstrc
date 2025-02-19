@@ -4,6 +4,7 @@
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 #
 import sys
+
 #sys.path.append('.')
 from ico2.projection import projection3
 from ico2.math1 import (add,
@@ -805,7 +806,7 @@ def sort_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     sort tehtahedra in an object
     
     """
-    out=np.zeros(vts.shape,dtype=np.int64)
+    out=np.zeros(obj.shape,dtype=np.int64)
     centroids=np.zeros(len(obj),dtype=np.float64)
     tmp=np.zeros((obj.shape,3),dtype=np.int64)
     
@@ -818,7 +819,7 @@ def sort_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     #indx=np.argsort(centroids,axis=0)
     indx=centroids[np.argsort(centroids[:,0])]
     
-    for i1 in range(n1):
+    for i1 in range(indx):
         out[i1]=tmp[indx[i1][0]]
     return out
 
@@ -1084,11 +1085,12 @@ def breps(tetrahedron):
 
 # MICS
 def middle_position(pos1,pos2):
+    out = []
     for i1 in range(6):
         v=add(pos1[i1],pos2[i1])
         v=mul(v,np.array([1,0,2]))
         if i1!=0:
-            out=np.vstack([tmp2,v])
+            out=np.vstack([out,v])
         else:
             out=v.reshape(1,3)
     return out

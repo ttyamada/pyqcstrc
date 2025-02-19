@@ -9,6 +9,7 @@ import os
 import sys
 #sys.path.append('.')
 import numpy as np
+import cython
 
 from ico2.projection import projection3
 
@@ -1731,6 +1732,3 @@ def asymmetric(symmetric_obj, position, vecs):
     od_asym = intsct.intersection_two_obj_1(symmetric_obj,aum)
     
     return od_asym
-
-
-    

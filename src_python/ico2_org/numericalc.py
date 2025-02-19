@@ -6,6 +6,7 @@
 import numpy as np
 from numpy.typing import NDArray
 import random
+import cython
 
 TAU=(1+np.sqrt(5))/2.0
 EPS=1e-6
@@ -437,7 +438,8 @@ def inside_outside_obj_tau(point: NDArray[np.int64], obj: NDArray[np.int64], eps
     point=numerical_vector(point)
     obj=numerical_vectors(obj)
     # 
-    point=get_internal_component_numerical(ln)
+    #point=get_internal_component_numerical(ln)
+    point=get_internal_component_numerical(obj)
     obj=get_internal_component_sets_numerical(obj)
     return inside_outside_obj(point,obj,eps)
     

@@ -5,6 +5,7 @@
 #
 import sys
 import numpy as np
+import cython
 from numpy.typing import NDArray
 #sys.path.append('.')
 from ico2.numericalc import coplanar_check_numeric_tau
@@ -553,7 +554,8 @@ def det_matrix(mtx: NDArray[np.int64]) -> NDArray[np.int64]:
     t1=mul(t3,mtx[2][2])
     #
     t3=mul(mtx[0][2],mtx[1][0])
-    t2=mul(t3,c[1])
+    #t2=mul(t3,c[1])
+    t2=mul(t3,t1) #?
     #
     t1=add(t1,t2)
     

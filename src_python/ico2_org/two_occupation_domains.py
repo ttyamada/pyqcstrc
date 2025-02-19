@@ -8,6 +8,7 @@ import timeit
 import os
 import sys
 import numpy as np
+import cython
 from ico2.intsct import intersection_two_obj_1
 
 try:

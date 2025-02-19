@@ -4,6 +4,7 @@
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 #
 import sys
+import cython
 #sys.path.append('.')
 from ico2.math1 import (add, 
                                 matrixpow, 
@@ -156,7 +157,7 @@ def generator_obj_symmetric_vec(vectors, centre):
     return generator_obj_symmetric_obj(vectors,centre)
 
 def generator_equivalent_vectors(vectors,centre):
-    a=generator_obj_symmetric_obj(vector,centre)
+    a=generator_obj_symmetric_obj(vectors,centre)
     return remove_doubling_in_perp_space(a)
     #return remove_doubling(a)
 

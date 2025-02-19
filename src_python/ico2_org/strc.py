@@ -4,6 +4,7 @@
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 #
 import numpy as np
+import cython
 from numpy.typing import NDArray
 import random
 try:
@@ -44,8 +45,10 @@ try:
                                         symmetry_operations_axial_vectors,
                                         )
     from ico2.projection import projection
+    from ico2.intsct import ball_radius
     from ico2.math1 import (mul_vector,
-                                     mul_vectors
+                                     mul_vectors,
+                                     centroid
                                      )
     from ico2.utils import (shift_object,
                                     )
@@ -451,8 +454,8 @@ def spherical_approximation_tetrahedron(tet):
     this function approximates an tetrahedron to a sphere.
     
     """
-    cen1=centroid(tetrahedron)
-    dd1=ball_radius(tetrahedron,cen1)
+    cen1=centroid(tet)
+    dd1=ball_radius(tet,cen1)
     return cen1,dd1
     
 def inside_outside_shpere(point,radius,postion):

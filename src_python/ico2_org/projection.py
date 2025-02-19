@@ -1,4 +1,6 @@
 import numpy as np
+import cython
+
 from numpy.typing import NDArray
 from ico2.math1 import mul,add
 
