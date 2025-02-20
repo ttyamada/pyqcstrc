@@ -10,6 +10,7 @@ import sys
 import numpy as np
 import cython
 from numpy.typing import NDArray
+from octa2.projection import projection3
 
 try:
     import octa2.math1 as math1
@@ -17,6 +18,7 @@ try:
     import octa2.numericalc as numericalc
     import octa2.symmetry as symmetry
     import octa2.intsct as intsct
+    import octa2.projection as prj
 except ImportError:
     print('import error\n')
 
@@ -459,7 +461,7 @@ def write_vesta(obj:NDArray[np.int64],path='.',basename='tmp',color='k',select='
                 \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
                 \nSTRUC', file=f)
                 for i2,vertx in enumerate(obj1):
-                    xyz=math1.projection3(vertx)
+                    xyz=projection3(vertx)
                     xyz=numericalc.numerical_vector(xyz)
                     print('%4d Xx        Xx%d  1.0000    %8.6f %8.6f %8.6f        1'%\
                     (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
@@ -887,7 +889,7 @@ def write_xyz(obj:NDArray[np.int64],path='.',basename='tmp',select='triangle',ve
         i1=0
         for i1,triangle in enumerate(obj):
             for i2,vt in enumerate(triangle):
-                v=math1.projection3(vt)
+                v=projection3(vt)
                 f.write('Xx %8.6f %8.6f %8.6f # %3d-the triangle %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
                 (numericalc.numeric_value(v[0]),\
                 numericalc.numeric_value(v[1]),\

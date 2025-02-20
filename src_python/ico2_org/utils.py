@@ -19,13 +19,13 @@ from ico2.math1 import (add,
                         coplanar_check,
                         )
 from ico2.numericalc import (numeric_value,
-                                    numerical_vector,
-                                    numerical_vectors,
-                                    point_on_segment,
-                                    coplanar_check_numeric_tau,
-                                    get_internal_component_numerical,
-                                    get_internal_component_sets_numerical,
-                                    )
+                            numerical_vector,
+                            numerical_vectors,
+                            point_on_segment,
+                            coplanar_check_numeric_tau,
+                            get_internal_component_numerical,
+                            get_internal_component_sets_numerical,
+                            )
 import numpy as np
 from numpy.typing import NDArray
 from scipy.spatial import Delaunay

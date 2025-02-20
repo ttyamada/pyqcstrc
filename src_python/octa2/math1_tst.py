@@ -1,9 +1,9 @@
 import sys
 import numpy as np
 from numpy.typing import NDArray
-from math1 import (add,sub,mul,div)
+from octa2.math1 import (add,sub,mul,div)
 
-from numericalc import (numeric_value,
+from octa2.numericalc import (numeric_value,
                             numerical_vector,
                             numerical_vectors,
                             get_internal_component_numerical,

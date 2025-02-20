@@ -2,29 +2,29 @@
 import sys
 #sys.path.append('.')
 from ico2.math1 import (add, 
-                                matrixpow, 
-                                dot_product, 
-                                dot_product_1, 
-                                sub_vectors, 
-                                add_vectors,
-                                mul_vectors,
-                                )
-from ico2.utils import (remove_doubling_in_perp_space, 
-                                remove_doubling,
-                                )
-from ico2.numericalc import (length_numerical,
-                                     numerical_vector,
-                                     numeric_value,
-                                     )
+                        matrixpow,\
+                        dot_product,\
+                        dot_product_1,\
+                        sub_vectors,\
+                        add_vectors,\
+                        mul_vectors
+                        )
+from ico2.utils import (remove_doubling_in_perp_space,\
+                        remove_doubling,\
+                        )
+from ico2.numericalc import (length_numerical,\
+                            numerical_vector,\
+                            numeric_value
+                            )
 import numpy as np
 
 import random
-from pyqcstrc.ico2.numericalc import (projection_par_numerical,
-                                        numerical_vectors,
-                                        numerical_vector,
-                                        numeric_value,
-                                        )
-from pyqcstrc.ico2.math1 import (projection,
+from ico2.numericalc import (projection_par_numerical,\
+                                    numerical_vectors,\
+                                    numerical_vector,\
+                                    numeric_value
+                                    )
+from ico2.math1 import (projection
                                 )
 # test
 
@@ -63,6 +63,38 @@ def generate_random_tetrahedron():
 
 cen0=V0
 
+print("TEST: symop_vec()")
+symop=icosasymop()
+vt=generate_random_vector()
+counter=0
+cen0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
+for sop in symop:
+    #
+    # calc using symop_vec
+    svt=symop_vec(sop,vt,cen0)
+    svn1=numerical_vector(svt)
+    #print(svn1)
+    #
+    # calc using no.dot with float values
+    vn=numerical_vector(vt)
+    svn2=np.dot(sop,vn)
+    #print(svn2)
+    if np.allclose(svn1,svn2):
+        pass
+    else:
+        counter+=1
+if counter==0:
+    print('symop_vec: correct')
+else:
+    print('symop_vec: worng')
+    
+nset=4
+vts=generate_random_vectors(nset)
+print(vts)
+svts=symop_vecs(symop[1],vts,cen0)
+print(svts)
+
+"""
 #-----------------------------------------------
 # TEST: symop_vec()
 #-----------------------------------------------
@@ -344,7 +376,7 @@ for i in range(5):
 
 vt=np.array([[1,0,1],[1,0,2],[1,0,3],[1,0,4],[1,0,5],[1,0,6]],dtype=np.int64) # general 6d vector
 
-symop=icosasymop_array()
+symop=icosasymop()
 eqpos=np.zeros((len(symop),6,3),dtype=np.int64)
 for i,op in enumerate(symop):
     v=symop_vec(op,vt,centre=V0)

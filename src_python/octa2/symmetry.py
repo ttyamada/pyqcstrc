@@ -24,8 +24,6 @@ from octa2.numericalc import (projection_numerical,
                         numerical_vector,
                         length_numerical,
                         )
-
-
 EPS=1e-6
 V0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
 

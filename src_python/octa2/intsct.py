@@ -10,8 +10,8 @@ import time # in object_subtraction_dev1, tetrahedron_not_obj
 import itertools
 import cython
 
-from octa2.math1 import (projection3,
-                        centroid, 
+from octa2.projection import projection3
+from octa2.math1 import (centroid, 
                         centroid_obj,
                         coplanar_check,
                         det_matrix,

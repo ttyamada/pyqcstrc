@@ -8,7 +8,9 @@ import random
 import cython
 
 import random
-from numericalc import (check_intersection_segment_surface_numerical)
+from octa2.numericalc import (
+    check_intersection_segment_surface_numerical,
+    )
 
 def generate_random_value():
     """ generate value in TAU-style

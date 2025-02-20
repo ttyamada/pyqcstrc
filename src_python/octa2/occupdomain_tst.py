@@ -5,12 +5,16 @@ import sys
 import numpy as np
 import cython
 from numpy.typing import NDArray
-from occupation_domain import (symmetric,read_xyz)
+from occupation_domain import (
+    symmetric,read_xyz,
+    write,
+    )
+import octa2.symmetry as symmetry
 
-test_dir='../../tests/dode/test'
-xyz_dir='../../../xyz/dode'
+test_dir='../../tests/octa/test'
+xyz_dir='../../xyz/octa'
 # import asymmetric part of OD(occupation domain) located at origin,0,0,0,0,0,0.
-od_asym = read_xyz(path=xyz_dir,basename='od_vertex_asymmetric')
+od_asym = read_xyz(path=xyz_dir,basename='od_1_asym')
 print(od_asym)
 
 pos0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])

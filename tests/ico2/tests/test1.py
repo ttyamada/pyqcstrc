@@ -9,12 +9,12 @@ import sys
 import numpy as np
 from numpy.typing import NDArray
 import time
-from ico2.two_occupation_domains import intersection
+from two_occupation_domains import intersection
 
 try:
-    import ico2.occupation_domain as od
-    import ico2.two_occupation_domains as tod
-    import ico2.utils as utils
+    import occupation_domain as od
+    import two_occupation_domains as tod
+    import utils as utils
     #import ico2.numericalc as numericalc
 except ImportError:
     print('import error\n')

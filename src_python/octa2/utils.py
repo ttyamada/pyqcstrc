@@ -4,26 +4,27 @@
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 #
 import sys
-from octa2.math1 import (projection3,
-                                add,
-                                sub,
-                                mul,
-                                div,
-                                add_vectors,
-                                sub_vectors,
-                                outer_product,
-                                inner_product,
-                                centroid,
-                                coplanar_check,
-                                )
+from octa2.projection import projection3
+from octa2.occupation_domain import write
+from octa2.math1 import (add,
+                        sub,
+                        mul,
+                        div,
+                        add_vectors,
+                        sub_vectors,
+                        outer_product,
+                        inner_product,
+                        centroid,
+                        coplanar_check,
+                        )
 from octa2.numericalc import (numeric_value,
-                                    numerical_vector,
-                                    numerical_vectors,
-                                    point_on_segment,
-                                    coplanar_check_numeric_tau,
-                                    get_internal_component_numerical,
-                                    get_internal_component_sets_numerical,
-                                    )
+                            numerical_vector,
+                            numerical_vectors,
+                            point_on_segment,
+                            coplanar_check_numeric_tau,
+                            get_internal_component_numerical,
+                            get_internal_component_sets_numerical,
+                            )
 
 import numpy as np
 from numpy.typing import NDArray

@@ -1,21 +1,20 @@
 #if __name__ == '__main__':
     
-    # test
+# test
 import sys
 import itertools
 import cython
 import numpy as np
+import random
 
 from numpy.typing import NDArray
 
-import random
-from numericalc import (numerical_vectors,
-                        numerical_vector,
-                        numeric_value)
+#EPS=1e-6
+#V0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
 
-from symmetry import (symop_vec,
-                      symop_vecs
-                      )
+from octa2.numericalc import (numerical_vectors,numerical_vector,numeric_value)
+
+from octa2.symmetry import (symop_vec,symop_vecs,octasymop_array)
                             
 def generate_random_value():
     """ generate value in TAU-style
@@ -50,33 +49,7 @@ def generate_random_vectors(n,ndim=6):
 def generate_random_triangle():
     return generate_random_vectors(3)
 
-    print("TEST: symop_vec()")
-    symop=octasymop()
-    vt=generate_random_vector()
-    counter=0
-    cen0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
-    for sop in symop:
-        #
-        # calc using symop_vec
-        svt=symop_vec(sop,vt,cen0)
-        svn1=numerical_vector(svt)
-        #print(svn1)
-        #
-        # calc using no.dot with float values
-        vn=numerical_vector(vt)
-        svn2=np.dot(sop,vn)
-        #print(svn2)
-        if np.allclose(svn1,svn2):
-            pass
-        else:
-            counter+=1
-    if counter==0:
-        print('symop_vec: correct')
-    else:
-        print('symop_vec: worng')
-        
-    nset=4
-    vts=generate_random_vectors(nset)
-    print(vts)
-    svts=symop_vecs(symop[1],vts,cen0)
-    print(svts)
+
+symop = octasymop_array()
+
+
