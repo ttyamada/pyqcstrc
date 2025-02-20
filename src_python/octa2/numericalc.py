@@ -6,6 +6,7 @@
 import numpy as np
 from numpy.typing import NDArray
 import random
+import cython
 
 TAU=np.sqrt(2)
 EPS=1e-6 # tolerance

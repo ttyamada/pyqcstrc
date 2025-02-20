@@ -1,17 +1,35 @@
-
 #if __name__ == '__main__':
 
 # test
-
+import sys
+#sys.path.append('.')
+from ico2.projection import projection3
+from ico2.math1 import (add,
+                        sub,
+                        mul,
+                        div,
+                        add_vectors,
+                        sub_vectors,
+                        outer_product,
+                        inner_product,
+                        centroid,
+                        coplanar_check,
+                        )
+from ico2.numericalc import (numeric_value,
+                                    numerical_vector,
+                                    numerical_vectors,
+                                    point_on_segment,
+                                    coplanar_check_numeric_tau,
+                                    get_internal_component_numerical,
+                                    get_internal_component_sets_numerical,
+                                    )
 import numpy as np
-import math1
+from numpy.typing import NDArray
+from scipy.spatial import Delaunay
+import itertools
+import time
+
 import random
-from utils import (get_internal_component_sets_numerical,
-                   generator_all_edges,
-                   remove_doubling_in_perp_space,
-                   remove_doubling,
-                   sort_vctors,
-                   )
 
 def generate_random_value():
     """ generate value in TAU-style
@@ -43,8 +61,8 @@ def generate_random_vectors(n,ndim=6):
         v[i1]=generate_random_vector(ndim)
     return v
 
-def generate_random_triangle():
-    return generate_random_vectors(3)
+def generate_random_tetrahedron():
+    return generate_random_vectors(4)
 
 
 
@@ -54,11 +72,9 @@ def generate_random_triangle():
 nset=10
 vts=generate_random_vectors(nset)
 vns=get_internal_component_sets_numerical(vts)
-print(vns.shape)
 for vn in vns:
     print(vn)
 print('\n')
-print(vts.shape)
 vts1=sort_vctors(vts)
 vns1=get_internal_component_sets_numerical(vts1)
 for vn in vns1:
@@ -87,16 +103,15 @@ else:
 #================
 # 面と辺のテスト
 #================
-triangle=generate_random_triangle()
+tetrahedron=generate_random_tetrahedron()
 
 # doubled tetrahedon
-obj=np.stack([triangle,triangle]) # doubled tetrahedon
-#generator_surface_1(obj)
+obj=np.stack([tetrahedron,tetrahedron]) # doubled tetrahedon
+generator_surface_1(obj)
 
 # a tetrahedon
-obj=triangle
-#surface=generator_surface_1(obj.reshape(1,3,6,3))
-surface=obj.reshape(1,3,6,3)
-#generator_edge(surface)
-generator_all_edges(surface)
+obj=tetrahedron
+surface=generator_surface_1(obj.reshape(1,4,6,3))
+generator_edge(surface)
+
     

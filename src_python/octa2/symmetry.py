@@ -5,6 +5,10 @@
 #
 import sys
 import itertools
+import cython
+import numpy as np
+from numpy.typing import NDArray
+
 from octa2.math1 import (add, 
                         matrixpow, 
                         dot_product, 
@@ -20,8 +24,6 @@ from octa2.numericalc import (projection_numerical,
                         numerical_vector,
                         length_numerical,
                         )
-import numpy as np
-
 EPS=1e-6
 V0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
 

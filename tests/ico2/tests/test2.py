@@ -10,10 +10,10 @@ import numpy as np
 import time
 
 try:
-    import ico2.occupation_domain as od
-    import ico2.two_occupation_domains as tod
-    import ico2.intsct as intsct
-    import ico2.utils as utils
+    import occupation_domain as od
+    import two_occupation_domains as tod
+    import intsct as intsct
+    import utils as utils
 except ImportError:
     print('import error\n')
 

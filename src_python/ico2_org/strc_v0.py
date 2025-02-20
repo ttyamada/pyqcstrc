@@ -4,6 +4,7 @@
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 #
 import numpy as np
+import cython
 from numpy.typing import NDArray
 import random
 try:
@@ -38,7 +39,9 @@ try:
                                         )
     from ico2.math1 import (mul_vector,
                                      mul_vectors,
+                                     centroid
                                      )
+    from ico2.intsct import ball_radius
     from ico2.utils import (shift_object,
                                     )
 except ImportError:
@@ -373,8 +376,8 @@ def spherical_approximation_tetrahedron(tet):
     this function approximates an tetrahedron to a sphere.
     
     """
-    cen1=centroid(tetrahedron)
-    dd1=ball_radius(tetrahedron,cen1)
+    cen1=centroid(tet)
+    dd1=ball_radius(tet,cen1)
     return cen1,dd1
     
 def inside_outside_shpere(point,radius,postion):
@@ -383,40 +386,4 @@ def inside_outside_shpere(point,radius,postion):
         return True # inside
     else:
         return False # outside
-    
-if __name__ == '__main__':
-    
-    v0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
-    v1 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2]])
-    v2 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2]])
-    v3 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[ 0, 0, 2],[-1, 0, 2],[ 0, 0, 2]])
-    od0 = np.vstack([v0,v1,v2,v3]).reshape(1,4,6,3)
-    
-    
-    x1= np.array([0, 0, -1, 0, 0, 0],dtype=np.float64) #5f
-    x2= np.array([0, 1, -1, 1, 0, 0],dtype=np.float64) #3f
-    x3= np.array([0, 1, -1, 0, 0, 0],dtype=np.float64) #2f
-    
-    
-    
-    indx_site_sym,indx_coset=site_symmetry_and_coset(v0,'p',0)
-    
-    #
-    # symmetry operation on x1,x2,x3 for each subdevided OD. 
-    #
-    # in the independent OD (obj)
-    v1_=generator_obj_symmetric_vector_specific_symop(x1,V1,indx_site_sym) # 5f
-    v2_=generator_obj_symmetric_vector_specific_symop(x2,V1,indx_site_sym) # 3f
-    v3_=generator_obj_symmetric_vector_specific_symop(x3,V1,indx_site_sym) # 2f
-    #
-    # in the ODs at equivalent positions
-    v1_=generator_obj_symmetric_vectors_specific_symop(v1_,V1,indx_coset)
-    v2_=generator_obj_symmetric_vectors_specific_symop(v2_,V1,indx_coset)
-    v3_=generator_obj_symmetric_vectors_specific_symop(v3_,V1,indx_coset)
-    
-    ve1=projection_sets_par_numerical_normalized(v1_)
-    ve2=projection_sets_par_numerical_normalized(v2_)
-    ve3=projection_sets_par_numerical_normalized(v3_)
-    
-    print(ve1)
     

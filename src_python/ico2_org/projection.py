@@ -1,4 +1,6 @@
 import numpy as np
+import cython
+
 from numpy.typing import NDArray
 from ico2.math1 import mul,add
 
@@ -90,15 +92,11 @@ def projection_perp(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     #m6 = ( - TAU*n1 -     TAU*n2 +     TAU*n3 +     TAU*n4 -     TAU*n5 + (TAU+2)*n6)/2.0*const
     #return m1,m2,m3,m4,m5,m6
 
-def mtrixcal(
-    m1: NDArray[np.int64],
-    m2: NDArray[np.int64],
-    m3: NDArray[np.int64],
-    m4: NDArray[np.int64],
-    m5: NDArray[np.int64],
-    m6: NDArray[np.int64],
-    v: NDArray[np.int64],
-    ) -> NDArray[np.int64]:
+def mtrixcal(m1: NDArray[np.int64],m2: NDArray[np.int64],\
+             m3: NDArray[np.int64],m4: NDArray[np.int64],\
+             m5: NDArray[np.int64],m6: NDArray[np.int64],\
+             v: NDArray[np.int64],
+            ) -> NDArray[np.int64]:
     """function used in projection()
                         projection3()
                         projection_perp()
@@ -119,6 +117,7 @@ def mtrixcal(
     a4=mul(m4,v[3])
     a5=mul(m5,v[4])
     a6=mul(m6,v[5])
+    
     a1=add(a1,a2)
     a1=add(a1,a3)
     a1=add(a1,a4)

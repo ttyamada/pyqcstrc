@@ -92,10 +92,10 @@ def intersection_convex(obj1,obj2,verbose=0):
             print('incorrect ndim')
         return 
 
-if __name__ == '__main__':
+#if __name__ == '__main__':
     
     # test
     
-    import random
+#    import random
     
     
