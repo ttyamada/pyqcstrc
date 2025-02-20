@@ -9,7 +9,7 @@ from occupation_domain import (
     symmetric,read_xyz,
     write,
     )
-import octa2.symmetry as symmetry
+import symmetry as symmetry
 
 test_dir='../../tests/octa/test'
 xyz_dir='../../xyz/octa'

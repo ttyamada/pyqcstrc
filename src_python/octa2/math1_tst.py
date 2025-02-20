@@ -1,16 +1,16 @@
 import sys
 import numpy as np
 from numpy.typing import NDArray
-from octa2.math1 import (add,sub,mul,div)
+from math1 import (add,sub,mul,div)
 
-from octa2.numericalc import (numeric_value,
-                            numerical_vector,
-                            numerical_vectors,
-                            get_internal_component_numerical,
-                            get_internal_component_sets_numerical,
-                            point_on_segment,
-                            coplanar_check_numeric_tau,
-                            )
+from numericalc import (numeric_value,
+                        numerical_vector,
+                        numerical_vectors,
+                        get_internal_component_numerical,
+                        get_internal_component_sets_numerical,
+                        point_on_segment,
+                        coplanar_check_numeric_tau,
+                        )
 
 # if __name__ == '__main__':
    

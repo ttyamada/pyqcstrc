@@ -8,7 +8,7 @@ import random
 import cython
 
 import random
-from octa2.numericalc import (
+from numericalc import (
     check_intersection_segment_surface_numerical,
     )
 

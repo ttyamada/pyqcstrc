@@ -6,7 +6,7 @@
 import numpy as np
 import math1
 import random
-from octa2.utils import (get_internal_component_sets_numerical,
+from utils import (get_internal_component_sets_numerical,
                    generator_all_edges,
                    remove_doubling_in_perp_space,
                    remove_doubling,
