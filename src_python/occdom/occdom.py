@@ -20,10 +20,11 @@ import qnvec.qnvec as qnv
 import qnmat.qnmat as qnm
 import numeric.numericalc as num
 import utils.utils as utils
-import vesta.vesta as vesta
+import vesta.vesta as vst
 import qnsym.qnsym as qns
-import intsect.intsect as isct
+import intsct.intsct as isct
 import prjop.prjop as prj
+import sitesym.sitesym as ssm
     
 #except ImportError:
 #    print('import error\n')
@@ -33,7 +34,7 @@ import prjop.prjop as prj
 def volume(obj:qnv.Qnvec):
     return utils.obj_area_6d(obj)
 
-def symmetric(obj: qnv.Qnvec,centre : qnv.Qnvec,pg :qnv.Qnvec):
+def symmetric(obj: qnv.Qnvec, centre:qnv.Qnvec, png:str):
     """
     Generate symmterical occupation domain by symmetric elements on the asymmetric unit.
     
@@ -53,7 +54,7 @@ def symmetric(obj: qnv.Qnvec,centre : qnv.Qnvec,pg :qnv.Qnvec):
     """
     if obj.ndim==3 or obj.ndim==4:
         #return symmetry.generator_obj_symmetric_tetrahedron(obj,centre)
-        return qns.generator_obj_symmetric_triangle(obj,centre,pg)
+        return ssm.generator_obj_symmetric_triangle(obj,centre,png)
     else:
         print('object has an incorrect shape!')
         return 

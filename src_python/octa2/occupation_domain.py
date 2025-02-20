@@ -262,7 +262,7 @@ def write_vesta(obj:NDArray[np.int64],path='.',basename='tmp',color='k',select='
             \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
             \nSTRUC', file=f)
             for i2,vrtx in enumerate(vertices):
-                xyz = math1.projection3(vrtx)
+                xyz = projection3(vrtx)
                 xyz=numericalc.numerical_vector(xyz)
                 print('%4d A        A%d  1.0000    %8.6f %8.6f %8.6f        1'%\
                 (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
@@ -681,7 +681,7 @@ def write_vesta(obj:NDArray[np.int64],path='.',basename='tmp',color='k',select='
             \nSTRUC', file=f)
             i2=0
             for vrtx in vertices:
-                xyz = math1.projection3(vrtx)
+                xyz = projection3(vrtx)
                 print('%4d A        A%d  1.0000    %8.6f %8.6f %8.6f        1'%\
                 (i2+1,i2+1,numericalc.numeric_value(xyz[0]),numericalc.numeric_value(xyz[1]),numericalc.numeric_value(xyz[2])), file=f)
                 i2+=1
@@ -928,7 +928,7 @@ def write_xyz(obj:NDArray[np.int64],path='.',basename='tmp',select='triangle',ve
         f.write('%s\n'%(filename))
         for i1,edge in enumerate(obj):
             for i2,vt in enumerate(edge):
-                v=math1.projection3(vt)
+                v=projection3(vt)
                 f.write('Xx %8.6f %8.6f %8.6f # %3d-the edge %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
                 (numericalc.numeric_value(v[0]),\
                 numericalc.numeric_value(v[1]),\
@@ -962,7 +962,7 @@ def write_xyz(obj:NDArray[np.int64],path='.',basename='tmp',select='triangle',ve
         counter=0
         for triangle in obj:  #range(len(obj)):
             for point in triangle: # range(len(triangle)):
-                v=math1.projection3(point)
+                v=projection3(point)
                 f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # # # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
                 (numericalc.numeric_value(v[0]),\
                 numericalc.numeric_value(v[1]),\
@@ -995,7 +995,7 @@ def write_xyz(obj:NDArray[np.int64],path='.',basename='tmp',select='triangle',ve
         f.write('%d\n'%(len(obj)))
         f.write('%s\n'%(filename))
         for i1,point in enumerate(obj):
-            v=math1.projection3(point)
+            v=projection3(point)
             f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # # # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
             (numericalc.numeric_value(v[0]),\
             numericalc.numeric_value(v[1]),\
@@ -1195,12 +1195,12 @@ def obj2podatm(obj:NDArray[np.int64],serial_number=1,path='.',basename='tmp',shi
         counter1=0
         for i1 in [0,1,2]:
             vtx1=obj[0][i1]
-            xyz1=math1.projection3(vtx1)
+            xyz1=projection3(vtx1)
             counter2=0
             for i2 in range(1,len(obj)):
                 counter3=0
                 for i3 in [0,1,2]:
-                    xyz2=math1.projection3(obj[i2][i3])
+                    xyz2=projection3(obj[i2][i3])
                     if np.all(xyz1==xyz2):
                         counter3=1
                         break
@@ -1474,7 +1474,7 @@ def simple_hand_step1(obj:NDArray[np.int64], path, basename_tmp):
         f.write('%d\n'%(len(a)))
         f.write('%s\n'%(basename))
         for i1 in range(len(a)):
-            xyz=math1.projection3(a[i1])
+            xyz=projection3(a[i1])
             f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
             (numericalc.numeric_value(xyz),\
             numericalc.numeric_value(xyz),\

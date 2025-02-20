@@ -12,7 +12,6 @@ import qnndarray.qnndarray as qna
 import qnsym.qnsym as qns
 import lattice.lattice as lt
 
-
 def site_symmetry(x:qnv.Qnvec,qns:qnm.Qnmat,brv) -> np.ndarray: # return irs
     global nr,n,N,mpltbl,r
     """symmetry operator insixwa irs in the site symmetry group G.
@@ -140,6 +139,80 @@ def reduce_x(xs:np.ndarray,brv):
                 xs[i][j]+=qn4
     return xs
 
+def symop_vec(symop:qnm.Qnmat,vt:qnv.Qnvec,centre:qnv.Qnvec):
+    """ Apply a symmetric operation on a vector around given centre. in TAU-style
+    """
+    vt=sub_vectors(vt,centre)
+    vt=dot_product_1(symop,vt)
+    return add_vectors(vt,centre)
+
+def generator_obj_symmetric_obj(obj:qnv.Qnvec, centre:qnv.Qnvec, pg:str):
+    """
+    """
+    if obj.ndim==3 or obj.ndim==4:
+        if np.all(centre==V0):
+            mop=octasymop_array()
+        else:
+            lst_site_symmetry=site_symmetry(centre)
+            mop=[]
+            tmp=octasymop_array()
+            for i in lst_site_symmetry:
+                mop.append(tmp[i])
+        num=len(mop)
+        shape=tuple([num])
+        a=np.zeros(shape+obj.shape,dtype=np.int64)
+        for i,op in enumerate(mop):
+            a[i]=symop_obj(op,obj,centre)
+        if obj.ndim==4:
+            n1,n2,_,_=obj.shape
+            a=a.reshape(num*n1,n2,6,3)
+        return a
+    else:
+        print('object has an incorrect shape!')
+        return
+
+def generator_obj_symmetric_triangle(obj:qnv.Qnvec, centre:qnv.Qnvec, pg:str):
+    """
+    """
+    return generator_obj_symmetric_obj(obj,centre,pg)
+
+def generator_obj_symmetric_vector_specific_symop(obj:qnv.Qnvec,centre:qnv.Qnvec,index_of_symmetry_operation:qnm.Qnmat,pg:str):
+    """
+    vector: triangles
+    (6,3)
+    """
+    # using specific symmetry operations
+    if obj.ndim==2:
+        mop=octasymop_array()
+        shape=tuple([len(index_of_symmetry_operation)])
+        a=np.zeros(shape+obj.shape,dtype=np.int64)
+        j=0
+        for i1 in index_of_symmetry_operation:
+            a[j]=symop_obj(mop[i1],obj,centre)
+            j+=1
+        return a
+    else:
+        print('object has an incorrect shape!')
+        return
+
+def generator_obj_symmetric_triangle_specific_symop(obj:qnv.Qnvec,centre:qnv.Qnvec,indx_sym:np.int64,pg=None):
+    """
+    triangle: triangles
+    (3,6,3)
+    """
+    # using specific symmetry operations
+    if obj.ndim==3:
+        mop=octasymop_array()
+        shape=tuple([len(indx_sym)])
+        a=np.zeros(shape+obj.shape,dtype=np.int64)
+        j=0
+        for i1 in indx_sym:
+            a[j]=symop_obj(mop[i1],obj,centre)
+            j+=1
+        return a
+    else:
+        print('object has an incorrect shape!')
+        return
 
 
     #symmetry operators in the site symmetry group G and its left coset decomposition.

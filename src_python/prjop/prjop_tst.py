@@ -1,22 +1,35 @@
 #if __name__ == '__main__':
+import sys
+import numpy as np
+import qnnum.qnnum as qnn
+import qnvec.qnvec as qnv
+import qnmat.qnmat as qnm
+import qnmath.qnmath as qmt
+import qnndarray.qnndarray as qna
+from prjop import (prjop_init)
+import prjop as prj
+
 # test for qnnum projection operators
 def prj_tst(isys):
     prjop_init(isys)
     print("isys",isys)
+    prj0=prj.prj0
+    prji=prj.prji
     qnm.printqnm("prj0",prj0)
     #prji=qmt.qnmatinv(prj0,n)
     qnm.printqnm("prji",prji)
     unitm=prji@prj0
     qnm.printqnm("untm",unitm)
     
-    prjf=qnm2flnm(prj0)
-    printfm("prjf",prjf,n)
+    prjf=prj.qnm2flnm(prj0)
+    n=5
+    prj.printfm("prjf",prjf,n)
     #prjif=qnm2flnm(prji)
     prjif=qmt.matinv_f(prjf,n)
     #prji3f=np.linalg.inv(prj3f)
-    printfm("prjif",prjif,n)
+    prj.printfm("prjif",prjif,n)
     unitmf=prjif@prjf
-    printfm("unitmf",unitmf,n)
+    prj.printfm("unitmf",unitmf,n)
 
 
 
