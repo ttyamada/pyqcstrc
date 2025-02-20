@@ -390,7 +390,7 @@ def triangle_area(a: NDArray[np.int64]) -> float:
     -------
     area of given triangle: float
     """
-    
+    # TAU-style to float transformation
     x1=numeric_value(a[1][0])-numeric_value(a[0][0])
     y1=numeric_value(a[1][1])-numeric_value(a[0][1])
     z1=numeric_value(a[1][2])-numeric_value(a[0][2])
@@ -429,8 +429,8 @@ def triangle_area_numerical(a: NDArray[np.float64]) -> float:
     v1=np.array([x1,y1,z1])
     v2=np.array([x2,y2,z2])
     
-    v3=np.cross(v2,v1) # cross product
-    return np.sqrt(np.sum(np.abs(v3**2)))/2.0
+    v3=np.cross(v2,v1) # cross product (vector product) => determinant
+    return np.sqrt(np.sum(np.abs(v3**2)))/2.0  # => 2D determinant/2 : area of the triangle
 
 def inside_outside_obj_tau(point: NDArray[np.int64], obj: NDArray[np.int64], eps=EPS) -> bool:
     

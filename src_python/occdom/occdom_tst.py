@@ -1,15 +1,37 @@
 #if __name__ == "__main__":
-
-test_dir='../../tests/dode/test'
-xyz_dir='../../../xyz/dode'
+import timeit
+import os
+import sys
+import numpy as np
+#try:
+import qnmath.qnmath as qnmath #math12
+#import dode2.math1 as math1
+import utils.utils as utils
+#import dode2.symmetry as symmetry
+#import dode2.intsct as intsct
+#import dode2.projection12 as proj
+import qnnum.qnnum as qnn
+import qnvec.qnvec as qnv
+import qnmat.qnmat as qnm
+import numeric.numericalc as num
+import utils.utils as utils
+import vesta.vesta as vst
+import qnsym.qnsym as qns
+import intsct.intsct as isct
+import prjop.prjop as prj
+import occdom as occ
+    
+test_dir='../../tests/dode2/tests'
+xyz_dir='../../xyz/dode'
 # import asymmetric part of OD(occupation domain) located at origin,0,0,0,0,0,0.
-od_asym = read_xyz(path=xyz_dir,basename='od_vertex_asymmetric')
+od_asym = vst.read_xyz(path=xyz_dir,basename='od_vertex_asymmetric')
 print(od_asym)
 
 pos0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
-od_sym = symmetric(obj = od_asym, centre = pos0)
-write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
-write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
+png = "p12m"
+od_sym = occ.symmetric(obj = od_asym, centre = pos0, png = png)
+occ.write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
+occ.write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
 
 # move STRT OD to a position 1 1 1 0 -1 0.
 #pos_b1=np.array([[ 1, 0, 1],[ 1, 0, 1],[ 1, 0, 1],[ 0, 0, 1],[-1, 0, 1],[ 0, 0, 1]]) # b_1
