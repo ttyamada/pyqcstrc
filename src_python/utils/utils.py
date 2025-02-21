@@ -77,20 +77,20 @@ def triangle_area_2d(tri: qnv.Qnvec) -> qnn.Qnnum:
     shape=tri.shape
     n=2
     N=tri[0].N
-    qnm=qnm.zerom(2,n,N)
+    qnmt=qnm.zerom(2,n,N)
     for i in range(2):
-        qnm[i][0]=tri[i+1][0]-tri[0][0]
-        qnm[i][1]=tri[i+1][1]-tri[1][0]
-    det=qmt.det_matrix_2d(qnm)
+        qnmt[i][0]=tri[i+1][0]-tri[0][0]
+        qnmt[i][1]=tri[i+1][1]-tri[1][0]
+    det=qnm.det_matrix_2d(qnmt)
     return qnn.abs(det)/2
     
 def triangle_sqarea_3d(tri: qnv.Qnvec) -> qnn.Qnnum:
     N=tri[0].N
-    qnv=qnv.zerovs(3)
-    qnv[0]=tri[1]-tri[0]
-    qnv[1]=tri[2]-tri[0]
-    qnv[2]=cros(qnv[0],qnv[1])
-    det=dot(qnv[2],qnv[2]) 
+    qnvt=qnv.zerovs(3)
+    qnvt[0]=tri[1]-tri[0]
+    qnvt[1]=tri[2]-tri[0]
+    qnvt[2]=qnv.cros(qnv[0],qnv[1])
+    det=qnv.dot(qnvt[2],qnvt[2]) 
     return det/4  # squared area of a triangle
 
 def tetrahedron_volume(tet: NDArray[np.float64]) -> qnn.Qnnum:
@@ -98,17 +98,17 @@ def tetrahedron_volume(tet: NDArray[np.float64]) -> qnn.Qnnum:
         
     Parameters
     ----------
-    tetrahedron: array
+    tet: array
         vertex coordinates of the tetrahedron, xyz0,xyz1,xyz2,xyz3
     """
-    N=tetrahedron[0].N
+    N=tet[0].N
     n=3
-    qnm=qnm.zeros((n,N))
+    qnmt=qnm.zeros((n,N))
     for i in range(n):
-        qnm[i][0]=tet[i+1][0]-tet[0][0]
-        qnm[i][1]=tet[i+1][1]-tet[0][1]
-        qnm[i][2]=tet[i+1][2]-tet[0][2]
-    det = qtm.det_matrix_3d(qnm)
+        qnmt[i][0]=tet[i+1][0]-tet[0][0]
+        qnmt[i][1]=tet[i+1][1]-tet[0][1]
+        qnmt[i][2]=tet[i+1][2]-tet[0][2]
+    det = qmt.det_matrix_3d(qnmt)
     return qnn.abs(det)/6
 
 def triangle_area_6d(tri: qnv.Qnvec) -> qnn.Qnnum:
@@ -156,8 +156,8 @@ def triangle_area(vts: qnv.Qnvec) -> qnn.Qnnum:
     """
     v1=vts[1]-vts[0]
     v2=vts[2]-vts[0]
-    v=cross(v1,v2)
-    det=dot(v,v)
+    v=qnv.cros(v1,v2)
+    det=qnv.dot(v,v)
     N=vts[0].N
     qn0=qnn.Qnnum([0,0,1],N)    
     if det < qn0:  #a1+a2*TAU<0.0: # to avoid negative volume...
@@ -293,10 +293,10 @@ def generator_unique_edges(obj: qnv.Qnvec) -> qnv.Qnvec:
     N=obj[0][0].vt[0].N
     qn0=qnn.Qnnum([0,0,1],N)
     #a=np.zeros((num_edges,3),dtype=np.float64)
-    a=np.array((num),dtype=qnv.Qnvec) #[qn0]*(num,edges)
+    a=np.array((num_edges),dtype=qnv.Qnvec) #[qn0]*(num,edges)
     for i1 in range(num_edges):
-        vt=centroid(edges[i1])
-        a[i1]=get_internal_component_numerical(vt)
+        vt=qmt.centroid(edges[i1])
+        a[i1]=prj.get_internal_component_numerical(vt)
     b=np.unique(a,return_index=True,axis=0)[1]
     num=len(b)
     #print('number of unique edges:',num)
@@ -617,16 +617,16 @@ def sort_obj(obj: qnv.Qnvec) -> qnv.Qnvec:
     # 各triangleの頂点xyzをx順にソートすると同時に重心を求めておく。
     for i1 in range(len(obj)):
         tmp[i1]=sort_vctors(obj[i1])
-        centroids[i1]=centroid(obj[i1])
+        centroids[i1]=qmt.centroid(obj[i1])
     
     # 三角形の重心xyzのx順にソート
     #indx=np.argsort(centroids,axis=0)
     #indx=centroids[np.argsort(centroids[:,0])] # returns index
     ln=len(centroids)
-    index=[0]*ln
+    indx=np.zeros((ln),dtype=np.int64)
     qmt.qsort(centroids,indx,ln) # get index
     
-    for i1 in range(n1):
+    for i1 in range(ln):
         out[i1]=tmp[indx[i1][0]]
     return out
 
@@ -723,13 +723,13 @@ def remove_vector(vts: qnv.Qnvec, vt: qnv.Qnvec) -> qnv.Qnvec:
         if np.all(vts[i1]==vt):
             pass
         else:
-            lst.append(i1)
+            lst.append(vts[i1])
     num=len(lst)
     if num!=0:
         #out=np.zeros((len(lst),6,3),dtype=np.int64)
         N=vts[0].N
-        qn0=qnn.Qnvec([0,0,1],N)
-        out=qnv.zerovs(shape)  #[qn0]*(len(lst),6)
+        #qn0=qnn.Qnvec([0,0,1],N)
+        out=qnv.zerovs((num))  #[qn0]*(len(lst),6)
         for i1 in range(len(lst)):
             out[i1]=vts[lst[i1]]
         return out
@@ -758,7 +758,7 @@ def merge_two_triangles(tri_1: qnv.Qnvec, tri_2: qnv.Qnvec) -> qnv.Qnvec:
         flg=0
         for vtx in vtx_common:
             # 2つのtriangesを一つのtriangeに結合できる時、その頂点は上の辺の2つの頂点のうち1つの頂点と頂点1と頂点２。
-            if point_on_segment(vtx,line_segment):
+            if num.point_on_segment(vtx,line_segment):
                 tmp=remove_vector(vtx_common,vtx)
                 tri_new=np.stack(tmp,line_segment)
                 flg+=1
@@ -785,8 +785,8 @@ def check_connectivity_triangles(tri_1: qnv.Qnvec, tri_2: qnv.Qnvec) -> bool:
 def get_common_edge_in_two_triangles(tri_1: qnv.Qnvec, tri_2: qnv.Qnvec) -> qnv.Qnvec:
     """ Return common edge of two connected triangles.
     """
-    edge1=get_triangle_edge(tri_1)
-    edge2=get_triangle_edge(tri_2)
+    edges1=get_triangle_edge(tri_1)
+    edges2=get_triangle_edge(tri_2)
     
     count=0
     for edge_1 in edges1:
@@ -823,7 +823,7 @@ def two_segment_into_one(line_segment_1: qnv.Qnvec, line_segment_2:qnv.Qnvec) ->
         #if equivalent(edge1a,edge2a): # equivalent
             edge_new=np.vstack([[edge1b],[edge2b]])
             #print(out.shape)
-            if point_on_segment(edge1a,edge_new):
+            if num.point_on_segment(edge1a,edge_new):
                 counter+=1
                 break
             else:
@@ -849,23 +849,25 @@ def coplanar_check_two_triangles(tri_1: qnv.Qnvec, tri_2: qnv.Qnvec) -> bool:
     vtx=remove_doubling_in_perp_space(vtx)
     
     #if coplanar_check(vtx): # in ico2.math1
-    if coplanar_check_numeric_tau(vtx): # in ico2.numericalc
+    if num.coplanar_check_numeric_tau(vtx): # in ico2.numericalc
         return True # coplanar
     else:
         return False
 
 
 # MICS
-def middle_position(pos1: qnv.Qnvec,pos2 :qnv.Qnvec):
-    N=pos1.vt[0].N
-    for i1 in range(6):
-        v=pos1[i1]+pos2[i1]
-        #v=mul(v,np.array([1,0,2]))
-        v=v*qnn.Qnnum([1,0,2].N) #???
-        if i1!=0:
-            out=np.vstack([tmp2,v])
-        else:
-            out=v.reshape(1,3)
+def middle_position(pos1: qnv.Qnvec,pos2 :qnv.Qnvec) -> qnv.Qnvec:
+    out=pos1+pos2
+    out=out/2
+#    N=pos1.vt[0].N
+#    for i1 in range(6):
+#        v=pos1[i1]+pos2[i1]
+#        #v=mul(v,np.array([1,0,2]))
+#        v=v*qnn.Qnnum([1,0,2].N) # middle points
+#        if i1!=0:
+#            out=np.vstack([out,v])
+#        else:
+#            out=v.reshape(1,3)
     return out
 
     

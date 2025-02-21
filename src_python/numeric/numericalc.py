@@ -17,23 +17,23 @@ import prjop.prjop as prj
 
 #EPS=1e-6 # tolerance
 
-#def coplanar_check_numeric_tau(pts: qnv.Qnvec, num_iteration: int=5) -> bool:
-#    """check the points (pts) are in coplanar or not
-#    
-#    Parameters
-#    ----------
-#    pns: array
-#        6d coordinates of the points, xyz, in TAU-style
-#    num_iteration: int
-#        number of iterations.
-#    
-#    Returns
-#    -------
-#    bool
-#    
-#    """
-#    p=get_internal_component_sets_numerical(pts)
-#    return coplanar_check_numeric(p,num_iteration)
+def coplanar_check_numeric_tau(pts: qnv.Qnvec, num_iteration: int=5) -> bool:
+    """check the points (pts) are in coplanar or not
+    
+    Parameters
+    ----------
+    pns: array
+        6d coordinates of the points, xyz, in TAU-style
+    num_iteration: int
+        number of iterations.
+    
+    Returns
+    -------
+    bool
+    
+    """
+    p=get_internal_component_sets_numerical(pts)
+    return coplanar_check_numeric(p,num_iteration)
 
 #def coplanar_check_numeric(pns: NDArray[np.float64],num_iteration: int=5) -> bool:
 #    """check the points (pns) are in coplanar or not
@@ -98,12 +98,12 @@ def point_on_segment(point: qnv.Qnvec, line_segment: qnv.Qnvec) -> bool:
     
     vecPA=xyx0-xyx1
     vecBA=xyx2-xyx1
-    lPA=dot(vecPA,vecPA)  # squared norm for qnnumber np.linalg.norm(vecPA)
-    lBA=dot(vecBA,vecBA)  # squared norm for qnnumber np.linalg.norm(vecBA)
+    lPA=qnv.dot(vecPA,vecPA)  # squared norm for qnnumber np.linalg.norm(vecPA)
+    lBA=qnv.dot(vecBA,vecBA)  # squared norm for qnnumber np.linalg.norm(vecBA)
     qn1=qnn.Qnnum(1,0,1)
     qn0=qnn.Qnnum(0,0,1)
     #if lBA>0.0 and abs(np.dot(vecPA,vecBA)-lPA*lBA)<EPS:
-    if lBA>qnn.zero and abs(dot(vecPA,vecBA)-lPA*lBA)==qn0:
+    if lBA>qnn.zero and abs(qnv.dot(vecPA,vecBA)-lPA*lBA)==qn0:
         s=lPA/lBA
         if s>=qn0 and s<=qn1:#if s>=0.0 and s<=1.0:
             return True
@@ -365,7 +365,7 @@ def check_intersection_two_segment_numerical_6d_tau(segment_1: qnv.Qnvec, segmen
     #ln2=get_internal_component_sets_numerical(segment_2)
     return check_intersection_two_segment_numerical(segment_1,segment_2)
 
-def check_intersection_two_segment_numerical(ln1: qnv.Qnvec, ln2: qnv.Qnvec) -> bool:
+def check_intersection_two_segment_numerical(ln1:qnv.Qnvec, ln2:qnv.Qnvec) -> bool:
     """check intersection between two line segments.
     
     Parameters
@@ -431,9 +431,9 @@ def check_intersection_two_segment_numerical(ln1: qnv.Qnvec, ln2: qnv.Qnvec) -> 
     vecCD=L2b-L2a
     
     # bunshi
-    t1=dot(vecAC,vecCD)*dot(vecCD,vecAB)-dot(vecCD,vecCD)*dot(vecAC,vecAB)
+    t1=qnv.dot(vecAC,vecCD)*qnv.dot(vecCD,vecAB)-qnv.dot(vecCD,vecCD)*qnv.dot(vecAC,vecAB)
     # bunbo
-    t2=dot(vecAB,vecCD)*dot(vecCD,vecAB)-dot(vecAB,vecAB)*dot(vecCD,vecCD)
+    t2=qnv.dot(vecAB,vecCD)*qnv.dot(vecCD,vecAB)-qnv.dot(vecAB,vecAB)*qnv.dot(vecCD,vecCD)
     N=La1[0].N
     qn0=qnn.Qnnum([0,0,1],N)
     qn1=qnn.Qnnum([1,0,1],N)
@@ -441,7 +441,7 @@ def check_intersection_two_segment_numerical(ln1: qnv.Qnvec, ln2: qnv.Qnvec) -> 
         return False
     else:
         s=t1/t2
-        t=(-dot(vecAC,vecCD)+s*dot(vecAB,vecCD))/dot(vecCD,vecCD)
+        t=(-qnv.dot(vecAC,vecCD)+s*qnv.dot(vecAB,vecCD))/qnv.dot(vecCD,vecCD)
         if s>=qn0 and s<=qn1 and t>=qn0 and t<=qn1:
             dd=qn0  #0
             for i in range(3):
@@ -479,8 +479,8 @@ def triangle_area(a: qnv.Qnvec) -> qnn.Qnnum:  #-> float:
     v1=a[1]-a[0]
     v2=a[2]-a[0]
     
-    v3=cross(v2,v1) # cross product of 3D qnvec
-    vol=dot(v3,v3) # squared norm
+    v3=qnv.cros(v2,v1) # cross product of 3D qnvec
+    vol=qnv.dot(v3,v3) # squared norm
     qn2=qnn.Qnnum([2,0,1])  # 2 in qnnum
     return abs(vol)/qn2
     #return np.sqrt(np.sum(np.abs(v3**2)))/2.0
@@ -500,7 +500,7 @@ def triangle_area_numerical(a: qnv.Qnvec) -> qnv.Qnvec:
 
     v1=a[1]-a[0]
     v2=a[2]-a[0]
-    v3=Cross(v2,v1) # cross product (qnnum area)
+    v3=qnv.cros(v2,v1) # cross product (qnnum area)
     qn2=qnn.Qnnum([2,0,1]) # 2
     return abs(v3)/qn2
 
@@ -951,9 +951,9 @@ def strc(objs,positions,pmatrx,n1max,n5max,eshift,oshift,verbose):
 # Unnecessary functions？？？
 ################
 
-def matrix_dot(m1,m2):
-    return np.dot(m1,m2)
+#def matrix_dot(m1,m2):
+#    return np.dot(m1,m2)
 
-def inner_product_numerical(v1,v2):
-    return np.dot(v1,v2)
+#def inner_product_numerical(v1,v2):
+#    return np.dot(v1,v2)
 

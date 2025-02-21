@@ -4,6 +4,7 @@ import qnnum.qnnum as qnn   # for qnnumber
 import qnvec.qnvec as qnv
 import qnmath.qnmath as qmt # for dot product
 import qnndarray.qnndarray as qna
+import cython
 
 from typing import Self
 
@@ -15,7 +16,7 @@ class Point(qna.QnNdarray):
         shape=(n)
         return super().__new__(cls,shape,N)
     
-    def __init__(self, b:np.int64, N:np.int64): # x and y coordinates of a point
+    def __init__(self, n:np.int64, N:np.int64): # x and y coordinates of a point
         qn0=qnn.Qnnum(n,N)
         self[0] = qn0
         self[1] = qn0
@@ -33,11 +34,11 @@ class Point(qna.QnNdarray):
     def pointToStr(self):
         return str(self)
 
-    def anyp(n:np.int64, N:np.int64,vec:qnn.Qnnum)->Qnvec:
-        qnv=Qnvec(n,N)
+    def anyp(n:np.int64, N:np.int64,vec:qnn.Qnnum)->qnv.Qnvec:
+        qnvt=qnv.Qnvec(n,N)
         for i in range(n):
-            qnv[i]=vec[i]
-            return qnv
+            qnvt[i]=vec[i]
+            return qnvt
 
 #Basic Edge class
 class Edge(qna.QnNdarray):
@@ -63,11 +64,11 @@ class Edge(qna.QnNdarray):
     #Calculate squared length of an edge
     def length(self):
         return math.sqrt( math.pow(self[1][0] - self[0][0],2) + \
-            math.pow(self[1][1] - self[0][1],2))
+            qmt.pow(self[1][1] - self[0][1],2))
         
     def length2(self):
-        return ( math.pow(self[1][0] - self[0][0],2) + \
-            math.pow(self[1][1] - self[0][1],2))
+        return ( qmt.pow(self[1][0] - self[0][0],2) + \
+            qmt.pow(self[1][1] - self[0][1],2))
     
     #Determine if two edges intersect
     def edgeIntersection(self, other_edge:Self):
@@ -322,7 +323,7 @@ def circumcircle(tri:Triangle):
                  2*(tri[0][0]-tri[2][0])-((tri[0][0]-tri[2][0])*(tri[0][0]+tri[2][0])+(tri[0][1]-tri[2][1]) * \
                 (tri[0][1]+tri[2][1]))/ 2*(tri[1][0]-tri[2][0]))/D
         
-        #radius = math.sqrt ((tri[2][0] - center_x)**2 + (tri[2][1] - center_y)**2 )
+        #radius = qmt.sqrt ((tri[2][0] - center_x)**2 + (tri[2][1] - center_y)**2 )
         radius2 = ((tri[2][0] - center[0])**2 + (tri[2][1] - center[1])**2 )
         
         #return [[center_x, center_y], radius]
@@ -357,8 +358,8 @@ def pointInCircle(point:Point, circle:Point):
     #This is pretty simple; just find the distance between the point and the center.
     # If it's less than or equal to the radius, the point is inside the circle
     
-    #d = math.sqrt( math.pow(point[0] - circle[0][0], 2) + math.pow(point[1] - circle[0][1],2) )
-    d2 = ( math.pow(point[0] - circle[0][0], 2) + math.pow(point[1] - circle[0][1],2) )
+    #d = qmt.sqrt( qmt.pow(point[0] - circle[0][0], 2) + qmt.pow(point[1] - circle[0][1],2) )
+    d2 = ( qmt.pow(point[0] - circle[0][0], 2) + qmt.pow(point[1] - circle[0][1],2) )
     #if d < circle[1]:
     if d2 < circle[1]: # circle[0] circle[1] should be a point and squared radius
         return True

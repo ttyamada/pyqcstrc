@@ -37,7 +37,7 @@ class Qnvec(qna.QnNdarray):
         elif isinstance(b, qnn.Qnnum):
             return mul_vector_qn(a,b)
         
-    def __truediv__(a:Self,b:Self): # b should be int
+    def __truediv__(a:Self,b:np.int64): # b should be int
         if isinstance(b, int):
             return div_vector_i(a,b)
         
