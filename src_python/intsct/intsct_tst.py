@@ -4,6 +4,8 @@ import time # in object_subtraction_dev1, tetrahedron_not_obj
 import itertools
 import cython
 import intsct as isct
+import qnnum.qnnum as qnn
+import qnvec.qnvec as qnv
 import numeric.numericalc as num
 
 #if __name__ == '__main__':
@@ -45,33 +47,30 @@ def generate_random_vectors(n,ndim=6):
 def generate_random_triangle():
     return generate_random_vectors(3)
 
-segment_1=np.array(\
-[[[1, 0, 1],\
-  [1, 0, 1],\
-  [0, 0, 1],\
-  [0, 0, 1],\
-  [0, 0, 1],\
-  [0, 0, 1]],\
- [[3, 0, 2],\
-  [1, 0, 2],\
-  [0, 0, 1],\
-  [0, 0, 1],\
-  [0, 0, 1],\
-  [0, 0, 1]]]) # edge1
+N=2 # for octagonal
+M0=qnn.Qnnum([0,0,1],None)
+M1=qnn.Qnnum([1,0,1],N)
+M2=qnn.Qnnum([3,0,2],N)
+M3=qnn.Qnnum([1,0,2],N)
+M4=qnn.Qnnum([-1,0,2],N)
+
+segment_1=np.array([\
+           [M1,M1,M0,M0,M0,M0],\
+           [M2,M3,M0,M0,M0,M0]
+        ],dtype=qnn.Qnnum)
+segment_2=np.array([\
+           [M0,M0,M0,M1,M0,M0],\
+           [M0,M0,M4,M3,M0,M0]
+        ],dtype=qnn.Qnnum)
+
+
+#segment_1=np.array(\
+#[[[1, 0, 1],[1, 0, 1],[0, 0, 1],[0, 0, 1],[0, 0, 1],[0, 0, 1]],\
+#[[3, 0, 2],[1, 0, 2],[0, 0, 1],[0, 0, 1],[0, 0, 1],[0, 0, 1]]]) # edge1
   
-segment_2=np.array(\
-[[[ 0,  0,  1],\
-  [ 0,  0,  1],\
-  [ 0,  0,  1],\
-  [ 1,  0,  1],\
-  [ 0,  0,  1],\
-  [ 0,  0,  1]],\
- [[ 0,  0,  1],\
-  [ 0,  0,  1],\
-  [-1,  0,  2],\
-  [ 1,  0,  2],\
-  [ 0,  0,  1],\
-  [ 0,  0,  1]]]) # edge2
+#segment_2=np.array(\
+#[[[ 0,  0,  1],[ 0,  0,  1],[ 0,  0,  1],[ 1,  0,  1],[ 0,  0,  1],[ 0,  0,  1]],\
+#[[ 0,  0,  1],[ 0,  0,  1],[-1,  0,  2],[ 1,  0,  2],[ 0,  0,  1],[ 0,  0,  1]]]) # edge2
 
 a=num.check_intersection_two_segment_numerical_6d_tau(segment_1,segment_2)
 print(a)
@@ -79,32 +78,24 @@ a=num.intersection_two_segment(segment_1, segment_2)
 print(a)
 
 print('TEST1')
-segment_1=np.array(\
-[[[1, 0, 1],\
-  [1, 0, 1],\
-  [0, 0, 1],\
-  [0, 0, 1],\
-  [0, 0, 1],\
-  [0, 0, 1]],\
- [[1, 0, 2],\
-  [3, 0, 2],\
-  [0, 0, 1],\
-  [0, 0, 1],\
-  [0, 0, 1],\
-  [0, 0, 1]]])
-segment_2=np.array(\
-[[[ 0,  0,  1],\
-  [ 1,  0,  1],\
-  [ 0,  0,  1],\
-  [ 0,  0,  1],\
-  [ 0,  0,  1],\
-  [ 0,  0,  1]],\
- [[ 0,  0,  1],\
-  [ 1,  0,  2],\
-  [-1,  0,  2],\
-  [ 0,  0,  1],\
-  [ 0,  0,  1],\
-  [ 0,  0,  1]]])
+
+segment_1=np.array([\
+           [M1,M1,M0,M0,M0,M0],\
+           [M3,M2,M0,M0,M0,M0]
+        ],dtype=qnn.Qnnum)
+segment_2=np.array([\
+           [M0,M1,M0,M0,M0,M0],\
+           [M0,M3,M4,M0,M0,M0]
+        ],dtype=qnn.Qnnum)
+
+#segment_1=np.array(\
+#[[[1, 0, 1],[1, 0, 1],[0, 0, 1],[0, 0, 1],[0, 0, 1],[0, 0, 1]],\
+#[[1, 0, 2],[3, 0, 2],[0, 0, 1],[0, 0, 1],[0, 0, 1],[0, 0, 1]]])
+#segment_2=np.array(\
+#[[[ 0,  0,  1],[ 1,  0,  1],[ 0,  0,  1],[ 0,  0,  1],[ 0,  0,  1],[ 0,  0,  1]],\
+#[[ 0,  0,  1],[ 1,  0,  2],[-1,  0,  2],[ 0,  0,  1],[ 0,  0,  1],[ 0,  0,  1]]])
+
+
 a=num.check_intersection_two_segment_numerical_6d_tau(segment_1,segment_2)
 print(a)
 

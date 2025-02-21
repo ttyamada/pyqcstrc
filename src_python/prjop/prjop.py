@@ -22,11 +22,11 @@ class Qnprj_Octa(qnm.Qnmat):
         return super().__new__(cls,n,N)
  
     def __init__(self):
-        M0=qnn.Qnnum(np.array([ 0, 0, 1]),N) #  0
-        M1=qnn.Qnnum(np.array([ 1, 0, 1]),N) #  1
-        M2=qnn.Qnnum(np.array([-1, 0, 1]),N) # -1
-        M3=qnn.Qnnum(np.array([ 0, 1, 2]),N) #  sqrt(2)/2
-        M4=qnn.Qnnum(np.array([ 0,-1, 2]),N) # -sqrt(2)/2
+        M0=qnn.Qnnum([ 0, 0, 1],N) #  0
+        M1=qnn.Qnnum([ 1, 0, 1],N) #  1
+        M2=qnn.Qnnum([-1, 0, 1],N) # -1
+        M3=qnn.Qnnum([ 0, 1, 2],N) #  sqrt(2)/2
+        M4=qnn.Qnnum([ 0,-1, 2],N) # -sqrt(2)/2
         #self=qnm.Qnmat(n,N)
         #mt=[\
         prj0=np.array([\
@@ -105,13 +105,13 @@ class Qnprj_Dode(qnm.Qnmat):
         return super().__new__(cls,n,N)
 
     def __init__(self):
-        M0=qnn.Qnnum(np.array([ 0, 0, 1]),N) #0
-        M1=qnn.Qnnum(np.array([ 1, 0, 1]),N) # 1
-        M2=qnn.Qnnum(np.array([-1, 0, 1]),N) #-1
-        M3=qnn.Qnnum(np.array([ 1, 0, 2]),N) # 1/2
-        M4=qnn.Qnnum(np.array([-1, 0, 2]),N) # 1/2
-        M5=qnn.Qnnum(np.array([ 0, 1, 2]),N) #  sqrt(3)/2
-        M6=qnn.Qnnum(np.array([ 0,-1, 2]),N) # -sqrt(3)/2
+        M0=qnn.Qnnum([ 0, 0, 1],N) #0
+        M1=qnn.Qnnum([ 1, 0, 1],N) # 1
+        M2=qnn.Qnnum([-1, 0, 1],N) #-1
+        M3=qnn.Qnnum([ 1, 0, 2],N) # 1/2
+        M4=qnn.Qnnum([-1, 0, 2],N) # 1/2
+        M5=qnn.Qnnum([ 0, 1, 2],N) #  sqrt(3)/2
+        M6=qnn.Qnnum([ 0,-1, 2],N) # -sqrt(3)/2
 
         #mt=[\
         prj0=np.array([\

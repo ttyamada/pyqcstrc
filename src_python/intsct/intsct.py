@@ -6,6 +6,7 @@ import qnnum.qnnum as qnn
 import qnvec.qnvec as qnv
 import qnmat.qnmat as qnm
 import numeric.numericalc as num
+import qnndarray.qnndarray as qna
 
 def ball_radius_obj(obj: qnv.Qnvec, centroid: qnv.Qnvec) -> qnn.Qnnum: #float:
     """estimate maximum distance between verices of given OBJ and its centroid.
@@ -35,7 +36,7 @@ def ball_radius_obj(obj: qnv.Qnvec, centroid: qnv.Qnvec) -> qnn.Qnnum: #float:
             pass
     return dd
 
-def ball_radius(triangle: qnv.Qnvec, centroid: qnv.Qnvec) -> qnn.Qnnum: # float:
+def ball_radius(triangle: qna.QnNdarray, centroid: qnv.Qnvec) -> qnn.Qnnum: # float:
     #  this transforms a tetrahedron to a boll which covers the triangle
     #  the centre of the boll is the centroid of the triangle.
     return ball_radius_obj(triangle,centroid)
@@ -45,7 +46,7 @@ def distance_in_perp_space(vt1: qnv.Qnvec, vt2: qnv.Qnvec) -> qnn.Qnnum:  #float
     a=projection3(a)
     return length_numerical(a)
 
-def rough_check_intersection_triangle_obj(triangle: qnv.Qnvec,\
+def rough_check_intersection_triangle_obj(triangle: qna.QnNdarray,\
          cententer: qnv.Qnvec, distance: qnn.Qnnum) -> bool:
     cen1=centroid(triangle)
     dd1=ball_radius(triangle,cen1)
@@ -55,7 +56,7 @@ def rough_check_intersection_triangle_obj(triangle: qnv.Qnvec,\
     else:
         return False
 
-def check_intersection_two_triangles(triangle_1: qnv.Qnvec, triangle_2: qnv.Qnvec) -> int:
+def check_intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdarray) -> int:
     # checking whether triangle_1 is fully inside triangle_2 or not
     counter2=0
     for vtx in triangle_1:
@@ -150,7 +151,7 @@ def check_intersection_two_triangles(triangle_1: qnv.Qnvec, triangle_2: qnv.Qnve
         else:
             return 0 # no intersection
 
-def intersection_two_segment(segment_1: qnv.Qnvec, segment_2: qnv.Qnvec) -> qnv.Qnvec:
+def intersection_two_segment(segment_1: qna.QnNdarray, segment_2: qna.QnNdarray) -> qna.QnNdarray:
     """check intersection between two line segments.
     
     Parameters
@@ -210,7 +211,7 @@ def intersection_two_segment(segment_1: qnv.Qnvec, segment_2: qnv.Qnvec) -> qnv.
     else: # no intersection
         return 
 
-def intersection_segment_surface(segment: qnv.Qnvec, surface: qnv.Qnvec) -> qnv.Qnvec:
+def intersection_segment_surface(segment: qna.QnNdarray, surface: qna.QnNdarray) -> qna.QnNdarray:
     """check intersection between a line segment and a triangle.
     
     Möller–Trumbore intersection algorithm
@@ -278,7 +279,7 @@ def intersection_segment_surface(segment: qnv.Qnvec, surface: qnv.Qnvec) -> qnv.
     else: # no intersection
         return 
     
-def intersection_two_triangles(triangle_1: qnv.Qnvec, triangle_2: qnv.Qnvec) -> qnv.Qnvec:
+def intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdarray) -> qna.QnNdarray:
     #
     # -----------------
     # triangle_1

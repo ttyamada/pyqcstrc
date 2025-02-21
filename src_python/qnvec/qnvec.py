@@ -54,12 +54,6 @@ def zerov(n:np.int64,N:np.int64)->Qnvec: # qnnumber zero vector
     qnv=Qnvec(n,N)
     return qnv
 
-def anyv(n:np.int64,N:np.int64,vec:qnn.Qnnum)->Qnvec:
-    qnv=Qnvec(n,N)
-    for i in range(n):
-        qnv[i]=vec[i]
-    return qnv
-
 def copy(v1: Qnvec) -> Qnvec:
     return np.copy(v1)
     
@@ -165,8 +159,8 @@ def cros(v1:Qnvec, v2:Qnvec) -> Qnvec:
     
 # for octagonal and dodecagonal
 def dot(v1:Qnvec, v2:Qnvec) -> qnn.Qnnum:
-    N=v1.N
     n=v1.shape[0]
+    N=v1[0].N
     v=qnn.Qnnum([0,0,1],N) # qnnum zero
     for i in range(n):
         v=v+v1[i]*v2[i]

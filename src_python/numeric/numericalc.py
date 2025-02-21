@@ -10,6 +10,7 @@ import qnnum.qnnum as qnn
 import qnvec.qnvec as qnv
 import qnmat.qnmat as qnm
 import prjop.prjop as prj
+import qnndarray.qnndarray as qna
 
 #TAU=np.sqrt(3)/2.0
 #SQRT3=np.sqrt(3)
@@ -415,20 +416,20 @@ def check_intersection_two_segment_numerical(ln1:qnv.Qnvec, ln2:qnv.Qnvec) -> bo
     """
     
     # line1-A
-    L1a=ln1[0]
+    L1a=ln1[0] # point 1
     
     # line1-B
-    L1b=ln1[1]
+    L1b=ln1[1] # point 2
     
     # line2-A
-    L2a=ln2[0]
+    L2a=ln2[0] # point 1
     
     # line2-B
-    L2b=ln2[1]
+    L2b=ln2[1] # point 2
     
-    vecAB=L1b-L1a
-    vecAC=L2a-L1a
-    vecCD=L2b-L2a
+    vecAB=L1b-L1a # edge vector 1
+    vecAC=L2a-L1a # edge vector 2
+    vecCD=L2b-L2a # edge vector 3
     
     # bunshi
     t1=qnv.dot(vecAC,vecCD)*qnv.dot(vecCD,vecAB)-qnv.dot(vecCD,vecCD)*qnv.dot(vecAC,vecAB)

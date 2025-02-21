@@ -1,13 +1,21 @@
 import numpy as np
 import qnnum.qnnum as qnn
 
+# super class for edges,triangles and tetrahedra
+# which are composed of 2 3 and 4 points
+# they are represented by a[2][n] a[3][n] and a[4][n]
+# in nD space
+# as a special case, a point is represented by a[n]
+
 class QnNdarray(np.ndarray):
+    
     def __new__(cls, shape, N:np.int64):
         return super().__new__(cls,shape,dtype=qnn.Qnnum)
 
     def __init__(self,shape, N:np.int64): # only for ndim=2
         qn0=qnn.Qnnum([0,0,1],N)
         qnn.printqnn("qn0",qn0)
+        global N
         #print("self.shape",self.shape)  # for test
         #print("self.ndim",self.ndim)    # for test
         #print("self.dtype",self.dtype)  # for test
@@ -18,6 +26,14 @@ class QnNdarray(np.ndarray):
             idx = it.multi_index
             #print('idx=', idx ,', self[idx]=', self[idx], ', it[0]=', it[0]) # for test
             it.iternext()   #it : next index
+            
+    def __add__(self,b):
+        # shap should be (n)
+        return add_vectors(self,b)
+    
+    def __sub__(self,b):
+        # shap should be (n)
+        return sub_vectors(self,b)
 
         #printqndm("Qnmat self",self) # for test
         
@@ -26,6 +42,13 @@ def copy(qna1: QnNdarray):
 
 def zeros(shape):
     np.zeros(shape,dtype=qnn.Qnnum)
+    
+def anyv(shape, N:np.int64, vec:qnn.Qnnum)->QnNdarray:
+    qnva=QnNdarray(shape,n,N)
+    for i in range(shape[0]):
+        for j in range(n):
+            qnva[i][j]=vec[i][j]
+    return qnva
 
 # only ndim=1,2,3
 def printqndm(str:str, qnm:QnNdarray):
@@ -99,15 +122,15 @@ def sub_vectors(vt1: QnNdarray, vt2:QnNdarray) -> QnNdarray:
         print('incorrect shape')
         return
     
-def shift_vectors(vs:Qnvec, v:Qnvec) -> Qnvec:
+def shift_vectors(vs:QnNdarray, v:QnNdarray) -> QnNdarray:
     if vs.ndim==1:  #3:
-        a=np.zeros(vs.shape,dtype=qnn.Qnvec)
+        a=np.zeros(vs.shape,dtype=qnn.Qnnum)
         la=vs.shape
         for i,v1 in enumerate(vs):  #range(la[0]):
             a[i]=add_vectors(v1,v)
         return a
     elif vs.ndim==2:  #4:
-        a=np.zeros(vs.shape,dtype=qnn.Qnvec)
+        a=np.zeros(vs.shape,dtype=qnn.Qnnum)
         for i1,v1 in enumerate(vs):
             for i2,v2 in enumerate(v1):
                 a[i1][i2]=add_vectors(v2,v)
