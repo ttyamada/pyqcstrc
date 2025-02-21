@@ -18,13 +18,14 @@ import utils.utils as utils
 import qnnum.qnnum as qnn
 import qnvec.qnvec as qnv
 import qnmat.qnmat as qnm
+import math1.math1 as mth
 import numeric.numericalc as num
 import utils.utils as utils
-import vesta.vesta as vst
 import qnsym.qnsym as qns
 import intsct.intsct as isct
 import prjop.prjop as prj
 import sitesym.sitesym as ssm
+from vesta import (write_vesta,write_xyz)
     
 #except ImportError:
 #    print('import error\n')
@@ -429,7 +430,7 @@ def write_podatm(obj, position, vlist=[0], path='.', basename='tmp', shift=[0., 
                 #(b[3][0]+b[3][1]*TAU)/(b[3][2])-(a[3][0]+a[3][1]*TAU)/(a[3][2]),\
                 #(b[4][0]+b[4][1]*TAU)/(b[4][2])-(a[4][0]+a[4][1]*TAU)/(a[4][2]),\
                 #(b[5][0]+b[5][1]*TAU)/(b[5][2])-(a[5][0]+a[5][1]*TAU)/(a[5][2])))
-                b=math1.sub_vectors(b,a)
+                b=mth.sub_vectors(b,a)
                 b=num.numerical_vector(b)
                 """ 5次元ベクトルから7次元ベクトルへの変換　一意に決まらない!?
                 

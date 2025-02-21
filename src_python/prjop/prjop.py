@@ -245,6 +245,7 @@ def projection_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
     #vsn: array
     #    set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
     num=len(vns)
+    m=qnv.zeros((1),dtype=qnv.Qnvec)
     for i in range(num):
         m[i]=projection_numerical(vns[i])
     return m
@@ -261,6 +262,7 @@ def check_ltv(n,N):
     # check lattice vector external and internal space components
     ndv=np.ndarray(3**3,dtype=qnn.Qnnum)
     n=5
+    V0=qnn.Qnnum(np.array([ 0, 0, 1]),N)
     for i1 in range(-1,2):
         for i2 in range(-1,2):
             for i3 in range(-1,2):
@@ -270,10 +272,10 @@ def check_ltv(n,N):
                     V3=qnn.Qnnum(np.array([ i3, 0, 1]),N)
                     V4=qnn.Qnnum(np.array([ i4, 0, 1]),N)
                     #V0=qnn.Qnnum(np.array([ 0, 0, 1]),N)
-                    VT=np.array([v1,v2,v3,V4,V0])
-                    ndv[n]=qnv.Qnvec(VT,n,N) # lattice vector
-                    qnn.printqnv("ndv",ndv) #print qnvector expression
-                    qnv=vt@mto  #@ndv #external enternal components
+                    #VT=np.array([v1,v2,v3,V4,V0])
+                    vt=qnv.anyv(n,N,[V1,V2,V3,V4,V0])
+                    qnn.printqnv("ndv",vt) #print qnvector expression
+                    qnv=vt@prj0  #@ndv #external enternal components
                     qnn.printqnv("qnv",qnv) #print qnvector expression
                     n+=1
                     

@@ -30,6 +30,9 @@ class Qnnum:
             return mul(a,b)
         elif isinstance(b, int):
             return mul_i(a,b)
+        
+    def __pow__(a:Self, b:int ):
+        return pow(a,b)
     
     def __truediv__(a:Self, b:Self):
         if isinstance(b, Qnnum):
@@ -158,6 +161,14 @@ def div_i(a:Qnnum, b:Qnnum): # b should be int
     c=Qnnum(np.array([c1,c2,c3]),a.N)
     return c
 
+def pow(a:Qnnum, b:np.int64):
+    n=a.n
+    N=a.N
+    c=qnn.one(n,N)
+    for i in range(b):
+        c=mul(c,a)
+    return c
+        
 def eq(a:Qnnum, b:Qnnum):
     c=a-b
     if(c.n[0]==0 and c.n[1]==0):

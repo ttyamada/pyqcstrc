@@ -1,10 +1,10 @@
-from pyDelaunay import Graph, Point, Edge, Triangle
+from qnnpyDelaunay import Graph, Point, Edge, Triangle
 import random
 import sys
 import pygame
 import qnnum.qnnum as qnn   # for qnnumber
 import qnmath.qnmath as qmt # for dot product
-import qnnDelaunay.qnnDelaynay as qnnD
+#import qnnpyDelaunay.qnnpyDelaynay as qnnD
 
 
 graph = Graph()

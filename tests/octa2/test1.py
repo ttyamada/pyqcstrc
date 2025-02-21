@@ -4,7 +4,7 @@
 # PyQCstrc - Python library for Quasi-Crystal structure
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 
-#import time
+import time
 import os
 import sys
 import numpy as np
@@ -36,6 +36,8 @@ od_asym=od.read_xyz(path=opath,basename='od_1_asym',select='triangle')
 #============================================
 # OBJ_1 at (0,0,0,0)
 #============================================
+time1=time.time()
+print("start time",time1)
 # make symmetric OD
 pos0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]]) # 0,0,0,0,0
 od_sym_1=od.symmetric(obj=od_asym, centre=pos0)
@@ -48,6 +50,8 @@ od.write(obj=od_sym_1_1,path=opath,basename='od_1_sym_outline',format='xyz',sele
 
 area=od.volume(od_sym_1)
 print('area=', area)
+time2=time.time()
+print("elapsed time for OBJ1",time2-time1,"sec")
 
 
 #============================================
@@ -62,7 +66,8 @@ od.write(obj=od_sym_2, path=opath, basename='od_2_sym', format='xyz')
 od_sym_2_1=od.outline(od_sym_2)
 od.write(obj=od_sym_2_1,path=opath,basename='od_2_sym_outline',format='vesta',color='b',select='egdes')
 od.write(obj=od_sym_2_1,path=opath,basename='od_2_sym_outline',format='xyz',select='egdes')
-
+time3=time.time()
+print("elapsed time for OBJ2",time3-time2,"sec")
 
 #============================================
 # Intersection of two ODs, OBJ_1 and OBJ_2
@@ -70,19 +75,22 @@ od.write(obj=od_sym_2_1,path=opath,basename='od_2_sym_outline',format='xyz',sele
 od_common=ods.intersection(od_sym_1,od_sym_2,verbose=0)
 od.write(obj=od_common,path=opath,basename='od_common',format='vesta',color='g',select='normal')
 od.write(obj=od_common,path=opath,basename='od_common',format='xyz')
+time4=time.time()
+print("elapsed time for intersection of od_sym1 od_sym2",time4-time3)
 
 # Simplification of common part "od_common"
 od_common_1_smpl=od.simplification(od_common)
 od.write(obj=od_common_1_smpl,path=opath,basename='od_common_simpl',format='vesta',color='g',select='normal')
 od.write(obj=od_common_1_smpl,path=opath,basename='od_common_simpl',format='xyz')
+time5=time.time()
+print("elapsed time for simplification of common_od",time5-time4,"sec")
 
 # Outline of common part
 od_common_1_smpl_outline=od.outline(od_common_1_smpl)
 od.write(obj=od_common_1_smpl_outline,path=opath,basename='od_common_simpl_outline',format='vesta',color='g',select='egdes')
 od.write(obj=od_common_1_smpl_outline,path=opath,basename='od_common_simpl_outline',format='xyz',select='egdes')
-
-
-
+time6=time.time()
+print("elapsed time for outline of common_od",time6-time5,"sec")
 
 #============================================
 # Intersection of two ODs, OBJ_1 and OBJ_2 by using 'convex' option
@@ -90,13 +98,19 @@ od.write(obj=od_common_1_smpl_outline,path=opath,basename='od_common_simpl_outli
 od_common_2=ods.intersection_convex(od_sym_1,od_sym_2,verbose=0)
 od.write(obj=od_common_2,path=opath,basename='od_common_2',format='vesta',color='g',select='normal')
 od.write(obj=od_common_2,path=opath,basename='od_common_2',format='xyz')
+time7=time.time()
+print("elapsed time for intersection with convex option",time7-time6,"sec")
 
 # Simplification of common part "od_common_2"
 od_common_2_smpl=od.simplification(od_common_2)
 od.write(obj=od_common_2_smpl,path=opath,basename='od_common_2_simpl',format='vesta',color='g',select='normal')
 od.write(obj=od_common_2_smpl,path=opath,basename='od_common_2_simpl',format='xyz')
+time8=time.time()
+print("elapsed time for simplification of common part",time8-time7,"sec")
 
 # Outline of common part
 od_common_2=od.outline(od_common_2_smpl)
 od.write(obj=od_common_2,path=opath,basename='od_common_2_outline',format='vesta',color='g',select='egdes')
 od.write(obj=od_common_2,path=opath,basename='od_common_2_outline',format='xyz',select='egdes')
+time9=time.time()
+print("elapsed time for outline of common part",time9-time8,"sec")

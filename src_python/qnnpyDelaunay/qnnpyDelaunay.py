@@ -1,15 +1,24 @@
 import sys, os, math
 import numpy as np
 import qnnum.qnnum as qnn   # for qnnumber
+import qnvec.qnvec as qnv
 import qnmath.qnmath as qmt # for dot product
+import qnndarray.qnndarray as qna
+
 from typing import Self
 
 
 #Basic Point class
-class Point():
-    def __init__(self, x:qnn.Qnnum, y:qnn.Qnnum): # x and y coordinates of a point
-        self[0] = x
-        self[1] = y
+class Point(qna.QnNdarray):
+    def __new__(cls, n:np.int64, N:np.int64):
+        global shape
+        shape=(n)
+        return super().__new__(cls,shape,N)
+    
+    def __init__(self, b:np.int64, N:np.int64): # x and y coordinates of a point
+        qn0=qnn.Qnnum(n,N)
+        self[0] = qn0
+        self[1] = qn0
     
     #Position of the point
     def pos(self):
@@ -22,11 +31,17 @@ class Point():
     
     #Convert the point into a string (for debugging purposes)
     def pointToStr(self):
-        return str(self.pos())
+        return str(self)
+
+    def anyp(n:np.int64, N:np.int64,vec:qnn.Qnnum)->Qnvec:
+        qnv=Qnvec(n,N)
+        for i in range(n):
+            qnv[i]=vec[i]
+            return qnv
 
 #Basic Edge class
-class Edge():
-    def __init__(self, a:qnn.Qnnum, b:qnn.Qnnum): # two points
+class Edge(qna.QnNdarray):
+    def __init__(self, a:qnv.Qnvec, b:qnv.Qnvec): # two points
         if a is not b:
             self[0] = a
             self[1] = b
@@ -43,16 +58,16 @@ class Edge():
     
     #Converts an edge to a string (for debugging purposes)
     def edgeToStr(self):
-        return str([self[0].pos(), self[1].pos()])
+        return str([self[0], self[1]])
     
     #Calculate squared length of an edge
     def length(self):
-        return math.sqrt( math.pow(self[1].pos()[0] - self[0].pos()[0],2) + \
-            math.pow(self[1].pos()[1] - self[0].pos()[1],2))
+        return math.sqrt( math.pow(self[1][0] - self[0][0],2) + \
+            math.pow(self[1][1] - self[0][1],2))
         
     def length2(self):
-        return ( math.pow(self[1].pos()[0] - self[0].pos()[0],2) + \
-            math.pow(self[1].pos()[1] - self[0].pos()[1],2))
+        return ( math.pow(self[1][0] - self[0][0],2) + \
+            math.pow(self[1][1] - self[0][1],2))
     
     #Determine if two edges intersect
     def edgeIntersection(self, other_edge:Self):
@@ -61,14 +76,14 @@ class Edge():
             return False
         else:
             try:
-                x1 = self[0].pos()[0]
-                x2 = self[1].pos()[0]
-                x3 = other_edge[0].pos()[0]
-                x4 = other_edge[1].pos()[0]
-                y1 = self[0].pos()[1]
-                y2 = self[1].pos()[1]
-                y3 = other_edge[0].pos()[1]
-                y4 = other_edge[1].pos()[1]
+                x1 = self[0][0]
+                x2 = self[1][0]
+                x3 = other_edge[0][0]
+                x4 = other_edge[1][0]
+                y1 = self[0][1]
+                y2 = self[1][1]
+                y3 = other_edge[0][1]
+                y4 = other_edge[1][1]
                 t = (((x1 - x3)*(y3 - y4)) - ((y1 - y3)*(x3 - x4))) / (((x1 - x2)*(y3 - y4)) - ((y1 - y2)*(x3 - x4)))
                 u = (((x2 - x1)*(y1 - y3)) - ((y2 - y1)*(x1 - x3))) / (((x1 - x2)*(y3 - y4)) - ((y1 - y2)*(x3 - x4)))
                 
@@ -96,29 +111,29 @@ class Edge():
                 return False
 
 #Basic Triangle class
-class Triangle():
+class Triangle(qna.QnNdarray):
     
     #Cannot create a triangle if any two points are the same
-    def __init__(self, a:qnn.Qnnum, b:qnn,Qnnum, c:qnn.Qnnum):  # three points
+    def __init__(self, a:qnv.Qnvec, b:qnv,Qnvec, c:qnv.Qnvec):  # three points
         if a is not b and a is not c:
             self[0] = a
         if b is not a and b is not c:
             self[1] = b
         if c is not a and c is not b:
-            self._c = c
+            self[2] = c
     
     #Test if any two triangles are equal (defined as sharing all three points)
-    def isEqual(self:qnn.Qnnum, other_tri:qnn.Qnnum):
+    def isEqual(self, other_tri:Self):
         if (self[0] is other_tri[0] or self[0] is other_tri[1] or \
-        self[0] is other_tri._c) and (self[1] is other_tri[0] or \
-        self[1] is other_tri[1] or self[1] is other_tri._c) and \
-        (self._c is other_tri[0] or self._c is other_tri[1] or \
-        self._c is other_tri._c): return True
+        self[0] is other_tri[2]) and (self[1] is other_tri[0] or \
+        self[1] is other_tri[1] or self[1] is other_tri[2]) and \
+        (self[2] is other_tri[0] or self[2] is other_tri[1] or \
+        self[2] is other_tri[2]): return True
         else: return False
     
     #Prints the triangle in a neat format (for debugging purposes)
-    def printTriangle(self:qnn.Qnnum):
-        print("A: " + self[0].pointToStr() + " B: " + self[1].pointToStr() + " C: " + self._c.pointToStr())
+    def printTriangle(self):
+        print("A: " + self[0].pointToStr() + " B: " + self[1].pointToStr() + " C: " + self[2].pointToStr())
 
 #Graph class
 class Graph():
@@ -145,22 +160,22 @@ class Graph():
                 return False
         
         #If the point has an X value lower than any other point
-        if self._point_min_x > point.pos()[0] or self._point_min_x == 0:
+        if self._point_min_x > point[0] or self._point_min_x == 0:
             self._points.insert(0,point)
-            self._point_min_x = point.pos()[0]
+            self._point_min_x = point[0]
             return True
         
         #If the point has an X value higher than any other point
-        elif self._point_max_x < point.pos()[0]:
+        elif self._point_max_x < point[0]:
             self._points.append(point)
-            self._point_max_x = point.pos()[0]
+            self._point_max_x = point[0]
             return True
         
         #If the X value is somewhere in the middle
         else:
             same_x = []
             for x in self._points:
-                if x.pos()[0] == point.pos()[0]:
+                if x[0] == point[0]:
                     same_x.append(x)
             
             #If no point has the same X value as the new point,
@@ -168,7 +183,7 @@ class Graph():
             if len(same_x) == 0:
                 first_greater = 0
                 for x in self._points:
-                    if x.pos()[0] > point.pos()[0]:
+                    if x[0] > point[0]:
                         first_greater = self._points.index(x)
                         break
                 self._points.insert(first_greater, point)
@@ -178,7 +193,7 @@ class Graph():
             # compare the Y values to find which order they go in
             elif len(same_x) == 1:
                 index = self._points.index(same_x[0])
-                if same_x[0].pos()[1] > point.pos()[1]:
+                if same_x[0][1] > point[1]:
                     self._points.insert(index - 1, point)
                     return True
                 else:
@@ -190,7 +205,7 @@ class Graph():
             else:
                 first_greater_y = 0
                 for x in same_x:
-                    if x.pos()[1] > point.pos()[1]:
+                    if x[1] > point[1]:
                         first_greater_y = self._points.index(x)
                         break
                 if(first_greater_y != 0):
@@ -220,25 +235,25 @@ class Graph():
         
         #If not, we can add the triangle to the graph
         self._triangles.append(triangle)
-        tri = [ triangle[0].pos(), triangle[1].pos(), triangle._c.pos() ]
+        tri = [ triangle[0], triangle[1], triangle[2] ]
         return True
         
     #Tests if a given triangle is Delaunay (i.e.,
     # no other points lie within the circumcircle of the triangle)
     def triangleIsDelaunay(self, triangle:Triangle):
-        tri = [ triangle[0].pos(), triangle[1].pos(), triangle._c.pos() ]
+        tri = [ triangle[0], triangle[1], triangle[2] ]
         #cc = circumcircle(tri) # center and radius of circumcircle
         cc = circumcircle2(tri) # center and radius of circumcircle
         for x in self._points:
-            #print(x.pos())
+            #print(x)
             #If we get the divide-by-zero error, we assume the triangle is non-Delaunay
-            if not (x.isEqual(triangle[0]) and x.isEqual(triangle[1]) and x.isEqual(triangle._c)):
+            if not (x.isEqual(triangle[0]) and x.isEqual(triangle[1]) and x.isEqual(triangle[2])):
                 try:
-                    if pointInCircle(x.pos(), cc):
+                    if pointInCircle(x, cc):
                         return False
                 except:
                     return False
-        #self._circles.append(cc)
+        #self[2]ircles.append(cc)
         return True
     
     #Generates the complete Delaunay mesh by testing every possible triangle
@@ -292,7 +307,7 @@ class Graph():
 # a triangle is represented by 2D vectors with shpae (3,2) 
 
 #Function for determining the circumcircle of any three points
-def circumcircle(tri:qnn.Qnnum):
+def circumcircle(tri:Triangle):
     n=tri[0][0].n
     N=tri[0][0].N
     center=qnv.zerov(n,N)
@@ -308,17 +323,37 @@ def circumcircle(tri:qnn.Qnnum):
                 (tri[0][1]+tri[2][1]))/ 2*(tri[1][0]-tri[2][0]))/D
         
         #radius = math.sqrt ((tri[2][0] - center_x)**2 + (tri[2][1] - center_y)**2 )
-        radius2 = ((tri[2][0] - center_x)**2 + (tri[2][1] - center_y)**2 )
+        radius2 = ((tri[2][0] - center[0])**2 + (tri[2][1] - center[1])**2 )
         
         #return [[center_x, center_y], radius]
         return [center, radius2] # point and squared radius
     except:
         print("Divide By Zero error")
         print(tri)
-
-
+ 
+def circumcircle2(tri:Triangle):            
+    #tri[0]-tri[2] and tri[1]-tri[2] are edige vectors form tri[2]
+    center=qnn.zeros((2))
+    edg=qnv.zeros((3))
+    edg[0]=tri[0]-tri[2]; edg[1]=tri[1]-tri[2]; edg[2]=tri[1]+tri[2]
+    try:
+        D = ((edg[0][0])*(edg[1][0])-(edg[1][0])*(edg[0][1])) # 2 times the area of tri 
+        
+        center[0] = ((edg[0][0]*edg[2][0]+edg[0][1]*edg[2][1])/ \
+            2*edg[1][1]-(edg[1][0]*edg[2][0]+edg[0][1] * \
+            edg[2][1])/2*edg[0][1])/D
+        
+        center[1] = ((edg[1][0]*edg[2][0]+edg[0][1]*edg[1][1])/ \
+            2*edg[0][0]-(edg[0][0]*edg[2][0]+edg[0][1] * \
+            edg[2][1])/2*edg[1][0])/D
+        radius2=(center[0]**2+center[1]**2)
+        #return [[center[0], center[1]], radius]
+        return [center, radius2] # point and squared radius
+    except:
+        print("Divide By Zero error")
+        
 #Determine if any given point lies inside a circle
-def pointInCircle(point:qnn.Qnnum, circle:qnn.Qnnum):
+def pointInCircle(point:Point, circle:Point):
     #This is pretty simple; just find the distance between the point and the center.
     # If it's less than or equal to the radius, the point is inside the circle
     
@@ -329,23 +364,4 @@ def pointInCircle(point:qnn.Qnnum, circle:qnn.Qnnum):
         return True
     else:
         return False
-    
-def circumcircle2(tri:Triangle):            
-    #tri[0]-tri[2] and tri[1]-tri[2] are edige vectors form tri[2]
-    edg=qnv.zeros((3))
-    edg[0]=tri[0]-tri[2]; edg[1]=tri[1]-tri[2]; edg[2]=tri[1]+tri[2]
-    try:
-        D = ((edg[0][0])*(edg[1][0])-(edg[1][0])*(edg[0][1])) # 2 times the area of tri 
-        
-        center_x = ((edg[0][0]*edg[2][0]+edg[0][1]*edg[2][1])/ \
-            2*edg[1][1]-(edg[1][0]*edg[2][0]+edg[0][1] * \
-            edg[2][1])/2*edg[0][1])/D
-        
-        center_y = ((edg[1][0]*edg[2][0]+edg[0][1]*edg2[1][1])/ \
-            2*edg[0][0]-(edg[0][0]*edg[2][0]+edg[0][1] * \
-            edg[2][1])/2*edg[1][0])/D
-            
-        #return [[center_x, center_y], radius]
-        return [[center_x, center_y], radius2] # point and squared radius
-    except:
-        print("Divide By Zero error")
+   
