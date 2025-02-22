@@ -14,7 +14,7 @@ from octa2.numericalc import coplanar_check_numeric_tau
 
 SQRT2=np.sqrt(2)
 
-def add(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
+def add0(a: NDArray[np.int64], b: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     # summation (a+b) in SQRT2-style
     
@@ -28,7 +28,7 @@ def add(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     Returns
     -------
     array
-    """
+    """    
     c1=a[0]*b[2]+b[0]*a[2]
     c2=a[1]*b[2]+b[1]*a[2]
     c3=a[2]*b[2]
@@ -41,8 +41,45 @@ def add(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
         return np.array([-c1,-c2,-c3])
     else:
         return np.array([c1,c2,c3])
+    
+#@cython.cfunc
+#@cython.inline
+#@cython.exceptval(-1.0)
+def add(a: NDArray[np.int64], b: NDArray[np.int64]) -> NDArray[np.int64]:
+#def add(a: NDArray[cython.int], b: NDArray[cython.int]) -> NDArray[cython.int]:
+#def add(a: cython.p_int, b: cython.p_int) -> cython.p_int:
+    """
+    # summation (a+b) in SQRT2-style
+    
+    Parameters
+    ----------
+    a: array
+        value in SQRT2-style
+    b: array
+        value in SQRT2-style
+    
+    Returns
+    -------
+    array
+    """    
+    c = np.zeros((3),dtype=np.int64)
+    g: np.int64
+    x: np.int64
+    c[0]=a[0]*b[2]+b[0]*a[2]
+    c[1]=a[1]*b[2]+b[1]*a[2]
+    c[2]=a[2]*b[2]
+    x=np.array([c[0],c[1],c[2]],dtype=np.int64)
+    g=np.gcd.reduce(x)
+    c[0]=c[0]/g
+    c[1]=c[1]/g
+    c[2]=c[2]/g
+    
+    if c[2]<0:
+        return np.array([-c[0],-c[1],-c[2]])
+    else:
+        return np.array([c[0],c[1],c[2]])
 
-def mul(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
+def mul0(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     """
     # multiplication (a*b) in SQRT2-style
     
@@ -69,6 +106,43 @@ def mul(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
         return np.array([-c1,-c2,-c3])
     else:
         return np.array([c1,c2,c3])
+    
+#@cython.cfunc
+#@cython.inline
+#@cython.exceptval(-1.0)
+def mul(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
+    """
+    # multiplication (a*b) in SQRT2-style
+    
+    Parameters
+    ----------
+    a: array
+        value in SQRT2-style
+    b: array
+        value in SQRT2-style
+    
+    Returns
+    -------
+    array
+    """
+    c = np.zeros((3),dtype=np.int64)
+    g: np.int64
+    x: np.int64
+    # following three parallelizable
+    c[0]=a[0]*b[0]+2*a[1]*b[1]
+    c[1]=a[0]*b[1]+a[1]*b[0]
+    c[2]=a[2]*b[2]
+    x=np.array([c[0],c[1],c[2]],dtype=np.int64)
+    g=np.gcd.reduce(x)
+    # following three parallelizable
+    c[0]=c[0]/g
+    c[1]=c[1]/g
+    c[2]=c[2]/g
+    if c[2]<0:
+        return np.array([-c[0],-c[1],-c[2]])
+    else:
+        return np.array([c[0],c[1],c[2]])
+
 
 def sub(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     """
@@ -145,7 +219,8 @@ def add_vectors(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int
     
     """
     a=np.zeros(vt1.shape,dtype=np.int64)
-    for i in range(len(vt1)):
+    ln: np.int64 = len(vt1)
+    for i in range(ln):
         a[i]=add(vt1[i],vt2[i])
     return a
 

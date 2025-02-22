@@ -38,7 +38,6 @@ from dode2.numericalc import (numeric_value,
                             inside_outside_triangle,
                             inside_outside_triangle_tau,
                             on_out_surface,
-                            obj_volume_6d,
                             )
 from dode2.utils import (remove_doubling_in_perp_space,
                         triangle_area_6d,
@@ -810,8 +809,10 @@ def triangle_not_obj_1(triangle: NDArray[np.int64], obj: NDArray[np.int64], verb
     surface_common=common
     #vertx_common=remove_doubling_in_perp_space(surface_common)
     
-    vol0=obj_volume_6d(triangle)
-    vol1=obj_volume_6d(common)
+    #vol0=obj_volume_6d(triangle)
+    #vol1=obj_volume_6d(common)
+    vol0=obj_area_6d(triangle)
+    vol1=obj_area_6d(common)
     vol2=sub(vol0,vol1)
     if verbose>0:
         print('        triangle volume:',vol0,numeric_value(vol0))
@@ -934,7 +935,8 @@ def triangle_not_obj_1(triangle: NDArray[np.int64], obj: NDArray[np.int64], verb
                 tmp=np.vstack([tmp,tet])
             counter3+=1
         #print('tmp.shape',tmp.shape)
-        vol=obj_volume_6d(tmp)
+        #vol=obj_volume_6d(tmp)
+        vol=obj_area_6d(tmp)
         if verbose>1:
             print('    obtained volume:',vol,numeric_value(vol))
         if np.all(vol==vol2):
@@ -959,7 +961,8 @@ def triangle_not_obj_1(triangle: NDArray[np.int64], obj: NDArray[np.int64], verb
                     #print(comb)
                     for i1 in range(num):
                         #v=tetrahedron_volume_6d(tmp[comb[i1]])
-                        v=obj_volume_6d(tmp[comb[i1]])
+                        #v=obj_volume_6d(tmp[comb[i1]])
+                        v=obj_area_6d(tmp[comb[i1]])
                         #print('    ',v)
                         vol=add(vol,v)
                     if np.all(vol==vol2):
@@ -978,7 +981,8 @@ def triangle_not_obj_1(triangle: NDArray[np.int64], obj: NDArray[np.int64], verb
                     pass
             if flag==1:
                 out=tmp1
-                vol=obj_volume_6d(out)
+                #vol=obj_volume_6d(out)
+                vol=obj_area_6d(out)
                 if verbose>1:
                     print('    obtained volume:',vol,numeric_value(vol))
                 if verbose>0:
@@ -1024,7 +1028,8 @@ def triangle_not_obj_1(triangle: NDArray[np.int64], obj: NDArray[np.int64], verb
                 if counter!=0:
                     break
             tet1=np.vstack([vrtx1_out,edge_common])
-            vola=obj_volume_6d(tet1)
+            #vola=obj_volume_6d(tet1)
+            vola=obj_area_6d(tet1)
             combination=[\
             [1,0],\
             [0,1]]
@@ -1032,7 +1037,8 @@ def triangle_not_obj_1(triangle: NDArray[np.int64], obj: NDArray[np.int64], verb
                 tet2=np.vstack([vrtx1_out[c1[0]],tr1])
                 tet3=np.vstack([vrtx1_out[c1[1]],tr2])
                 tet_tot=np.vstack([tet1,tet2,tet3])
-                vol_tot=obj_volume_6d(tet_tot)
+                #vol_tot=obj_volume_6d(tet_tot)
+                vol_tot=obj_area_6d(tet_tot)
                 if np.all(vol_tot==vol2):
                     out=tet_tot
                     break
@@ -1111,13 +1117,15 @@ def tetrahedron_not_obj_2(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
     
     """
     
-    vol0=obj_volume_6d(tetrahedron)
+    #vol0=obj_volume_6d(tetrahedron)
+    vol0=obj_area_6d(tetrahedron)
     print('tetrahedron volume:',vol0,numeric_value(vol0))
     
     # 1. tetrahedronとobjの共通部分Aを求める。
     # intersection between tetrahedron and obj
     common=intersection_two_obj_1(tetrahedron,obj,kind='standard')
-    vol1=obj_volume_6d(common)
+    #vol1=obj_volume_6d(common)
+    vol1=obj_area_6d(common)
     print('common volume:',vol1,numeric_value(vol1))
     
     # 2. A表面の三角形T1を求める
