@@ -558,7 +558,8 @@ def sort_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     sort triangle in an object
     """
-    out=np.zeros(vts.shape,dtype=np.int64)
+    #out=np.zeros(vts.shape,dtype=np.int64)
+    out=np.zeros(obj.shape,dtype=np.int64)
     centroids=np.zeros(len(obj),dtype=np.float64)
     tmp=np.zeros((obj.shape,3),dtype=np.int64)
     
@@ -571,7 +572,8 @@ def sort_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     #indx=np.argsort(centroids,axis=0)
     indx=centroids[np.argsort(centroids[:,0])]
     
-    for i1 in range(n1):
+    #for i1 in range(n1):
+    for i1 in range(len(obj)):
         out[i1]=tmp[indx[i1][0]]
     return out
 
@@ -725,8 +727,10 @@ def get_common_edge_in_two_triangles(triangle_1: NDArray[np.int64], triangle_2: 
     edge2=get_triangle_edge(triangle_2)
     
     count=0
-    for edge_1 in edges1:
-        for edge_2 in edges2:
+    #for edge_1 in edges1:
+    for edge_1 in edge1:
+        #for edge_2 in edges2:
+        for edge_2 in edge2:
             if equivalent_edges(edge_1,edge_2): # equivalent
                 count+=1
                 break
@@ -793,107 +797,140 @@ def coplanar_check_two_triangles(triange1: NDArray[np.int64], triange2: NDArray[
 
 # MICS
 def middle_position(pos1,pos2):
+    out = []
     for i1 in range(6):
         v=add(pos1[i1],pos2[i1])
         v=mul(v,np.array([1,0,2]))
         if i1!=0:
-            out=np.vstack([tmp2,v])
+            #out=np.vstack([tmp2,v])
+            out=np.vstack([out,v])
         else:
             out=v.reshape(1,3)
     return out
 
-if __name__ == '__main__':
+#----------------------------
+# Surface, trianges, and edges
+#
+# Comment：Need to be reorganised.
+#----------------------------
+def generator_surface_1(obj: NDArray[np.int64], verbose: int=0) -> NDArray[np.int64]:
+    """Generate triangles of the object's surface.
     
-    # test
+    Parameters
+    ----------
+    obj: array
     
-    import random
+    Returns
+    -------
+    surfaces: array
+        set of surface triangles in TAU-style.
+    """
+    # (1) preparing a list of triangle surfaces without doubling (tmp2)
+    n1,_,_,_=obj.shape
+    triangles=np.zeros((n1,4,3,6,3),dtype=np.int64)
+    i1=0
     
-    def generate_random_value():
-        """ generate value in TAU-style
-        """
-        nmax=10
-        v=np.zeros((3),dtype=np.int64)
-        for i1 in range(2):
-            v[i1]=random.randrange(-nmax,nmax) # a and b in (a+b*TAU)/c.
-        v[2]=random.randrange(1,nmax) # c in (a+b*TAU)/c.
-        return v
-        
-    def generate_random_vector(ndim=6):
-        """ generate ndim vector in TAU-style
-        ndim: dimension of vectors
-        """
-        nmax=10
-        v=np.zeros((ndim,3), dtype=np.int64)
-        for i1 in range(ndim):
-            v[i1]=generate_random_value()
-        return v
-        
-    def generate_random_vectors(n,ndim=6):
-        """
-        num: number of generated vectors.
-        ndim: dimension of vectors
-        """
-        v=np.zeros((n,ndim,3), dtype=np.int64)
-        for i1 in range(n):
-            v[i1]=generate_random_vector(ndim)
-        return v
-    
-    def generate_random_triangle():
-        return generate_random_vectors(3)
+    if verbose>0:
+        print('      generator_surface_1 part-1')
+        start=time.time()
+    #
+    for tetrahedron in obj:
+        triangles[i1]=get_tetrahedron_surface(tetrahedron)
+        i1+=1
+    triangles=triangles.reshape(n1*4,3,6,3)
+    #
+    if verbose>0:
+        end=time.time()
+        time_diff=end-start
+        print('         ends in %4.3f sec'%time_diff)
     
     
-    
-    #================
-    # ソートのテスト
-    #================
-    nset=10
-    vts=generate_random_vectors(nset)
-    vns=get_internal_component_sets_numerical(vts)
-    print(vns.shape)
-    for vn in vns:
-        print(vn)
-    print('\n')
-    print(vts.shape)
-    vts1=sort_vctors(vts)
-    vns1=get_internal_component_sets_numerical(vts1)
-    for vn in vns1:
-        print(vn)
-    
-    #================
-    # 重複のテスト
-    #================
-    nset=10
-    vst=generate_random_vectors(nset)
-    vst_d3=np.concatenate([vst,vst]) # doubling dim3 vectors
-    vst_d4=np.stack([vst_d3,vst_d3]) # doubling dim4 vectors
-    
-    a=remove_doubling(vst_d4)
-    if len(a)==nset:
-        print('remove_doubling: pass')
+    if n1==1:
+        return triangles
     else:
-        print('remove_doubling: error')
+        if verbose>0:
+            print('      generator_surface_1 part-2')
+            start=time.time()
+        #
         
-    a=remove_doubling_in_perp_space(vst_d4)
-    if len(a)==nset:
-        print('remove_doubling_in_perp_space: pass')
-    else:
-        print('remove_doubling_in_perp_space: error')
-    
-    #================
-    # 面と辺のテスト
-    #================
-    triangle=generate_random_triangle()
-    
-    # doubled tetrahedon
-    obj=np.stack([triangle,triangle]) # doubled tetrahedon
-    #generator_surface_1(obj)
-    
-    # a tetrahedon
-    obj=triangle
-    #surface=generator_surface_1(obj.reshape(1,3,6,3))
-    surface=obj.reshape(1,3,6,3)
-    #generator_edge(surface)
-    generator_all_edges(surface)
-    
-    
-    
+        # (2) 重複のない三角形（すなはちobject表面の三角形）のみを得る。
+        # 三角形が重複していれば重心も同じことを利用する。重心が一致すれば重複しているとは限らないが、
+        # objが正しく与えられているとすれば問題ない。
+        #
+        # まず重心xyzを求める
+        xyz=np.zeros((n1*4,3),dtype=np.float64)
+        for i1 in range(n1*4):
+            vt=centroid(triangles[i1])
+            xyz[i1]=get_internal_component_numerical(vt)
+        
+        """
+        # 以下のやり方では効率悪い。
+        # triangleの数が多ければ時間がかかる(O(n^2))ので改良が必要
+        #===========ここから============
+        # xyzをxでソートし、indexを得る。
+        indx_xyz=np.argsort(xyz[:,0])
+        #print('number of trianges:',len(indx_xyz))
+        #print('indx_xyz:',indx_xyz)
+        #print(xyz[indx_xyz])
+        
+        # 重複しているtriangleはスキップ。表面のtriangleのみを選び出す。
+        lst=[]
+        for i1 in indx_xyz:
+            counter=0
+            for i2 in indx_xyz:
+                if i1==i2:
+                    pass
+                else:
+                    if np.allclose(xyz[i1],xyz[i2]): # equivalent
+                        counter+=1
+                        break
+            if counter==0:
+                lst.append(i1)
+        #===========ここまで============
+        """
+        #"""
+        # xyz座標のソートをx,y,zに対して行い、重複チェックを効率化(O(n))。
+        #===========ここから============
+        # xyzをx,y,zの順で優先的にソートし、indexを得る。
+        indx_xyz=np.lexsort((xyz[:,2],xyz[:,1],xyz[:,0]))
+        #print('number of trianges:',len(indx_xyz))
+        #print('indx_xyz:',indx_xyz)
+        
+        # 表面のtriangleのみを選び出すには、重複しているtriangleを除けば良い。
+        # 上でxyzをx,y,zの順で優先的にソートできていれば、着目している点をその前後と比べるだけで重複があるか判断できる。
+        lst=[]
+        if np.allclose(xyz[indx_xyz[0]],xyz[indx_xyz[1]]):
+            pass
+        else:
+            lst.append(indx_xyz[0])
+        for i1 in range(1,len(indx_xyz)-1):
+            counter=0
+            for i2 in [-1,1]:
+                if np.allclose(xyz[indx_xyz[i1]],xyz[indx_xyz[i1+i2]]): # equivalent
+                    counter+=1
+                    break
+            if counter==0:
+                lst.append(indx_xyz[i1])
+        if np.allclose(xyz[indx_xyz[-1]],xyz[indx_xyz[-2]]):
+            pass
+        else:
+            lst.append(indx_xyz[-1])
+        #===========ここまで============
+        #"""
+        
+        #print('lst:',lst)
+        num=len(lst)
+        #print('num:',num)
+        out=np.zeros((num,3,6,3),dtype=np.int64)
+        #print('number of unique triangls:',num)
+        for i1 in range(num):
+            out[i1]=triangles[lst[i1]]
+        #print('shape:',out.shape)
+        
+        if verbose>0:
+            end=time.time()
+            time_diff=end-start
+            print('         ends in %4.3f sec'%time_diff)
+        
+        return out
+

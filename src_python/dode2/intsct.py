@@ -38,6 +38,7 @@ from dode2.numericalc import (numeric_value,
                             inside_outside_triangle,
                             inside_outside_triangle_tau,
                             on_out_surface,
+                            obj_volume_6d,
                             )
 from dode2.utils import (remove_doubling_in_perp_space,
                         triangle_area_6d,
@@ -48,6 +49,7 @@ from dode2.utils import (remove_doubling_in_perp_space,
                         triangulation_points,
                         generate_convex_hull,
                         surface_cleaner,
+                        generator_surface_1
                         )
 
 TAU=np.sqrt(3)/2.0
@@ -616,7 +618,7 @@ def intersection_two_obj_convex(obj1: NDArray[np.int64], obj2: NDArray[np.int64]
     for vrtx in vertices1:
         counter2a=0
         for triangle2 in obj2:
-            if inside_outside_ttriangle_tau(vrtx,triangle2):
+            if inside_outside_triangle_tau(vrtx,triangle2):
                 counter2a+=1
                 break
             else:
@@ -773,7 +775,7 @@ def subtraction_two_obj(obj1: NDArray[np.int64], obj2: NDArray[np.int64], verbos
     return out
 
 def triangle_not_obj_1(triangle: NDArray[np.int64], obj: NDArray[np.int64], verbose: int=0) -> NDArray[np.int64]:
-    """Operate tetrahedron not object = tetrahedron not (triangle and object).
+    """Operate triangle not object = triangle not (triangle and object).
     
     Parameters
     ----------
@@ -832,7 +834,8 @@ def triangle_not_obj_1(triangle: NDArray[np.int64], obj: NDArray[np.int64], verb
     for triangle2 in surface_common:
         counter1=0
         for vrtx2 in triangle2:
-            for triangle3 in surface_obj:
+            #for triangle3 in surface_obj:
+            for triangle3 in surface_common:
                 if on_out_surface(vrtx2,triangle3): # on
                     counter1+=1
                     break
@@ -851,13 +854,16 @@ def triangle_not_obj_1(triangle: NDArray[np.int64], obj: NDArray[np.int64], verb
     
     # get vertices of tetrahedron which are NOT inside obj
     counter2=0
-    tetrahedron=tetrahedron.reshape(4,6,3)
-    for vrtx1 in tetrahedron:
+    #tetrahedron=tetrahedron.reshape(4,6,3)
+    triangle=triangle.reshape(4,6,3)
+    #for vrtx1 in tetrahedron:
+    for vrtx1 in triangle:
         counter1=0
         for tet3 in obj:
             #print('vrtx1.shape',vrtx1.shape)
             #print('tet3.shape',tet3.shape)
-            if inside_outside_tetrahedron_tau(vrtx1,tet3): # inside
+            #if inside_outside_tetrahedron_tau(vrtx1,tet3): # inside
+            if inside_outside_triangle_tau(vrtx1,tet3): # inside
                 counter1+=1
                 break
             else:
@@ -866,7 +872,8 @@ def triangle_not_obj_1(triangle: NDArray[np.int64], obj: NDArray[np.int64], verb
             if counter2==0:
                 tmp=vrtx1.reshape(1,6,3)
             else:
-                tmp=np.vstack([tmp1a,[vrtx1]])
+                #tmp=np.vstack([tmp1a,[vrtx1]])
+                tmp=np.vstack([tmp,[vrtx1]])
             counter2+=1
         else:
             pass
@@ -951,7 +958,8 @@ def triangle_not_obj_1(triangle: NDArray[np.int64], obj: NDArray[np.int64], verb
                 for comb in list(itertools.combinations(lst,num)):
                     #print(comb)
                     for i1 in range(num):
-                        v=tetrahedron_volume_6d(tmp[comb[i1]])
+                        #v=tetrahedron_volume_6d(tmp[comb[i1]])
+                        v=obj_volume_6d(tmp[comb[i1]])
                         #print('    ',v)
                         vol=add(vol,v)
                     if np.all(vol==vol2):
@@ -992,7 +1000,8 @@ def triangle_not_obj_1(triangle: NDArray[np.int64], obj: NDArray[np.int64], verb
         if len(triangle_common)==1:
             if verbose>0:
                 print('         case 2-1')
-            out=tetrahedralization_points(np.vstack([vrtx1_out,triangle_common]))
+            #out=tetrahedralization_points(np.vstack([vrtx1_out,triangle_common]))
+            out=triangulation_points(np.vstack([vrtx1_out,triangle_common]))
         elif len(triangle_common)==2:
             if verbose>0:
                 print('         case 2-2')
@@ -1013,7 +1022,7 @@ def triangle_not_obj_1(triangle: NDArray[np.int64], obj: NDArray[np.int64], verb
                         counter+=1
                         break
                 if counter!=0:
-                    beak
+                    break
             tet1=np.vstack([vrtx1_out,edge_common])
             vola=obj_volume_6d(tet1)
             combination=[\
@@ -1044,7 +1053,8 @@ def triangle_not_obj_1(triangle: NDArray[np.int64], obj: NDArray[np.int64], verb
         if len(triangle_common)==1:
             if verbose>0:
                 print('         case 3-1')
-            out=tetrahedralization_points(np.vstack([vrtx1_out,triangle_common]))
+            #out=tetrahedralization_points(np.vstack([vrtx1_out,triangle_common]))
+            out=triangulation_points(np.vstack([vrtx1_out,triangle_common]))
         elif len(triangle_common)==2:
             if verbose>0:
                 print('         case 3-2')
@@ -1144,41 +1154,3 @@ def tetrahedron_not_obj_2(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
     ###
     return 
 
-if __name__ == '__main__':
-    
-    # test
-    
-    import random
-    
-    def generate_random_value():
-        """ generate value in TAU-style
-        """
-        nmax=10
-        v=np.zeros((3),dtype=np.int64)
-        for i1 in range(2):
-            v[i1]=random.randrange(-nmax,nmax) # a and b in (a+b*TAU)/c.
-        v[2]=random.randrange(1,nmax) # c in (a+b*TAU)/c.
-        return v
-        
-    def generate_random_vector(ndim=6):
-        """ generate ndim vector in TAU-style
-        ndim: dimension of vectors
-        """
-        nmax=10
-        v=np.zeros((ndim,3), dtype=np.int64)
-        for i1 in range(ndim):
-            v[i1]=generate_random_value()
-        return v
-        
-    def generate_random_vectors(n,ndim=6):
-        """
-        num: number of generated vectors.
-        ndim: dimension of vectors
-        """
-        v=np.zeros((n,ndim,3), dtype=np.int64)
-        for i1 in range(n):
-            v[i1]=generate_random_vector(ndim)
-        return v
-    
-    def generate_random_triangle():
-        return generate_random_vectors(3)

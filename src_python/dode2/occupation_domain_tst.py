@@ -1,24 +1,17 @@
 #if __name__ == "__main__":
-import timeit
-import os
-import sys
 import numpy as np
-import cython
-from numpy.typing import NDArray
 import occupation_domain as od
 #from occupation_domain import (
-#    symmetric,read_xyz,write)
+#    read_xyz,symmetric,write,write_vesta)
 
-import symmetry as symmetry
-
-test_dir='../../tests/octa/test'
-xyz_dir='../../xyz/octa'
+test_dir='../../tests/dode/test'
+xyz_dir='../../xyz/dode'
 # import asymmetric part of OD(occupation domain) located at origin,0,0,0,0,0,0.
-od_asym = od.read_xyz(path=xyz_dir,basename='od_1_asym')
+od_asym = od.read_xyz(path=xyz_dir,basename='od_vertex_asymmetric')
 print(od_asym)
 
 pos0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
-od_sym = od.symmetric(obj = od_asym, centre = pos0)
+od_sym = od.symmetric(obj = od_asym, centre = pos0, pg='-12m2')
 od.write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
 od.write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
 
@@ -36,5 +29,6 @@ od.write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color =
 #common_part=twoODs.intersection()
 
 # export common_part in VESTA formated file.
-#write(obj=common_part, path='.', basename='common', format='vesta', color='r')
-
+    #write(obj=common_part, path='.', basename='common', format='vesta', color='r')
+    
+    

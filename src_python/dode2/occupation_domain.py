@@ -956,8 +956,10 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f.write('%d\n'%(len(obj)))
         f.write('%s\n'%(filename))
         counter=0
-        for triangle in range(len(obj)):
-            for point in range(len(triangle)):
+        #for triangle in range(len(obj)):
+        for triangle in range(obj):
+            #for point in range(len(triangle)):
+            for point in range(triangle):
                 v=prj.projection3(point)
                 f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # # # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
                 (numericalc.numeric_value(v[0]),\
@@ -1687,33 +1689,3 @@ def qcstrc(apar,cpar,mystrc,path,basename,phason_matrix,n1max,n5max,origin_shift
     print('    written in %s/%s.xyz'%(path,basename))
     return 0
 
-if __name__ == "__main__":
-    
-    test_dir='../../tests/dode/test'
-    xyz_dir='../../xyz/dode'
-    # import asymmetric part of OD(occupation domain) located at origin,0,0,0,0,0,0.
-    od_asym = read_xyz(path=xyz_dir,basename='od_vertex_asymmetric')
-    print(od_asym)
-    
-    pos0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
-    od_sym = symmetric(obj = od_asym, centre = pos0, pg='-12m2')
-    write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
-    write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
-    
-    # move STRT OD to a position 1 1 1 0 -1 0.
-    #pos_b1=np.array([[ 1, 0, 1],[ 1, 0, 1],[ 1, 0, 1],[ 0, 0, 1],[-1, 0, 1],[ 0, 0, 1]]) # b_1
-    #strt_pos1=shift(obj = strt_sym, shift = pos_b1)
-    #write(pod=strt_pos1, path='.', basename='obj_strt', format='xyz')
-    #write(obj=strt_pos1, path='.', basename='obj_strt', format='vesta', color='b')
-    
-    # intersection of "asymmetric part of strt" and "strt at position pos_b1"
-    #    flag = 0,    with rough intersection chacking (faster)
-    #    flag = 1, without rough intersection chacking
-    #twoODs=TWO_ODs(pod1=strt_asym, pod2=strt_pos1, path='.',filename='common.xyz',flag=0,verbose=0)
-    #intersection=Intersection(pod1=tmp1.reshape(1,4,6,3), pod2=tmp2.reshape(1,4,6,3), path='.',filename='common.xyz',flag=0,verbose=0)
-    #common_part=twoODs.intersection()
-    
-    # export common_part in VESTA formated file.
-    #write(obj=common_part, path='.', basename='common', format='vesta', color='r')
-    
-    
