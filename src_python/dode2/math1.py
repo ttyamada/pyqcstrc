@@ -11,8 +11,10 @@ from numpy.typing import NDArray
 from dode2.numericalc import coplanar_check_numeric_tau
 
 SIN=np.sqrt(3)/2
+DTYPE_int = int
+#DTYPE_int = DTYPE_int
 
-def add(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
+def add(a: NDArray[DTYPE_int], b:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """
     # summation (a+b) in SIN-style
     
@@ -30,7 +32,7 @@ def add(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     c1=a[0]*b[2]+b[0]*a[2]
     c2=a[1]*b[2]+b[1]*a[2]
     c3=a[2]*b[2]
-    x=np.array([c1,c2,c3],dtype=np.int64)
+    x=np.array([c1,c2,c3],dtype=DTYPE_int)
     g=np.gcd.reduce(x)
     c1=int(c1/g)
     c2=int(c2/g)
@@ -40,7 +42,7 @@ def add(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     else:
         return np.array([c1,c2,c3])
 
-def mul(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
+def mul(a: NDArray[DTYPE_int], b:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """
     # multiplication (a*b) in SIN-style
     
@@ -58,7 +60,7 @@ def mul(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     c1=4*a[0]*b[0]+3*a[1]*b[1]
     c2=4*(a[0]*b[1]+a[1]*b[0])
     c3=4*a[2]*b[2]
-    x=np.array([c1,c2,c3],dtype=np.int64)
+    x=np.array([c1,c2,c3],dtype=DTYPE_int)
     g=np.gcd.reduce(x)
     c1=int(c1/g)
     c2=int(c2/g)
@@ -68,7 +70,7 @@ def mul(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     else:
         return np.array([c1,c2,c3])
 
-def sub(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
+def sub(a: NDArray[DTYPE_int], b:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """
     # subtraction (a/b) in SIN-style
     
@@ -83,11 +85,11 @@ def sub(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
     -------
     array
     """
-    c=np.array([-1,0,1],dtype=np.int64)
+    c=np.array([-1,0,1],dtype=DTYPE_int)
     b=mul(c,b)
     return add(a,b)
 
-def div(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
+def div(a: NDArray[DTYPE_int], b:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """
     # division (a/b) in SIN-style
     
@@ -107,7 +109,7 @@ def div(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
         return 
     else:
         if np.all(a[:2]==0):
-            return np.array([0,0,1],dtype=np.int64)
+            return np.array([0,0,1],dtype=DTYPE_int)
         else:
             if b[1]!=0:
                 if b[0]!=0:
@@ -127,21 +129,21 @@ def div(a: NDArray[np.int64], b:NDArray[np.int64]) -> NDArray[np.int64]:
                 c1=a[0]*b[2]
                 c2=a[1]*b[2]
                 c3=b[0]*a[2]
-            x=np.array([c1,c2,c3],dtype=np.int64)
+            x=np.array([c1,c2,c3],dtype=DTYPE_int)
             g=np.gcd.reduce(x)
             if g!=0:
                 c1=int(c1/g)
                 c2=int(c2/g)
                 c3=int(c3/g)
                 if c3<0:
-                    return np.array([-c1,-c2,-c3],dtype=np.int64)
+                    return np.array([-c1,-c2,-c3],dtype=DTYPE_int)
                 else:
-                    return np.array([c1,c2,c3],dtype=np.int64)
+                    return np.array([c1,c2,c3],dtype=DTYPE_int)
             else:
                 print('ERROR_2:division error')
                 return 
 
-def add_vectors(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int64]:
+def add_vectors(vt1: NDArray[DTYPE_int], vt2:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """Composition of two vectors, v1+v2
     
     Parameters
@@ -156,12 +158,12 @@ def add_vectors(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int
     Composition of two vectors: array in SIN-style
     
     """
-    a=np.zeros(vt1.shape,dtype=np.int64)
+    a=np.zeros(vt1.shape,dtype=DTYPE_int)
     for i in range(len(vt1)):
         a[i]=add(vt1[i],vt2[i])
     return a
 
-def sub_vectors(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int64]:
+def sub_vectors(vt1: NDArray[DTYPE_int], vt2:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """Subtraction of two vectors, v1-v2
     
     Parameters
@@ -176,14 +178,14 @@ def sub_vectors(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int
     Subtraction of two vectors: array in SIN-style
     """
     if vt1.ndim==2 and vt2.ndim==2:
-        const=np.array([-1,0,1],dtype=np.int64)
+        const=np.array([-1,0,1],dtype=DTYPE_int)
         vt2=mul_vector(vt2,const)
         return add_vectors(vt1,vt2)
     else:
         print('incorrect shape')
         return
 
-def mul_vector(vt: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.int64]:
+def mul_vector(vt: NDArray[DTYPE_int], coeff:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """Multiplying a vector by a scalar in SIN-style.
     
     Parameters
@@ -198,7 +200,7 @@ def mul_vector(vt: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.int
     Multiplied vector: array in SIN-style
     """
     if vt.ndim==2:
-        a=np.zeros(vt.shape,dtype=np.int64)
+        a=np.zeros(vt.shape,dtype=DTYPE_int)
         for i,v in enumerate(vt):
             a[i]=mul(v,coeff)
         return a
@@ -206,7 +208,7 @@ def mul_vector(vt: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.int
         print('incorrect shape')
         return
 
-def mul_vectors(vts: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.int64]:
+def mul_vectors(vts: NDArray[DTYPE_int], coeff:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """multiplying a set of vectors by a scalar in SIN-style.
     
     Parameters
@@ -221,12 +223,12 @@ def mul_vectors(vts: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.i
     Multiplied vectors: array in SIN-style
     """
     if vts.ndim==3:
-        a=np.zeros(vts.shape,dtype=np.int64)
+        a=np.zeros(vts.shape,dtype=DTYPE_int)
         for i,vt in enumerate(vts):
             a[i]=mul_vector(vt,coeff)
         return a
     elif vts.ndim==4:
-        a=np.zeros(vts.shape,dtype=np.int64)
+        a=np.zeros(vts.shape,dtype=DTYPE_int)
         for i1,vt in enumerate(vts):
             for i2,v in enumerate(vt):
                 a[i1][i2]=mul_vector(v,coeff)
@@ -234,7 +236,7 @@ def mul_vectors(vts: NDArray[np.int64], coeff:NDArray[np.int64]) -> NDArray[np.i
         print('incorrect shape')
         return
 
-def shift_vectors(vts: NDArray[np.int64], vt: NDArray[np.int64]) -> NDArray[np.int64]:
+def shift_vectors(vts: NDArray[DTYPE_int], vt: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """Shift a set of vectors by adding a vector in SIN-style.
     
     Parameters
@@ -249,12 +251,12 @@ def shift_vectors(vts: NDArray[np.int64], vt: NDArray[np.int64]) -> NDArray[np.i
     Multiplied vectors: array in SIN-style
     """
     if vts.ndim==3:
-        a=np.zeros(vts.shape,dtype=np.int64)
+        a=np.zeros(vts.shape,dtype=DTYPE_int)
         for i,vt1 in enumerate(vts):
             a[i]=add_vectors(vt1,vt)
         return a
     elif vts.ndim==4:
-        a=np.zeros(vts.shape,dtype=np.int64)
+        a=np.zeros(vts.shape,dtype=DTYPE_int)
         for i1,vt1 in enumerate(vts):
             for i2,vt2 in enumerate(vt1):
                 a[i1][i2]=add_vectors(vt2,vt)
@@ -263,7 +265,7 @@ def shift_vectors(vts: NDArray[np.int64], vt: NDArray[np.int64]) -> NDArray[np.i
         return
     
     
-def outer_product(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int64]:
+def outer_product(vt1: NDArray[DTYPE_int], vt2:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """Outer product of two 3d vectors, v1 and v2 in SIN-style.
 
     Parameters
@@ -289,9 +291,9 @@ def outer_product(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.i
     b=mul(vt1[1],vt2[0])
     c3=sub(a,b)
     #
-    return np.array([c1,c2,c3],dtype=np.int64)
+    return np.array([c1,c2,c3],dtype=DTYPE_int)
 
-def inner_product(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.int64]:
+def inner_product(vt1: NDArray[DTYPE_int], vt2:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """Inner product of two vectors, v1 and v2 in SIN-style.
 
     Parameters
@@ -317,7 +319,7 @@ def inner_product(vt1: NDArray[np.int64], vt2:NDArray[np.int64]) -> NDArray[np.i
             a=add(a,b)
         return a
 
-def dot_product(mat1: NDArray[np.int64], mat2:NDArray[np.int64]) -> NDArray[np.int64]:
+def dot_product(mat1: NDArray[DTYPE_int], mat2:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """product of two matrices, mat1*mat2.
     
     Parameters
@@ -344,7 +346,7 @@ def dot_product(mat1: NDArray[np.int64], mat2:NDArray[np.int64]) -> NDArray[np.i
             print('incorrect shape found in dot_product')
             return 
         else:
-            mat_new=np.zeros((s,3),dtype=np.int64)
+            mat_new=np.zeros((s,3),dtype=DTYPE_int)
             for k in range(s):
                 a=np.array([0,0,1])
                 for j in range(t1):
@@ -360,7 +362,7 @@ def dot_product(mat1: NDArray[np.int64], mat2:NDArray[np.int64]) -> NDArray[np.i
             print('incorrect shape found in dot_product')
             return 
         else:
-            mat_new=np.zeros((s,u,3),dtype=np.int64)
+            mat_new=np.zeros((s,u,3),dtype=DTYPE_int)
             for k in range(s):
                 for j in range(u):
                     a=np.array([0,0,1])
@@ -373,7 +375,7 @@ def dot_product(mat1: NDArray[np.int64], mat2:NDArray[np.int64]) -> NDArray[np.i
         print('incorrect shape found in dot_product')
         return 
 
-def dot_product_1(mat1: NDArray[np.int64], mat2:NDArray[np.int64]) -> NDArray[np.int64]:
+def dot_product_1(mat1: NDArray[DTYPE_int], mat2:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """product of two matrices, mat1*mat2.
     
     Parameters
@@ -397,7 +399,7 @@ def dot_product_1(mat1: NDArray[np.int64], mat2:NDArray[np.int64]) -> NDArray[np
             print('incorrect shape found in dot_product')
             return 
         else:
-            mat_new=np.zeros((s,3),dtype=np.int64)
+            mat_new=np.zeros((s,3),dtype=DTYPE_int)
             for k in range(s):
                 a=np.array([0,0,1])
                 for j in range(t1):
@@ -414,7 +416,7 @@ def dot_product_1(mat1: NDArray[np.int64], mat2:NDArray[np.int64]) -> NDArray[np
             print('incorrect shape found in dot_product')
             return 
         else:
-            mat_new=np.zeros((s,u,3),dtype=np.int64)
+            mat_new=np.zeros((s,u,3),dtype=DTYPE_int)
             for k in range(s):
                 for j in range(u):
                     a=np.array([0,0,1])
@@ -428,7 +430,7 @@ def dot_product_1(mat1: NDArray[np.int64], mat2:NDArray[np.int64]) -> NDArray[np
         print('incorrect shape found in dot_product')
         return 
 
-def centroid(obj: NDArray[np.int64]) -> NDArray[np.int64]:
+def centroid(obj: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """geometric center, centroid of tetrahedron, triangle or edge, in TAU-style.
 
     Parameters
@@ -442,7 +444,7 @@ def centroid(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     
     num=len(obj)
-    v0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+    v0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=DTYPE_int)
     i2=0
     for i2 in range(6):
         v2=v0[i2]
@@ -454,7 +456,7 @@ def centroid(obj: NDArray[np.int64]) -> NDArray[np.int64]:
         i2+=1
     return v0
 
-def centroid_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
+def centroid_obj(obj: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """geometric center, centroid of tetrahedron, in TAU-style.
 
     Parameters
@@ -469,13 +471,13 @@ def centroid_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     #print('centroid_obj')
     
     #  geometric center, centroid of OBJ
-    tmp=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+    tmp=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=DTYPE_int)
     for tetrahedron in obj:
         p=centroid(tetrahedron)
         tmp=add_vectors(tmp,p)
     return mul_vector(tmp,np.array([1,0,len(obj)]))
 
-def coplanar_check(p: NDArray[np.int64],num_iteration: int=5) -> bool:
+def coplanar_check(p: NDArray[DTYPE_int],num_iteration: int=5) -> bool:
     """Check whether a given set of points (in TAU-style) is coplanar or not.
     
     メモ：xyz1とxyz2の選び方次第で、outer_product(v1,v2)が小さくなりcoplanarと間違って判定する場合がある。
@@ -535,7 +537,7 @@ def coplanar_check(p: NDArray[np.int64],num_iteration: int=5) -> bool:
     """
     return coplanar_check_numeric_tau(p,num_iteration)
 
-def matrixpow(ma: NDArray[np.int64], n: int) -> NDArray[np.int64]:
+def matrixpow(ma: NDArray[DTYPE_int], n: int) -> NDArray[DTYPE_int]:
     """
     """
     (mx,my)=ma.shape
@@ -557,7 +559,7 @@ def matrixpow(ma: NDArray[np.int64], n: int) -> NDArray[np.int64]:
         print('matrix has not regular shape')
         return 
 
-def det_matrix(mtx: NDArray[np.int64]) -> NDArray[np.int64]:
+def det_matrix(mtx: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """Determinant of 3x3 matrix, mtx, in TAU style
     
     Parameters

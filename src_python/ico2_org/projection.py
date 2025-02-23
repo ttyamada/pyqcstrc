@@ -3,8 +3,10 @@ import cython
 
 from numpy.typing import NDArray
 from ico2.math1 import mul,add
+DTYPE_int = int
+#DTYPE_int = np.int64
 
-def projection(vt: NDArray[np.int64]) -> NDArray[np.int64]:
+def projection(vt: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """projection of a 6d vector onto Epar and Eperp in "TAU-style"
     NOTE: coefficient (alpha) of the projection matrix is set to be 1.
     alpha = a/np.sqrt(2.0+TAU)
@@ -30,9 +32,9 @@ def projection(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     v1i=mtrixcal(m3,m2,m2,m0,m4,m0,vt) # tau,-1,-1,0,-tau,0
     v2i=mtrixcal(m2,m0,m0,m3,m2,m3,vt) # -1,0,0,tau,-1,tau
     v3i=mtrixcal(m0,m3,m4,m1,m0,m2,vt) # 0,tau,-tau,1,0,-1
-    return np.array([[v1e,v2e,v3e],[v1i,v2i,v3i]],dtype=np.int64)
+    return np.array([[v1e,v2e,v3e],[v1i,v2i,v3i]],dtype=DTYPE_int)
 
-def projection3(vt: NDArray[np.int64]) -> NDArray[np.int64]:
+def projection3(vt: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """projection of a 6d vector onto Eperp in "TAU-style"
     NOTE: coefficient (alpha) of the projection matrix is set to be 1.
     alpha = a/np.sqrt(2.0+TAU)
@@ -59,9 +61,9 @@ def projection3(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     v1i=mtrixcal(m3,m2,m2,m0,m4,m0,vt) # tau,-1,-1,0,-tau,0
     v2i=mtrixcal(m2,m0,m0,m3,m2,m3,vt) # -1,0,0,tau,-1,tau
     v3i=mtrixcal(m0,m3,m4,m1,m0,m2,vt) # 0,tau,-tau,1,0,-1
-    return np.array([v1i,v2i,v3i],dtype=np.int64)
+    return np.array([v1i,v2i,v3i],dtype=DTYPE_int)
 
-def projection_perp(vt: NDArray[np.int64]) -> NDArray[np.int64]:
+def projection_perp(vt: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """This returns 6D indeces of a projection of 6D vector (v) onto Eperp
     
     Parameters
@@ -82,7 +84,7 @@ def projection_perp(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     h4=mtrixcal(m3,m2,m3,m1,m3,m2,vt) # (-tau,tau,-tau,tau+2,-tau,tau)/2
     h5=mtrixcal(m3,m2,m2,m3,m1,m3,vt) # (-tau,tau,tau,-tau,tau+2,-tau)/2
     h6=mtrixcal(m3,m3,m2,m2,m3,m1,vt) # (-tau,-tau,tau,tau,-tau,tau+2)/2
-    return np.array([h1,h2,h3,h4,h5,h6],dtype=np.int64)
+    return np.array([h1,h2,h3,h4,h5,h6],dtype=DTYPE_int)
     #const=1/(2.0+TAU)
     #m1 =((TAU+2)*n1 -     TAU*n2 -     TAU*n3 -     TAU*n4 -     TAU*n5 -     TAU*n6)/2.0*const
     #m2 = ( - TAU*n1 + (TAU+2)*n2 -     TAU*n3 +     TAU*n4 +     TAU*n5 -     TAU*n6)/2.0*const
@@ -92,11 +94,11 @@ def projection_perp(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     #m6 = ( - TAU*n1 -     TAU*n2 +     TAU*n3 +     TAU*n4 -     TAU*n5 + (TAU+2)*n6)/2.0*const
     #return m1,m2,m3,m4,m5,m6
 
-def mtrixcal(m1: NDArray[np.int64],m2: NDArray[np.int64],\
-             m3: NDArray[np.int64],m4: NDArray[np.int64],\
-             m5: NDArray[np.int64],m6: NDArray[np.int64],\
-             v: NDArray[np.int64],
-            ) -> NDArray[np.int64]:
+def mtrixcal(m1: NDArray[DTYPE_int],m2: NDArray[DTYPE_int],\
+             m3: NDArray[DTYPE_int],m4: NDArray[DTYPE_int],\
+             m5: NDArray[DTYPE_int],m6: NDArray[DTYPE_int],\
+             v: NDArray[DTYPE_int],
+            ) -> NDArray[DTYPE_int]:
     """function used in projection()
                         projection3()
                         projection_perp()

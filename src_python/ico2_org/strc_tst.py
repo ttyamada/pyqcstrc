@@ -2,6 +2,7 @@
 import numpy as np
 from numpy.typing import NDArray
 import random
+
 try:
     from ico2.numericalc import (numerical_vector,
                                           numerical_vectors,

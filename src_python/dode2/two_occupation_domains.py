@@ -20,6 +20,8 @@ import dode2.projection12 as prj
 #    print('import error\n')
 
 TAU=np.sqrt(3)/2.0
+DTYPE_int = int
+#DTYPE_int = DTYPE_int
 
 def intersection(obj1,obj2,select='standard',verbose=0):
     """

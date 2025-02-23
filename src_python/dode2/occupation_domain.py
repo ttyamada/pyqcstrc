@@ -19,11 +19,13 @@ except ImportError:
     print('import error\n')
 
 TAU=np.sqrt(3)/2.0
+DTYPE_int = int
+#DTYPE_int = DTYPE_int
 
-def volume(obj):
+def volume(obj:NDArray[DTYPE_int]):
     return utils.obj_area_6d(obj)
 
-def symmetric(obj,centre,pg):
+def symmetric(obj:NDArray[DTYPE_int],centre:NDArray[DTYPE_int],pg):
     """
     Generate symmterical occupation domain by symmetric elements on the asymmetric unit.
     
@@ -48,7 +50,7 @@ def symmetric(obj,centre,pg):
         print('object has an incorrect shape!')
         return 
 
-def symmetric_0(obj,centre,indx_symop,pg):
+def symmetric_0(obj:NDArray[DTYPE_int],centre:NDArray[DTYPE_int],indx_symop:NDArray[DTYPE_int],pg):
     """
     Generate symmtericic occupation domain by applying symmetric elements on the asymmetric unit.
     
@@ -71,7 +73,7 @@ def symmetric_0(obj,centre,indx_symop,pg):
         print('object has an incorrect shape!')
         return 
 
-def shift(obj,shift):
+def shift(obj:NDArray[DTYPE_int],shift:NDArray[DTYPE_int]):
     """
     Shift the occupation domain.
     
@@ -93,7 +95,7 @@ def shift(obj,shift):
     """
     return utils.shift_object(obj, shift)
 
-def write(obj=None,path=None,basename=None,format=None,color='k',select=None,verbose=0):
+def write(obj:NDArray[DTYPE_int]=None,path=None,basename=None,format=None,color='k',select=None,verbose=0):
     """
     Export occupation domains.
     
@@ -141,7 +143,7 @@ def write(obj=None,path=None,basename=None,format=None,color='k',select=None,ver
         else:
             return 1
 
-def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0):
+def write_vesta(obj:NDArray[DTYPE_int],path='.',basename='tmp',color='k',select='normal',verbose=0):
     """
     Export occupation domains in VESTA format.
     
@@ -847,7 +849,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
     else:
         return 1
 
-def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
+def write_xyz(obj:NDArray[DTYPE_int],path='.',basename='tmp',select='triangle',verbose=0):
     """
     Export occupation domains in XYZ format.
     
@@ -866,7 +868,7 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         int: 0 (succeed), 1 (fail)
     """
     
-    def generator_xyz_dim4_triangle(obj,path,filename):
+    def generator_xyz_dim4_triangle(obj:NDArray[DTYPE_int],path,filename):
         """
         Generate object (set of triangles) object in XYZ format.
     
@@ -906,7 +908,7 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f.closed
         return 0
     
-    def generator_xyz_dim4_edge(obj,path,filename):
+    def generator_xyz_dim4_edge(obj:NDArray[DTYPE_int],path,filename):
         """
         Generate object (set of edges) object in XYZ format.
     
@@ -939,7 +941,7 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f.closed
         return 0
     
-    def generator_xyz_dim4_vertex(obj,path,filename):
+    def generator_xyz_dim4_vertex(obj:NDArray[DTYPE_int],path,filename):
         """
         Generate object (set of vertexs) object in XYZ format.
     
@@ -976,7 +978,7 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f.closed
         return 0
     
-    def generator_xyz_dim3_vertex(obj,path,filename):
+    def generator_xyz_dim3_vertex(obj:NDArray[DTYPE_int],path,filename):
         """
         Generate object (set of vertexs) object in XYZ format.
     
@@ -1116,7 +1118,7 @@ def read_xyz(path,basename,select='triangle',verbose=0):
     elif select == 'vertex':
         return tmp.reshape(int(num),6,3)
 
-def simplification(obj,verbose=0):
+def simplification(obj:NDArray[DTYPE_int],verbose=0):
     """
     Simplification of occupation domains.
     
@@ -1154,7 +1156,7 @@ def simplification(obj,verbose=0):
                 print('      simplification: fail')
             return obj
 
-def generate_border_edges(obj):
+def generate_border_edges(obj:NDArray[DTYPE_int]):
     """
     Generate border edges of the occupation domain.
     
@@ -1171,7 +1173,7 @@ def generate_border_edges(obj):
     triangle_surface=utils.generator_surface_1(obj)
     return utils.surface_cleaner(triangle_surface)
 
-def outline(obj):
+def outline(obj:NDArray[DTYPE_int]):
     """
     Generate outline of the occupation domain.
     
@@ -1186,7 +1188,7 @@ def outline(obj):
     return utils.surface_cleaner(obj)
     
 # new in version 0.0.2a2
-def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
+def obj2podatm(obj:NDArray[DTYPE_int],serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
     
     def find_common_vertex(obj):
         #Find common vertex of tetrahedra in obj).
@@ -1271,7 +1273,7 @@ def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
         return 1
 
 ##### WIP
-def write_podatm(obj, position, vlist=[0], path='.', basename='tmp', shift=[0., 0., 0., 0., 0., 0.], verbose=0):
+def write_podatm(obj:NDArray[DTYPE_int], position:NDArray[DTYPE_int], vlist=[0], path='.', basename='tmp', shift=[0., 0., 0., 0., 0., 0.], verbose=0):
     """
     Generate pod and atom files.
     
@@ -1451,7 +1453,7 @@ def write_podatm(obj, position, vlist=[0], path='.', basename='tmp', shift=[0., 
 #########################
 #          WIP          #
 #########################
-def simple_hand_step1(obj, path, basename_tmp):
+def simple_hand_step1(obj:NDArray[DTYPE_int], path, basename_tmp):
     """
     Simplification of occupation domains by hand (step1).
     
@@ -1493,7 +1495,7 @@ def simple_hand_step1(obj, path, basename_tmp):
     print('open above XYZ file in vesta and make merge_list, and run simple_hand_step2()')
     return od1a
 
-def simple_hand_step2(obj, merge_list):
+def simple_hand_step2(obj:NDArray[DTYPE_int], merge_list):
     """
     Simplification of occupation domains by hand (step2).
     
@@ -1511,7 +1513,7 @@ def simple_hand_step2(obj, merge_list):
     
     """
     
-    def merge(obj,mylist):
+    def merge(obj:NDArray[DTYPE_int],mylist):
         tmp1=np.array([obj[mylist[0]-1]])
         for i in range(1,len(mylist)):
             tmp2=obj[mylist[i]-1]
@@ -1527,7 +1529,7 @@ def simple_hand_step2(obj, merge_list):
             od1=np.vstack([od1,od2])
     return od1
 
-def similarity(obj,m):
+def similarity(obj:NDArray[DTYPE_int],m):
     """
     obj:
     m: order of similarity transformation

@@ -22,6 +22,9 @@ from numericalc import (
     numeric_value,
     )
 
+DTYPE_int = int
+#DTYPE_int = np.int64
+
 def generate_random_value():
     """ generate value in TAU-style
     """

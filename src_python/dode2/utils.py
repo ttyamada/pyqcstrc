@@ -33,12 +33,14 @@ import itertools
 import time
 
 TAU=np.sqrt(3)/2
+DTYPE_int = int
+#DTYPE_int = DTYPE_int
 
-def shift_object(obj: NDArray[np.int64], shift: NDArray[np.int64]) -> NDArray[np.int64]:
+def shift_object(obj: NDArray[DTYPE_int], shift: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """shift an object
     """
     if obj.ndim==4:
-        obj_new=np.zeros(obj.shape,dtype=np.int64)
+        obj_new=np.zeros(obj.shape,dtype=DTYPE_int)
         i1=0
         for triangle in obj:
             i2=0
@@ -54,7 +56,7 @@ def shift_object(obj: NDArray[np.int64], shift: NDArray[np.int64]) -> NDArray[np
 #----------------------------
 # Volume, area
 #----------------------------
-def obj_area_6d(obj: NDArray[np.int64]) -> NDArray[np.int64]:
+def obj_area_6d(obj: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """Calculate volume of an object (set of triangles) in TAU style.
     
     Parameters
@@ -84,7 +86,7 @@ def obj_area_6d(obj: NDArray[np.int64]) -> NDArray[np.int64]:
         print('object has an incorrect shape!')
         return 
 
-def triangle_area_6d(triangle: NDArray[np.int64]) -> NDArray[np.int64]:
+def triangle_area_6d(triangle: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """Calculate volume of triangle in TAU style.
     
     Parameters
@@ -99,7 +101,7 @@ def triangle_area_6d(triangle: NDArray[np.int64]) -> NDArray[np.int64]:
     """
     if triangle.ndim==3:
         #print('triangle',triangle)
-        vts=np.zeros((3,3,3),dtype=np.int64)
+        vts=np.zeros((3,3,3),dtype=DTYPE_int)
         for i,vt in enumerate(triangle):
             vts[i]=projection3(vt)
         return triangle_area(vts)
@@ -110,7 +112,7 @@ def triangle_area_6d(triangle: NDArray[np.int64]) -> NDArray[np.int64]:
 #######################
 ###  To be checked  ###
 #######################
-def triangle_area(vts: NDArray[np.int64]) -> NDArray[np.int64]:
+def triangle_area(vts: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """Calculate area of a triangle in TAU style.
     
     Parameters
@@ -140,7 +142,7 @@ def triangle_area(vts: NDArray[np.int64]) -> NDArray[np.int64]:
 #----------------------------
 # Remove doubling
 #----------------------------
-def remove_doubling(vts: NDArray[np.int64]) -> NDArray[np.int64]:
+def remove_doubling(vts: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """Remove doubling 6d coordinates
     
     Parameters
@@ -165,7 +167,7 @@ def remove_doubling(vts: NDArray[np.int64]) -> NDArray[np.int64]:
         print('ndim should be 3 or 4.')
         return 
 
-def remove_doubling_in_perp_space(vts: NDArray[np.int64]) -> NDArray[np.int64]:
+def remove_doubling_in_perp_space(vts: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """Remove 6d coordinates which is doubled in Eperp.
     
     Parameters
@@ -192,12 +194,12 @@ def remove_doubling_in_perp_space(vts: NDArray[np.int64]) -> NDArray[np.int64]:
     num=len(vts)
     
     # then, remove doubling in perp space.
-    a=np.zeros((num,3,3),dtype=np.int64)
+    a=np.zeros((num,3,3),dtype=DTYPE_int)
     for i in range(num):
         a[i]=projection3(vts[i])
     b=np.unique(a,return_index=True,axis=0)[1]
     num=len(b)
-    a=np.zeros((num,6,3),dtype=np.int64)
+    a=np.zeros((num,6,3),dtype=DTYPE_int)
     for i in range(num):
         a[i]=vts[b[i]]
     return a
@@ -209,12 +211,12 @@ def remove_doubling_in_perp_space(vts: NDArray[np.int64]) -> NDArray[np.int64]:
 #----------------------------
 
 #### WIP ###
-def get_common_edges(trianges: NDArray[np.int64]) -> NDArray[np.int64]:
+def get_common_edges(trianges: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """Get common edges in trianges
     """
     return 
 
-def generator_all_edges(obj: NDArray[np.int64]) -> NDArray[np.int64]:
+def generator_all_edges(obj: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """Generate all egdes in Object
     
     Parameters
@@ -232,7 +234,7 @@ def generator_all_edges(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     # (1) preparing a list of edges
     n1,n2,_,_=obj.shape
     if n2==3:
-        edges=np.zeros((n1,3,2,6,3),dtype=np.int64)
+        edges=np.zeros((n1,3,2,6,3),dtype=DTYPE_int)
         i1=0
         for triangle in obj:
             edges[i1]=get_triangle_edge(triangle)
@@ -243,7 +245,7 @@ def generator_all_edges(obj: NDArray[np.int64]) -> NDArray[np.int64]:
         return 
 
 ### WIP: to be checked ###
-def generator_unique_edges(obj: NDArray[np.int64]) -> NDArray[np.int64]:
+def generator_unique_edges(obj: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """Return unique egdes in Object
     
     """
@@ -269,12 +271,12 @@ def generator_unique_edges(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     b=np.unique(a,return_index=True,axis=0)[1]
     num=len(b)
     #print('number of unique edges:',num)
-    a=np.zeros((num,2,6,3),dtype=np.int64)
+    a=np.zeros((num,2,6,3),dtype=DTYPE_int)
     for i1 in range(num):
         a[i1]=edges[b[i1]]
     return a
 
-def get_triangle_edge(triangle: NDArray[np.int64]) -> NDArray[np.int64]:
+def get_triangle_edge(triangle: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """Return three edges of triange.
     """
     # three edges of triange: 0-1, 0-2, 1-2
@@ -284,7 +286,7 @@ def get_triangle_edge(triangle: NDArray[np.int64]) -> NDArray[np.int64]:
     [1,2]] 
     
     # Three egdes of the triangl.
-    a=np.zeros((3,2,6,3),dtype=np.int64)
+    a=np.zeros((3,2,6,3),dtype=DTYPE_int)
     i1=0
     for k in comb:
         i2=0
@@ -297,7 +299,7 @@ def get_triangle_edge(triangle: NDArray[np.int64]) -> NDArray[np.int64]:
 #-------------
 # Convex_hull
 #-------------
-def generate_convex_hull(obj: NDArray[np.int64]) -> NDArray[np.int64]:
+def generate_convex_hull(obj: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """generate convex hull from object (a set of triangles)
     
     objの凸包を得る。
@@ -326,7 +328,7 @@ def generate_convex_hull(obj: NDArray[np.int64]) -> NDArray[np.int64]:
     # 4
     return triangulation_points(vts)
 
-def surface_cleaner(surface: NDArray[np.int64]) -> NDArray[np.int64]:
+def surface_cleaner(surface: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """generate border edges from a set of triangles on the objct's surface.
     
     obj表面の三角形からobjの外枠を出力。
@@ -386,14 +388,14 @@ def surface_cleaner(surface: NDArray[np.int64]) -> NDArray[np.int64]:
             flag=0
     #print('edges_new.shape',edges_new.shape)
     n1=len(lst)
-    out=np.zeros((n1,2,6,3),dtype=np.int64)
+    out=np.zeros((n1,2,6,3),dtype=DTYPE_int)
     for i1 in range(n1):
         out[i1]=edges_new[lst[i1]]
     #print('out.shape',out.shape)
     
     return out
 
-def get_sets_of_coplanar_triangles(surface: NDArray[np.int64]) -> NDArray[np.int64]:
+def get_sets_of_coplanar_triangles(surface: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """
     同一平面上にある三角形の集合を作る。surfaceに含まれるtriangleについて
     順に同一平面上にあるかどうかをチェックし、もし以前のどの三角形とも同一平面
@@ -424,13 +426,13 @@ def get_sets_of_coplanar_triangles(surface: NDArray[np.int64]) -> NDArray[np.int
             if i1==lst_indx_triangle[i2]:
                 tmp.append(surface[i2])
         num_triangle=len(tmp)
-        a=np.zeros((num_triangle,3,6,3),dtype=np.int64)
+        a=np.zeros((num_triangle,3,6,3),dtype=DTYPE_int)
         for i2 in range(num_triangle):
             a[i2]=tmp[i2]
         lst_sets.append(a)
     return lst_sets
 
-def gen_border_edges_of_coplanar_triangles(coplanar_triangles: NDArray[np.int64]) -> NDArray[np.int64]:
+def gen_border_edges_of_coplanar_triangles(coplanar_triangles: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """
     同一平面上にある三角形の辺のうち、どの三角形とも共有していない独立な辺を求める．
     """
@@ -452,7 +454,7 @@ def gen_border_edges_of_coplanar_triangles(coplanar_triangles: NDArray[np.int64]
             lst.append(edge1)
         else:
             pass
-    return np.array(lst,dtype=np.int64)
+    return np.array(lst,dtype=DTYPE_int)
 
 #----------------------------
 # Equivalence check
@@ -463,7 +465,7 @@ def gen_border_edges_of_coplanar_triangles(coplanar_triangles: NDArray[np.int64]
 #   equivalent_vertices
 #----------------------------
 # WIP:
-def equivalent(obj1: NDArray[np.int64], obj2: NDArray[np.int64]) -> bool:
+def equivalent(obj1: NDArray[DTYPE_int], obj2: NDArray[DTYPE_int]) -> bool:
     """Checking whether obj1 and obj1 are equivalent or not. 
     """
     def check1(a,b,n):
@@ -507,7 +509,7 @@ def equivalent(obj1: NDArray[np.int64], obj2: NDArray[np.int64]) -> bool:
     else:
         return 
 
-def equivalent_triangles(triangle1: NDArray[np.int64], triangle2: NDArray[np.int64]) -> bool:
+def equivalent_triangles(triangle1: NDArray[DTYPE_int], triangle2: NDArray[DTYPE_int]) -> bool:
     """Checking whether triangle1 and triangle2 are equivalent or not.
     """
     a=np.vstack([triangle1,triangle2])
@@ -517,7 +519,7 @@ def equivalent_triangles(triangle1: NDArray[np.int64], triangle2: NDArray[np.int
     else:
         return False # not equivalent traiangles
 
-def equivalent_edges(edge1: NDArray[np.int64], edge2: NDArray[np.int64]) -> bool:
+def equivalent_edges(edge1: NDArray[DTYPE_int], edge2: NDArray[DTYPE_int]) -> bool:
     """Checking whether edge1 and edge2 are equivalent or not.
     """
     a=np.vstack([edge1,edge2])
@@ -527,7 +529,7 @@ def equivalent_edges(edge1: NDArray[np.int64], edge2: NDArray[np.int64]) -> bool
     else:
         return False # not equivalent
 
-def equivalent_vertices(vertex1: NDArray[np.int64], vertex2: NDArray[np.int64]) -> bool:
+def equivalent_vertices(vertex1: NDArray[DTYPE_int], vertex2: NDArray[DTYPE_int]) -> bool:
     xyz1=projection3(vertex1)
     xyz2=projection3(vertex2)
     if np.all(xyz1==xyz2):
@@ -538,14 +540,14 @@ def equivalent_vertices(vertex1: NDArray[np.int64], vertex2: NDArray[np.int64]) 
 #----------------------------
 # Sort
 #----------------------------
-def sort_vctors(vts: NDArray[np.int64]) -> NDArray[np.int64]:
+def sort_vctors(vts: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """
     sort vectors in TAU-style
     
     sort the coordinates (xi,yi,zi) such that the xi in the order.
     """
     n1,n2,_=vts.shape
-    out=np.zeros(vts.shape,dtype=np.int64)
+    out=np.zeros(vts.shape,dtype=DTYPE_int)
     vns=get_internal_component_sets_numerical(vts)
     
     tmp=np.argsort(vns,axis=0)
@@ -554,14 +556,14 @@ def sort_vctors(vts: NDArray[np.int64]) -> NDArray[np.int64]:
         out[i1]=vts[tmp[i1][0]]
     return out
 
-def sort_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
+def sort_obj(obj: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """
     sort triangle in an object
     """
-    #out=np.zeros(vts.shape,dtype=np.int64)
-    out=np.zeros(obj.shape,dtype=np.int64)
+    #out=np.zeros(vts.shape,dtype=DTYPE_int)
+    out=np.zeros(obj.shape,dtype=DTYPE_int)
     centroids=np.zeros(len(obj),dtype=np.float64)
-    tmp=np.zeros((obj.shape,3),dtype=np.int64)
+    tmp=np.zeros((obj.shape,3),dtype=DTYPE_int)
     
     # 各triangleの頂点xyzをx順にソートすると同時に重心を求めておく。
     for i1 in range(len(obj)):
@@ -592,7 +594,7 @@ def decomposition(tmp2v: NDArray[np.float64]):
             out.append([tet[0],tet[1],tet[2]])
     return out
 
-def triangulation_points(points: NDArray[np.int64]):
+def triangulation_points(points: NDArray[DTYPE_int]):
     
     tmp=np.zeros((len(points),2),dtype=np.float64)
     for i1,p in enumerate(points):
@@ -629,7 +631,7 @@ def triangulation_points(points: NDArray[np.int64]):
 ####
 ####
 ##############################
-def remove_vectors(vts1: NDArray[np.int64], vts2: NDArray[np.int64]) -> NDArray[np.int64]:
+def remove_vectors(vts1: NDArray[DTYPE_int], vts2: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """remove 6d vectors in a set vts2 from a set vts1.
     6次元ベクトルリストvts1から6次元ベクトルリストvts2にあるベクトルを抜きとる
     """
@@ -644,14 +646,14 @@ def remove_vectors(vts1: NDArray[np.int64], vts2: NDArray[np.int64]) -> NDArray[
             lst.append(i1)
     num=len(lst)
     if num!=0:
-        out=np.zeros((len(lst),6,3),dtype=np.int64)
+        out=np.zeros((len(lst),6,3),dtype=DTYPE_int)
         for i1 in range(len(lst)):
             out[i1]=vts1[lst[i1]]
         return out
     else:
         return vts1
 
-def remove_vector(vts: NDArray[np.int64], vt: NDArray[np.int64]) -> NDArray[np.int64]:
+def remove_vector(vts: NDArray[DTYPE_int], vt: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """ remove a 6d vector(vt2) from a set of 6d vectors (vts).
     6次元ベクトルリストvlst1から6次元ベクトルvt2を抜きとる
     """
@@ -664,7 +666,7 @@ def remove_vector(vts: NDArray[np.int64], vt: NDArray[np.int64]) -> NDArray[np.i
             lst.append(i1)
     num=len(lst)
     if num!=0:
-        out=np.zeros((len(lst),6,3),dtype=np.int64)
+        out=np.zeros((len(lst),6,3),dtype=DTYPE_int)
         for i1 in range(len(lst)):
             out[i1]=vts[lst[i1]]
         return out
@@ -678,14 +680,14 @@ def remove_vector(vts: NDArray[np.int64], vt: NDArray[np.int64]) -> NDArray[np.i
 ####
 ####
 #################################
-def merge_two_triangles_in_obj(obj: NDArray[np.int64]) -> NDArray[np.int64]:
+def merge_two_triangles_in_obj(obj: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     
     num=len(obj)
     
     
     return obj
 
-def merge_two_triangles(triangle_1: NDArray[np.int64], triangle_2: NDArray[np.int64]) -> NDArray[np.int64]:
+def merge_two_triangles(triangle_1: NDArray[DTYPE_int], triangle_2: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """Return merged tetrahedra.
     """
     if check_connectivity_triangles(triangle_1,triangle_2): # triangle1とtriangle2が共通する辺を持つ場合
@@ -710,7 +712,7 @@ def merge_two_triangles(triangle_1: NDArray[np.int64], triangle_2: NDArray[np.in
     else:
         return 
     
-def check_connectivity_triangles(triangle_1: NDArray[np.int64], triangle_2: NDArray[np.int64]) -> bool:
+def check_connectivity_triangles(triangle_1: NDArray[DTYPE_int], triangle_2: NDArray[DTYPE_int]) -> bool:
     """Checking whether triangle_1 and _2 are sharing an edge or not.
     """
     a=np.vstack([triangle_1,triangle_1])
@@ -720,7 +722,7 @@ def check_connectivity_triangles(triangle_1: NDArray[np.int64], triangle_2: NDAr
     else:
         return False # not commom edge
 
-def get_common_edge_in_two_triangles(triangle_1: NDArray[np.int64], triangle_2: NDArray[np.int64]) -> NDArray[np.int64]:
+def get_common_edge_in_two_triangles(triangle_1: NDArray[DTYPE_int], triangle_2: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """ Return common edge of two connected triangles.
     """
     edge1=get_triangle_edge(triangle_1)
@@ -745,7 +747,7 @@ def get_common_edge_in_two_triangles(triangle_1: NDArray[np.int64], triangle_2: 
     else:
         return 
 
-def two_segment_into_one(line_segment_1: NDArray[np.int64], line_segment_2: NDArray[np.int64]) -> NDArray[np.int64]:
+def two_segment_into_one(line_segment_1: NDArray[DTYPE_int], line_segment_2: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     
     combination=[\
     [0,1,0,1],\
@@ -775,7 +777,7 @@ def two_segment_into_one(line_segment_1: NDArray[np.int64], line_segment_2: NDAr
     else:
         return 
 
-def coplanar_check_two_triangles(triange1: NDArray[np.int64], triange2: NDArray[np.int64]) -> bool:
+def coplanar_check_two_triangles(triange1: NDArray[DTYPE_int], triange2: NDArray[DTYPE_int]) -> bool:
     """Checking whether two triangles are coplanar or not.
     
     Note
@@ -813,124 +815,124 @@ def middle_position(pos1,pos2):
 #
 # Comment：Need to be reorganised.
 #----------------------------
-def generator_surface_1(obj: NDArray[np.int64], verbose: int=0) -> NDArray[np.int64]:
-    """Generate triangles of the object's surface.
-    
-    Parameters
-    ----------
-    obj: array
-    
-    Returns
-    -------
-    surfaces: array
-        set of surface triangles in TAU-style.
-    """
-    # (1) preparing a list of triangle surfaces without doubling (tmp2)
-    n1,_,_,_=obj.shape
-    triangles=np.zeros((n1,4,3,6,3),dtype=np.int64)
-    i1=0
-    
-    if verbose>0:
-        print('      generator_surface_1 part-1')
-        start=time.time()
-    #
-    for tetrahedron in obj:
-        triangles[i1]=get_tetrahedron_surface(tetrahedron)
-        i1+=1
-    triangles=triangles.reshape(n1*4,3,6,3)
-    #
-    if verbose>0:
-        end=time.time()
-        time_diff=end-start
-        print('         ends in %4.3f sec'%time_diff)
-    
-    
-    if n1==1:
-        return triangles
-    else:
-        if verbose>0:
-            print('      generator_surface_1 part-2')
-            start=time.time()
-        #
-        
-        # (2) 重複のない三角形（すなはちobject表面の三角形）のみを得る。
-        # 三角形が重複していれば重心も同じことを利用する。重心が一致すれば重複しているとは限らないが、
-        # objが正しく与えられているとすれば問題ない。
-        #
-        # まず重心xyzを求める
-        xyz=np.zeros((n1*4,3),dtype=np.float64)
-        for i1 in range(n1*4):
-            vt=centroid(triangles[i1])
-            xyz[i1]=get_internal_component_numerical(vt)
-        
-        """
-        # 以下のやり方では効率悪い。
-        # triangleの数が多ければ時間がかかる(O(n^2))ので改良が必要
-        #===========ここから============
-        # xyzをxでソートし、indexを得る。
-        indx_xyz=np.argsort(xyz[:,0])
-        #print('number of trianges:',len(indx_xyz))
-        #print('indx_xyz:',indx_xyz)
-        #print(xyz[indx_xyz])
-        
-        # 重複しているtriangleはスキップ。表面のtriangleのみを選び出す。
-        lst=[]
-        for i1 in indx_xyz:
-            counter=0
-            for i2 in indx_xyz:
-                if i1==i2:
-                    pass
-                else:
-                    if np.allclose(xyz[i1],xyz[i2]): # equivalent
-                        counter+=1
-                        break
-            if counter==0:
-                lst.append(i1)
-        #===========ここまで============
-        """
-        #"""
-        # xyz座標のソートをx,y,zに対して行い、重複チェックを効率化(O(n))。
-        #===========ここから============
-        # xyzをx,y,zの順で優先的にソートし、indexを得る。
-        indx_xyz=np.lexsort((xyz[:,2],xyz[:,1],xyz[:,0]))
-        #print('number of trianges:',len(indx_xyz))
-        #print('indx_xyz:',indx_xyz)
-        
-        # 表面のtriangleのみを選び出すには、重複しているtriangleを除けば良い。
-        # 上でxyzをx,y,zの順で優先的にソートできていれば、着目している点をその前後と比べるだけで重複があるか判断できる。
-        lst=[]
-        if np.allclose(xyz[indx_xyz[0]],xyz[indx_xyz[1]]):
-            pass
-        else:
-            lst.append(indx_xyz[0])
-        for i1 in range(1,len(indx_xyz)-1):
-            counter=0
-            for i2 in [-1,1]:
-                if np.allclose(xyz[indx_xyz[i1]],xyz[indx_xyz[i1+i2]]): # equivalent
-                    counter+=1
-                    break
-            if counter==0:
-                lst.append(indx_xyz[i1])
-        if np.allclose(xyz[indx_xyz[-1]],xyz[indx_xyz[-2]]):
-            pass
-        else:
-            lst.append(indx_xyz[-1])
-        #===========ここまで============
-        #"""
-        
-        #print('lst:',lst)
-        num=len(lst)
-        #print('num:',num)
-        out=np.zeros((num,3,6,3),dtype=np.int64)
-        #print('number of unique triangls:',num)
-        for i1 in range(num):
-            out[i1]=triangles[lst[i1]]
-        #print('shape:',out.shape)
-        
-        if verbose>0:
-            end=time.time()
-            time_diff=end-start
-            print('         ends in %4.3f sec'%time_diff)
-        
-        return out
+#def generator_surface_1(obj: NDArray[DTYPE_int], verbose: int=0) -> NDArray[DTYPE_int]:
+#    """Generate triangles of the object's surface.
+#    
+#    Parameters
+#    ----------
+#    obj: array
+#    
+#    Returns
+#    -------
+#    surfaces: array
+#        set of surface triangles in TAU-style.
+#    """
+#    # (1) preparing a list of triangle surfaces without doubling (tmp2)
+#    n1,_,_,_=obj.shape
+#    triangles=np.zeros((n1,4,3,6,3),dtype=DTYPE_int)
+#    i1=0
+#    
+#    if verbose>0:
+#        print('      generator_surface_1 part-1')
+#        start=time.time()
+#    #
+#    for tetrahedron in obj:
+#        triangles[i1]=get_tetrahedron_surface(tetrahedron)
+#        i1+=1
+#    triangles=triangles.reshape(n1*4,3,6,3)
+#    #
+#    if verbose>0:
+#        end=time.time()
+#        time_diff=end-start
+#        print('         ends in %4.3f sec'%time_diff)
+#    
+#    
+#    if n1==1:
+#        return triangles
+#    else:
+#        if verbose>0:
+#            print('      generator_surface_1 part-2')
+#            start=time.time()
+#        #
+#        
+#        # (2) 重複のない三角形（すなはちobject表面の三角形）のみを得る。
+#        # 三角形が重複していれば重心も同じことを利用する。重心が一致すれば重複しているとは限らないが、
+#        # objが正しく与えられているとすれば問題ない。
+#        #
+#        # まず重心xyzを求める
+#        xyz=np.zeros((n1*4,3),dtype=np.float64)
+#        for i1 in range(n1*4):
+#            vt=centroid(triangles[i1])
+#            xyz[i1]=get_internal_component_numerical(vt)
+#        
+#        """
+#        # 以下のやり方では効率悪い。
+#        # triangleの数が多ければ時間がかかる(O(n^2))ので改良が必要
+#        #===========ここから============
+#        # xyzをxでソートし、indexを得る。
+#        indx_xyz=np.argsort(xyz[:,0])
+#        #print('number of trianges:',len(indx_xyz))
+#        #print('indx_xyz:',indx_xyz)
+#        #print(xyz[indx_xyz])
+#        
+#        # 重複しているtriangleはスキップ。表面のtriangleのみを選び出す。
+#        lst=[]
+#        for i1 in indx_xyz:
+#            counter=0
+#            for i2 in indx_xyz:
+#                if i1==i2:
+#                    pass
+#                else:
+#                    if np.allclose(xyz[i1],xyz[i2]): # equivalent
+#                        counter+=1
+#                        break
+#            if counter==0:
+#                lst.append(i1)
+#        #===========ここまで============
+#        """
+#        #"""
+#        # xyz座標のソートをx,y,zに対して行い、重複チェックを効率化(O(n))。
+#        #===========ここから============
+#        # xyzをx,y,zの順で優先的にソートし、indexを得る。
+#        indx_xyz=np.lexsort((xyz[:,2],xyz[:,1],xyz[:,0]))
+#        #print('number of trianges:',len(indx_xyz))
+#        #print('indx_xyz:',indx_xyz)
+#        
+#        # 表面のtriangleのみを選び出すには、重複しているtriangleを除けば良い。
+#        # 上でxyzをx,y,zの順で優先的にソートできていれば、着目している点をその前後と比べるだけで重複があるか判断できる。
+#        lst=[]
+#        if np.allclose(xyz[indx_xyz[0]],xyz[indx_xyz[1]]):
+#            pass
+#        else:
+#            lst.append(indx_xyz[0])
+#        for i1 in range(1,len(indx_xyz)-1):
+#            counter=0
+#            for i2 in [-1,1]:
+#                if np.allclose(xyz[indx_xyz[i1]],xyz[indx_xyz[i1+i2]]): # equivalent
+#                    counter+=1
+#                    break
+#            if counter==0:
+#                lst.append(indx_xyz[i1])
+#        if np.allclose(xyz[indx_xyz[-1]],xyz[indx_xyz[-2]]):
+#            pass
+#        else:
+#            lst.append(indx_xyz[-1])
+#        #===========ここまで============
+#        #"""
+#        
+#        #print('lst:',lst)
+#        num=len(lst)
+#        #print('num:',num)
+#        out=np.zeros((num,3,6,3),dtype=DTYPE_int)
+#        #print('number of unique triangls:',num)
+#        for i1 in range(num):
+#            out[i1]=triangles[lst[i1]]
+#        #print('shape:',out.shape)
+#        
+#        if verbose>0:
+#            end=time.time()
+#            time_diff=end-start
+#            print('         ends in %4.3f sec'%time_diff)
+#        
+#        return out
 

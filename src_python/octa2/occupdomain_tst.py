@@ -10,6 +10,8 @@ import occupation_domain as od
 #    symmetric,read_xyz,write)
 
 import symmetry as symmetry
+DTYPE_int = int
+#DTYPE_int = np.int64
 
 test_dir='../../tests/octa/test'
 xyz_dir='../../xyz/octa'

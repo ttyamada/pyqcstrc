@@ -52,8 +52,10 @@ from octa2.utils import (remove_doubling_in_perp_space,
 
 TAU=np.sqrt(2)
 EPS=1e-6
+DTYPE_int = int
+#DTYPE_int = np.int64
 
-def ball_radius_obj(obj: NDArray[np.int64], centroid: NDArray[np.int64]) -> float:
+def ball_radius_obj(obj: NDArray[DTYPE_int], centroid: NDArray[DTYPE_int]) -> float:
     """estimate maximum distance between verices of given OBJ and its centroid.
     
     Parameters
@@ -80,17 +82,17 @@ def ball_radius_obj(obj: NDArray[np.int64], centroid: NDArray[np.int64]) -> floa
             pass
     return dd
 
-def ball_radius(triangle: NDArray[np.int64], centroid: NDArray[np.int64]) -> float:
+def ball_radius(triangle: NDArray[DTYPE_int], centroid: NDArray[DTYPE_int]) -> float:
     #  this transforms a tetrahedron to a boll which covers the triangle
     #  the centre of the boll is the centroid of the triangle.
     return ball_radius_obj(triangle,centroid)
 
-def distance_in_perp_space(vt1: NDArray[np.int64], vt2: NDArray[np.int64]) -> float:
+def distance_in_perp_space(vt1: NDArray[DTYPE_int], vt2: NDArray[DTYPE_int]) -> float:
     a=sub_vectors(vt1,vt2)
     a=projection3(a)
     return length_numerical(a)
 
-def rough_check_intersection_triangle_obj(triangle: NDArray[np.int64], cententer: NDArray[np.int64], distance: float) -> bool:
+def rough_check_intersection_triangle_obj(triangle: NDArray[DTYPE_int], cententer: NDArray[DTYPE_int], distance: float) -> bool:
     cen1=centroid(triangle)
     dd1=ball_radius(triangle,cen1)
     dd0=distance_in_perp_space(cen1,cententer)
@@ -99,7 +101,7 @@ def rough_check_intersection_triangle_obj(triangle: NDArray[np.int64], cententer
     else:
         return False
 
-def check_intersection_two_triangles(triangle_1: NDArray[np.int64], triangle_2: NDArray[np.int64]) -> int:
+def check_intersection_two_triangles(triangle_1: NDArray[DTYPE_int], triangle_2: NDArray[DTYPE_int]) -> int:
     # checking whether triangle_1 is fully inside triangle_2 or not
     counter2=0
     for vtx in triangle_1:
@@ -194,7 +196,7 @@ def check_intersection_two_triangles(triangle_1: NDArray[np.int64], triangle_2: 
         else:
             return 0 # no intersection
 
-def intersection_two_segment(segment_1: NDArray[np.int64], segment_2: NDArray[np.int64]) -> NDArray[np.int64]:
+def intersection_two_segment(segment_1: NDArray[DTYPE_int], segment_2: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """check intersection between two line segments.
     
     Parameters
@@ -270,7 +272,7 @@ def intersection_two_segment(segment_1: NDArray[np.int64], segment_2: NDArray[np
     else: # no intersection
         return 
 
-def intersection_segment_surface(segment: NDArray[np.int64], surface: NDArray[np.int64]) -> NDArray[np.int64]:
+def intersection_segment_surface(segment: NDArray[DTYPE_int], surface: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """check intersection between a line segment and a triangle.
     
     Möller–Trumbore intersection algorithm
@@ -345,7 +347,7 @@ def intersection_segment_surface(segment: NDArray[np.int64], surface: NDArray[np
     else: # no intersection
         return 
     
-def intersection_two_triangles(triangle_1: NDArray[np.int64], triangle_2: NDArray[np.int64]) -> NDArray[np.int64]:
+def intersection_two_triangles(triangle_1: NDArray[DTYPE_int], triangle_2: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     #
     # -----------------
     # triangle_1
@@ -459,7 +461,7 @@ def intersection_two_triangles(triangle_1: NDArray[np.int64], triangle_2: NDArra
     else:
         return 
 
-def intersection_two_obj_1(obj1: NDArray[np.int64],obj2: NDArray[np.int64],select=None,verbose: int=0) -> NDArray[np.int64]:
+def intersection_two_obj_1(obj1: NDArray[DTYPE_int],obj2: NDArray[DTYPE_int],select=None,verbose: int=0) -> NDArray[DTYPE_int]:
     """
     Return an intersection between two objects.
     
@@ -599,7 +601,7 @@ def intersection_two_obj_1(obj1: NDArray[np.int64],obj2: NDArray[np.int64],selec
     else:
         return 
 
-def intersection_two_obj_convex(obj1: NDArray[np.int64], obj2: NDArray[np.int64], verbose: int=0) -> NDArray[np.int64]:
+def intersection_two_obj_convex(obj1: NDArray[DTYPE_int], obj2: NDArray[DTYPE_int], verbose: int=0) -> NDArray[DTYPE_int]:
     """
     Return an intersection between two objects.
     

@@ -25,9 +25,12 @@ from octa2.numericalc import (projection_numerical,
                         length_numerical,
                         )
 EPS=1e-6
-V0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+DTYPE_int = int
+#DTYPE_int = DTYPE_int
 
-def symop_obj(symop:NDArray[np.int64],obj:NDArray[np.int64],centre:NDArray[np.int64]):
+V0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=DTYPE_int)
+
+def symop_obj(symop:NDArray[DTYPE_int],obj:NDArray[DTYPE_int],centre:NDArray[DTYPE_int]):
     """ Apply a symmetric operation on an object around given centre. in TAU-style
     
     """
@@ -35,7 +38,7 @@ def symop_obj(symop:NDArray[np.int64],obj:NDArray[np.int64],centre:NDArray[np.in
     if ndim==3:
         return symop_vecs(symop,obj,centre)
     elif ndim==4:
-        obj1=np.zeros(obj.shape,dtype=np.int64)
+        obj1=np.zeros(obj.shape,dtype=DTYPE_int)
         i=0
         for vts in obj:
             obj1[i]=symop_vecs(symop,vts,centre)
@@ -47,25 +50,25 @@ def symop_obj(symop:NDArray[np.int64],obj:NDArray[np.int64],centre:NDArray[np.in
         print('object has an incorrect shape!')
         return 
 
-def symop_vecs(symop:NDArray[np.int64],vts:NDArray[np.int64],centre:NDArray[np.int64]):
+def symop_vecs(symop:NDArray[DTYPE_int],vts:NDArray[DTYPE_int],centre:NDArray[DTYPE_int]):
     """ Apply a symmetric operation on set of vectors around given centre. in TAU-style
     
     """
-    out=np.zeros(vts.shape,dtype=np.int64)
+    out=np.zeros(vts.shape,dtype=DTYPE_int)
     i=0
     for vt in vts:
         out[i]=symop_vec(symop,vt,centre)
         i+=1
     return out
 
-def symop_vec(symop:NDArray[np.int64],vt:NDArray[np.int64],centre:NDArray[np.int64]):
+def symop_vec(symop:NDArray[DTYPE_int],vt:NDArray[DTYPE_int],centre:NDArray[DTYPE_int]):
     """ Apply a symmetric operation on a vector around given centre. in TAU-style
     """
     vt=sub_vectors(vt,centre)
     vt=dot_product_1(symop,vt)
     return add_vectors(vt,centre)
 
-def generator_obj_symmetric_obj(obj:NDArray[np.int64],centre:NDArray[np.int64],pg=None):
+def generator_obj_symmetric_obj(obj:NDArray[DTYPE_int],centre:NDArray[DTYPE_int],pg=None):
     """
     """
     if obj.ndim==3 or obj.ndim==4:
@@ -79,7 +82,7 @@ def generator_obj_symmetric_obj(obj:NDArray[np.int64],centre:NDArray[np.int64],p
                 mop.append(tmp[i])
         num=len(mop)
         shape=tuple([num])
-        a=np.zeros(shape+obj.shape,dtype=np.int64)
+        a=np.zeros(shape+obj.shape,dtype=DTYPE_int)
         for i,op in enumerate(mop):
             a[i]=symop_obj(op,obj,centre)
         if obj.ndim==4:
@@ -90,12 +93,12 @@ def generator_obj_symmetric_obj(obj:NDArray[np.int64],centre:NDArray[np.int64],p
         print('object has an incorrect shape!')
         return
 
-def generator_obj_symmetric_triangle(obj:NDArray[np.int64],centre:NDArray[np.int64],pg=None):
+def generator_obj_symmetric_triangle(obj:NDArray[DTYPE_int],centre:NDArray[DTYPE_int],pg=None):
     """
     """
     return generator_obj_symmetric_obj(obj,centre,pg)
 
-def generator_obj_symmetric_vector_specific_symop(obj:NDArray[np.int64],centre:NDArray[np.int64],index_of_symmetry_operation:NDArray[np.int64],pg=None):
+def generator_obj_symmetric_vector_specific_symop(obj:NDArray[DTYPE_int],centre:NDArray[DTYPE_int],index_of_symmetry_operation:NDArray[DTYPE_int],pg=None):
     """
     vector: triangles
     (6,3)
@@ -104,7 +107,7 @@ def generator_obj_symmetric_vector_specific_symop(obj:NDArray[np.int64],centre:N
     if obj.ndim==2:
         mop=octasymop_array()
         shape=tuple([len(index_of_symmetry_operation)])
-        a=np.zeros(shape+obj.shape,dtype=np.int64)
+        a=np.zeros(shape+obj.shape,dtype=DTYPE_int)
         j=0
         for i1 in index_of_symmetry_operation:
             a[j]=symop_obj(mop[i1],obj,centre)
@@ -114,7 +117,7 @@ def generator_obj_symmetric_vector_specific_symop(obj:NDArray[np.int64],centre:N
         print('object has an incorrect shape!')
         return
 
-def generator_obj_symmetric_triangle_specific_symop(obj:NDArray[np.int64],centre:NDArray[np.int64],index_of_symmetry_operation:NDArray[np.int64],pg=None):
+def generator_obj_symmetric_triangle_specific_symop(obj:NDArray[DTYPE_int],centre:NDArray[DTYPE_int],index_of_symmetry_operation:NDArray[DTYPE_int],pg=None):
     """
     triangle: triangles
     (3,6,3)
@@ -123,7 +126,7 @@ def generator_obj_symmetric_triangle_specific_symop(obj:NDArray[np.int64],centre
     if obj.ndim==3:
         mop=octasymop_array()
         shape=tuple([len(index_of_symmetry_operation)])
-        a=np.zeros(shape+obj.shape,dtype=np.int64)
+        a=np.zeros(shape+obj.shape,dtype=DTYPE_int)
         j=0
         for i1 in index_of_symmetry_operation:
             a[j]=symop_obj(mop[i1],obj,centre)
@@ -133,7 +136,7 @@ def generator_obj_symmetric_triangle_specific_symop(obj:NDArray[np.int64],centre
         print('object has an incorrect shape!')
         return
 
-def generator_obj_symmetric_obj_specific_symop(obj:NDArray[np.int64],centre:NDArray[np.int64],index_of_symmetry_operation:NDArray[np.int64],pg=None):
+def generator_obj_symmetric_obj_specific_symop(obj:NDArray[DTYPE_int],centre:NDArray[DTYPE_int],index_of_symmetry_operation:NDArray[DTYPE_int],pg=None):
     """
     obj: a set of triangles
     (n,3,6,3)
@@ -142,7 +145,7 @@ def generator_obj_symmetric_obj_specific_symop(obj:NDArray[np.int64],centre:NDAr
     if obj.ndim==4:
         mop=octasymop_array()
         shape=tuple([len(index_of_symmetry_operation)])
-        a=np.zeros(shape+obj.shape,dtype=np.int64)
+        a=np.zeros(shape+obj.shape,dtype=DTYPE_int)
         j=0
         for i1 in index_of_symmetry_operation:
             a[j]=symop_obj(mop[i1],obj,centre)
@@ -153,28 +156,41 @@ def generator_obj_symmetric_obj_specific_symop(obj:NDArray[np.int64],centre:NDAr
         print('object has an incorrect shape!')
         return
     
-def generator_obj_symmetric_triangle_0(obj:NDArray[np.int64],centre:NDArray[np.int64],symmetry_operation_index:NDArray[np.int64],pg=None):
+def generator_obj_symmetric_triangle_0(obj:NDArray[DTYPE_int],centre:NDArray[DTYPE_int],symmetry_operation_index:NDArray[DTYPE_int],pg=None):
     """
     """
     mop=octasymop_array()
     return symop_obj(mop[symmetry_operation_index],obj,centre)
 
-def generator_obj_symmetric_vec(vectors:NDArray[np.int64],centre:NDArray[np.int64],pg=None):
+def generator_obj_symmetric_vec(vectors:NDArray[DTYPE_int],centre:NDArray[DTYPE_int],pg=None):
     """
     """
     return generator_obj_symmetric_obj(vectors,centre,pg)
 
-def generator_equivalent_vectors(vectors:NDArray[np.int64],centre:NDArray[np.int64],pg=None):
+def generator_equivalent_vectors(vectors:NDArray[DTYPE_int],centre:NDArray[DTYPE_int],pg=None):
     """
     """
     a=generator_obj_symmetric_obj(vectors,centre,pg)
     return remove_doubling_in_perp_space(a)
 
-def generator_equivalent_vec(vector:NDArray[np.int64],centre:NDArray[np.int64],pg=None):
+def generator_equivalent_vec(vector:NDArray[DTYPE_int],centre:NDArray[DTYPE_int],pg=None):
     """
     """
     a=generator_obj_symmetric_obj(vector,centre,pg)
     return remove_doubling(a)
+
+def write_r0(symop: NDArray[DTYPE_int]):
+    shape=symop.shape
+    #print("symo.shape",shape)
+    print("symmetry operators", "order",shape[0])
+    for i in range(shape[0]):
+        print("[",end=" ")
+        for j in range(shape[1]):
+            if j != shape[1]-1:
+                print(symop[i][j])
+            else:
+                 print(symop[i][j],"]")
+        print("")
 
 def octasymop_array():
     """
@@ -188,15 +204,15 @@ def octasymop_array():
                     [ 0, 0, 0, 1, 0, 0],\
                     [-1, 0, 0, 0, 0, 0],\
                     [ 0, 0, 0, 0, 1, 0],\
-                    [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+                    [ 0, 0, 0, 0, 0, 1]],dtype=DTYPE_int)
         # mirror
         m2=np.array([[0, 0, 0, 1, 0, 0],\
                     [ 0, 0, 1, 0, 0, 0],\
                     [ 0, 1, 0, 0, 0, 0],\
                     [ 1, 0, 0, 0, 0, 0],\
                     [ 0, 0, 0, 0, 1, 0],\
-                    [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
-        symop=np.zeros((2,6,6),dtype=np.int64)
+                    [ 0, 0, 0, 0, 0, 1]],dtype=DTYPE_int)
+        symop=np.zeros((2,6,6),dtype=DTYPE_int)
         symop[0]=m1
         symop[1]=m2
         return symop
@@ -205,7 +221,7 @@ def octasymop_array():
     num=0
     m1=ops[0] # c8
     m2=ops[1] # mirror
-    symop=np.zeros((16,6,6),dtype=np.int64)
+    symop=np.zeros((16,6,6),dtype=DTYPE_int)
     for i1 in range(2):
         s2=matrixpow(m2,i1)
         for i2 in range(8):
@@ -216,7 +232,7 @@ def octasymop_array():
     return symop
     
     
-def generator_symmetric_vec_specific_symop(vector:NDArray[np.int64],centre:NDArray[np.int64],symmetry_operation_index:NDArray[np.int64],pg=None):
+def generator_symmetric_vec_specific_symop(vector:NDArray[DTYPE_int],centre:NDArray[DTYPE_int],symmetry_operation_index:NDArray[DTYPE_int],pg=None):
     mop=octasymop_array()
     return symop_vec(mop[symmetry_operation_index],vector,centre)
     
@@ -225,14 +241,14 @@ def generator_symmetric_vec_specific_symop(vector:NDArray[np.int64],centre:NDArr
 ################ 
 # numeric
 ################
-def generator_equivalent_numeric_vector_specific_symop(vn:NDArray[np.int64],index_of_symmetry_operation:NDArray[np.int64],pg='-12m2'):
+def generator_equivalent_numeric_vector_specific_symop(vn:NDArray[DTYPE_int],index_of_symmetry_operation:NDArray[DTYPE_int],pg='-12m2'):
     mop=octasymop_array()
     out=np.zeros((len(index_of_symmetry_operation),6),dtype=np.float64)
     for i1 in index_of_symmetry_operation:
         out[i1]=mop[i1]@vn
     return out
     
-def generator_equivalent_numeric_vectors_specific_symop(vns:NDArray[np.int64],index_of_symmetry_operation:NDArray[np.int64],pg='-12m2'):
+def generator_equivalent_numeric_vectors_specific_symop(vns:NDArray[DTYPE_int],index_of_symmetry_operation:NDArray[DTYPE_int],pg='-12m2'):
     mop=octasymop_array()
     num1=len(index_of_symmetry_operation)
     out=np.zeros((num1,len(vns),6),dtype=np.float64)
@@ -245,7 +261,7 @@ def generator_equivalent_numeric_vectors_specific_symop(vns:NDArray[np.int64],in
 #################
 #   Utilities
 #################
-def remove_overlaps(l1:NDArray[np.int64]):
+def remove_overlaps(l1:NDArray[DTYPE_int]):
     """
     Remove overlap elements in list with set method.
     
@@ -260,7 +276,7 @@ def remove_overlaps(l1:NDArray[np.int64]):
     l2.sort()
     return l2
     
-def find_overlaps(l1:NDArray[np.int64],l2:NDArray[np.int64]):
+def find_overlaps(l1:NDArray[DTYPE_int],l2:NDArray[DTYPE_int]):
     """find overlap or not btween list1 and list2.
     
     Args:
@@ -280,30 +296,30 @@ def find_overlaps(l1:NDArray[np.int64],l2:NDArray[np.int64]):
 ############################
 # Similarity transformation
 ############################
-def similarity_obj(obj:NDArray[np.int64],m:NDArray[np.int64]):
+def similarity_obj(obj:NDArray[DTYPE_int],m:NDArray[DTYPE_int]):
     """similarity transformation of a triangle
     """
-    out=np.zeros(obj.shape,dtype=np.int64)
+    out=np.zeros(obj.shape,dtype=DTYPE_int)
     for i1,od in enumerate(obj):
         out[i1]=similarity_triangle(od,m)
     return out
 
-def similarity_triangle(triangle:NDArray[np.int64],m:NDArray[np.int64]):
+def similarity_triangle(triangle:NDArray[DTYPE_int],m:NDArray[DTYPE_int]):
     """similarity transformation of a triangle
     """
-    out=np.zeros(triangle.shape,dtype=np.int64)
+    out=np.zeros(triangle.shape,dtype=DTYPE_int)
     for i1,vt in enumerate(triangle):
         out[i1]=similarity_vec(vt,m)
     return out
 
-def similarity_vec(vt:NDArray[np.int64],m:NDArray[np.int64]):
+def similarity_vec(vt:NDArray[DTYPE_int],m:NDArray[DTYPE_int]):
     """similarity transformation of a vector
     """
     vec1=[]
     op=similarity(m)
     return dot_product_1(op,vt)
     
-def similarity(m:NDArray[np.int64]):
+def similarity(m:NDArray[DTYPE_int]):
     """Similarity transformation of Octagonal QC
     """
     m1=np.array([[ 1, 1, 0,-1, 0, 0],\
@@ -311,13 +327,13 @@ def similarity(m:NDArray[np.int64]):
                  [ 0, 1, 1, 1, 0, 0],\
                  [-1, 0, 1, 1, 0, 0],\
                  [ 0, 0, 0, 0, 1, 0],\
-                 [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+                 [ 0, 0, 0, 0, 0, 1]],dtype=DTYPE_int)
     return matrixpow(m1.T,m)
 
 ############################
 # Group
 ############################
-def generate_multiplication_table(a:NDArray[np.int64],flag:NDArray[np.int64],ndim:np.int64):
+def generate_multiplication_table(a:NDArray[DTYPE_int],flag:NDArray[DTYPE_int],ndim:DTYPE_int):
     """
     対称行列リストaから積表を求める
     Generation of a multiplication table from symmetry elements,
@@ -336,7 +352,7 @@ def generate_multiplication_table(a:NDArray[np.int64],flag:NDArray[np.int64],ndi
     RTOL=1e-02
     ATOL=1e-03
     
-    def translation_one_unit_cel(ndim:np.int64):
+    def translation_one_unit_cel(ndim:DTYPE_int):
         """
         ユニットセル1つ分だけシフトする。
         並進を含む対称操作が等価かどうか確認するときに用いる。
@@ -391,7 +407,7 @@ def generate_multiplication_table(a:NDArray[np.int64],flag:NDArray[np.int64],ndi
             pass
         return lst
     
-    def equivalent(a:NDArray[np.int64],b:NDArray[np.int64],flag=0,ndim=6):
+    def equivalent(a:NDArray[DTYPE_int],b:NDArray[DTYPE_int],flag=0,ndim=6):
         """
         judge whether symmetric matrices a and b are equivalen or not. 
         Input
@@ -449,7 +465,7 @@ def generate_multiplication_table(a:NDArray[np.int64],flag:NDArray[np.int64],ndi
         print('Cannot make multiplication table.')
         return 1
 
-def check_closure(mul_table:NDArray[np.int64],combination:NDArray[np.int64]):
+def check_closure(mul_table:NDArray[DTYPE_int],combination:NDArray[DTYPE_int]):
     # 閉包性(closure)
     counter3 = 0
     num = len(combination)
@@ -467,7 +483,7 @@ def check_closure(mul_table:NDArray[np.int64],combination:NDArray[np.int64]):
     else:
         return False
 
-def check_identity_element(combination:NDArray[np.int64],num_identity=0):
+def check_identity_element(combination:NDArray[DTYPE_int],num_identity=0):
     # 単位元(identity element)の存在
     counter1 = 0
     for i2 in range(len(combination)):
@@ -479,7 +495,7 @@ def check_identity_element(combination:NDArray[np.int64],num_identity=0):
     else:
         return False
 
-def check_inverse_element(mul_table:NDArray[np.int64],num_identity=0):
+def check_inverse_element(mul_table:NDArray[DTYPE_int],num_identity=0):
     # 逆元(inverse element)の存在
     (m,n)=mul_table.shape
     if m == n:
@@ -500,7 +516,7 @@ def check_inverse_element(mul_table:NDArray[np.int64],num_identity=0):
     else:
         return False
 
-def check_connectivity(mul_table:NDArray[np.int64],combination:NDArray[np.int64]):
+def check_connectivity(mul_table:NDArray[DTYPE_int],combination:NDArray[DTYPE_int]):
     # 結合律(connectivity)
     counter3=0
     num = len(combination)
@@ -521,7 +537,7 @@ def check_connectivity(mul_table:NDArray[np.int64],combination:NDArray[np.int64]
     else:
         return False
 
-def check_group(a:NDArray[np.int64],flag='SG',ndim=6):
+def check_group(a:NDArray[DTYPE_int],flag='SG',ndim=6):
     """
     """
     table=generate_multiplication_table(a,flag,ndim)
@@ -560,9 +576,9 @@ def site_symmetry(site,brv,pg,vervose=0):
     symop=octasymop_array(pg)
     
     # サイト周りでvtgに対して対称操作を施す。
-    vtg=np.array([[1,0,3],[0,1,4],[1,0,5],[0,1,6],[1,0,7],[0,0,1]],dtype=np.int64)
+    vtg=np.array([[1,0,3],[0,1,4],[1,0,5],[0,1,6],[1,0,7],[0,0,1]],dtype=DTYPE_int)
     #vtg=add_vectors(vtg,site)
-    a=np.zeros((len(symop),6,3),dtype=np.int64)
+    a=np.zeros((len(symop),6,3),dtype=DTYPE_int)
     for i1,op in enumerate(symop):
         a[i1]=symop_vec(op,vtg,site)
         
@@ -608,7 +624,7 @@ def site_symmetry(site,brv,pg,vervose=0):
     return lst
     
 
-def equivalent_positions_in_unit_cell_dev(site:NDArray[np.int64],brv:str,pg,vervose=0):
+def equivalent_positions_in_unit_cell_dev(site:NDArray[DTYPE_int],brv:str,pg,vervose=0):
     """
     単位胞内にある等価なサイトを得る。
     """
@@ -616,7 +632,7 @@ def equivalent_positions_in_unit_cell_dev(site:NDArray[np.int64],brv:str,pg,verv
         print(' equivalent_positions_in_unit_cell()')
         print('  site:',numerical_vector(site))
     symop=octasymop_array(pg)
-    eqpos=np.zeros((len(symop),6,3),dtype=np.int64)
+    eqpos=np.zeros((len(symop),6,3),dtype=DTYPE_int)
     for i,op in enumerate(symop):
         eqpos[i]=symop_vec(op,site,centre=V0)
     if vervose>1:
@@ -709,7 +725,7 @@ def translation_new(brv:str,flag=0):
         lst=[-1,0,1]
         #lst=[-2,0,2]
         
-    tr=np.zeros((len(lst)**5,6,3),dtype=np.int64)
+    tr=np.zeros((len(lst)**5,6,3),dtype=DTYPE_int)
     j1=0
     for i1 in lst:
         for i2 in lst:

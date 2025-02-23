@@ -19,6 +19,8 @@ except ImportError:
     print('import error\n')
 
 TAU=np.sqrt(2)
+DTYPE_int = int
+#DTYPE_int = np.int64
 
 def intersection(obj1,obj2,select='standard',verbose=0):
     """

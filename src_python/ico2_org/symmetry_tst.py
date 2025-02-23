@@ -27,12 +27,14 @@ from ico2.numericalc import (projection_par_numerical,\
 from ico2.math1 import (projection
                                 )
 # test
+DTYPE_int = int
+#DTYPE_int = np.int64
 
 def generate_random_value():
     """ generate value in TAU-style
     """
     nmax=10
-    v=np.zeros((3),dtype=np.int64)
+    v=np.zeros((3),dtype=DTYPE_int)
     for i1 in range(2):
         v[i1]=random.randrange(-nmax,nmax) # a and b in (a+b*TAU)/c.
     v[2]=random.randrange(1,nmax) # c in (a+b*TAU)/c.
@@ -43,7 +45,7 @@ def generate_random_vector(ndim=6):
     ndim: dimension of vectors
     """
     nmax=10
-    v=np.zeros((ndim,3), dtype=np.int64)
+    v=np.zeros((ndim,3), dtype=DTYPE_int)
     for i1 in range(ndim):
         v[i1]=generate_random_value()
     return v
@@ -53,7 +55,7 @@ def generate_random_vectors(n,ndim=6):
     num: number of generated vectors.
     ndim: dimension of vectors
     """
-    v=np.zeros((n,ndim,3), dtype=np.int64)
+    v=np.zeros((n,ndim,3), dtype=DTYPE_int)
     for i1 in range(n):
         v[i1]=generate_random_vector(ndim)
     return v
@@ -140,7 +142,7 @@ flag=None
 #flag='axial'
 op3 = icosasymop3_array(flag)
 op6 = icosasymop_array()
-vt=np.array([[1,0,3],[0,1,4],[1,0,5],[0,1,6],[1,0,7],[0,1,8]],dtype=np.int64)
+vt=np.array([[1,0,3],[0,1,4],[1,0,5],[0,1,6],[1,0,7],[0,1,8]],dtype=DTYPE_int)
 vn=numerical_vector(vt)
 vn=projection_par_numerical(vn)
 counter=0
@@ -342,7 +344,7 @@ flag=None
 #flag='axial'
 op3 = icosasymop3_array_2(flag)
 op6 = icosasymop_array_2()
-vt=np.array([[1,0,3],[0,1,4],[1,0,5],[0,1,6],[1,0,7],[0,1,8]],dtype=np.int64)
+vt=np.array([[1,0,3],[0,1,4],[1,0,5],[0,1,6],[1,0,7],[0,1,8]],dtype=DTYPE_int)
 vn=numerical_vector(vt)
 vn=projection_par_numerical(vn)
 counter=0
@@ -374,10 +376,10 @@ for i in range(5):
                     print(counter,i,j,l,m)
                     counter+=1
 
-vt=np.array([[1,0,1],[1,0,2],[1,0,3],[1,0,4],[1,0,5],[1,0,6]],dtype=np.int64) # general 6d vector
+vt=np.array([[1,0,1],[1,0,2],[1,0,3],[1,0,4],[1,0,5],[1,0,6]],dtype=DTYPE_int) # general 6d vector
 
 symop=icosasymop()
-eqpos=np.zeros((len(symop),6,3),dtype=np.int64)
+eqpos=np.zeros((len(symop),6,3),dtype=DTYPE_int)
 for i,op in enumerate(symop):
     v=symop_vec(op,vt,centre=V0)
     eqpos[i]=v

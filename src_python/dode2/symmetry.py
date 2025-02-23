@@ -23,7 +23,10 @@ from dode2.numericalc import (projection_numerical,
 import numpy as np
 
 EPS=1e-6
-V0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+DTYPE_int = int
+#DTYPE_int = DTYPE_int
+
+V0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=DTYPE_int)
 
 def symop_obj(symop,obj,centre=V0):
     """ Apply a symmetric operation on an object around given centre. in TAU-style
@@ -33,7 +36,7 @@ def symop_obj(symop,obj,centre=V0):
     if ndim==3:
         return symop_vecs(symop,obj,centre)
     elif ndim==4:
-        obj1=np.zeros(obj.shape,dtype=np.int64)
+        obj1=np.zeros(obj.shape,dtype=DTYPE_int)
         i=0
         for vts in obj:
             obj1[i]=symop_vecs(symop,vts,centre)
@@ -49,7 +52,7 @@ def symop_vecs(symop,vts,centre=V0):
     """ Apply a symmetric operation on set of vectors around given centre. in TAU-style
     
     """
-    out=np.zeros(vts.shape,dtype=np.int64)
+    out=np.zeros(vts.shape,dtype=DTYPE_int)
     i=0
     for vt in vts:
         out[i]=symop_vec(symop,vt,centre)
@@ -77,7 +80,7 @@ def generator_obj_symmetric_obj(obj,centre=V0,pg='-12m2'):
                 mop.append(tmp[i])
         num=len(mop)
         shape=tuple([num])
-        a=np.zeros(shape+obj.shape,dtype=np.int64)
+        a=np.zeros(shape+obj.shape,dtype=DTYPE_int)
         for i,op in enumerate(mop):
             a[i]=symop_obj(op,obj,centre)
         if obj.ndim==4:
@@ -106,7 +109,7 @@ def generator_obj_symmetric_vector_specific_symop(obj,centre,index_of_symmetry_o
         #mop=dodesymop(pg)
         mop=dodesymop_array(pg)
         shape=tuple([len(index_of_symmetry_operation)])
-        a=np.zeros(shape+obj.shape,dtype=np.int64)
+        a=np.zeros(shape+obj.shape,dtype=DTYPE_int)
         j=0
         for i1 in index_of_symmetry_operation:
             a[j]=symop_obj(mop[i1],obj,centre)
@@ -126,7 +129,7 @@ def generator_obj_symmetric_triangle_specific_symop(obj,centre,index_of_symmetry
         #mop=dodesymop(pg)
         mop=dodesymop_array(pg)
         shape=tuple([len(index_of_symmetry_operation)])
-        a=np.zeros(shape+obj.shape,dtype=np.int64)
+        a=np.zeros(shape+obj.shape,dtype=DTYPE_int)
         j=0
         for i1 in index_of_symmetry_operation:
             a[j]=symop_obj(mop[i1],obj,centre)
@@ -146,7 +149,7 @@ def generator_obj_symmetric_obj_specific_symop(obj,centre,index_of_symmetry_oper
         #mop=dodesymop(pg)
         mop=dodesymop_array(pg)
         shape=tuple([len(index_of_symmetry_operation)])
-        a=np.zeros(shape+obj.shape,dtype=np.int64)
+        a=np.zeros(shape+obj.shape,dtype=DTYPE_int)
         j=0
         for i1 in index_of_symmetry_operation:
             a[j]=symop_obj(mop[i1],obj,centre)
@@ -196,7 +199,7 @@ def dodesymop(pg='-12m2'):
                 [ 0, 0, 0, 1, 0, 0],\
                 [-1, 0, 1, 0, 0, 0],\
                 [ 0, 0, 0, 0, 1, 0],\
-                [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+                [ 0, 0, 0, 0, 0, 1]],dtype=DTYPE_int)
     # mirror normal to y-axis
     # x,y − u,x − z,−u,−v
     m2=np.array([[1, 0, 0, 0, 0, 0],\
@@ -204,7 +207,7 @@ def dodesymop(pg='-12m2'):
                 [ 1, 0,-1, 0, 0, 0],\
                 [ 0, 0, 0,-1, 0, 0],\
                 [ 0, 0, 0, 0,-1, 0],\
-                [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+                [ 0, 0, 0, 0, 0, 1]],dtype=DTYPE_int)
     # mirror normal to z-axis
     # x,y,z,u,−v
     m3=np.array([[1, 0, 0, 0, 0, 0],\
@@ -212,7 +215,7 @@ def dodesymop(pg='-12m2'):
                 [ 0, 0, 1, 0, 0, 0],\
                 [ 0, 0, 0, 1, 0, 0],\
                 [ 0, 0, 0, 0,-1, 0],\
-                [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+                [ 0, 0, 0, 0, 0, 1]],dtype=DTYPE_int)
     # inversion
     # -x,-y,-z,-u,−v
     m4=np.array([[-1, 0, 0, 0, 0, 0],\
@@ -220,7 +223,7 @@ def dodesymop(pg='-12m2'):
                 [ 0, 0,-1, 0, 0, 0],\
                 [ 0, 0, 0,-1, 0, 0],\
                 [ 0, 0, 0, 0,-1, 0],\
-                [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+                [ 0, 0, 0, 0, 0, 1]],dtype=DTYPE_int)
     # s12
     # IR12: -y, -z, -u, x-z, -v
     m5=np.dot(m4,m1)
@@ -266,7 +269,7 @@ def dodesymop_array(pg='-12m2'):
         m2=ops[1] # mirror,y
         m3=ops[2] # mirror,z
         m4=ops[3] # inversion
-        symop=np.zeros((96,6,6),dtype=np.int64)
+        symop=np.zeros((96,6,6),dtype=DTYPE_int)
         for i1 in range(2):
             s4=matrixpow(m4,i1)
             for i2 in range(2):
@@ -284,7 +287,7 @@ def dodesymop_array(pg='-12m2'):
         m1=ops[0] # C12
         m2=ops[1] # mirror,y
         m3=ops[3] # inversion
-        symop=np.zeros((48,6,6),dtype=np.int64)
+        symop=np.zeros((48,6,6),dtype=DTYPE_int)
         for i1 in range(2):
             s3=matrixpow(m3,i1)
             for i2 in range(2):
@@ -298,7 +301,7 @@ def dodesymop_array(pg='-12m2'):
     elif pg=='-12m2':
         m1=ops[4] # s12
         m2=ops[1] # mirror,y
-        symop=np.zeros((24,6,6),dtype=np.int64)
+        symop=np.zeros((24,6,6),dtype=DTYPE_int)
         for i1 in range(2):
             s2=matrixpow(m2,i1)
             for i2 in range(12):
@@ -308,14 +311,14 @@ def dodesymop_array(pg='-12m2'):
                 num+=1
     elif pg=='-12':
         m1=ops[4] # s12
-        symop=np.zeros((12,6,6),dtype=np.int64)
+        symop=np.zeros((12,6,6),dtype=DTYPE_int)
         for i1 in range(12):
             s1=matrixpow(m1,i1)
             symop[num]=s1
             num+=1
     elif pg=='12':
         m1=ops[0] # c12
-        symop=np.zeros((12,6,6),dtype=np.int64)
+        symop=np.zeros((12,6,6),dtype=DTYPE_int)
         for i1 in range(12):
             s1=matrixpow(m1,i1)
             symop[num]=s1
@@ -330,7 +333,7 @@ def matrix_dode_sym():
                 [ 0, 0, 0, 1, 0, 0],\
                 [-1, 0, 1, 0, 0, 0],\
                 [ 0, 0, 0, 0, 1, 0],\
-                [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+                [ 0, 0, 0, 0, 0, 1]],dtype=DTYPE_int)
     # mirror normal to y-axis
     # x,y − u,x − z,−u,−v
     m2=np.array([[1, 0, 0, 0, 0, 0],\
@@ -338,7 +341,7 @@ def matrix_dode_sym():
                 [ 1, 0,-1, 0, 0, 0],\
                 [ 0, 0, 0,-1, 0, 0],\
                 [ 0, 0, 0, 0,-1, 0],\
-                [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+                [ 0, 0, 0, 0, 0, 1]],dtype=DTYPE_int)
     # mirror normal to z-axis
     # x,y,z,u,−v
     m3=np.array([[1, 0, 0, 0, 0, 0],\
@@ -346,7 +349,7 @@ def matrix_dode_sym():
                 [ 0, 0, 1, 0, 0, 0],\
                 [ 0, 0, 0, 1, 0, 0],\
                 [ 0, 0, 0, 0,-1, 0],\
-                [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+                [ 0, 0, 0, 0, 0, 1]],dtype=DTYPE_int)
     # inversion
     # -x,-y,-z,-u,−v
     m4=np.array([[-1, 0, 0, 0, 0, 0],\
@@ -354,7 +357,7 @@ def matrix_dode_sym():
                 [ 0, 0,-1, 0, 0, 0],\
                 [ 0, 0, 0,-1, 0, 0],\
                 [ 0, 0, 0, 0,-1, 0],\
-                [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+                [ 0, 0, 0, 0, 0, 1]],dtype=DTYPE_int)
     # s12
     # IR12: -y, -z, -u, x-z, -v
     #m5=np.array([[0,-1, 0, 0, 0, 0],\
@@ -362,9 +365,9 @@ def matrix_dode_sym():
     #            [ 0, 0, 0,-1, 0, 0],\
     #            [ 1, 0,-1, 0, 0, 0],\
     #            [ 0, 0, 0, 0,-1, 0],\
-    #            [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+    #            [ 0, 0, 0, 0, 0, 1]],dtype=DTYPE_int)
     m5=np.dot(m4,m1)
-    symop=np.zeros((5,6,6),dtype=np.int64)
+    symop=np.zeros((5,6,6),dtype=DTYPE_int)
     symop[0]=m1
     symop[1]=m2
     symop[2]=m3
@@ -381,22 +384,22 @@ def mattrix_dode_sym():
                 [ 0, 0, 0, 1, 0, 0],\
                 [-1, 0, 1, 0, 0, 0],\
                 [ 0, 0, 0, 0, 1, 0],\
-                [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+                [ 0, 0, 0, 0, 0, 1]],dtype=DTYPE_int)
     # mirror
     m2=np.array([[ 0, 0, 0, 1, 0, 0],\
                 [ 0, 0, 1, 0, 0, 0],\
                 [ 0, 1, 0, 0, 0, 0],\
                 [ 1, 0, 0, 0, 0, 0],\
                 [ 0, 0, 0, 0, 1, 0],\
-                [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+                [ 0, 0, 0, 0, 0, 1]],dtype=DTYPE_int)
     # inversion
     m3=np.array([[-1, 0, 0, 0, 0, 0],\
                 [ 0,-1, 0, 0, 0, 0],\
                 [ 0, 0,-1, 0, 0, 0],\
                 [ 0, 0, 0,-1, 0, 0],\
                 [ 0, 0, 0, 0,-1, 0],\
-                [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
-    symop=np.zeros((3,6,6),dtype=np.int64)
+                [ 0, 0, 0, 0, 0, 1]],dtype=DTYPE_int)
+    symop=np.zeros((3,6,6),dtype=DTYPE_int)
     symop[0]=m1
     symop[1]=m2
     symop[2]=m3
@@ -451,7 +454,7 @@ def translation_new(brv,flag=0):
         lst=[-1,0,1]
         #lst=[-2,0,2]
         
-    tr=np.zeros((len(lst)**5,6,3),dtype=np.int64)
+    tr=np.zeros((len(lst)**5,6,3),dtype=DTYPE_int)
     j1=0
     for i1 in lst:
         for i2 in lst:
@@ -518,9 +521,9 @@ def site_symmetry_and_coset(site,brv,pg,verbose=0):
                 The symmetry operators leaves xyz identical.
         """
         # サイト周りでvtgに対して対称操作を施す。
-        vtg=np.array([[1,0,3],[0,1,4],[1,0,5],[0,1,6],[1,0,7],[0,0,1]],dtype=np.int64)
+        vtg=np.array([[1,0,3],[0,1,4],[1,0,5],[0,1,6],[1,0,7],[0,0,1]],dtype=DTYPE_int)
         #vtg=add_vectors(vtg,site)
-        a=np.zeros((len(symop),6,3),dtype=np.int64)
+        a=np.zeros((len(symop),6,3),dtype=DTYPE_int)
         for i1,op in enumerate(symop):
             a[i1]=symop_vec(op,vtg,site)
             
@@ -633,7 +636,7 @@ def site_symmetry_and_coset(site,brv,pg,verbose=0):
         print('equivalent_positions()')
         print('  site:',numerical_vector(site))
         symop=dodesymop_array(pg)
-        eqpos=np.zeros((len(symop),6,3),dtype=np.int64)
+        eqpos=np.zeros((len(symop),6,3),dtype=DTYPE_int)
         for i,op in enumerate(symop):
             eqpos[i]=symop_vec(op,site,centre=V0)
         eqpos1=remove_doubling(eqpos)
@@ -664,7 +667,7 @@ def site_symmetry_and_coset(site,brv,pg,verbose=0):
         
         
         # 求めたサイトのうち単位胞内にあるサイトを選ぶ
-        out=np.zeros((len(lst_saved),6,3),dtype=np.int64)
+        out=np.zeros((len(lst_saved),6,3),dtype=DTYPE_int)
         num=0
         for vt in lst_saved:
             vn=numerical_vector(vt)
@@ -705,7 +708,7 @@ def equivalent_positions_in_unit_cell(site,brv,pg,vervose=0):
         print(' equivalent_positions_in_unit_cell()')
         print('  site:',numerical_vector(site))
     symop=dodesymop_array(pg)
-    eqpos=np.zeros((len(symop),6,3),dtype=np.int64)
+    eqpos=np.zeros((len(symop),6,3),dtype=DTYPE_int)
     for i,op in enumerate(symop):
         eqpos[i]=symop_vec(op,site,centre=V0)
     eqpos1=remove_doubling(eqpos)
@@ -720,7 +723,7 @@ def equivalent_positions_in_unit_cell(site,brv,pg,vervose=0):
         return site.reshape(1,6,3),[0]
     else:
         translation=translation_new(brv,flag=0)
-        out=np.zeros((len(translation)*len(eqpos1),6,3),dtype=np.int64)
+        out=np.zeros((len(translation)*len(eqpos1),6,3),dtype=DTYPE_int)
         num=0
         for pos in eqpos1:
             for tr in translation:
@@ -783,9 +786,9 @@ def site_symmetry(site,brv,pg,vervose=0):
     symop=dodesymop_array(pg)
     
     # サイト周りでvtgに対して対称操作を施す。
-    vtg=np.array([[1,0,3],[0,1,4],[1,0,5],[0,1,6],[1,0,7],[0,0,1]],dtype=np.int64)
+    vtg=np.array([[1,0,3],[0,1,4],[1,0,5],[0,1,6],[1,0,7],[0,0,1]],dtype=DTYPE_int)
     #vtg=add_vectors(vtg,site)
-    a=np.zeros((len(symop),6,3),dtype=np.int64)
+    a=np.zeros((len(symop),6,3),dtype=DTYPE_int)
     for i1,op in enumerate(symop):
         a[i1]=symop_vec(op,vtg,site)
         
@@ -839,7 +842,7 @@ def equivalent_positions_in_unit_cell_dev(site,brv,pg,vervose=0):
         print(' equivalent_positions_in_unit_cell()')
         print('  site:',numerical_vector(site))
     symop=dodesymop_array(pg)
-    eqpos=np.zeros((len(symop),6,3),dtype=np.int64)
+    eqpos=np.zeros((len(symop),6,3),dtype=DTYPE_int)
     for i,op in enumerate(symop):
         eqpos[i]=symop_vec(op,site,centre=V0)
     if vervose>1:
@@ -957,7 +960,7 @@ def find_overlaps(l1,l2):
 def similarity_obj(obj,m):
     """similarity transformation of a triangle
     """
-    out=np.zeros(obj.shape,dtype=np.int64)
+    out=np.zeros(obj.shape,dtype=DTYPE_int)
     for i1,od in enumerate(obj):
         out[i1]=similarity_triangle(od,m)
     return out
@@ -965,7 +968,7 @@ def similarity_obj(obj,m):
 def similarity_triangle(triangle,m):
     """similarity transformation of a triangle
     """
-    out=np.zeros(triangle.shape,dtype=np.int64)
+    out=np.zeros(triangle.shape,dtype=DTYPE_int)
     for i1,vt in enumerate(triangle):
         out[i1]=similarity_vec(vt,m)
     return out
@@ -985,7 +988,7 @@ def similarity(m):
                 [ 0, 1, 1, 1, 0, 0],\
                 [ 0, 0, 1, 1, 0, 0],\
                 [ 0, 0, 0, 0, 1, 0],\
-                [ 0, 0, 0, 0, 0, 1]],dtype=np.int64)
+                [ 0, 0, 0, 0, 0, 1]],dtype=DTYPE_int)
     return matrixpow(m1.T,m)
 
 ############################

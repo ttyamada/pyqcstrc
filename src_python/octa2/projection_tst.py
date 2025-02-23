@@ -10,6 +10,9 @@ import random
 from numpy.typing import NDArray
 from projection import (projection3)
 
+DTYPE_int = int
+#DTYPE_int = np.int64
+
 vt0=[0,0,1]
 vt1=[1,0,1]
 

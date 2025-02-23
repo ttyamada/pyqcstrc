@@ -25,18 +25,20 @@ except ImportError:
     print('import error\n')
 
 TAU=(1+np.sqrt(5))/2.0
+DTYPE_int = int
+#DTYPE_int = np.int64
 
-def position(vt1,vt2):
+def position(vt1: NDArray[DTYPE_int],vt2: NDArray[DTYPE_int]):
     # parameters
     # vt1: 6d vector.
     # vt2: 6d vector being projected onto Eperp.
     vt2e=prj.projection_perp(vt2) # 6d vector projected onto Eperp.
     return math1.add_vectors(vt1,vt2e)
     
-def volume(obj):
+def volume(obj: NDArray[DTYPE_int]):
     return utils.obj_volume_6d(obj)
     
-def symmetric(obj,centre):
+def symmetric(obj: NDArray[DTYPE_int],centre: NDArray[DTYPE_int]):
     """
     Generate symmterical occupation domain by symmetric elements of m-3-5 on the asymmetric unit.
     
@@ -59,7 +61,7 @@ def symmetric(obj,centre):
         print('object has an incorrect shape!')
         return 
     
-def symmetric_0(obj,centre,indx_symop):
+def symmetric_0(obj: NDArray[DTYPE_int],centre,indx_symop: NDArray[DTYPE_int]):
     """
     Generate symmterical occupation domain by symmetric elements of m-3-5 on the asymmetric unit.
     
@@ -82,7 +84,7 @@ def symmetric_0(obj,centre,indx_symop):
         print('object has an incorrect shape!')
         return 
 
-def shift(obj,shift):
+def shift(obj: NDArray[DTYPE_int],shift: NDArray[DTYPE_int]):
     """
     Shift the occupation domain.
     
@@ -104,7 +106,7 @@ def shift(obj,shift):
     """
     return utils.shift_object(obj, shift)
 
-def write(obj, path='.',basename='tmp',format='xyz',color='k',verbose=0,select='tetrahedron'):
+def write(obj: NDArray[DTYPE_int], path='.',basename='tmp',format='xyz',color='k',verbose=0,select='tetrahedron'):
     """
     Export occupation domains.
     
@@ -142,7 +144,7 @@ def write(obj, path='.',basename='tmp',format='xyz',color='k',verbose=0,select='
             pass
         return 0
     
-def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0):
+def write_vesta(obj: NDArray[DTYPE_int],path='.',basename='tmp',color='k',select='normal',verbose=0):
     """
     Export occupation domains in VESTA format.
     
@@ -1053,7 +1055,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
     else:
         return 1
     
-def write_xyz(obj,path='.',basename='tmp',select='tetrahedron',verbose=0):
+def write_xyz(obj: NDArray[DTYPE_int],path='.',basename='tmp',select='tetrahedron',verbose=0):
     """
     Export occupation domains in XYZ format.
     
@@ -1073,7 +1075,7 @@ def write_xyz(obj,path='.',basename='tmp',select='tetrahedron',verbose=0):
         int: 0 (succeed), 1 (fail)
     """
     
-    def generator_xyz_dim4_tetrahedron(obj,filename):
+    def generator_xyz_dim4_tetrahedron(obj: NDArray[DTYPE_int],filename):
         """
         Generate object (set of tetrahedra) object in XYZ format.
     
@@ -1112,7 +1114,7 @@ def write_xyz(obj,path='.',basename='tmp',select='tetrahedron',verbose=0):
         f.close()
         return 0
     
-    def generator_xyz_dim4_triangle(obj,filename):
+    def generator_xyz_dim4_triangle(obj: NDArray[DTYPE_int],filename):
         """
         Generate object (set of triangles) object in XYZ format.
     
@@ -1145,7 +1147,7 @@ def write_xyz(obj,path='.',basename='tmp',select='tetrahedron',verbose=0):
         f.closed
         return 0
     
-    def generator_xyz_dim4_edge(obj,filename):
+    def generator_xyz_dim4_edge(obj: NDArray[DTYPE_int],filename):
         """
         Generate object (set of edges) object in XYZ format.
     
@@ -1178,7 +1180,7 @@ def write_xyz(obj,path='.',basename='tmp',select='tetrahedron',verbose=0):
         f.closed
         return 0
     
-    def generator_xyz_dim3_vertex(obj, filename):
+    def generator_xyz_dim3_vertex(obj: NDArray[DTYPE_int], filename):
         """
         Generate object (set of vertexs) object in XYZ format.
     
@@ -1327,7 +1329,7 @@ def read_xyz(path,basename,select='tetrahedron',verbose=0):
     elif select == 'vertex':
         return tmp.reshape(int(num),6,3)
 
-def simplification(obj,verbose=0):
+def simplification(obj: NDArray[DTYPE_int],verbose=0):
     """
     Simplification of occupation domains.
     
@@ -1367,7 +1369,7 @@ def simplification(obj,verbose=0):
                 print('      simplification: fail')
             return obj
 
-def simplification_convex(obj,verbose=0):
+def simplification_convex(obj: NDArray[DTYPE_int],verbose=0):
     """
     Simplification of occupation domains.
     
@@ -1408,7 +1410,7 @@ def simplification_convex(obj,verbose=0):
                 print('      simplification: fail')
             return obj
 
-def generate_border_edges(obj):
+def generate_border_edges(obj: NDArray[DTYPE_int]):
     """
     Generate border edges of the occupation domain.
     
@@ -1426,7 +1428,7 @@ def generate_border_edges(obj):
     return utils.surface_cleaner(triangle_surface)
 
 # new in version 0.0.2a2
-def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
+def obj2podatm(obj: NDArray[DTYPE_int],serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
     
     def find_common_vertex(obj):
         #Find common vertex of tetrahedra in obj).
@@ -1513,7 +1515,7 @@ def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
 #########################
 #          WIP          #
 #########################
-def simple_hand_step1(obj, path, basename_tmp):
+def simple_hand_step1(obj: NDArray[DTYPE_int], path, basename_tmp):
     """
     Simplification of occupation domains by hand (step1).
     
@@ -1529,7 +1531,7 @@ def simple_hand_step1(obj, path, basename_tmp):
             The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
     
     """
-    def write_xyz_smpl(a, path, basename):
+    def write_xyz_smpl(a: NDArray[DTYPE_int], path, basename):
         f=open('%s'%(path)+'/%s.xyz'%(basename),'w', encoding="utf-8", errors="ignore")
         f.write('%d\n'%(len(a)))
         f.write('%s\n'%(basename))
@@ -1555,7 +1557,7 @@ def simple_hand_step1(obj, path, basename_tmp):
     print('open above XYZ file in vesta and make merge_list, and run simple_hand_step2()')
     return od1a
 
-def simple_hand_step2(obj, merge_list):
+def simple_hand_step2(obj: NDArray[DTYPE_int], merge_list):
     """
     Simplification of occupation domains by hand (step2).
     
@@ -1592,7 +1594,7 @@ def simple_hand_step2(obj, merge_list):
 def site_symmetry(site):
     return symmetry.site_symmetry(site)
 
-def write_podatm(obj, position, vlist, path='.', basename='tmp', shift=[0.0,0.0,0.0,0.0,0.0,0.0], verbose=0):
+def write_podatm(obj: NDArray[DTYPE_int], position: NDArray[DTYPE_int], vlist, path='.', basename='tmp', shift=[0.0,0.0,0.0,0.0,0.0,0.0], verbose=0):
     """
     Generate pod and atom files.
     
@@ -1702,7 +1704,7 @@ def write_podatm(obj, position, vlist, path='.', basename='tmp', shift=[0.0,0.0,
         print('    written in %s/%s.pod'%(path,basename))
     return 0
 
-def asymmetric(symmetric_obj, position, vecs):
+def asymmetric(symmetric_obj: NDArray[DTYPE_int], position: NDArray[DTYPE_int], vecs: NDArray[DTYPE_int]):
     """
     Asymmetric part of occupation domain.
     

@@ -13,6 +13,8 @@ from numpy.typing import NDArray
 from octa2.numericalc import coplanar_check_numeric_tau
 
 SQRT2=np.sqrt(2)
+DTYPE_int = int
+#DTYPE_int = np.int64
 
 def add0(a: NDArray[np.int64], b: NDArray[np.int64]) -> NDArray[np.int64]:
     """

@@ -12,9 +12,10 @@ from dode2.math1 import mul,add
 #def projection(vt:qnv.Qnvec) -> qnv.Qnvec:
     
 #def projection3(vt:qnv.Qnvec) -> qnv.Qnvc:
-    
+DTYPE_int = int
+#DTYPE_int = DTYPE_int
 
-def projection(vt: NDArray[np.int64]) -> NDArray[np.int64]:
+def projection(vt: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """projection of a 6d vector onto Epar and Eperp in "SIN-style"
     NOTE: coefficient (alpha) of the projection matrix is set to be 1.
     alpha = 2*a/np.sqrt(6)
@@ -42,9 +43,9 @@ def projection(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     v2i=mtrixcal(M4,M0,M1,M6,M0,M0,vt) # -0.5,0,1,-sin,0,0
     v3e=mtrixcal(M0,M0,M0,M0,M1,M0,vt) # 0,0,0,0,1,0
     v3i=mtrixcal(M0,M0,M0,M0,M0,M1,vt) # 0,0,0,0,0,1
-    return np.array([[v1e,v2e,v3e],[v1i,v2i,v3i]],dtype=np.int64)
+    return np.array([[v1e,v2e,v3e],[v1i,v2i,v3i]],dtype=DTYPE_int)
 
-def projection3(vt: NDArray[np.int64]) -> NDArray[np.int64]:
+def projection3(vt: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """projection of a 6d vector onto Eperp in "SIN-style"
     NOTE: coefficient (alpha) of the projection matrix is set to be 1.
     alpha = 2*a/np.sqrt(6)
@@ -72,9 +73,9 @@ def projection3(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     v2i=mtrixcal(M4,M0,M1,M6,M0,M0,vt) # -0.5,0,1,-sin,0,0
     #v3e=mtrixcal(M0,M0,M0,M0,M1,M0,vt) # 0,0,0,0,1,0
     v3i=mtrixcal(M0,M0,M0,M0,M0,M1,vt) # 0,0,0,0,0,1
-    return np.array([v1i,v2i,v3i],dtype=np.int64)
+    return np.array([v1i,v2i,v3i],dtype=DTYPE_int)
 
-def mtrixcal(m1: NDArray[np.int64],m2: NDArray[np.int64],m3: NDArray[np.int64],m4: NDArray[np.int64],m5: NDArray[np.int64],m6: NDArray[np.int64],v: NDArray[np.int64]) -> NDArray[np.int64]:
+def mtrixcal(m1: NDArray[DTYPE_int],m2: NDArray[DTYPE_int],m3: NDArray[DTYPE_int],m4: NDArray[DTYPE_int],m5: NDArray[DTYPE_int],m6: NDArray[DTYPE_int],v: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """function used in projection()
                         projection3()
                         projection_perp()

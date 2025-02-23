@@ -13,6 +13,9 @@ from utils import (get_internal_component_sets_numerical,
                    sort_vctors,
                    )
 
+DTYPE_int = int
+#DTYPE_int = np.int64
+
 def generate_random_value():
     """ generate value in TAU-style
     """

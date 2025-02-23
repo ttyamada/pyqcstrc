@@ -16,13 +16,15 @@ try:
     import octa2.math1 as math1
     import octa2.utils as utils
     import octa2.numericalc as numericalc
-    import octa2.symmetry as symmetry
+    import octa2.symmetry as sym
     import octa2.intsct as intsct
     import octa2.projection as prj
 except ImportError:
     print('import error\n')
 
 TAU=np.sqrt(2)
+DTYPE_int = int
+#DTYPE_int = np.int64
 
 def volume(obj:NDArray[np.int64]):
     return utils.obj_area_6d(obj)
@@ -47,7 +49,7 @@ def symmetric(obj:NDArray[np.int64],centre,pg=None):
     """
     if obj.ndim==3 or obj.ndim==4:
         #return symmetry.generator_obj_symmetric_tetrahedron(obj,centre)
-        return symmetry.generator_obj_symmetric_triangle(obj,centre,pg)
+        return sym.generator_obj_symmetric_triangle(obj,centre,pg)
     else:
         print('object has an incorrect shape!')
         return 
@@ -70,7 +72,7 @@ def symmetric_0(obj:NDArray[np.int64],centre:NDArray[np.int64],indx_symop,pg=Non
     
     """
     if obj.ndim==3 or obj.ndim==4:
-        return symmetry.generator_obj_symmetric_triangle_0(obj,centre,indx_symop,pg=None)
+        return sym.generator_obj_symmetric_triangle_0(obj,centre,indx_symop,pg=None)
     else:
         print('object has an incorrect shape!')
         return 
@@ -1534,7 +1536,7 @@ def similarity(obj:NDArray[np.int64],m):
     obj:
     m: order of similarity transformation
     """
-    return symmetry.similarity_obj(obj,m)
+    return sym.similarity_obj(obj,m)
 
 def qcstrc(apar,cpar,mystrc,path,basename,phason_matrix,n1max,n5max,origin_shift,option=0,pg=None,verbose=0):
     """
@@ -1561,16 +1563,16 @@ def qcstrc(apar,cpar,mystrc,path,basename,phason_matrix,n1max,n5max,origin_shift
         #-----------------------------------------------------------------------
         # generate independent occypation domains from their asymmetric units
         #-----------------------------------------------------------------------
-        num_coset=symmetry.coset(wsite,dim)
-        tmp=symmetry.generator_obj_symmetric_obj(obj1,wsite)
+        num_coset=sym.coset(wsite,dim)
+        tmp=sym.generator_obj_symmetric_obj(obj1,wsite)
         num=len(tmp)
-        tmp=symmetry.generator_obj_symmetric_obj_specific_symop(tmp,v0,num_coset)
+        tmp=sym.generator_obj_symmetric_obj_specific_symop(tmp,v0,num_coset)
         objs1=tmp.reshape(len(num_coset),num,3,6,3)
         
         #-----------------------------------------------------------------------
         # generate positions of the independent occypation domains
         #-----------------------------------------------------------------------
-        pos1=symmetry.generator_obj_symmetric_vector_specific_symop(wsite,v0,num_coset)
+        pos1=sym.generator_obj_symmetric_vector_specific_symop(wsite,v0,num_coset)
         
         objs.append(objs1)
         pos.append(pos1)
@@ -1585,26 +1587,26 @@ def qcstrc(apar,cpar,mystrc,path,basename,phason_matrix,n1max,n5max,origin_shift
         obj,wsite,atom,shift=strc
         wsiten=numericalc.numerical_vector(wsite)
         print('   wsite: %4.3f %4.3f %4.3f %4.3f %4.3f'%(wsiten[0],wsiten[1],wsiten[2],wsiten[3],wsiten[4]))
-        num_stsym=symmetry.site_symmetry(wsite,dim,pg)
+        num_stsym=sym.site_symmetry(wsite,dim,pg)
         print('    num_sisym:',num_stsym)
-        num_coset=symmetry.coset(wsite,dim,pg)
-        #num_coset=symmetry.coset_a(wsite,dim,pg)
+        num_coset=sym.coset(wsite,dim,pg)
+        #num_coset=sym.coset_a(wsite,dim,pg)
         print('    num_coset:',num_coset)
         #num_coset=num_coset[17]
-        #num_equiv=symmetry.equivalent_positions(wsite,dim,pg)
+        #num_equiv=sym.equivalent_positions(wsite,dim,pg)
         #print('   num_equiv:',num_equiv)
         for i1 in num_stsym:
             #-----------------------------------------------------------------------
             # generate independent occupation domains from their asymmetric units
             #-----------------------------------------------------------------------
-            obj1=symmetry.generator_obj_symmetric_obj_specific_symop(obj,wsite,[i1],pg)
+            obj1=sym.generator_obj_symmetric_obj_specific_symop(obj,wsite,[i1],pg)
             for i2 in num_coset:
             #for i2 in num_equiv:
                 #--------------------------------------------------------------------------------
                 # place the independent occupation domain at each position equivalent to "wsite"
                 #--------------------------------------------------------------------------------
-                obj2=symmetry.generator_obj_symmetric_obj_specific_symop(obj1,v0,[i2],pg)
-                pos2=symmetry.generator_obj_symmetric_vector_specific_symop(wsite,v0,[i2],pg)
+                obj2=sym.generator_obj_symmetric_obj_specific_symop(obj1,v0,[i2],pg)
+                pos2=sym.generator_obj_symmetric_vector_specific_symop(wsite,v0,[i2],pg)
                 #
                 objs.append(obj2.reshape(1,len(obj2),3,6,3))
                 pos.append(pos2)
@@ -1619,15 +1621,15 @@ def qcstrc(apar,cpar,mystrc,path,basename,phason_matrix,n1max,n5max,origin_shift
         #-------------------------------------------------------
         # generate an independent OD from its asymmetric unit.
         #-------------------------------------------------------
-        obj1=symmetry.generator_obj_symmetric_obj(obj,wsite)
+        obj1=sym.generator_obj_symmetric_obj(obj,wsite)
         
         #---------------------------------------------------------------
         # put the independent OD at each position equivalent to 'wsite'
         #---------------------------------------------------------------
-        num_coset=symmetry.coset(wsite,dim)
+        num_coset=sym.coset(wsite,dim)
         for i1 in num_coset:
-            obj2=symmetry.generator_obj_symmetric_obj_specific_symop(obj1,v0,[i1])
-            pos2=symmetry.generator_obj_symmetric_vector_specific_symop(wsite,v0,[i1])
+            obj2=sym.generator_obj_symmetric_obj_specific_symop(obj1,v0,[i1])
+            pos2=sym.generator_obj_symmetric_vector_specific_symop(wsite,v0,[i1])
             
             objs.append(obj2.reshape(1,len(obj2),3,6,3))
             pos.append(pos2)

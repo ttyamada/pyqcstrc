@@ -8,13 +8,14 @@ import numpy as np
 import random
 
 from numpy.typing import NDArray
+from numericalc import (numerical_vectors,numerical_vector,numeric_value)
+from symmetry import (symop_vec,symop_vecs,octasymop_array,write_r0)
 
 #EPS=1e-6
 #V0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+DTYPE_int = int
+#DTYPE_int = np.int64
 
-from numericalc import (numerical_vectors,numerical_vector,numeric_value)
-from symmetry import (symop_vec,symop_vecs,octasymop_array)
-                            
 def generate_random_value():
     """ generate value in TAU-style
     """
@@ -50,5 +51,8 @@ def generate_random_triangle():
 
 
 symop = octasymop_array()
+write_r0(symop)
+
+
 
 

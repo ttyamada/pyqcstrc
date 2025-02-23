@@ -3,8 +3,10 @@ import cython
 
 from numpy.typing import NDArray
 from octa2.math1 import (mul,add)
+DTYPE_int = int
+#DTYPE_int = np.int64
 
-def projection(vt: NDArray[np.int64]) -> NDArray[np.int64]:
+def projection(vt: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """projection of a 6d vector onto Epar and Eperp in "SQRT2-style"
     NOTE: coefficient (alpha) of the projection matrix is set to be 1.
     alpha = a/np.sqrt(2)
@@ -30,9 +32,9 @@ def projection(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     v1i=mtrixcal(M3,M2,M0,M1,M0,M0,vt) #
     v2i=mtrixcal(M0,M1,M4,M1,M0,M0,vt) #
     v3i=mtrixcal(M0,M0,M0,M0,M0,M0,vt) # 0,0,0,0,0,0
-    return np.array([[v1e,v2e,v3e],[v1i,v2i,v3i]],dtype=np.int64)
+    return np.array([[v1e,v2e,v3e],[v1i,v2i,v3i]],dtype=DTYPE_int)
 
-def projection3(vt: NDArray[np.int64]) -> NDArray[np.int64]:
+def projection3(vt: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """projection of a 6d vector onto Eperp in "SQRT2-style"
     NOTE: coefficient (alpha) of the projection matrix is set to be 1.
     alpha = a/np.sqrt(2)
@@ -58,12 +60,12 @@ def projection3(vt: NDArray[np.int64]) -> NDArray[np.int64]:
     v1i=mtrixcal(M3,M2,M0,M1,M0,M0,vt) #
     v2i=mtrixcal(M0,M1,M4,M1,M0,M0,vt) #
     v3i=mtrixcal(M0,M0,M0,M0,M0,M0,vt) # 0,0,0,0,0,0
-    return np.array([v1i,v2i,v3i],dtype=np.int64)
+    return np.array([v1i,v2i,v3i],dtype=DTYPE_int)
 
-def mtrixcal(m1: NDArray[np.int64],m2: NDArray[np.int64],\
-             m3: NDArray[np.int64],m4: NDArray[np.int64],\
-             m5: NDArray[np.int64],m6: NDArray[np.int64],\
-             v: NDArray[np.int64]) -> NDArray[np.int64]:
+def mtrixcal(m1: NDArray[DTYPE_int],m2: NDArray[DTYPE_int],\
+             m3: NDArray[DTYPE_int],m4: NDArray[DTYPE_int],\
+             m5: NDArray[DTYPE_int],m6: NDArray[DTYPE_int],\
+             v: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """function used in projection()
                         projection3()
                         projection_perp()
@@ -85,7 +87,7 @@ def mtrixcal(m1: NDArray[np.int64],m2: NDArray[np.int64],\
     a4=mul(m4,v[3])
     a5=mul(m5,v[4])
     a6=mul(m6,v[5])
-    #a1:np.int64
+    #a1:DTYPE_int
     a1=add(a1,a2)
     a1=add(a1,a3)
     a1=add(a1,a4)
