@@ -12,12 +12,23 @@ from numpy.typing import NDArray
 #from numericalc import coplanar_check_numeric_tau
 from octa2.numericalc import coplanar_check_numeric_tau
 
-SQRT2=np.sqrt(2)
-#DTYPE_int = int
-DTYPE_int = cython.int
-#DTYPE_int = np.int64
+from libcpp import bool
+from cpython import bool as bool_t
 
-def add0(a: NDArray[DTYPE_int], b: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+#from numpy.math cimport INFINITY
+
+SQRT2=np.sqrt(2)
+cimport numpy as np
+cimport cython
+ctypedef np.int_t DTYPE_int
+
+#@cython.cfunc
+#@cython.inline
+#@cython.exceptval(-1.0)
+#def add0(a: NDArray[DTYPE_int], b: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+def add0(np.ndarray[DTYPE_int,ndim=1] a, np.ndarray[DTYPE_int,ndim=1] b):
+#cdef int add0(a: NDArray[DTYPE_int], b: NDArray[DTYPE_int]):
+#cdef int add0(a: np.ndarray[DTYPE_int,ndim=1], b: np.ndarray[DTYPE_int,ndim=1]):
     """
     # summation (a+b) in SQRT2-style
     
@@ -32,10 +43,13 @@ def add0(a: NDArray[DTYPE_int], b: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     -------
     array
     """
-    c1: DTYPE_int=a[0]*b[2]+b[0]*a[2]
-    c2: DTYPE_int=a[1]*b[2]+b[1]*a[2]
-    c3: DTYPE_int=a[2]*b[2]
-    x=np.array([c1,c2,c3],dtype=DTYPE_int)
+    cdef int c1,c2,c3,g
+    cdef np.ndarray[DTYPE_int,ndim=1] x
+    #c1: DTYPE_int=a[0]*b[2]+b[0]*a[2]
+    c1=a[0]*b[2]+b[0]*a[2]
+    c2=a[1]*b[2]+b[1]*a[2]
+    c3=a[2]*b[2]
+    x=np.array([c1,c2,c3],dtype=DTYPE_int,ndim=1)
     g=np.gcd.reduce(x)
     c1=int(c1/g)
     c2=int(c2/g)
@@ -48,7 +62,9 @@ def add0(a: NDArray[DTYPE_int], b: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
 #@cython.cfunc
 #@cython.inline
 #@cython.exceptval(-1.0)
-def add(a: NDArray[DTYPE_int], b: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+#def add(a: NDArray[DTYPE_int], b: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+#def add(a: NDArray[DTYPE_int], b: NDArray[DTYPE_int]):
+def add(np.ndarray[DTYPE_int] a, np.ndarray[DTYPE_int] b):
 #def add(a: NDArray[cython.int], b: NDArray[cython.int]) -> NDArray[cython.int]:
 #def add(a: cython.p_int, b: cython.p_int) -> cython.p_int:
     """
@@ -65,22 +81,28 @@ def add(a: NDArray[DTYPE_int], b: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     -------
     array
     """    
-    c: DTYPE_int = np.zeros((3),dtype=DTYPE_int)
+    cdef int c1,c2,c3,g
+    cdef np.ndarray[DTYPE_int,ndim=1] x
+    #c: NDArray[DTYPE_int] = np.zeros((3),dtype=DTYPE_int)
+    #c=np.arange(3, dtype=np.int64)
+    cdef int c[3]
+    
     c[0]=a[0]*b[2]+b[0]*a[2]
     c[1]=a[1]*b[2]+b[1]*a[2]
     c[2]=a[2]*b[2]
     x: DTYPE_int=np.array([c[0],c[1],c[2]],dtype=DTYPE_int)
     g: DTYPE_int=np.gcd.reduce(x)
-    c[0]=c[0]/g
-    c[1]=c[1]/g
-    c[2]=c[2]/g
+    c[0]=(int)(c[0]/g)
+    c[1]=(int)(c[1]/g)
+    c[2]=(int)(c[2]/g)
     
     if c[2]<0:
         return np.array([-c[0],-c[1],-c[2]])
     else:
         return np.array([c[0],c[1],c[2]])
 
-def mul0(a: NDArray[DTYPE_int], b:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+#def mul0(a: NDArray[DTYPE_int], b:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+def mul0(np.ndarray[DTYPE_int] a, np.ndarray[DTYPE_int] b):
     """
     # multiplication (a*b) in SQRT2-style
     
@@ -95,6 +117,9 @@ def mul0(a: NDArray[DTYPE_int], b:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     -------
     array
     """
+    cdef int c1,c2,c3,g
+    cdef np.ndarray[DTYPE_int,ndim=1] x
+    
     c1=a[0]*b[0]+2*a[1]*b[1]
     c2=a[0]*b[1]+a[1]*b[0]
     c3=a[2]*b[2]
@@ -111,7 +136,8 @@ def mul0(a: NDArray[DTYPE_int], b:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
 #@cython.cfunc
 #@cython.inline
 #@cython.exceptval(-1.0)
-def mul(a: NDArray[DTYPE_int], b:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+#def mul(a: NDArray[DTYPE_int], b:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+def mul(np.ndarray[DTYPE_int] a, np.ndarray[DTYPE_int] b) :
     """
     # multiplication (a*b) in SQRT2-style
     
@@ -126,9 +152,13 @@ def mul(a: NDArray[DTYPE_int], b:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     -------
     array
     """
-    c = np.zeros((3),dtype=DTYPE_int)
-    g: DTYPE_int
-    x: DTYPE_int
+
+    cdef int c1,c2,c3,g
+    cdef np.ndarray[DTYPE_int,ndim=1] x
+    #c: NDArray[DTYPE_int] = np.zeros((3),dtype=DTYPE_int)
+    #c=np.arange(3, dtype=np.int64)
+    cdef int c[3]
+    
     # following three parallelizable
     c[0]=a[0]*b[0]+2*a[1]*b[1]
     c[1]=a[0]*b[1]+a[1]*b[0]
@@ -136,16 +166,17 @@ def mul(a: NDArray[DTYPE_int], b:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     x=np.array([c[0],c[1],c[2]],dtype=DTYPE_int)
     g=np.gcd.reduce(x)
     # following three parallelizable
-    c[0]=c[0]/g
-    c[1]=c[1]/g
-    c[2]=c[2]/g
+    c[0]=(int)(c[0]/g)
+    c[1]=(int)(c[1]/g)
+    c[2]=(int)(c[2]/g)
     if c[2]<0:
         return np.array([-c[0],-c[1],-c[2]])
     else:
         return np.array([c[0],c[1],c[2]])
 
 
-def sub(a: NDArray[DTYPE_int], b:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+#def sub(a: NDArray[DTYPE_int], b:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+cdef cython.int sub(a: NDArray[DTYPE_int], b:NDArray[DTYPE_int]) :
     """
     # subtraction (a/b) in SQRT2-style
     
@@ -164,7 +195,8 @@ def sub(a: NDArray[DTYPE_int], b:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     b=mul(c,b)
     return add(a,b)
 
-def div(a: NDArray[DTYPE_int], b:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+#def div(a: NDArray[DTYPE_int], b:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+cdef cython.int div(a: NDArray[DTYPE_int], b:NDArray[DTYPE_int]) :
     """
     # division (a/b) in SQRT2-style
     
@@ -179,9 +211,12 @@ def div(a: NDArray[DTYPE_int], b:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     -------
     array
     """
+    cdef int c1,c2,c3,g
+    cdef np.ndarray[DTYPE_int,ndim=1] x
+    
     if np.all(b[:2]==0):
         print('ERROR_1:division error')
-        return 
+        return 999999999
     else:
         if np.all(a[:2]==0):
             #print('ERROR_2:division error')
@@ -202,9 +237,10 @@ def div(a: NDArray[DTYPE_int], b:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
                     return np.array([c1,c2,c3],dtype=DTYPE_int)
             else:
                 print('ERROR_3:division error')
-                return 
+                return 999999999
 
-def add_vectors(vt1: NDArray[DTYPE_int], vt2:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+#def add_vectors(vt1: NDArray[DTYPE_int], vt2:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+cdef cython.int add_vectors(vt1: NDArray[DTYPE_int], vt2:NDArray[DTYPE_int]) :
     """Composition of two vectors, v1+v2
     
     Parameters
@@ -225,7 +261,8 @@ def add_vectors(vt1: NDArray[DTYPE_int], vt2:NDArray[DTYPE_int]) -> NDArray[DTYP
         a[i]=add(vt1[i],vt2[i])
     return a
 
-def sub_vectors(vt1: NDArray[DTYPE_int], vt2:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+#def sub_vectors(vt1: NDArray[DTYPE_int], vt2:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+cdef cython.int sub_vectors(vt1: NDArray[DTYPE_int], vt2:NDArray[DTYPE_int])  :
     """Subtraction of two vectors, v1-v2
     
     Parameters
@@ -245,9 +282,10 @@ def sub_vectors(vt1: NDArray[DTYPE_int], vt2:NDArray[DTYPE_int]) -> NDArray[DTYP
         return add_vectors(vt1,vt2)
     else:
         print('incorrect shape')
-        return
+        return 999999
 
-def mul_vector(vt: NDArray[DTYPE_int], coeff:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+#def mul_vector(vt: NDArray[DTYPE_int], coeff:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+cdef cython.int mul_vector(vt: NDArray[DTYPE_int], coeff:NDArray[DTYPE_int]):
     """Multiplying a vector by a scalar in SQRT2-style.
     
     Parameters
@@ -268,9 +306,10 @@ def mul_vector(vt: NDArray[DTYPE_int], coeff:NDArray[DTYPE_int]) -> NDArray[DTYP
         return a
     else:
         print('incorrect shape')
-        return
+        return 999999
 
-def mul_vectors(vts: NDArray[DTYPE_int], coeff:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+#def mul_vectors(vts: NDArray[DTYPE_int], coeff:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+cdef cython.int mul_vectors(vts: NDArray[DTYPE_int], coeff:NDArray[DTYPE_int]) :
     """multiplying a set of vectors by a scalar in SQRT2-style.
     
     Parameters
@@ -296,9 +335,10 @@ def mul_vectors(vts: NDArray[DTYPE_int], coeff:NDArray[DTYPE_int]) -> NDArray[DT
                 a[i1][i2]=mul_vector(v,coeff)
     else:
         print('incorrect shape')
-        return
+        return 999999
 
-def shift_vectors(vts: NDArray[DTYPE_int], vt: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+#def shift_vectors(vts: NDArray[DTYPE_int], vt: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+cdef cython.int shift_vectors(vts: NDArray[DTYPE_int], vt: NDArray[DTYPE_int]) :
     """Shift a set of vectors by adding a vector in SQRT2-style.
     
     Parameters
@@ -324,10 +364,11 @@ def shift_vectors(vts: NDArray[DTYPE_int], vt: NDArray[DTYPE_int]) -> NDArray[DT
                 a[i1][i2]=add_vectors(vt2,vt)
     else:
         print('incorrect shape')
-        return
+        return 999999
     
     
-def outer_product(vt1: NDArray[DTYPE_int], vt2:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+#def outer_product(vt1: NDArray[DTYPE_int], vt2:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+cdef cython.int outer_product(vt1: NDArray[DTYPE_int], vt2:NDArray[DTYPE_int]) :
     """Outer product of two 3d vectors, v1 and v2 in SQRT2-style.
 
     Parameters
@@ -355,7 +396,8 @@ def outer_product(vt1: NDArray[DTYPE_int], vt2:NDArray[DTYPE_int]) -> NDArray[DT
     #
     return np.array([c1,c2,c3],dtype=DTYPE_int)
 
-def inner_product(vt1: NDArray[DTYPE_int], vt2:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+#def inner_product(vt1: NDArray[DTYPE_int], vt2:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+cdef cython.int inner_product(vt1: NDArray[DTYPE_int], vt2:NDArray[DTYPE_int]) :
     """Inner product of two vectors, v1 and v2 in SQRT2-style.
 
     Parameters
@@ -373,7 +415,7 @@ def inner_product(vt1: NDArray[DTYPE_int], vt2:NDArray[DTYPE_int]) -> NDArray[DT
     s2,_=vt2.shape
     if s1!=s2:
         print('matrices have not a proper shape.')
-        return 
+        return 999999
     else:
         a=np.array([0,0,1])
         for i in range(s1):
@@ -381,7 +423,8 @@ def inner_product(vt1: NDArray[DTYPE_int], vt2:NDArray[DTYPE_int]) -> NDArray[DT
             a=add(a,b)
         return a
 
-def dot_product(mat1: NDArray[DTYPE_int], mat2:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+#def dot_product(mat1: NDArray[DTYPE_int], mat2:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+cdef cython.int dot_product(mat1: NDArray[DTYPE_int], mat2:NDArray[DTYPE_int]) :
     """product of two matrices, mat1*mat2.
     
     Parameters
@@ -406,7 +449,7 @@ def dot_product(mat1: NDArray[DTYPE_int], mat2:NDArray[DTYPE_int]) -> NDArray[DT
         t2,_=mat2.shape
         if t1!=t2:
             print('incorrect shape found in dot_product')
-            return 
+            return 999999
         else:
             mat_new=np.zeros((s,3),dtype=DTYPE_int)
             for k in range(s):
@@ -422,7 +465,7 @@ def dot_product(mat1: NDArray[DTYPE_int], mat2:NDArray[DTYPE_int]) -> NDArray[DT
         t2,u,_=mat2.shape
         if t1!=t2:
             print('incorrect shape found in dot_product')
-            return 
+            return 999999
         else:
             mat_new=np.zeros((s,u,3),dtype=DTYPE_int)
             for k in range(s):
@@ -435,9 +478,10 @@ def dot_product(mat1: NDArray[DTYPE_int], mat2:NDArray[DTYPE_int]) -> NDArray[DT
             return mat_new
     else:
         print('incorrect shape found in dot_product')
-        return 
+        return 999999
 
-def dot_product_1(mat1: NDArray[DTYPE_int], mat2:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+#def dot_product_1(mat1: NDArray[DTYPE_int], mat2:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+cdef cython.int dot_product_1(mat1: NDArray[DTYPE_int], mat2:NDArray[DTYPE_int]) :
     """product of two matrices, mat1*mat2.
     
     Parameters
@@ -459,7 +503,7 @@ def dot_product_1(mat1: NDArray[DTYPE_int], mat2:NDArray[DTYPE_int]) -> NDArray[
         t2,_=mat2.shape
         if t1!=t2:
             print('incorrect shape found in dot_product')
-            return 
+            return 999999
         else:
             mat_new=np.zeros((s,3),dtype=DTYPE_int)
             for k in range(s):
@@ -476,7 +520,7 @@ def dot_product_1(mat1: NDArray[DTYPE_int], mat2:NDArray[DTYPE_int]) -> NDArray[
         t2,u,_=mat2.shape
         if t1!=t2:
             print('incorrect shape found in dot_product')
-            return 
+            return 999999
         else:
             mat_new=np.zeros((s,u,3),dtype=DTYPE_int)
             for k in range(s):
@@ -490,11 +534,12 @@ def dot_product_1(mat1: NDArray[DTYPE_int], mat2:NDArray[DTYPE_int]) -> NDArray[
             return mat_new
     else:
         print('incorrect shape found in dot_product')
-        return 
+        return 999999
 
 
 
-def centroid(obj: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+#def centroid(obj: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+cdef cython.int centroid(obj: NDArray[DTYPE_int]) :
     """geometric center, centroid of tetrahedron, triangle or edge, in SQRT2-style.
 
     Parameters
@@ -521,7 +566,8 @@ def centroid(obj: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     return v0
 
 # needless???
-def centroid_obj(obj: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+#def centroid_obj(obj: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+cdef cython.int centroid_obj(obj: NDArray[DTYPE_int]) :
     """geometric center, centroid of tetrahedron, in TAU-style.
 
     Parameters
@@ -542,7 +588,9 @@ def centroid_obj(obj: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
         tmp=add_vectors(tmp,p)
     return mul_vector(tmp,np.array([1,0,len(obj)]))
 
-def coplanar_check(p: NDArray[DTYPE_int],num_iteration: int=5) -> bool:
+#def coplanar_check(p: NDArray[DTYPE_int],num_iteration: int=5) -> bool:
+#cdef bool_t coplanar_check(p: NDArray[DTYPE_int],num_iteration: int=5) :
+cdef coplanar_check(p: NDArray[DTYPE_int],num_iteration: int=5) :
     """Check whether a given set of points (in TAU-style) is coplanar or not.
     
     メモ：xyz1とxyz2の選び方次第で、outer_product(v1,v2)が小さくなりcoplanarと間違って判定する場合がある。
@@ -602,7 +650,8 @@ def coplanar_check(p: NDArray[DTYPE_int],num_iteration: int=5) -> bool:
     """
     return coplanar_check_numeric_tau(p,num_iteration)
 
-def matrixpow(ma: NDArray[DTYPE_int], n: int) -> NDArray[DTYPE_int]:
+#def matrixpow(ma: NDArray[DTYPE_int], n: int) -> NDArray[DTYPE_int]:
+cdef cython.int matrixpow(ma: NDArray[DTYPE_int], n: int) :
     """
     """
     (mx,my)=ma.shape
@@ -624,9 +673,10 @@ def matrixpow(ma: NDArray[DTYPE_int], n: int) -> NDArray[DTYPE_int]:
             return tmp
     else:
         print('matrix has not regular shape')
-        return 
+        return 999999
 
-def det_matrix(mtx: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+#def det_matrix(mtx: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
+cdef cython.int det_matrix(mtx: NDArray[DTYPE_int]) :
     """Determinant of 3x3 matrix, mtx, in SQRT2 style
     
     Parameters

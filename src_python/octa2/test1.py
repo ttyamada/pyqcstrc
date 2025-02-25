@@ -9,14 +9,19 @@ import os
 import sys
 import cython
 import numpy as np
+
+#from cython.view cimport array
+
 from numpy.typing import NDArray
 
 import occupation_domain as od # use original code
 import two_occupation_domains as ods # use original code
+
 #import occdom.occdom as od
 #import twoods.twoods as ods
 #DTYPE_int=np.int64
 DTYPE_int=cython.int
+
 
 opath='./test1'
 try:
@@ -24,11 +29,19 @@ try:
 except FileExistsError:
     pass
     
+v0=np.zeros((6,3),dtype=DTYPE_int)
+v1=np.zeros((6,3),dtype=DTYPE_int)
+v2=np.zeros((6,3),dtype=DTYPE_int)
+#v0=np.array([ 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1])
 # Three 6D vectors which define the asymmetric part of the occupation domain of Ammann–Beenker octagonal tiling.
 # Note that 5-th and 6-th components of each 6D vectors are dummy, and they correspond to Z coordinate in Epar and Eperp, respectively.
-v0:  NDArray[DTYPE_int]=np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]],dtype=DTYPE_int)
-v1:  NDArray[DTYPE_int]=np.array([[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]],dtype=DTYPE_int) # (1,0,0,0)
-v2:  NDArray[DTYPE_int]=np.array([[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1],[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1]],dtype=DTYPE_int) # (1,0,0,1)/2
+#v0=np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+#v1=np.array([[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]]) # (1,0,0,0)
+#v2=np.array([[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1],[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1]]) # (1,0,0,1)/2
+
+v0=[[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]]
+v1=[[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]] # (1,0,0,0)
+v2=[[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1],[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1]] # (1,0,0,1)/2
 od_asym=np.vstack([v0,v1,v2]).reshape(1,3,6,3)
 
 # Output 
