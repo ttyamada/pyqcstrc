@@ -7,16 +7,16 @@ import sys
 import numpy as np
 from numpy.typing import NDArray
 #from scipy.spatial import Delaunay
-import pyDelaunay2D.pyDelaunay2D as dln
+import pyDelaunay2D as dln
 import itertools
 import time
 
-import qnnum.qnnum as qnn
-import qnvec.qnvec as qnv
-import qnmat.qnmat as qnm
-import qnmath.qnmath as qmt
-import numeric.numericalc as num
-import prjop.prjop as prj
+import qnnum as qnn
+import qnvec as qnv
+import qnmat as qnm
+import qnmath as qmt
+import numeric as num
+import prjop as prj
 
 def shift_object(obj: qnv.Qnvec, shift: qnv.Qnvec) -> qnv.Qnvec:
     """shift an object

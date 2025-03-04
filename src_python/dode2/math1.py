@@ -11,7 +11,7 @@ from numpy.typing import NDArray
 from dode2.numericalc import coplanar_check_numeric_tau
 
 SIN=np.sqrt(3)/2
-DTYPE_int = int
+DTYPE_int = cython.long
 #DTYPE_int = DTYPE_int
 
 def add(a: NDArray[DTYPE_int], b:NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:

@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 from numpy.typing import NDArray
-import qnndarray.qnndarray as qna
+import qnndarray as qna
 from typing import Self
 
 class Qnnum:

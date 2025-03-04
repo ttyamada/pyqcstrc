@@ -1,8 +1,8 @@
 import sys, os, math
 import numpy as np
-import qnnum.qnnum as qnn   # for qnnumber
-import qnvec.qnvec as qnv   # for qnnumber
-import qnmath.qnmath as qmt # for dot product
+import qnnum as qnn   # for qnnumber
+import qnvec as qnv   # for qnnumber
+import qnmath as qmt # for dot product
 
 # this uses qnnumbers for x y coordinates
 

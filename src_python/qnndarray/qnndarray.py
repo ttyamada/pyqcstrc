@@ -1,5 +1,5 @@
 import numpy as np
-import qnnum.qnnum as qnn
+import qnnum as qnn
 
 # super class for edges,triangles and tetrahedra
 # which are composed of 2 3 and 4 points
@@ -15,7 +15,7 @@ class QnNdarray(np.ndarray):
     def __init__(self,shape, N:np.int64): # only for ndim=2
         qn0=qnn.Qnnum([0,0,1],N)
         qnn.printqnn("qn0",qn0)
-        global N
+        #global N
         #print("self.shape",self.shape)  # for test
         #print("self.ndim",self.ndim)    # for test
         #print("self.dtype",self.dtype)  # for test

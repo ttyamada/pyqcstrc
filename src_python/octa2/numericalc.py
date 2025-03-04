@@ -10,7 +10,7 @@ import cython
 
 TAU=np.sqrt(2)
 EPS=1e-6 # tolerance
-DTYPE_int = int
+DTYPE_int = cython.long
 #DTYPE_int = np.int64
 DTYPE_float = float
 

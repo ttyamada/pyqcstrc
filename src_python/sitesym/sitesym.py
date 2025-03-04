@@ -3,14 +3,14 @@
 ################
 import sys
 import numpy as np
-import qnnum.qnnum as qnn
-import qnvec.qnvec as qnv
-import qnmat.qnmat as qnm
-import prjop.prjop as prj
-import qnmath.qnmath as qmt
-import qnndarray.qnndarray as qna
-import qnsym.qnsym as qns
-import lattice.lattice as lt
+import qnnum as qnn
+import qnvec as qnv
+import qnmat as qnm
+import prjop as prj
+import qnmath as qmt
+import qnndarray as qna
+import qnsym as qns
+import lattice as lt
 
 def site_symmetry(x:qnv.Qnvec,qns:qnm.Qnmat,brv) -> np.ndarray: # return irs
     global nr,n,N,mpltbl,r

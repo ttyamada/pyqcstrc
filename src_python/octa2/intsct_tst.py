@@ -3,17 +3,15 @@ from numpy.typing import NDArray
 import time # in object_subtraction_dev1, tetrahedron_not_obj
 import itertools
 import cython
-from intsct import (check_intersection_two_segment_numerical_6d_tau,
-                    intersection_two_segment,
-                    )
+#from dtype import *
 
-#if __name__ == '__main__':
-
-# test
-
+from intsct import (
+        check_intersection_two_segment_numerical_6d_tau,
+        intersection_two_segment,
+        )
 import random
 
-DTYPE_int = int
+#DTYPE_int = cython.long
 #DTYPE_int = np.int64
 
 def generate_random_value():

@@ -12,7 +12,7 @@ from numericalc import (
     check_intersection_segment_surface_numerical,
     )
 
-DTYPE_int = int
+DTYPE_int = cython.long
 #DTYPE_int = np.int64
 
 def generate_random_value():

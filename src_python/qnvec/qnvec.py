@@ -1,9 +1,9 @@
 import sys
 import numpy as np
 from numpy.typing import NDArray
-import qnnum.qnnum as qnn
-import qnvec.qnvec as qnv
-import qnndarray.qnndarray as qna
+import qnnum as qnn
+import qnvec as qnv
+import qnndarray as qna
 from typing import Self
 
 #class Qnvec(np.ndarray):

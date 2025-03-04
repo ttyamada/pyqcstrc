@@ -53,7 +53,7 @@ from dode2.utils import (remove_doubling_in_perp_space,
 
 TAU=np.sqrt(3)/2.0
 EPS=1e-6
-DTYPE_int = int
+DTYPE_int = cython.long
 #DTYPE_int = DTYPE_int
 
 def ball_radius_obj(obj: NDArray[DTYPE_int], centroid: NDArray[DTYPE_int]) -> float:

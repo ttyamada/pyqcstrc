@@ -5,12 +5,12 @@
 #
 import sys
 import numpy as np
-import qnnum.qnnum as qnn
-import qnvec.qnvec as qnv
-import qnmat.qnmat as qnm
-import qnmath.qnmath
+import qnnum as qnn
+import qnvec as qnv
+import qnmat as qnm
+import qnmath
 #import dode2.qnmath12
-import numeric.num
+import numeric as num
 
 from numpy.typing import NDArray
 #sys.path.append('.')

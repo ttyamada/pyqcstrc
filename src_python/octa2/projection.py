@@ -2,8 +2,14 @@ import numpy as np
 import cython
 
 from numpy.typing import NDArray
-from octa2.math1 import (mul,add)
-DTYPE_int = int
+from octa2.math1 import (mul,
+                         add,
+                         sub_vectors,
+                         )
+from octa2.numericalc import (length_numerical,
+                              )
+
+DTYPE_int = cython.long
 #DTYPE_int = np.int64
 
 def projection(vt: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
@@ -21,18 +27,18 @@ def projection(vt: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     -------
     array containing two 3d vectors projected onto Epar and Eperp in SQRT2-style.
     """
-    M0=np.array([ 0, 0, 1]) #  0
-    M1=np.array([ 1, 0, 1]) #  1
-    M2=np.array([-1, 0, 1]) # -1
-    M3=np.array([ 0, 1, 1]) #  sqrt(2)
-    M4=np.array([ 0,-1, 1]) # -sqrt(2)
+    M0=np.array([ 0, 0, 1],dtype=np.int64) #  0
+    M1=np.array([ 1, 0, 1],dtype=np.int64) #  1
+    M2=np.array([-1, 0, 1],dtype=np.int64) # -1
+    M3=np.array([ 0, 1, 1],dtype=np.int64) #  sqrt(2)
+    M4=np.array([ 0,-1, 1],dtype=np.int64) # -sqrt(2)
     v1e=mtrixcal(M2,M1,M0,M2,M0,M0,vt) #
     v2e=mtrixcal(M0,M1,M3,M1,M0,M0,vt) #
     v3e=mtrixcal(M0,M0,M0,M0,M0,M0,vt) # 0,0,0,0,0,0 
     v1i=mtrixcal(M3,M2,M0,M1,M0,M0,vt) #
     v2i=mtrixcal(M0,M1,M4,M1,M0,M0,vt) #
     v3i=mtrixcal(M0,M0,M0,M0,M0,M0,vt) # 0,0,0,0,0,0
-    return np.array([[v1e,v2e,v3e],[v1i,v2i,v3i]],dtype=DTYPE_int)
+    return np.array([[v1e,v2e,v3e],[v1i,v2i,v3i]],dtype=np.int64)
 
 def projection3(vt: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """projection of a 6d vector onto Eperp in "SQRT2-style"
@@ -49,18 +55,18 @@ def projection3(vt: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     -------
     3d vectors projected onto Eperp in SQRT2-style.
     """
-    M0=np.array([ 0, 0, 1]) #  0
-    M1=np.array([ 1, 0, 1]) #  1
-    M2=np.array([-1, 0, 1]) # -1
-    M3=np.array([ 0, 1, 1]) #  sqrt(2)
-    M4=np.array([ 0,-1, 1]) # -sqrt(2)
+    M0=np.array([ 0, 0, 1],dtype=np.int64) #  0
+    M1=np.array([ 1, 0, 1],dtype=np.int64) #  1
+    M2=np.array([-1, 0, 1],dtype=np.int64) # -1
+    M3=np.array([ 0, 1, 1],dtype=np.int64) #  sqrt(2)
+    M4=np.array([ 0,-1, 1],dtype=np.int64) # -sqrt(2)
     #v1e=mtrixcal(M2,M1,M0,M2,M0,M0,vt) #
     #v2e=mtrixcal(M0,M1,M3,M1,M0,M0,vt) #
     #v3e=mtrixcal(M0,M0,M0,M0,M0,M0,vt) # 0,0,0,0,0,0 
     v1i=mtrixcal(M3,M2,M0,M1,M0,M0,vt) #
     v2i=mtrixcal(M0,M1,M4,M1,M0,M0,vt) #
     v3i=mtrixcal(M0,M0,M0,M0,M0,M0,vt) # 0,0,0,0,0,0
-    return np.array([v1i,v2i,v3i],dtype=DTYPE_int)
+    return np.array([v1i,v2i,v3i],dtype=np.int64)
 
 def mtrixcal(m1: NDArray[DTYPE_int],m2: NDArray[DTYPE_int],\
              m3: NDArray[DTYPE_int],m4: NDArray[DTYPE_int],\
@@ -94,5 +100,11 @@ def mtrixcal(m1: NDArray[DTYPE_int],m2: NDArray[DTYPE_int],\
     a1=add(a1,a5)
     a1=add(a1,a6)
     return a1
+
+def distance_in_perp_space(vt1: NDArray[DTYPE_int], vt2: NDArray[DTYPE_int]) -> float:
+    a=sub_vectors(vt1,vt2)
+    a=projection3(a)
+    return length_numerical(a)
+
 
 

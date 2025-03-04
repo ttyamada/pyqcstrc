@@ -6,11 +6,11 @@
 import numpy as np
 from numpy.typing import NDArray
 import random
-import qnnum.qnnum as qnn
-import qnvec.qnvec as qnv
-import qnmat.qnmat as qnm
-import prjop.prjop as prj
-import qnndarray.qnndarray as qna
+import qnnum as qnn
+import qnvec as qnv
+import qnmat as qnm
+import prjop as prj
+import qnndarray as qna
 
 #TAU=np.sqrt(3)/2.0
 #SQRT3=np.sqrt(3)

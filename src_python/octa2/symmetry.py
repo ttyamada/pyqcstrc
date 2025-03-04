@@ -25,7 +25,7 @@ from octa2.numericalc import (projection_numerical,
                         length_numerical,
                         )
 EPS=1e-6
-DTYPE_int = int
+DTYPE_int = cython.long
 #DTYPE_int = DTYPE_int
 
 V0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=DTYPE_int)
@@ -243,7 +243,7 @@ def generator_symmetric_vec_specific_symop(vector:NDArray[DTYPE_int],centre:NDAr
 ################
 def generator_equivalent_numeric_vector_specific_symop(vn:NDArray[DTYPE_int],index_of_symmetry_operation:NDArray[DTYPE_int],pg='-12m2'):
     mop=octasymop_array()
-    out=np.zeros((len(index_of_symmetry_operation),6),dtype=np.float64)
+    out=np.zeros((len(index_of_symmetry_operation),6),dtype=np.float32)
     for i1 in index_of_symmetry_operation:
         out[i1]=mop[i1]@vn
     return out
@@ -251,7 +251,7 @@ def generator_equivalent_numeric_vector_specific_symop(vn:NDArray[DTYPE_int],ind
 def generator_equivalent_numeric_vectors_specific_symop(vns:NDArray[DTYPE_int],index_of_symmetry_operation:NDArray[DTYPE_int],pg='-12m2'):
     mop=octasymop_array()
     num1=len(index_of_symmetry_operation)
-    out=np.zeros((num1,len(vns),6),dtype=np.float64)
+    out=np.zeros((num1,len(vns),6),dtype=np.float32)
     for i1 in range(num1):
         for vn in vns:
             out[i1]=mop[i1]@vn

@@ -1,11 +1,11 @@
 import sys
 import numpy as np
-import qnnum.qnnum as qnn
-import qnvec.qnvec as qnv
-import qnmat.qnmat as qnm
-import prjop.prjop as prj
-import qnmath.qnmath as qmt
-import qnndarray.qnndarray as qna
+import qnnum as qnn
+import qnvec as qnv
+import qnmat as qnm
+import prjop as prj
+import qnmath as qmt
+import qnndarray as qna
 
 class Qnsym_Octa(qna.QnNdarray):
     def __new__(cls):

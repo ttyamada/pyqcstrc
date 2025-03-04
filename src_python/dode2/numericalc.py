@@ -9,7 +9,7 @@ import random
 
 TAU=np.sqrt(3)/2.0
 EPS=1e-6 # tolerance
-DTYPE_int = int
+DTYPE_int = cython.long
 #DTYPE_int = DTYPE_int
 
 def coplanar_check_numeric_tau(pts: NDArray[DTYPE_int], num_iteration: int=5) -> bool:

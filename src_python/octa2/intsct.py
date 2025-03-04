@@ -9,53 +9,61 @@ from numpy.typing import NDArray
 import time # in object_subtraction_dev1, tetrahedron_not_obj
 import itertools
 import cython
+#from dtype import *
 
-from octa2.projection import projection3
-from octa2.math1 import (centroid, 
-                        centroid_obj,
-                        coplanar_check,
-                        det_matrix,
-                        dot_product,
-                        inner_product,
-                        outer_product,
-                        add,
-                        sub,
-                        mul,
-                        div,
-                        sub_vectors,
-                        add_vectors, 
-                        mul_vector,
-                        )
-from octa2.numericalc import (numeric_value,
-                            numerical_vector,
-                            length_numerical,
-                            get_internal_component_sets_numerical,
-                            get_internal_component_numerical,
-                            check_intersection_two_segment_numerical_6d_tau,
-                            check_intersection_segment_surface_numerical_6d_tau,
-                            #check_intersection_segment_surface_numerical,
-                            check_intersection_two_segment_numerical,
-                            inside_outside_triangle,
-                            inside_outside_triangle_tau,
-                            on_out_surface,
-                            )
-from octa2.utils import (remove_doubling_in_perp_space,
-                        triangle_area_6d,
-                        obj_area_6d,
-                        #generator_surface_1,
-                        #generator_unique_triangles,
-                        generator_unique_edges,
-                        triangulation_points,
-                        generate_convex_hull,
-                        surface_cleaner,
-                        )
+from octa2.projection import (
+        projection3,
+        )
+
+from octa2.math1 import (
+        centroid, 
+        centroid_obj,
+        #coplanar_check,
+        det_matrix,
+        dot_product,
+        inner_product,
+        outer_product,
+        add,
+        sub,
+        mul,
+        div,
+        sub_vectors,
+        add_vectors, 
+        mul_vector,
+        )
+from octa2.numericalc import (
+        numeric_value,
+        numerical_vector,
+        length_numerical,
+        get_internal_component_sets_numerical,
+        get_internal_component_numerical,
+        check_intersection_two_segment_numerical_6d_tau,
+        check_intersection_segment_surface_numerical_6d_tau,
+        #check_intersection_segment_surface_numerical,
+        check_intersection_two_segment_numerical,
+        inside_outside_triangle,
+        inside_outside_triangle_tau,
+        on_out_surface,
+        )
+from octa2.utils import (
+        remove_doubling_in_perp_space,
+        triangle_area_6d,
+        obj_area_6d,
+        #generator_surface_1,
+        #generator_unique_triangles,
+        generator_unique_edges,
+        triangulation_points,
+        generate_convex_hull,
+        surface_cleaner,
+        )
 
 TAU=np.sqrt(2)
 EPS=1e-6
-DTYPE_int = int
+DTYPE_int = cython.long
 #DTYPE_int = np.int64
 
 def ball_radius_obj(obj: NDArray[DTYPE_int], centroid: NDArray[DTYPE_int]) -> float:
+#def ball_radius_obj(obj: DARRAY_int, centroid: DARRAY_int) -> float:
     """estimate maximum distance between verices of given OBJ and its centroid.
     
     Parameters
@@ -83,16 +91,23 @@ def ball_radius_obj(obj: NDArray[DTYPE_int], centroid: NDArray[DTYPE_int]) -> fl
     return dd
 
 def ball_radius(triangle: NDArray[DTYPE_int], centroid: NDArray[DTYPE_int]) -> float:
+#def ball_radius(triangle: NDArray[DTYPE_int], centroid: NDArray[DTYPE_int]) -> float:
     #  this transforms a tetrahedron to a boll which covers the triangle
     #  the centre of the boll is the centroid of the triangle.
     return ball_radius_obj(triangle,centroid)
 
 def distance_in_perp_space(vt1: NDArray[DTYPE_int], vt2: NDArray[DTYPE_int]) -> float:
+#def distance_in_perp_space(vt1: NDArray[DTYPE_int], vt2: NDArray[DTYPE_int]) -> float:
     a=sub_vectors(vt1,vt2)
     a=projection3(a)
     return length_numerical(a)
 
-def rough_check_intersection_triangle_obj(triangle: NDArray[DTYPE_int], cententer: NDArray[DTYPE_int], distance: float) -> bool:
+#def rough_check_intersection_triangle_obj(triangle: NDArray[DTYPE_int],\
+# cententer: NDArray[DTYPE_int], distance: float) -> bool:
+#def rough_check_intersection_triangle_obj(triangle: NDArray[DTYPE_int],\
+#                                          cententer: NDArray[DTYPE_int], distance: float) -> bool:
+def rough_check_intersection_triangle_obj(triangle: NDArray[DTYPE_int],\
+                                          cententer: NDArray[DTYPE_int], distance: float) -> bool:
     cen1=centroid(triangle)
     dd1=ball_radius(triangle,cen1)
     dd0=distance_in_perp_space(cen1,cententer)
@@ -101,7 +116,8 @@ def rough_check_intersection_triangle_obj(triangle: NDArray[DTYPE_int], centente
     else:
         return False
 
-def check_intersection_two_triangles(triangle_1: NDArray[DTYPE_int], triangle_2: NDArray[DTYPE_int]) -> int:
+def check_intersection_two_triangles(triangle_1: NDArray[DTYPE_int],\
+     triangle_2: NDArray[DTYPE_int]) -> int:
     # checking whether triangle_1 is fully inside triangle_2 or not
     counter2=0
     for vtx in triangle_1:

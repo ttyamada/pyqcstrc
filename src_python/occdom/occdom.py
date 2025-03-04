@@ -9,22 +9,22 @@ import os
 import sys
 import numpy as np
 #try:
-import qnmath.qnmath as qnmath #math12
+#import qnmath as qmt #math12
 #import dode2.math1 as math1
-import utils.utils as utils
+#import utils as utl
 #import dode2.symmetry as symmetry
 #import dode2.intsct as intsct
 #import dode2.projection12 as proj
-import qnnum.qnnum as qnn
-import qnvec.qnvec as qnv
-import qnmat.qnmat as qnm
-import math1.math1 as mth
-import numeric.numericalc as num
-import utils.utils as utils
-import qnsym.qnsym as qns
-import intsct.intsct as isct
-import prjop.prjop as prj
-import sitesym.sitesym as ssm
+import qnnum as qnn
+import qnvec as qnv
+import qnmat as qnm
+import math1 as mth
+import numeric as num
+import utils as utl
+import qnsym as qns
+import intsct as isct
+import prjop as prj
+import sitesym as ssm
 from vesta import (write_vesta,write_xyz)
     
 #except ImportError:
@@ -33,7 +33,7 @@ from vesta import (write_vesta,write_xyz)
 #TAU=np.sqrt(3)/2.0
 
 def volume(obj:qnv.Qnvec):
-    return utils.obj_area_6d(obj)
+    return utl.obj_area_6d(obj)
 
 def symmetric(obj: qnv.Qnvec, centre:qnv.Qnvec, png:str):
     """
@@ -103,7 +103,7 @@ def shift(obj: qnv.Qnvec,shift : qnv.Qnvec):
             The shape is (num,3,6,3), where num=numbre_of_tetrahedron.
     
     """
-    return utils.shift_object(obj, shift)
+    return utl.shift_object(obj, shift)
 
 def write(obj=None,path=None,basename=None,format=None,color='k',select=None,verbose=0):
     """
@@ -179,10 +179,10 @@ def simplification(obj,verbose=0):
             print('    zero volume')
         return 
     else:
-        vol0=utils.obj_area_6d(obj)
-        obj_convex_hull=utils.generate_convex_hull(obj)
+        vol0=utl.obj_area_6d(obj)
+        obj_convex_hull=utl.generate_convex_hull(obj)
         obj_tmp=isct.intersection_two_obj_1(obj_convex_hull,obj)
-        vol1=utils.obj_area_6d(obj_tmp)
+        vol1=utl.obj_area_6d(obj_tmp)
         if np.all(vol0==vol1):
             if verbose>0:
                 print('      simplification succeed:')
@@ -207,8 +207,8 @@ def generate_border_edges(obj):
             The shape is (num,2,6,3), where num=numbre_of_edge.
     
     """
-    triangle_surface=utils.generator_surface_1(obj)
-    return utils.surface_cleaner(triangle_surface)
+    triangle_surface=utl.generator_surface_1(obj)
+    return utl.surface_cleaner(triangle_surface)
 
 def outline(obj):
     """
@@ -222,7 +222,7 @@ def outline(obj):
             The shape is (num,2,6,3), where num=number of the outlines.
     
     """
-    return utils.surface_cleaner(obj)
+    return utl.surface_cleaner(obj)
     
 # new in version 0.0.2a2
 def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
@@ -277,8 +277,8 @@ def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
         vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
         
         # generate a list of verices and remove the common vertex from it.
-        vtxs=utils.remove_doubling_in_perp_space(obj)
-        vtxs=utils.remove_vector(vtxs,vrtx0)
+        vtxs=utl.remove_doubling_in_perp_space(obj)
+        vtxs=utl.remove_vector(vtxs,vrtx0)
         
         #--------
         #  pod
@@ -345,9 +345,9 @@ def write_podatm(obj, position, vlist=[0], path='.', basename='tmp', shift=[0., 
     
         """
         # get independent edges
-        edges = utils.generator_obj_edge(obj, verbose-1)
+        edges = utl.generator_obj_edge(obj, verbose-1)
         # get independent vertices of the edges
-        v = utils.remove_doubling_dim4_in_perp_space(edges)
+        v = utl.remove_doubling_dim4_in_perp_space(edges)
         """
         #v=vertices
         v=obj
@@ -526,7 +526,7 @@ def simple_hand_step1(obj, path, basename_tmp):
         f.closed
         return 0
         
-    od1a=utils.remove_doubling_in_perp_space(obj)
+    od1a=utl.remove_doubling_in_perp_space(obj)
     write_xyz_smpl(od1a, path, basename_tmp)
     print('written in %s'%(path)+'/%s.xyz'%(basename_tmp))
     print('open above XYZ file in vesta and make merge_list, and run simple_hand_step2()')

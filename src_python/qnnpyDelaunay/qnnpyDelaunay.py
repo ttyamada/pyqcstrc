@@ -1,9 +1,9 @@
 import sys, os, math
 import numpy as np
-import qnnum.qnnum as qnn   # for qnnumber
-import qnvec.qnvec as qnv
-import qnmath.qnmath as qmt # for dot product
-import qnndarray.qnndarray as qna
+import qnnum as qnn   # for qnnumber
+import qnvec as qnv
+import qnmath as qmt # for dot product
+import qnndarray as qna
 import cython
 
 from typing import Self

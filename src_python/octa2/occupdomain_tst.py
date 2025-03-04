@@ -6,21 +6,25 @@ import numpy as np
 import cython
 from numpy.typing import NDArray
 import occupation_domain as od
+import utils as utl
 #from occupation_domain import (
 #    symmetric,read_xyz,write)
 
 import symmetry as symmetry
-DTYPE_int = int
+DTYPE_int = cython.long
 #DTYPE_int = np.int64
 
 test_dir='../../tests/octa/test'
 xyz_dir='../../xyz/octa'
 # import asymmetric part of OD(occupation domain) located at origin,0,0,0,0,0,0.
-od_asym = od.read_xyz(path=xyz_dir,basename='od_1_asym')
+od_asym0 = utl.read_xyz(path=xyz_dir,basename='od_1_asym')
+od_asym=cython.declare(cython.long[:,:],od_asym0)
 print(od_asym)
 
-pos0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
-od_sym = od.symmetric(obj = od_asym, centre = pos0)
+pos0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]],dtype=np.int64)
+pos=cython.declare(cython.long[:,:],pos0)
+od_sym = od.symmetric(obj=od_asym, centre=pos)
+
 od.write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
 od.write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
 

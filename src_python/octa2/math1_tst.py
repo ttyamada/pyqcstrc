@@ -1,5 +1,7 @@
 import sys
 import numpy as np
+import cython 
+
 from numpy.typing import NDArray
 from math1 import (add,sub,mul,div)
 
@@ -22,14 +24,16 @@ from numericalc import (
     numeric_value,
     )
 
-DTYPE_int = int
+DTYPE_int = cython.long
 #DTYPE_int = np.int64
 
 def generate_random_value():
     """ generate value in TAU-style
     """
     nmax=10
-    v=np.zeros((3),dtype=np.int64)
+    #v=np.zeros((3),dtype=np.int64)
+    v0=np.zeros((3),dtype=np.int64)
+    v=cython.declare(cython.long[:],v0)
     for i1 in range(2):
         v[i1]=random.randrange(-nmax,nmax) # a and b in (a+b*TAU)/c.
     v[2]=random.randrange(1,nmax) # c in (a+b*TAU)/c.
@@ -40,7 +44,9 @@ def generate_random_vector(ndim=6):
     ndim: dimension of vectors
     """
     nmax=10
-    v=np.zeros((ndim,3), dtype=np.int64)
+    #v=np.zeros((ndim,3), dtype=np.int64)
+    v0=np.zeros((ndim,3), dtype=np.int64)
+    v=cython.declare(cython.long[:],v0)
     for i1 in range(ndim):
         v[i1]=generate_random_value()
     return v
@@ -50,7 +56,9 @@ def generate_random_vectors(n,ndim=6):
     num: number of generated vectors.
     ndim: dimension of vectors
     """
-    v=np.zeros((n,ndim,3), dtype=np.int64)
+    #v=np.zeros((n,ndim,3), dtype=np.int64)
+    v0=np.zeros((n,ndim,3), dtype=np.int64)
+    v=cython.declare(cython.long[:],v0)
     for i1 in range(n):
         v[i1]=generate_random_vector(ndim)
     return v
@@ -68,7 +76,7 @@ def math_check(a,b):
     
     c=add(a,b)
     c1=numeric_value(c)
-    print("c",c)
+    #print("c",c)
     print("c1",c1)
     c2=a1+b1
     print("c2",c2)
@@ -80,7 +88,7 @@ def math_check(a,b):
     c=sub(a,b)
     c1=numeric_value(c)
     c2=a1-b1
-    print("c",c)
+    #print("c",c)
     print("c1",c1)
     print("a1-a2",c2)
     if abs(c1-c2)<eps:
@@ -91,8 +99,8 @@ def math_check(a,b):
     c=mul(a,b)
     c1=numeric_value(c)
     c2=a1*b1
-    print("a*b",c)
-    print("a1*b1")
+    print("a*b",c1)
+    print("a1*b1",c2)
     
     if abs(c1-c2)<eps:
         flg+=1
@@ -102,8 +110,9 @@ def math_check(a,b):
     c=div(a,b)
     c1=numeric_value(c)
     c2=a1/b1
-    print("a/b",c)
+    print("a/b",c1)
     print("a1/b1",c2)
+    
     if abs(c1-c2)<eps:
         flg+=1
     else:
@@ -122,8 +131,8 @@ def math_check(a,b):
 ncycle=20
 eps=1e-3
 
-a=[1,0,1]
-b=[0,1,1]
+a=np.array([2,0,1],dtype=np.int64)
+b=np.array([0,1,1],dtype=np.int64)
 
 flg=math_check(a,b)
 print("flg",flg)

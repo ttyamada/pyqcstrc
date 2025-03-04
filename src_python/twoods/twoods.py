@@ -11,7 +11,7 @@ import numpy as np
 try:
 #import pyqcstrc.dode2.math1 as math1
     #import pyqcstrc.qnmath.qnmath as mth #math1
-    import pyqcstrc.intsct.intsct as its
+    import intsct as its
     #import pyqcstrc.numeric.numericalc as num
     #import pyqcstrc.qnsym.qnsym as sym
     #import pyqcstrc.utils.utils as utl

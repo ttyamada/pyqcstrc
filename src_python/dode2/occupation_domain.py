@@ -19,7 +19,7 @@ except ImportError:
     print('import error\n')
 
 TAU=np.sqrt(3)/2.0
-DTYPE_int = int
+DTYPE_int = cython.long
 #DTYPE_int = DTYPE_int
 
 def volume(obj:NDArray[DTYPE_int]):

@@ -1,9 +1,9 @@
 import sys
 import numpy as np
-import qnnum.qnnum as qnn
-import qnvec.qnvec as qnv
-import qnmat.qnmat as qnm
-import qnndarray.qnndarray as qna
+import qnnum as qnn
+import qnvec as qnv
+import qnmat as qnm
+import qnndarray as qna
 
 def abs(a:qnn.Qnnum):
     N=a.N

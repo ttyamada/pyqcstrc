@@ -4,21 +4,21 @@ import os
 import sys
 import numpy as np
 #try:
-import qnmath.qnmath as qnmath #math12
+#import qnmath as qmt #math12
 #import dode2.math1 as math1
-import utils.utils as utils
+#import utils.utils as utils
 #import dode2.symmetry as symmetry
 #import dode2.intsct as intsct
 #import dode2.projection12 as proj
-import qnnum.qnnum as qnn
-import qnvec.qnvec as qnv
-import qnmat.qnmat as qnm
-import numeric.numericalc as num
-import utils.utils as utils
-import vesta.vesta as vst
-import qnsym.qnsym as qns
-import intsct.intsct as isct
-import prjop.prjop as prj
+import qnnum as qnn
+import qnvec as qnv
+import qnmat as qnm
+import numeric as num
+import utils as utils
+import vesta as vst
+import qnsym as qns
+import intsct as isct
+import prjop as prj
 import occdom as occ
     
 test_dir='../../tests/dode2/tests'
