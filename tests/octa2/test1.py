@@ -9,8 +9,8 @@ import os
 import sys
 import cython
 import numpy as np
-import occupation_domain as od # use original code
-import two_occupation_domains as ods # use original code
+import octa2.occupation_domain as od # use original code
+import octa2.two_occupation_domains as ods # use original code
 #import occdom.occdom as od
 #import twoods.twoods as ods
 DTYPE_int = int

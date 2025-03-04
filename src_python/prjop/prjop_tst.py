@@ -1,13 +1,14 @@
 #if __name__ == '__main__':
 import sys
 import numpy as np
-import qnnum.qnnum as qnn
-import qnvec.qnvec as qnv
-import qnmat.qnmat as qnm
-import qnmath.qnmath as qmt
-import qnndarray.qnndarray as qna
-from prjop import (prjop_init)
+import qnnum as qnn
+import qnvec as qnv
+import qnmat as qnm
+import qnmath as qmt
+import qnndarray as qna
 import prjop as prj
+from prjop import (prjop_init)
+
 
 # test for qnnum projection operators
 def prj_tst(isys):

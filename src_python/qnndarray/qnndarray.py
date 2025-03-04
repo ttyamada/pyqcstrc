@@ -1,5 +1,6 @@
 import numpy as np
 import qnnum as qnn
+import qnvec as qnv
 
 # super class for edges,triangles and tetrahedra
 # which are composed of 2 3 and 4 points
@@ -9,7 +10,7 @@ import qnnum as qnn
 
 class QnNdarray(np.ndarray):
     
-    def __new__(cls, shape, N:np.int64):
+    def __new__(cls, shape):
         return super().__new__(cls,shape,dtype=qnn.Qnnum)
 
     def __init__(self,shape, N:np.int64): # only for ndim=2
@@ -44,7 +45,8 @@ def zeros(shape):
     np.zeros(shape,dtype=qnn.Qnnum)
     
 def anyv(shape, N:np.int64, vec:qnn.Qnnum)->QnNdarray:
-    qnva=QnNdarray(shape,n,N)
+    qnva=QnNdarray(shape,N)
+    n=shape[1]
     for i in range(shape[0]):
         for j in range(n):
             qnva[i][j]=vec[i][j]
@@ -97,7 +99,7 @@ def add_vectors(vt1: QnNdarray, vt2:QnNdarray) -> QnNdarray:
     """
     a=np.zeros(vt1.shape,dtype=qnn.Qnnum)
     for i in range(len(vt1)):
-        a[i]=add(vt1[i],vt2[i])
+        a[i]=qnv.add(vt1[i],vt2[i])
     return a
 
 def sub_vectors(vt1: QnNdarray, vt2:QnNdarray) -> QnNdarray:
@@ -115,9 +117,10 @@ def sub_vectors(vt1: QnNdarray, vt2:QnNdarray) -> QnNdarray:
     Subtraction of two vectors: array in SIN-style
     """
     if vt1.ndim==2 and vt2.ndim==2:
-        const=np.array([-1,0,1],dtype=qnn.Qnnum)
-        vt2=mul_vector(vt2,const)
-        return add_vectors(vt1,vt2)
+        #const=np.array([-1,0,1],dtype=qnn.Qnnum)
+        #vt2=mul_vector(vt2,const)
+        #return add_vectors(vt1,vt2)
+        return qnv.sub(vt1,vt2)
     else:
         print('incorrect shape')
         return

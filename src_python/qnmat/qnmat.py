@@ -2,7 +2,7 @@ import sys
 import numpy as np
 import qnnum as qnn
 import qnvec as qnv
-import qnmath as qmt
+#import qnmath as qmt
 import qnndarray as qna
 from typing import Self
 #from numpy.typing import NDArray

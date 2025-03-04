@@ -1,3 +1,7 @@
+import qnnum as qnn
+import numpy as np
+from qnvec import (anyv,printqnv,dot,cros,printqnvs,Qnvec)
+
 #if __name__ == '__main__':
 # test
 def qnvec_tst(str,n,N):

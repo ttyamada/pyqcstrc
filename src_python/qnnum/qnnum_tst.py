@@ -1,3 +1,6 @@
+import numpy as np
+from qnnum import (printqnn,Qnnum,copy) 
+
 #if __name__ == '__main__':
 # test
 N=np.int64(2)

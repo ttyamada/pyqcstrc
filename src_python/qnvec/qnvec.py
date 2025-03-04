@@ -2,17 +2,14 @@ import sys
 import numpy as np
 from numpy.typing import NDArray
 import qnnum as qnn
-import qnvec as qnv
-import qnndarray as qna
 from typing import Self
 
-#class Qnvec(np.ndarray):
-#class Qnvec(np.ndarray):
-class Qnvec(qna.QnNdarray):
-    def __new__(cls, n:np.int64, N:np.int64):
+#class Qnvec(qna.QnNdarray):
+class Qnvec(np.ndarray):
+    def __new__(cls, n:np.int64):
         global shape
         shape=(n)
-        return super().__new__(cls,shape,N)
+        return super().__new__(cls,shape,dtype=qnn.Qnnum)
     
     def __init__(self, n:np.int64, N:np.int64):
         qn0=qnn.Qnnum([0,0,1],N) #int2qnn(0,N)
@@ -73,7 +70,7 @@ def sub(v1:Qnvec, v2:Qnvec)-> Qnvec:
         a[i]=v1[i]-v2[i]
     return a
 
-def mul_vector_i(v:Qnvec, coeff:int) -> qnv.Qnvec:
+def mul_vector_i(v:Qnvec, coeff:int) -> Qnvec:
     if v.ndim==1:
         n=v.shape
         N=v.N
