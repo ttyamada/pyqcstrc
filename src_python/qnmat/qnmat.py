@@ -7,20 +7,17 @@ import qnvec as qnv
 #import qnmath as qmt
 import qnndarray as qna
 from typing import Self
-#from numpy.typing import NDArray
+from numpy.typing import NDArray
 
 #class Qnmat(np.ndarray):
 class Qnmat(qna.QnNdarray):
-    def __new__(cls, n:np.int64, N:np.int64):
-        global shape
-        shape=(n,n)
+    def __new__(cls, shape:np.int64, N:np.int64):
         return super().__new__(cls,shape,N)
         #return super().__new__(cls,shape,dtype=qnn.Qnnum)
 
-    def __init__(self,n:np.int64, N:np.int64):
+    def __init__(self,shape:np.int64, N:np.int64):
         #global n,N
-        qn0=qnn.Qnnum([0,0,1],N)
-        self.n=n
+        qn0=qnn.zero(N)
         self.N=N
         self.shape=shape
         for i in range(n):
@@ -50,16 +47,26 @@ class Qnmat(qna.QnNdarray):
             for j in range(n):
                 self.mt[i][j]=qnn.copy(mt[i][j]) # copy qnnum
 
-def zerom(n:np.int64, N: np.int64) -> Qnmat:
-    qnm=Qnmat(n,N)
+def zerom(shape:np.int64, N: np.int64) -> Qnmat:
+    qnm=Qnmat(shape,N)
     return qnm
 
-def zeroms(shape,n:np.int64,N:np.int64) -> Qnmat: # qnmat ndarray
-    return np.zeros(shape,dtype=Qnmat)
+#def zeroms(shape:np.int64,N:np.int64) -> Qnmat: # qnmat ndarray
+#    return np.zeros(shape,dtype=Qnmat)
+
+def anym(m:NDArray[qnn.Qnnum]):
+    N=m.N
+    shape=m.shape
+    m1=Qnmat(shape,N)
+    for i in range(shape[0]):
+        for j in range(shape[1]):
+            m1[i][j]=m[i][j]
+    return m1
 
 def unitm(n:np.int64, N: np.int64) -> Qnmat:
     qn1=qnn.Qnnum([1,0,1],N)
-    qnm=Qnmat(n,N)
+    shape=(n,n)
+    qnm=Qnmat(shape,N)
     for i in range(n):
         qnm[i][i]=qn1
     return qnm

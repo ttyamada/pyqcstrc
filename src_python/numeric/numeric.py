@@ -360,13 +360,14 @@ def check_intersection_two_segment_numerical_6d_tau(segment_1: qnv.Qnvec, segmen
     -------
     
     """
+    return check_intersection_two_segment_numerical(segment_1,segment_2)
     # TAU-style to Float
     #segment_1=numerical_vectors(segment_1)
     #segment_2=numerical_vectors(segment_2)
     
     #ln1=get_internal_component_sets_numerical(segment_1)
     #ln2=get_internal_component_sets_numerical(segment_2)
-    return check_intersection_two_segment_numerical(segment_1,segment_2)
+    #return check_intersection_two_segment_numerical(segment_1,segment_2)
 
 def check_intersection_two_segment_numerical(ln1:qnv.Qnvec, ln2:qnv.Qnvec) -> bool:
     """check intersection between two line segments.
@@ -416,45 +417,57 @@ def check_intersection_two_segment_numerical(ln1:qnv.Qnvec, ln2:qnv.Qnvec) -> bo
             out+=1
     return out
     """
+    qnv.printqnv("ln1[0]",ln1[0])
+    qnv.printqnv("ln1[1]",ln1[1])
+    qnv.printqnv("ln2[0]",ln2[0])
+    qnv.printqnv("ln2[1]",ln2[1])
     
-    # line1-A
-    L1a=ln1[0] # point 1
+    vecAB=ln1[1]-ln1[0] # edge vector 1
+    vecAC=ln2[1]-ln2[0] # edge vector 2
+    vecCD=ln2[1]-ln1[0] # edge vector 3
     
-    # line1-B
-    L1b=ln1[1] # point 2
+    qnv.printqnv("vecAB",vecAB)
+    qnv.printqnv("vecAC",vecAC)
+    qnv.printqnv("vecCD",vecCD)
+    print("vecAB.ndim",vecAB.ndim)
     
-    # line2-A
-    L2a=ln2[0] # point 1
-    
-    # line2-B
-    L2b=ln2[1] # point 2
-    
-    vecAB=L1b-L1a # edge vector 1
-    vecAC=L2a-L1a # edge vector 2
-    vecCD=L2b-L2a # edge vector 3
-    
-    # bunshi
-    t1=qnv.dot(vecAC,vecCD)*qnv.dot(vecCD,vecAB)-qnv.dot(vecCD,vecCD)*qnv.dot(vecAC,vecAB)
-    # bunbo
-    t2=qnv.dot(vecAB,vecCD)*qnv.dot(vecCD,vecAB)-qnv.dot(vecAB,vecAB)*qnv.dot(vecCD,vecCD)
-    N=La1[0].N
-    qn0=qnn.Qnnum([0,0,1],N)
-    qn1=qnn.Qnnum([1,0,1],N)
-    if abs(t2)<qn0:  #EPS:
-        return False
+    if vecAB.ndim<=2:
+        return True # two segments are on the same plane
+
+    # for ndim==3
+    # if dot(cros(vecAB,vecAC),vecCD)==0
+    # two segments are in a same plane then return True otherwise False
+    vol=qnv.dot(vecCD,qnv.cros(vecAB,vecAC))
+    if vol==0:
+        return True
     else:
-        s=t1/t2
-        t=(-qnv.dot(vecAC,vecCD)+s*qnv.dot(vecAB,vecCD))/qnv.dot(vecCD,vecCD)
-        if s>=qn0 and s<=qn1 and t>=qn0 and t<=qn1:
-            dd=qn0  #0
-            for i in range(3):
-                dd+=((L2a[i]-L1a[i])-s*(L1b[i]-L1a[i])+t*(L2b[i]-L2a[i]))**2
-            if dd<qn0:  #EPS:
-                return True # intersecting
-            else:
-                return False
-        else:
-            return False
+        return False
+    
+#    # bunshi
+#    t1=qnv.dot(vecAC,vecCD)*qnv.dot(vecCD,vecAB)-qnv.dot(vecCD,vecCD)*qnv.dot(vecAC,vecAB)
+#    # bunbo
+#    t2=qnv.dot(vecAB,vecCD)*qnv.dot(vecCD,vecAB)-qnv.dot(vecAB,vecAB)*qnv.dot(vecCD,vecCD)
+#    N=ln1[0][0].N
+#    qn0=qnn.zero(N)
+#    qn1=qnn.one(N)
+#    
+#    #if abs(t2)<qn0:  #EPS:
+#    if qnn.abs(t2)==qn0:  #EPS:
+#        return False
+#    else:
+#        s=t1/t2
+#        t=(-qnv.dot(vecAC,vecCD)+s*qnv.dot(vecAB,vecCD))/qnv.dot(vecCD,vecCD)
+#        if s>=qn0 and s<=qn1 and t>=qn0 and t<=qn1:
+#            dd=qn0  #0
+#            for i in range(3):
+#                #dd+=((L2a[i]-L1a[i])-s*(L1b[i]-L1a[i])+t*(L2b[i]-L2a[i]))**2
+#                dd+=((ln2[i]-ln1[i])-s*(L1b[i]-L1a[i])+t*(L2b[i]-L2a[i]))**2
+#            if dd<qn0:  #EPS:
+#                return True # intersecting
+#            else:
+#                return False
+#        else:
+#            return False
     
 def triangle_area(a: qnv.Qnvec) -> qnn.Qnnum:  #-> float:
     """Numerial calcuration of area of given triangle, a.
@@ -484,7 +497,8 @@ def triangle_area(a: qnv.Qnvec) -> qnn.Qnnum:  #-> float:
     
     v3=qnv.cros(v2,v1) # cross product of 3D qnvec
     vol=qnv.dot(v3,v3) # squared norm
-    qn2=qnn.Qnnum([2,0,1])  # 2 in qnnum
+    N=a.N
+    qn2=qnn.any(2,N)     # 2 in qnnum
     return abs(vol)/qn2
     #return np.sqrt(np.sum(np.abs(v3**2)))/2.0
 

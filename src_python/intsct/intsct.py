@@ -4,11 +4,12 @@ from numpy.typing import NDArray
 import time # in object_subtraction_dev1, tetrahedron_not_obj
 import itertools
 
-import qnnum.qnnum as qnn
-import qnvec.qnvec as qnv
-import qnmat.qnmat as qnm
-import numeric.numericalc as num
-import qnndarray.qnndarray as qna
+import qnnum as qnn
+import qnvec as qnv
+import qnmat as qnm
+import numeric as num
+import qnndarray as qna
+import prjop as prj
 
 def ball_radius_obj(obj: qnv.Qnvec, centroid: qnv.Qnvec) -> qnn.Qnnum: #float:
     """estimate maximum distance between verices of given OBJ and its centroid.
@@ -166,10 +167,10 @@ def intersection_two_segment(segment_1: qna.QnNdarray, segment_2: qna.QnNdarray)
     
     """
     # check whether two line segments are intersecting or not by numerical calc.
-    if check_intersection_two_segment_numerical_6d_tau(segment_1,segment_2): # intersecting
+    if num.check_intersection_two_segment_numerical_6d_tau(segment_1,segment_2): # intersecting
         # calc in TAU-style
         vecAB_6d=segment_1[1]-segment_1[0]
-        vecAB=projection3(vecAB_6d)               # AB
+        vecAB=prj.projection3(vecAB_6d)               # AB
         #
         tmp=segment_2[1]-segment_2[0]
         vecCD=projection3(tmp)                    # CD

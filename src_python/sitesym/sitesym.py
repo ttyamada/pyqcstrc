@@ -173,7 +173,7 @@ def generator_obj_symmetric_obj(obj:qnv.Qnvec, centre:qnv.Qnvec, pg:str):
             a=a.reshape(num*n1,n2,6,3)
         return a
     else:
-        print('object has an incorrect shape!')
+        print('object has an incorrect shape in generator_obj_symmetric_obj!')
         return
 
 def generator_obj_symmetric_triangle(obj:qnv.Qnvec, centre:qnv.Qnvec, pg:str):

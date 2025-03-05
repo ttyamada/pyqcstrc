@@ -17,7 +17,7 @@ import qnndarray as qna
 #class Qnprj_Octa(qna.QnNdarray):
 
 class Prjop(qnm.Qnmat):
-    def __init__(isys:np.int64):
+    def __init__(self,isys:np.int64):
         global prj0,prji
         if(isys==2): # projection operator for icosahedral
             self=Qnprj_Icos()
@@ -192,6 +192,12 @@ class Qnprj_Icos(qnm.Qnmat):
         #print("self.ndim",self.ndim) # fpr test
         #print("self.shape",self.shape) # fpr test
         
+def prjop_init(isys):
+    global prj0,prj
+    prj=Prjop(isys)
+    prj0=prj.prj0
+    prj=prj.prj
+    
 def copy(qna1: qnm.Qnmat):
     #return np.copy(qna1,dtype=qnn.Qnnum)
     return qnm.copy(qna1)

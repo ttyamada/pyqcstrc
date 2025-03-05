@@ -1,4 +1,5 @@
 import numpy as np
+from numpy.typing import NDArray
 import cython
 
 import qnnum as qnn
@@ -12,10 +13,10 @@ import qnvec as qnv
 
 class QnNdarray(np.ndarray):
     
-    def __new__(cls, shape):
+    def __new__(cls, shape, N):
         return super().__new__(cls,shape,dtype=qnn.Qnnum)
 
-    def __init__(self,shape, N:np.int64): # only for ndim=2
+    def __init__(self, shape, N:np.int64): # only for ndim=2
         qn0=qnn.Qnnum([0,0,1],N)
         qnn.printqnn("qn0",qn0)
         #global N
@@ -46,12 +47,22 @@ def copy(qna1: QnNdarray):
 def zeros(shape):
     np.zeros(shape,dtype=qnn.Qnnum)
     
-def anyv(shape, N:np.int64, vec:qnn.Qnnum)->QnNdarray:
+# any kind of 3D array assumed
+def anya(vec:NDArray[qnn.Qnnum], shape, N:np.int64)->QnNdarray:
     qnva=QnNdarray(shape,N)
-    n=shape[1]
-    for i in range(shape[0]):
-        for j in range(n):
+    ndim=vec.ndim
+    if ndim==1:
+        for i in range(shape[0]):
             qnva[i][j]=vec[i][j]
+    elif ndim==2:
+        for i in range(shape[0]):
+            for j in range(shape[1]):
+                qnva[i][j]=vec[i][j]
+    elif ndim==3:
+        for i in range(shape[0]):
+            for j in range(shape[1]):
+                for k in range(shape[2]):
+                    qnva[i][j][k]=vec[i][j][k]
     return qnva
 
 # only ndim=1,2,3
@@ -118,13 +129,13 @@ def sub_vectors(vt1: QnNdarray, vt2:QnNdarray) -> QnNdarray:
     -------
     Subtraction of two vectors: array in SIN-style
     """
-    if vt1.ndim==2 and vt2.ndim==2:
+    if vt1.ndim==1 and vt2.ndim==1:
         #const=np.array([-1,0,1],dtype=qnn.Qnnum)
         #vt2=mul_vector(vt2,const)
         #return add_vectors(vt1,vt2)
         return qnv.sub(vt1,vt2)
     else:
-        print('incorrect shape')
+        print('incorrect shape in sub_vectors')
         return
     
 def shift_vectors(vs:QnNdarray, v:QnNdarray) -> QnNdarray:
@@ -140,6 +151,6 @@ def shift_vectors(vs:QnNdarray, v:QnNdarray) -> QnNdarray:
             for i2,v2 in enumerate(v1):
                 a[i1][i2]=add_vectors(v2,v)
     else:
-        print('incorrect shape')
+        print('incorrect shape in shift_vectors')
         return
         

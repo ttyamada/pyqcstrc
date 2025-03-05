@@ -6,13 +6,13 @@ from typing import Self
 
 #class Qnvec(qna.QnNdarray):
 class Qnvec(np.ndarray):
-    def __new__(cls, n:np.int64):
+    def __new__(cls, n:np.int64, N:np.int64):
         global shape
         shape=(n)
         return super().__new__(cls,shape,dtype=qnn.Qnnum)
     
     def __init__(self, n:np.int64, N:np.int64):
-        qn0=qnn.Qnnum([0,0,1],N) #int2qnn(0,N)
+        qn0=qnn.zero(N) #int2qnn(0,N)
         self.n=n
         self.N=N
         self.shape=shape
@@ -27,6 +27,12 @@ class Qnvec(np.ndarray):
     
     def __sub__(a:Self, b:Self):
         return sub(a,b)
+    
+    def __iadd__(self:Self, b:Self):
+        return iadd(self,b)
+        
+    def __isub__(self:Self, b:Self):
+        return isub(self,b)
     
     def __mul__(a:Self, b:Self): # b should be int or qnnum
         if isinstance(b, int):
@@ -51,6 +57,12 @@ def zerov(n:np.int64,N:np.int64)->Qnvec: # qnnumber zero vector
     qnv=Qnvec(n,N)
     return qnv
 
+def anyv(v:NDArray[qnn.Qnnum], n: np.int64,N: np.int64):
+    v1=Qnvec(n,N)
+    for i in range(n):
+        v1[i]=v[i]
+    return v1
+
 def copy(v1: Qnvec) -> Qnvec:
     return np.copy(v1)
     
@@ -62,6 +74,10 @@ def add(v1:Qnvec, v2:Qnvec) -> Qnvec:
         a[i]=v1[i]+v2[i]
     return a
 
+def iadd(self:Qnvec, b:Qnvec):
+    self=add(self,b)
+    return self
+
 def sub(v1:Qnvec, v2:Qnvec)-> Qnvec:
     n=v1.shape[0]
     N=v1[0].N
@@ -69,6 +85,10 @@ def sub(v1:Qnvec, v2:Qnvec)-> Qnvec:
     for i in range(n):
         a[i]=v1[i]-v2[i]
     return a
+
+def isub(self:Qnvec, b:Qnvec):
+    self=sub(self,b)
+    return self
 
 def mul_vector_i(v:Qnvec, coeff:int) -> Qnvec:
     if v.ndim==1:
@@ -79,7 +99,7 @@ def mul_vector_i(v:Qnvec, coeff:int) -> Qnvec:
             a[i]=v[i]*coeff  #mul(v,coeff)
         return a
     else:
-        print('incorrect shape')
+        print('incorrect shape in mul_vector_i')
         return
 
 def mul_vector_qn(v:Qnvec, coeff:qnn.Qnnum) -> Qnvec:
@@ -91,7 +111,7 @@ def mul_vector_qn(v:Qnvec, coeff:qnn.Qnnum) -> Qnvec:
             a[i]=v[i]*coeff  #mul(v,coeff)
         return a
     else:
-        print('incorrect shape')
+        print('incorrect shape in mul_vector_qn')
         return
 
 def mul_vectors_i(vs:Qnvec, coeff:int) -> Qnvec:
@@ -105,7 +125,7 @@ def mul_vectors_i(vs:Qnvec, coeff:int) -> Qnvec:
                 a[i]=vs[i][j]*coeff #mul_vector(v,coeff)
         return a
     else:
-        print('incorrect shape')
+        print('incorrect shape in mul_vectors_i')
         return
 
 def mul_vectors_qn(vs:Qnvec, coeff:qnn.Qnnum):
@@ -119,7 +139,7 @@ def mul_vectors_qn(vs:Qnvec, coeff:qnn.Qnnum):
                 a[i]=vs[i][j]*coeff #mul_vector(v,coeff)
         return a
     else:
-        print('incorrect shape')
+        print('incorrect shape mul_vectors_qn')
         return
 
 def div_vector_i(v:Qnvec, coeff: int) -> Qnvec:
@@ -130,7 +150,7 @@ def div_vector_i(v:Qnvec, coeff: int) -> Qnvec:
             a[i]=v[i]/coeff  #mul(v,coeff)
         return a
     else:
-        print('incorrect shape')
+        print('incorrect shape in div_vector_i')
         return
     
 # cros == outer_product (cross product) 
@@ -158,7 +178,7 @@ def cros(v1:Qnvec, v2:Qnvec) -> Qnvec:
 def dot(v1:Qnvec, v2:Qnvec) -> qnn.Qnnum:
     n=v1.shape[0]
     N=v1[0].N
-    v=qnn.Qnnum([0,0,1],N) # qnnum zero
+    v=qnn.zero(N) # qnnum zero
     for i in range(n):
         v=v+v1[i]*v2[i]
     return v

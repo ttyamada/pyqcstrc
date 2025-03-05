@@ -6,7 +6,7 @@ from numpy.typing import NDArray
 from typing import Self
 
 class Qnnum:
-    def __init__(self, n: np.array, N: np.int64):
+    def __init__(self, n: NDArray[np.int64], N: np.int64):
         self.n=n
         #N :2 5 3 for octagonal, decagonal and dodecagonal Qnnumber   
         self.N=N
@@ -88,7 +88,9 @@ def zero(N:np.int64):
 def one(N:np.int64):
     return Qnnum([1,0,1],N)
 
-    
+def any(n: np.int64, N:np.int64):
+    return Qnnum([n,0,1],N)
+
 def add(a:Qnnum, b:Qnnum):
     #print("a1",a.n[0],"a2",a.n[1],"a3",a.n[2])
     #print("b1",b.n[0],"b2",b.n[1],"b3",b.n[2])
@@ -130,7 +132,8 @@ def isub(self:Qnnum, b:Qnnum):
     return self
 
 def mul(a:Qnnum, b:Qnnum):
-    c1=a.n[0]*b.n[0]+a.N*a.n[1]*b.n[1]
+    N =(int)(a.N)
+    c1=a.n[0]*b.n[0]+a.n[1]*b.n[1]*N
     c2=a.n[0]*b.n[1]+a.n[1]*b.n[0]
     c3=a.n[2]*b.n[2]
     #print("a.n0",a.n[0],"a.n1",a.n[1],"a.n2",a.n[2],"a.N",a.N)
@@ -140,9 +143,9 @@ def mul(a:Qnnum, b:Qnnum):
     c2=int(c2/g)
     c3=int(c3/g)
     if c3<0:
-        return Qnnum(np.array([-c1,-c2,-c3]),a.N)
+        return Qnnum(np.array([-c1,-c2,-c3]),N)
     else:
-        return Qnnum(np.array([c1,c2,c3]),a.N)
+        return Qnnum(np.array([c1,c2,c3]),N)
     
 def mul_i(a:Qnnum, b:Qnnum): # b should be int
     c1=a.n[0]*b
@@ -151,14 +154,15 @@ def mul_i(a:Qnnum, b:Qnnum): # b should be int
     return Qnnum(np.array([c1,c2,c3]),a.N)
 
 def div(a:Qnnum, b:Qnnum):
+    N = (int)(a.N)
     c1=b.n[0]*b.n[2]
     c2=-b.n[1]*b.n[2]
-    c3=b.n[0]*b.n[0]-a.N*b.n[1]*b.n[1]
+    c3=b.n[0]*b.n[0]-b.n[1]*b.n[1]*N
     #print("n1**2",b.n[0]*b.n[0],"n2**2",b.n[1]*b.n[1],"a.N",a.N)
     if c3==0:
         print('ERROR_1:division error')
         return
-    c=Qnnum(np.array([c1,c2,c3]),a.N)
+    c=Qnnum(np.array([c1,c2,c3]),N)
     return mul(a,c)
 
 def div_i(a:Qnnum, b:Qnnum): # b should be int

@@ -59,7 +59,7 @@ def symmetric(obj: qnv.Qnvec, centre:qnv.Qnvec, png:str):
         #return symmetry.generator_obj_symmetric_tetrahedron(obj,centre)
         return ssm.generator_obj_symmetric_triangle(obj,centre,png)
     else:
-        print('object has an incorrect shape!')
+        print('object has an incorrect shape in symmetric!')
         return 
 
 def symmetric_0(obj: qnv.Qnvec,centre: qnv.Qnvec ,indx_symop : np.int64,pg : qnv.Qnvec):
@@ -82,7 +82,7 @@ def symmetric_0(obj: qnv.Qnvec,centre: qnv.Qnvec ,indx_symop : np.int64,pg : qnv
     if obj.ndim==3 or obj.ndim==4:
         return qns.generator_obj_symmetric_triangle_0(obj,centre,indx_symop,pg)
     else:
-        print('object has an incorrect shape!')
+        print('object has an incorrect shape in symmetric_0!')
         return 
 
 def shift(obj: qnv.Qnvec,shift : qnv.Qnvec):
