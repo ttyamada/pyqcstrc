@@ -1,5 +1,7 @@
 import sys
 import numpy as np
+import cython
+
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
@@ -13,6 +15,19 @@ import qnndarray as qna
 # for octagonal QCs
 #class Qnprj_Octa(np.ndarray):
 #class Qnprj_Octa(qna.QnNdarray):
+
+class Prjop(qnm.Qnmat):
+    def __init__(isys:np.int64):
+        global prj0,prji
+        if(isys==2): # projection operator for icosahedral
+            self=Qnprj_Icos()
+        elif(isys==3): # projection operator for decagonal
+            self=Qnprj_Deca()
+        elif(isys==4): # projection operator for octagonal
+            self=Qnprj_Octa()
+        elif(isys==5): # projection operator dodecagonal
+            self=Qnprj_Dode()
+
 class Qnprj_Octa(qnm.Qnmat):
     def __new__(cls) : 
         global n,N,isys
@@ -177,20 +192,6 @@ class Qnprj_Icos(qnm.Qnmat):
         #print("self.ndim",self.ndim) # fpr test
         #print("self.shape",self.shape) # fpr test
         
-def prjop_init(isys:np.int64):
-    global prj0,prji
-    if(isys==2): # projection operator for icosahedral
-        prj=Qnprj_Icos()
-    elif(isys==3): # projection operator for decagonal
-        prj=Qnprj_Deca()
-    elif(isys==4): # projection operator for octagonal
-        prj=Qnprj_Octa()
-    elif(isys==5): # projection operator dodecagonal
-        prj=Qnprj_Dode()
-    prj0=prj.prj0
-    prji=prj.prji
-    return prj
-
 def copy(qna1: qnm.Qnmat):
     #return np.copy(qna1,dtype=qnn.Qnnum)
     return qnm.copy(qna1)

@@ -8,6 +8,8 @@ import timeit
 import os
 import sys
 import numpy as np
+import cython
+
 try:
 #import pyqcstrc.dode2.math1 as math1
     #import pyqcstrc.qnmath.qnmath as mth #math1

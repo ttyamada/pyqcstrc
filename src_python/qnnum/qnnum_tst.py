@@ -1,4 +1,6 @@
 import numpy as np
+import cython
+
 from qnnum import (printqnn,Qnnum,copy) 
 
 #if __name__ == '__main__':

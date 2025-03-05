@@ -2,6 +2,7 @@ from pyDelaunay_org import Graph, Point, Edge, Triangle
 import random
 import sys
 import pygame
+import cython
 
 graph = Graph()
 random.seed(1)

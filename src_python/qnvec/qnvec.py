@@ -202,8 +202,8 @@ def intv2qnv(a:np.ndarray,N:np.int64):
         b[i]=qnn.int2qnn(a[i],N)
     return b
 
-#def printqnv(str:str,qnv:Qnvec):
-def printqnv(str:str,qnv:qna.QnNdarray):
+def printqnv(str:str,qnv:Qnvec):
+#def printqnv(str:str,qnv:qna.QnNdarray):
     ndim=qnv.ndim
     if ndim==1 :
         print(str,"[",end=" ")
@@ -230,7 +230,7 @@ def printqnv2(str:str,qnv1:Qnvec,qnv2:Qnvec):
         j=qnv1[i]
         print(qnn.qn2npa(j),end="]")
         
-def printqnvs(str:str,qnv1:qnv.Qnvec):
+def printqnvs(str:str,qnv1:Qnvec):
     shape=qnv1.shape
     print("shape",shape)
     n1=shape[0]

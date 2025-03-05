@@ -2,6 +2,7 @@ import timeit
 import os
 import sys
 import numpy as np
+import cython
 
 import qnmath as qnm
 import utils as utl

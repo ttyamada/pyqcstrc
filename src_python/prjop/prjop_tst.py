@@ -1,6 +1,8 @@
 #if __name__ == '__main__':
 import sys
 import numpy as np
+import cython
+
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
@@ -12,7 +14,7 @@ from prjop import (prjop_init)
 
 # test for qnnum projection operators
 def prj_tst(isys):
-    prjop_init(isys)
+    prj=Prjop(isys)
     print("isys",isys)
     prj0=prj.prj0
     prji=prj.prji

@@ -1,11 +1,30 @@
 import sys
 import numpy as np
+import cython
+
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
 import prjop as prj
 import qnmath as qmt
 import qnndarray as qna
+
+class Qnsym(qna.QnNdarray):
+    def __init__(self,isys):
+        #def qnsym_init(isys) -> :
+        global prj0,prji,nr,n,N,shape
+        #global qns  # symmetry operators for external and internal space comp. of nD vector
+        prjt=prj.prjop_init(isys)
+        prj0=prjt.prj0
+        prji=prjt.prji
+        if isys==2:
+            self=Qnsym_Icos() #Pn35
+        elif isys==3:
+            self=Qnsym_Deca() #P10mm
+        elif isys==4:
+            self=Qnsym_Octa() #P8mm
+        elif isys==5:
+            self=Qnsym_Dode() #P12mm
 
 class Qnsym_Octa(qna.QnNdarray):
     def __new__(cls):
@@ -18,7 +37,6 @@ class Qnsym_Octa(qna.QnNdarray):
         return super().__new__(cls,shape,N)
         
     def __init__(self):
- 
         ng=3
         rg=np.zeros((ng,n,n),dtype=np.int64)
         # two generating elements
@@ -38,6 +56,8 @@ class Qnsym_Octa(qna.QnNdarray):
         #print_r(r)  # for test
         self.r=r
         self.qnr=qna.copy(rtoqnr(r))
+        self.qnr_e=qna.copy(rtoqnr_e(r))
+        self.qnr_i=qna.copy(rtoqnr_i(r))
         self.nr=nr
         self.n=n
         self.N=N
@@ -80,6 +100,8 @@ class Qnsym_Deca(qna.QnNdarray):
         #print_r(r)  # for test
         self.r=r
         self.qnr=qna.copy(rtoqnr(r))
+        self.qnr_e=qna.copy(rtoqnr_e(r))
+        self.qnr_i=qna.copy(rtoqnr_i(r))
         self.nr=nr
         self.n=n
         self.N=N
@@ -118,6 +140,8 @@ class Qnsym_Dode(qna.QnNdarray):
         #print_r(r)  # for test
         self.r=r
         self.qnr=qna.copy(rtoqnr(r))
+        self.qnr_e=qna.copy(rtoqnr_e(r))
+        self.qnr_i=qna.copy(rtoqnr_i(r))
         self.nr=nr
         self.n=n
         self.N=N
@@ -162,6 +186,8 @@ class Qnsym_Icos(qna.QnNdarray):
         #print_r(r)  # for test
         self.r=r
         self.qnr=qna.copy(rtoqnr(r))
+        self.qnr_e=qna.copy(rtoqnr_e(r))
+        self.qnr_i=qna.copy(rtoqnr_i(r))
         self.nr=nr
         self.n=n
         self.N=N
@@ -178,26 +204,16 @@ def rtoqnr(r):
     nr=shape[0]
     n=shape[1]
     return get_qnr(prj0,prji,r,nr,n)
-    
-def qnsym_init(isys):
-    global prj0,prji,nr,n,N,shape
-    #global qns  # symmetry operators for external and internal space comp. of nD vector
-    prjt=prj.prjop_init(isys)
-    prj0=prjt.prj0
-    prji=prjt.prji
-    if isys==2:
-        qns=Qnsym_Icos() #Pn35
-    elif isys==3:
-        qns=Qnsym_Deca() #P10mm
-    elif isys==4:
-        qns=Qnsym_Octa() #P8mm
-    elif isys==5:
-        qns=Qnsym_Dode() #P12mm
-    shape=qns.shape
-    set_mpltbl(qns.r) # 
-    qns.mpltbl=mpltbl
-    return qns
 
+def rtoqnr_e(r):
+    qr=rtoqnr(r)
+    return qr[0:3,0:3] #3x3 diagonal block 
+
+def rtoqnr_i(r):
+    qr=rtoqnr(r)
+    n=r.shape[0]
+    return qr[3:n,3:n] # 2x2 or 3x3 second diagonal block
+    
 def is_equal(r1,r2):
     for i in range(n):
         for j in range(n):

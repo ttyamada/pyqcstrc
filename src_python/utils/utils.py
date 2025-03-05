@@ -5,7 +5,9 @@
 #
 import sys
 import numpy as np
+import cython
 from numpy.typing import NDArray
+
 #from scipy.spatial import Delaunay
 import pyDelaunay2D as dln
 import itertools

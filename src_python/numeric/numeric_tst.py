@@ -1,7 +1,8 @@
 #if __name__ == '__main__':
 
 # test
-
+import numpy as np
+import cython
 import random
 
 def generate_random_value():

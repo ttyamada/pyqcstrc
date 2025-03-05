@@ -5,6 +5,8 @@ import random
 import sys
 import pygame
 import numpy as np
+import cython
+
 import polygon as plg
 
 graph = Graph()

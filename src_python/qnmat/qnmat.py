@@ -1,5 +1,7 @@
 import sys
 import numpy as np
+import cython
+
 import qnnum as qnn
 import qnvec as qnv
 #import qnmath as qmt
@@ -39,7 +41,7 @@ class Qnmat(qna.QnNdarray):
         return isub(ma1,ma2)
         
     def __matmul__(ma1:Self, ma2:Self):  #  for ma1@ma2
-        return matmul(ma1,ma2)
+        return mul(ma1,ma2)
     
     def set_mt(self:Self,mt:np.array): # QnNdarray*
         n=self.shape[0]
@@ -126,13 +128,13 @@ def isub(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
     return ma1
     
 # for ma1@ma2 (ma1 and ma2 should be qnvec or qnmat)
-def matmul(ma1: Qnmat, ma2: Qnmat, dtype=qnn.Qnnum) -> Qnmat: 
+def mul(ma1: Qnmat, ma2: Qnmat, dtype=qnn.Qnnum) -> Qnmat: 
     ma3=np.matmul(ma1,ma2,dtype=qnn.Qnnum)
     return ma3
 
 # for similarity transformation
 # not confirmed yet
-def matrixpow(ma: Qnmat, n: int) -> Qnmat:
+def pow(ma: Qnmat, n: int) -> Qnmat:
     """
     """
     (mx,my)=ma.shape

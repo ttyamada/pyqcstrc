@@ -1,5 +1,7 @@
 import sys
 import numpy as np
+import cython
+
 from numpy.typing import NDArray
 from typing import Self
 
@@ -79,6 +81,12 @@ def copy(a:Qnnum):
 #    #print("b",b.n[0],b.n[1],b.n[2]) # for test
 #    #b.n1=np.copy(a.n1); b.n2=np.copy(a.n2); b.n3=np.copy(a.n3)
 #    return b
+
+def zero(N:np.int64):
+    return Qnnum([0,0,1],N)
+
+def one(N:np.int64):
+    return Qnnum([1,0,1],N)
 
     
 def add(a:Qnnum, b:Qnnum):
@@ -161,9 +169,8 @@ def div_i(a:Qnnum, b:Qnnum): # b should be int
     return c
 
 def pow(a:Qnnum, b:np.int64):
-    n=a.n
     N=a.N
-    c=qnn.one(n,N)
+    c=one(N)
     for i in range(b):
         c=mul(c,a)
     return c

@@ -3,6 +3,7 @@ from numpy.typing import NDArray
 import time # in object_subtraction_dev1, tetrahedron_not_obj
 import itertools
 import cython
+
 import intsct as isct
 import qnnum.qnnum as qnn
 import qnvec.qnvec as qnv

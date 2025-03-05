@@ -1,5 +1,7 @@
 import sys
 import numpy as np
+import cython
+
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm

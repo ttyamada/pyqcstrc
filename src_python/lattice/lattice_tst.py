@@ -1,3 +1,8 @@
+import cython
+
+import qnvec as qnv
+from lattice import (get_tr)
+
 # for test
 #if __name__ == '__main__':
 N=5  # decagonal or icosahedral

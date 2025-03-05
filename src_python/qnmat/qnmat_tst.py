@@ -1,3 +1,5 @@
+import cython
+from qnmat import (Qnmat,copy,printqnm)
 #if __name__ == '__main__':
 # test
 def qnmat_tst(str,n,N):

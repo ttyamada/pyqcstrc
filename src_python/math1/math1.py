@@ -5,10 +5,12 @@
 #
 import sys
 import numpy as np
+import cython
+
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
-import qnmath
+import qnmath as qmt
 #import dode2.qnmath12
 import numeric as num
 

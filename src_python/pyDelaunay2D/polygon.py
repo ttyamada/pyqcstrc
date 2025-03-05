@@ -1,5 +1,6 @@
 import sys, os, math
 import numpy as np
+import cython
 from typing import Self
 
 #Basic Point class

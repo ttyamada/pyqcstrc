@@ -3,6 +3,8 @@
 ################
 import sys
 import numpy as np
+import cython
+
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
@@ -142,13 +144,16 @@ def reduce_x(xs:np.ndarray,brv):
 def symop_vec(symop:qnm.Qnmat,vt:qnv.Qnvec,centre:qnv.Qnvec):
     """ Apply a symmetric operation on a vector around given centre. in TAU-style
     """
-    vt=sub_vectors(vt,centre)
-    vt=dot_product_1(symop,vt)
-    return add_vectors(vt,centre)
+    #vt=sub_vectors(vt,centre)
+    vt=qnv.sub(vt,centre)
+    vt=qnm.mul(symop,vt)
+    return qnv.add(vt,centre)
 
 def generator_obj_symmetric_obj(obj:qnv.Qnvec, centre:qnv.Qnvec, pg:str):
     """
     """
+    N=obj.N
+    V0=qnv.zero(N)
     if obj.ndim==3 or obj.ndim==4:
         if np.all(centre==V0):
             mop=octasymop_array()

@@ -1,3 +1,11 @@
+import numpy as np
+import cython
+
+import qnnum as qnn
+import qnvec as qnv
+import qnmat as qnm
+import numeric as num
+
 #if __name__ == '__main__':
     
 N=2 # for octagonal
@@ -60,8 +68,7 @@ vts2[7]=qnv.anyv(n,N,[M1,M2,M0,M0,M0]) #(1 -1 0 0 0)/2
 qnv.printqnvs("vts2",vts2)
 
 isys=4
-prj.prjop_init(isys)
-
+prj=prj.Prjop(isys)
 # calculate internal space components of vts2
 print("vts2.shape",vts2.shape)
 vns2=num.get_internal_component_sets_numerical(vts2) # perp space components

@@ -4,8 +4,10 @@
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 #
 import numpy as np
+import cython
 from numpy.typing import NDArray
 import random
+
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm

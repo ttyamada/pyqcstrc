@@ -8,6 +8,8 @@ import timeit
 import os
 import sys
 import numpy as np
+import cython
+
 #try:
 #import qnmath as qmt #math12
 #import dode2.math1 as math1

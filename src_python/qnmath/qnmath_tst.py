@@ -1,3 +1,8 @@
+
+import cython
+
+import qnarray as qna
+from qnmath import (qsort,qsort_f)
 #if __name__ == '__main__':
 nr=10
 N=2 # for octagonal

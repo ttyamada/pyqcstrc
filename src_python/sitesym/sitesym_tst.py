@@ -1,10 +1,21 @@
+import cython
+
+import qnnum as qnn
+import qnvec as qnv
+import prjop as prj
+from sitesym import (site_symmetry,\
+                     coset,\
+                     equivalent_positions_in_unit_cell,\
+                     equivalent_positions
+                     )
+
 # for test
 #if __name__ == '__main__':
 isys=3  # decagonal
 brv='p'
 N=5
 n=5
-prj5=prj.prjop_init(isys)
+prj5=prj.Prjop(isys)
 qns5=qns.qnsym_init(isys)
 x0=qnv.zerov(n,N)
 x0[0]=qnn.Qnnum([1,0,2],N)  #(1/2,0,0,0,0)

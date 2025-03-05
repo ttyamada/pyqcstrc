@@ -1,3 +1,5 @@
+import numpy as np
+import cython
 import qnvec.qnvec as qnv
 import qnnum.qnnum as qnn
 
