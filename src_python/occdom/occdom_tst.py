@@ -12,6 +12,7 @@ import cython
 #import dode2.symmetry as symmetry
 #import dode2.intsct as intsct
 #import dode2.projection12 as proj
+import crsys
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
@@ -22,7 +23,11 @@ import qnsym as qns
 import intsct as isct
 import prjop as prj
 import occdom as occ
-    
+from occdom import (occdom_init,symmetric)
+
+crsys.crsys_init(isys)
+occ.occupdom_init()
+
 test_dir='../../tests/dode2/tests'
 xyz_dir='../../xyz/dode'
 # import asymmetric part of OD(occupation domain) located at origin,0,0,0,0,0,0.

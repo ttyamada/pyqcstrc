@@ -1,11 +1,16 @@
 import numpy as np
 import cython
 
-from qnnum import (printqnn,Qnnum,copy) 
+import crsys
+from qnnum import (qnnum_init,printqnn,Qnnum,copy) 
 
 #if __name__ == '__main__':
 # test
-N=np.int64(2)
+isys=4 # for octagonal
+crsys.crsys_init(isys)
+qnnum_init()
+
+N=crsys.N
 qnn0=Qnnum([0,0,1],N)
 printqnn("qnn0",qnn0)
 qnn1=Qnnum([1,0,1],N)

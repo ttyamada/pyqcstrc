@@ -1,18 +1,22 @@
 import cython
 
+import crsys
+import lattice as lt
 import qnvec as qnv
-from lattice import (get_tr)
+from lattice import (lattice_init,get_tr)
 
 # for test
 #if __name__ == '__main__':
-N=5  # decagonal or icosahedral
-n=5
-tr=get_tr('p',n,N)
+isys=3  # for decagonal
+crsys.crsys_init(isys)
+lattice_init()
+
+tr=get_tr('p')
 qnv.printqnv("tr in p",tr)
 n=6
-tr=get_tr('i',n,N)
+tr=get_tr('i')
 qnv.printqnv("tr in i",tr)
 
-tr=get_tr('f',n,N)
+tr=get_tr('f')
 qnv.printqnv("tr in f",tr)
   

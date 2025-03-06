@@ -1,15 +1,22 @@
 import numpy as np
 import cython
 
+import crsys
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
 import numeric as num
 
 #if __name__ == '__main__':
-    
-N=2 # for octagonal
-n=3
+
+isys=4 # for octagonal
+crsys.crsys_init(isys)
+qnn.qnnum_init()
+qnv.qnvec_init()
+qnm.qnmat_init()
+
+N=crsys.N
+n=crsys.n
 ns=3
 M0=qnn.Qnnum([0,0,1],N)
 M1=qnn.Qnnum([1,0,1],N)
@@ -47,8 +54,8 @@ qnn.printqnns("vinp",vinp)
 qnv.printqnv("vts1",vts1)
 
 # nD lattice vector for defining ODs
-n=5
-N=2
+#n=5
+#N=2
 # 8 corner vectors for AB tiling OD
 vts2=qnv.zerovs((8)) # for octagon for Ammann-Beenker tiling
 M0=qnn.Qnnum([0,0,1],N)
@@ -67,8 +74,11 @@ vts2[6]=qnv.anyv(n,N,[M0,M2,M1,M0,M0]) #(0 -1 1 0 0)/2
 vts2[7]=qnv.anyv(n,N,[M1,M2,M0,M0,M0]) #(1 -1 0 0 0)/2
 qnv.printqnvs("vts2",vts2)
 
-isys=4
-prj=prj.Prjop(isys)
+#isys=4
+qnm.qnmatrix_init()
+prj.prjop_init()
+num.numeric_init()
+
 # calculate internal space components of vts2
 print("vts2.shape",vts2.shape)
 vns2=num.get_internal_component_sets_numerical(vts2) # perp space components
@@ -80,17 +90,17 @@ qnv.printqnvs("vts2",vts2)
 #================
 # 重複のテスト
 #================
-n=5
+#n=5
 #vst=generate_random_vectors(nset)
 vst=qnv.zerovs((n))
 #for i in range(nset):
 #    vst[i]=qnv.Qnvec(n,N)
 # set vt values
-vst[0]=qnv.anyv(2,N,[M0,M1])
-vst[1]=qnv.anyv(2,N,[M1,M2])
-vst[2]=qnv.anyv(2,N,[M1,M3])
-vst[3]=qnv.anyv(2,N,[M0,M3])
-vst[4]=qnv.anyv(2,N,[M2,M1])
+vst[0]=qnv.anyv([M0,M1])
+vst[1]=qnv.anyv([M1,M2])
+vst[2]=qnv.anyv([M1,M3])
+vst[3]=qnv.anyv([M0,M3])
+vst[4]=qnv.anyv([M2,M1])
 print("vst.shape",vst.shape)
 qnv.printqnvs("vst",vst)
 

@@ -2,13 +2,19 @@ import sys
 import numpy as np
 import cython
 
+import crsys
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
 import qnndarray as qna
 
+def qnmath_init():
+    global n,N
+    n=crsys.n
+    N=crsys.N
+
 def abs(a:qnn.Qnnum):
-    N=a.N
+    #N=a.N
     qn0=qnn.Qnnum([0,0,1],N)
     if(a<qn0):
         return -a
@@ -27,7 +33,7 @@ def qnmatinv(a_i:qnm.Qnmat,n:np.int64): # qnmatrix inversion
     pivot=np.ndarray(n,dtype=qnn.Qnnum)
     ipivot=np.ndarray(n,dtype=np.int64) 
     index=np.ndarray((n,2),dtype=np.int64)
-    N=a[0][0].N
+    #N=a[0][0].N
     qn0=qnn.Qnnum([0,0,1],N)  # 0
     qn1=qnn.Qnnum([1,0,1],N)  # 1
     
@@ -354,11 +360,11 @@ def centroid(obj: qnv.Qnvec) -> qnv.Qnvec:
     -------
     centroid in qnvec
     """
-    N=obj[0].N
-    n=obj.shape[0]
+    #N=obj[0].N
+    n_=obj.shape[0]
     num=len(obj) # length of obj
-    v2=qnv.Qnvec(n,N) # nD zero qnvector
-    qnnum=qnn.Qnnum(1,0,num) # 1/num
+    v2=qnv.Qnvec(n_,N) # nD zero qnvector
+    qnnum=qnn.Qnnum([1,0,num],N) # 1/num
     for i1 in range(num):
         v2=v2+obj[i1]
     v0=v2*qnnum
@@ -380,7 +386,7 @@ def centroid_obj(obj: qnv.Qnvec) -> qnv.Qnvec:
     #print('centroid_obj')
     
     #  geometric center, centroid of OBJ
-    N=obj[0].N
+    #N=obj[0].N
     shape=qnv.shape
     n=shape[1]
     len=shape[0]  # 1/len(obj)
@@ -389,6 +395,12 @@ def centroid_obj(obj: qnv.Qnvec) -> qnv.Qnvec:
         tmp=tmp+thd
     tmp=tmp*len
     return tmp
+
+def det_matrix(mtx: qnm.Qnmat, n_:np.int64) -> qnn.Qnnum:
+    if n_==2:
+        return det_matrix_2d(mtx)
+    elif n_==3:
+        return det_matrix_3d(mtx)
 
 def det_matrix_3d(mtx: qnm.Qnmat) -> qnn.Qnnum:
     """Determinant of 3x3 matrix, mtx, in qnnumber
@@ -402,7 +414,7 @@ def det_matrix_3d(mtx: qnm.Qnmat) -> qnn.Qnnum:
     -------
     determinant in qnnumber
     """
-    N=mtx.N
+    #N=mtx.N
     shape=mtx.shape
     if shape[0]!=3:
         print("shape of mtx in det_matrix_3d should be (3,3) but",shape); exit(0)
@@ -428,7 +440,7 @@ def det_matrix_2d(mtx: qnm.Qnmat) -> qnn.Qnnum:
     -------
     determinant in qnnumber
     """
-    N=mtx.N
+    #N=mtx.N
     shape=mtx.shape
     if shape[0]!=2:
         print("shape of mtx in det_matrix_2d should be (3,3) but",shape); exit(0)
@@ -441,11 +453,11 @@ def det_matrix_2d(mtx: qnm.Qnmat) -> qnn.Qnnum:
 # this should be a function
 def matrixtr(mtx: qnm.Qnmat) -> qnm.Qnmat:
     """ return transposed matrix of mtx """
-    N=mtx[0][0].N
-    n=mtx.shape[0]
-    mtxt=qnm.Qnmat(n,N)
-    for i in range(n):
-        for j in range(n):
+    #N=mtx[0][0].N
+    n_=mtx.shape[0]
+    mtxt=qnm.Qnmat(n_,N)
+    for i in range(n_):
+        for j in range(n_):
             mtxt[i][j]=qnn.copy(mtx[j][i])
     return mtxt
         

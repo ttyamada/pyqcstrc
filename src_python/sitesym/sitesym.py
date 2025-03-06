@@ -5,6 +5,7 @@ import sys
 import numpy as np
 import cython
 
+import crsys
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
@@ -13,6 +14,10 @@ import qnmath as qmt
 import qnndarray as qna
 import qnsym as qns
 import lattice as lt
+
+def sitesym_init():
+    n=crsys.n
+    N=crsys.N
 
 def site_symmetry(x:qnv.Qnvec,qns:qnm.Qnmat,brv) -> np.ndarray: # return irs
     global nr,n,N,mpltbl,r
@@ -30,8 +35,8 @@ def site_symmetry(x:qnv.Qnvec,qns:qnm.Qnmat,brv) -> np.ndarray: # return irs
     """
     #a=np.zeros((len(symop),6,3),dtype=np.int64)
 
-    n=len(x)
-    N=x.N
+    #n=len(x)
+    #N=x.N
     nr=qns.nr
     qnr=qns.qnr
     mpltbl=qns.mpltbl
@@ -39,12 +44,12 @@ def site_symmetry(x:qnv.Qnvec,qns:qnm.Qnmat,brv) -> np.ndarray: # return irs
     a=np.zeros((nr,n),dtype=qnn.Qnnum)
 
     irs=np.zeros(0,dtype=np.int64)
-    tr=lt.get_tr(brv,n,N)
-    traop=lt.get_tr(brv,n,N)  # centering translation vectors including zero vector
+    #tr=lt.get_tr(brv)
+    traop=lt.get_tr(brv)  # centering translation vectors including zero vector
     for i in range(nr):
         op=qnr[i]
         a[i]=op@x    
-        for tr in traop:
+        for tr in trop:
             b=a[i]+tr
             if np.all(b==x):
                 irs=np.append(irs,i)
@@ -126,7 +131,7 @@ def equivalent_positions_in_unit_cell(x:qnv.Qnvec,brv,isk:np.ndarray,r0:np.ndarr
     
 def reduce_x(xs:np.ndarray,brv):
     nv=len(xs)
-    N=xs[0][0].N
+    #N=xs[0][0].N
     shape=xs.shape
     n=shape[1]
     qn1=qnn.Qnnum([1,0,2],N)  # 1/2
@@ -152,7 +157,7 @@ def symop_vec(symop:qnm.Qnmat,vt:qnv.Qnvec,centre:qnv.Qnvec):
 def generator_obj_symmetric_obj(obj:qnv.Qnvec, centre:qnv.Qnvec, pg:str):
     """
     """
-    N=obj.N
+    #N=obj.N
     V0=qnv.zero(N)
     if obj.ndim==3 or obj.ndim==4:
         if np.all(centre==V0):

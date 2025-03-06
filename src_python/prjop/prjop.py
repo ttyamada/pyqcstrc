@@ -8,14 +8,6 @@ import qnmat as qnm
 import qnmath as qmt
 import qnndarray as qna
 
-#N=2
-#n=5
-#prj=Qnprj_Octa(n,N) # projection operator for Qnvector (default)
-
-# for octagonal QCs
-#class Qnprj_Octa(np.ndarray):
-#class Qnprj_Octa(qna.QnNdarray):
-
 class Prjop(qnm.Qnmat):
     def __init__(self,isys:np.int64):
         global prj0,prji

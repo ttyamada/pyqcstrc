@@ -5,6 +5,9 @@ import numpy as np
 import cython
 import random
 
+import crsys
+from numiric import (numiric_init,)
+
 def generate_random_value():
     """ generate value in TAU-style  # qnnu
     """
@@ -66,6 +69,8 @@ triangle_num=numerical_vectors(triangle) # in float
 area=triangle_area_6d_numerical(triangle_num)
 print(area)
 """
+crsys.crsys(isys)
+numeric_init()
 
 ln=np.array([\
 [1.61803399, -1.,          0. ],\

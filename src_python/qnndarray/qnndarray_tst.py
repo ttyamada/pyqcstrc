@@ -1,19 +1,23 @@
+import numpy as np
 
-from qnndarray import (QnNdarray,printqndm)
+import crsys
+from qnndarray import (qnndarray_init,QnNdarray,printqndm)
+
 #if __name__ == '__main__':
 # test
+isys=4
+crsys.crsys_init(isys)
+qnndarray_init()
+n=crsys.n
+N=crsys.N
 
-N=2
-n=5
-print("n=",n)
+#print("n=",n)
 shape=(n,n)
 qndm=QnNdarray(shape,N) # nxn qmnum zero matrix
 print("qndm.ndim",qndm.ndim)
 print("qndm.shape",qndm.shape)
 printqndm("zero qnmat",qndm)
 
-N=2
-n=5
 nr=10
 print("n=",n)
 shape=(nr,n,n)

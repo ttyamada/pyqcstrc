@@ -1,11 +1,17 @@
 
 import cython
 
+import crsys
 import qnarray as qna
-from qnmath import (qsort,qsort_f)
+from qnmath import (qnmath_init,qsort,qsort_f)
+
 #if __name__ == '__main__':
+isys=4 # octagonal
+crsys=crsys_init(isys)
+qnmath_init()
+
 nr=10
-N=2 # for octagonal
+N=crsys.N # for octagonal
 shape=(nr)
 
 fn=[0.0]*nr

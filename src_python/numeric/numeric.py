@@ -8,6 +8,7 @@ import cython
 from numpy.typing import NDArray
 import random
 
+import crsys
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
@@ -19,6 +20,10 @@ import qnndarray as qna
 #N=3
 
 #EPS=1e-6 # tolerance
+
+def numeric_init():
+    n=crsys.n
+    N=crsys.N
 
 def coplanar_check_numeric_tau(pts: qnv.Qnvec, num_iteration: int=5) -> bool:
     """check the points (pts) are in coplanar or not
@@ -154,7 +159,7 @@ def on_out_surface(point: qnv.Qnvec, triangle: qnv.Qnvec) -> bool:
     area1=triangle_area_numerical(triangle1)+\
         triangle_area_numerical(triangle2)+\
         triangle_area_numerical(triangle3)
-    N=point.N
+    #N=point.N
     qn0=qnn.Qnnum([0,0,1],N) # 0 in qnnum
     if abs(area0-area1)==qn0:  #< EPS:
         return True
@@ -497,8 +502,8 @@ def triangle_area(a: qnv.Qnvec) -> qnn.Qnnum:  #-> float:
     
     v3=qnv.cros(v2,v1) # cross product of 3D qnvec
     vol=qnv.dot(v3,v3) # squared norm
-    N=a.N
-    qn2=qnn.any(2,N)     # 2 in qnnum
+    #N=a.N
+    qn2=qnn.any_i(2)     # 2 in qnnum
     return abs(vol)/qn2
     #return np.sqrt(np.sum(np.abs(v3**2)))/2.0
 
@@ -609,7 +614,7 @@ def obj_volume_6d_numerical(obj: qnv.Qnvec) -> qnn.Qnnum:  #float:
     object: array
         6-dimensional vertex coordinates of triangle.
     """
-    N=point.N
+    #N=point.N
     qn0=qnn.Qnnum([0,0,1],N) # 0 in qnnum
     vol=qn0
     for triangle in obj:
@@ -747,8 +752,8 @@ def projection3_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
         set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
     """
     shape=vns.shape
-    n=vns[0].n
-    N=vns[0].N
+    #n=vns[0].n
+    #N=vns[0].N
     nc=shape[0]
     print("N",N)
     #if N==2:
@@ -852,9 +857,9 @@ def inout_occupation_domain_numerical(obj: qnv.Qnvec,point: qnv.Qnvec):
     """
     """
     #triangles=np.zeros((len(obj),3,3),dtype=np.float64)
-    N=obj.N
-    n=3
-    qv=qnv.Qnvec(n,N)  # zero initialized qnvec
+    #N=obj.N
+    n_=3
+    qv=qnv.Qnvec(n_,N)  # zero initialized qnvec
     triangles=[qv]*num # qnvec array
     for i1,triangle in enumerate(obj):
         triangles[i1]=get_internal_component_sets_numerical(triangle)
@@ -891,7 +896,7 @@ def inside_outside_triangle_numerical(triangle: qnv.Qnvec, point: qnv.Qnvec):
     tmp=np.append(tmp,triangle[1])
     tmp=tmp.reshape(3,3)
     area1+=triangle_area_numerical(tmp)
-    N=triangle[0].N
+    #N=triangle[0].N
     qn0=qnn.Qnnum([0,0,1],N)
     if abs(area0-area1)<qn0:  #EPS:
         return True # inside

@@ -1,5 +1,6 @@
 import cython
 
+import crsys
 import prjop as prj
 from qnsym import (Qnsym,test_wt)
 
@@ -7,6 +8,7 @@ from qnsym import (Qnsym,test_wt)
 #if __name__ == '__main__':
 # test for qnnum projection operators
 isys=4
+crsys.crsys_init(isys)
 prj4=prj.Prjop(isys)
 qns4=Qnsym(isys) #qns4=qnsym_init(isys)
 test_wt("Octa",qns4)

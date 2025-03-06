@@ -1,9 +1,11 @@
 import cython
 
+import crsys
 import qnnum as qnn
 import qnvec as qnv
 import prjop as prj
-from sitesym import (site_symmetry,\
+from sitesym import (sitesym_init,\
+                     site_symmetry,\
                      coset,\
                      equivalent_positions_in_unit_cell,\
                      equivalent_positions
@@ -12,11 +14,12 @@ from sitesym import (site_symmetry,\
 # for test
 #if __name__ == '__main__':
 isys=3  # decagonal
+crsys.crsys_init(isys)
 brv='p'
-N=5
-n=5
-prj5=prj.Prjop(isys)
-qns5=qns.qnsym_init(isys)
+N=crsys.N
+n=crsys.n
+prj5=prj.prjop_init()
+qns5=qns.qnsym_init()
 x0=qnv.zerov(n,N)
 x0[0]=qnn.Qnnum([1,0,2],N)  #(1/2,0,0,0,0)
 qnv.printqnv("x0",x0)
@@ -25,6 +28,7 @@ nr=qns5.nr
 r=qns5.r
 #for i in range(nr):
 #    qnm.printqnm("qnr[i]",qns5.qnr[i])
+sitesym_init()
 irs0=site_symmetry(x0,qns5,brv)
 print("irs0",irs0)
 isk0=coset(irs0)

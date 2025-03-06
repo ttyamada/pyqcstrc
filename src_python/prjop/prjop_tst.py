@@ -3,6 +3,7 @@ import sys
 import numpy as np
 import cython
 
+import crsys
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
@@ -14,8 +15,11 @@ from prjop import (prjop_init)
 
 # test for qnnum projection operators
 def prj_tst(isys):
-    prj=Prjop(isys)
     print("isys",isys)
+    crsys.crsys_init(isys)
+    prj.prjop_init()
+    qnm.qnmat_init()
+    
     prj0=prj.prj0
     prji=prj.prji
     qnm.printqnm("prj0",prj0)
@@ -33,8 +37,6 @@ def prj_tst(isys):
     prj.printfm("prjif",prjif,n)
     unitmf=prjif@prjf
     prj.printfm("unitmf",unitmf,n)
-
-
 
 prj_tst(4)
 prj_tst(3)

@@ -2,6 +2,7 @@ import sys
 import numpy as np
 import cython
 
+import crsys
 import qnnum as qnn
 import qnvec as qnv
 #import qnmath as qmt
@@ -47,7 +48,12 @@ class Qnmat(qna.QnNdarray):
             for j in range(n):
                 self.mt[i][j]=qnn.copy(mt[i][j]) # copy qnnum
 
-def zerom(shape:np.int64, N: np.int64) -> Qnmat:
+def qnmat_init():
+    global n,N
+    n=crsys.n
+    N=crsys.N
+
+def zerom(shape:np.int64) -> Qnmat:
     qnm=Qnmat(shape,N)
     return qnm
 
@@ -63,11 +69,11 @@ def anym(m:NDArray[qnn.Qnnum]):
             m1[i][j]=m[i][j]
     return m1
 
-def unitm(n:np.int64, N: np.int64) -> Qnmat:
+def unitm(n_:np.int64) -> Qnmat:
     qn1=qnn.Qnnum([1,0,1],N)
-    shape=(n,n)
+    shape=(n_,n_)
     qnm=Qnmat(shape,N)
-    for i in range(n):
+    for i in range(n_):
         qnm[i][i]=qn1
     return qnm
         
@@ -83,10 +89,10 @@ def copy(qnm: Qnmat) -> Qnmat:
     #        qnm1[i][j]=qnn.copy(qnm[i][j])
     #return qnm1
 
-def int2qnm(r:np.ndarray,n:np.int64,N: np.int64) -> Qnmat:
-    qnr=Qnmat(n,N)
-    for i in range(n):
-        for j in range(n):
+def int2qnm(r:np.ndarray, n_:np.int64) -> Qnmat:
+    qnr=Qnmat(n_) # n_ x n_ matrix
+    for i in range(n_):
+        for j in range(n_):
             qnr[i][j]=qnn.int2qnn(r[i][j],N)
     return qnr
     
@@ -114,7 +120,7 @@ def sub(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
     la2=ma2.shape[1]
     n1=ma1.ndim
     n2=ma2.ndim
-    N=ma1[0][0].N
+    #N=ma1[0][0].N
     a=Qnmat(n1,N)
     if(n1==1 and n2==1): # vectors
         for i in range(la1):
@@ -141,13 +147,13 @@ def mul(ma1: Qnmat, ma2: Qnmat, dtype=qnn.Qnnum) -> Qnmat:
 
 # for similarity transformation
 # not confirmed yet
-def pow(ma: Qnmat, n: int) -> Qnmat:
+def pow(ma: Qnmat, n_: int) -> Qnmat:
     """
     """
     (mx,my)=ma.shape
-    N=ma[0][0].N
+    #N=ma[0][0].N
     if mx==my:
-        if n==0:
+        if n_==0:
             return np.identity(mx)
 #        elif n<0:
 #            tmp=unitm(n,N)
@@ -157,8 +163,8 @@ def pow(ma: Qnmat, n: int) -> Qnmat:
 #                tmp=np.dot(tmp,inva)
 #            return tmp
         else:
-            tmp=np.unitm(n,N)
-            for i in range(n):
+            tmp=np.unitm(n_,N)
+            for i in range(n_):
                 tmp=np.dot(tmp,ma)
             return tmp
     else:
@@ -177,17 +183,17 @@ def qnm2npa(a) -> np.ndarray:
 def qnm2flt(a) -> np.ndarray:
     la=a.shape #len(a)
     b=np.zeros(la[0],la[1],3)  #la x la qnnum matrix 
-    N=a[0].N
+    #N=a[0].N
     for i in range(la[0]):
         for j in range(la[1]):
             b[i][j]=(a[i][j].n[0]+a[i][j].n[1]*np.sqrt(N))/a[i][j].n[2]
     return b
 
 # get qnmat from int matrix
-def intm2qnm(a:np.array,n:np.int64,N:np.int64) -> Qnmat:
-    b=Qnmat(n,N) #qnnum zero vector
-    for i in range(n):
-        for j in range(n):
+def intm2qnm(a:np.array,n_:np.int64) -> Qnmat:
+    b=Qnmat(n_,N) #qnnum zero vector
+    for i in range(n_):
+        for j in range(n_):
             b[i][j]=qnn.int2qn(a[i][j],N)
     return b
 

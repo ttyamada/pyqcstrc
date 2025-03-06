@@ -1,10 +1,17 @@
 import qnnum as qnn
 import numpy as np
-from qnvec import (anyv,printqnv,dot,cros,printqnvs,Qnvec)
+
+import crsys
+from qnvec import (qnvec_init,anyv,printqnv,dot,cros,printqnvs,Qnvec)
 
 #if __name__ == '__main__':
 # test
-def qnvec_tst(str,n,N):
+def qnvec_tst(str,isys):
+    crsys.crsys_init(isys)
+    qnvec_init()
+    
+    n=crsys.n
+    N=crsys.N
     print(str)
     print("n",n,"N",N)
     M0=qnn.Qnnum([0,0,1],N)
@@ -53,17 +60,14 @@ def qnvec_tst(str,n,N):
     print("qnvs.shape",qnvs.shape)
     printqnvs("qnvs",qnvs)
     
-
-n=5
-N=2
-qnvec_tst("octagonal",n,N) # octagonal
-N=5
-qnvec_tst("decagonal",n,N) # octabonal
-N=3
-qnvec_tst("dodecagonal",n,N) # octabonal
-n=6
-N=5
-qnvec_tst("icosahedral",n,N) # octabonal
+isys=4
+qnvec_tst("octagonal",isys) # octagonal
+isys=3
+qnvec_tst("decagonal",isys) # octabonal
+isys=5
+qnvec_tst("dodecagonal",isys) # octabonal
+isys=2
+qnvec_tst("icosahedral",isys) # icosahedral
     
     
     

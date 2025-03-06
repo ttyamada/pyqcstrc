@@ -2,6 +2,7 @@ import numpy as np
 from numpy.typing import NDArray
 import cython
 
+import crsys
 import qnnum as qnn
 import qnvec as qnv
 
@@ -40,7 +41,12 @@ class QnNdarray(np.ndarray):
         return sub_vectors(self,b)
 
         #printqndm("Qnmat self",self) # for test
-        
+   
+def qnndarray_init():
+    global n,N
+    n=crsys.n
+    N=crsys.N
+     
 def copy(qna1: QnNdarray):
     return np.copy(qna1)
 
@@ -48,7 +54,7 @@ def zeros(shape):
     np.zeros(shape,dtype=qnn.Qnnum)
     
 # any kind of 3D array assumed
-def anya(vec:NDArray[qnn.Qnnum], shape, N:np.int64)->QnNdarray:
+def anya(vec:NDArray[qnn.Qnnum], shape)->QnNdarray:
     qnva=QnNdarray(shape,N)
     ndim=vec.ndim
     if ndim==1:

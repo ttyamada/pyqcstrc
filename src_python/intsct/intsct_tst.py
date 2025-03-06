@@ -4,6 +4,7 @@ import time # in object_subtraction_dev1, tetrahedron_not_obj
 import itertools
 import cython
 
+import crsys
 import intsct as isct
 import qnnum as qnn
 import qnvec as qnv
@@ -60,7 +61,10 @@ def generate_random_triangle():
 #[[ 0,  0,  1],[ 0,  0,  1],[-1,  0,  2],[ 1,  0,  2],[ 0,  0,  1],[ 0,  0,  1]]]) # edge2
 
 isys=4  # for octabonal
-prj=prj.prjop_init(isys)
+crsys.crsys_init(isys)
+qnn.qnnum_init()
+prj.prjop_init()
+qna.qnndarray_init()
 
 N=2 # for octagonal
 M0=qnn.Qnnum([0,0,1],N)
@@ -78,8 +82,8 @@ seg_2=np.array([\
            [M0,M0,M4,M3,M0,M0]
         ],dtype=qnn.Qnnum)
 
-segment_1=qna.anya(seg_1,(2,6),N)
-segment_2=qna.anya(seg_2,(2,6),N)
+segment_1=qna.anya(seg_1,(2,6))
+segment_2=qna.anya(seg_2,(2,6))
 qna.printqndm("segment_1",segment_1)
 qna.printqndm("segment_2",segment_2)
 
@@ -98,8 +102,8 @@ seg_2=np.array([\
            [M0,M1,M0,M0,M0,M0],\
            [M0,M3,M4,M0,M0,M0]
         ],dtype=qnn.Qnnum)
-segment_1=qna.anya(seg_1,(2,6),N)
-segment_2=qna.anya(seg_2,(2,6),N)
+segment_1=qna.anya(seg_1,(2,6))
+segment_2=qna.anya(seg_2,(2,6))
 qna.printqndm("segment_1",segment_1)
 qna.printqndm("segment_2",segment_2)
 

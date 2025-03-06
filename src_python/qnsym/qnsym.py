@@ -2,6 +2,7 @@ import sys
 import numpy as np
 import cython
 
+import crsys
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
@@ -198,11 +199,25 @@ class Qnsym_Icos(qna.QnNdarray):
         #qmt.qnmatinv(prji,n)
         #self=qna.copy(get_qnr(prj0,prji,r,nr,n))
         #self.order=nr
-    
+        
+def qnsym_init():
+    global n,N,r
+    n=crsys.n
+    N=crsys.N
+    if isys==2:
+        symo=Qnsym_Icos()
+    elif isys==3:
+        symo=Qnsym_Deca()
+    elif isys==4:
+        symo=Qnsym_Octa()
+    elif isys==5:
+        symo=Qnsym_Dode()
+    r=symo.r
+
 def rtoqnr(r):
     shape=r.shape # (nr,n,n)
     nr=shape[0]
-    n=shape[1]
+    #n_=shape[1]
     return get_qnr(prj0,prji,r,nr,n)
 
 def rtoqnr_e(r):
@@ -211,7 +226,7 @@ def rtoqnr_e(r):
 
 def rtoqnr_i(r):
     qr=rtoqnr(r)
-    n=r.shape[0]
+    #n_=r.shape[0]
     return qr[3:n,3:n] # 2x2 or 3x3 second diagonal block
     
 def is_equal(r1,r2):
@@ -235,16 +250,16 @@ def set_mpltbl(r:np.ndarray): # r: integer rotation matrices in nD lattice
 
 def wt_mpltbl():
     shape=mpltbl.shape
-    n=(int)(shape[0]/2)
+    n_=(int)(shape[0]/2) # when centrosymmetric
     print("mpltbl 1st block")
-    for i in range(n):
-        print("",mpltbl[i][0:n])
+    for i in range(n_):
+        print("",mpltbl[i][0:n_])
     print("mpltbl 2nd block")
-    for i in range(n):
-        print("",mpltbl[i][n:n*2])
+    for i in range(n_):
+        print("",mpltbl[i][n_-1:n_*2])
     
-def get_qnr(prj,prji,r,nr,n):
-    N=prj[0][0].N
+def get_qnr(prj,prji,r,nr):
+    #N=prj[0][0].N
     qnr=qna.QnNdarray((nr,n,n),N)
     prjt=qmt.matrixtr(prj)  # transposed prj matrix
     prjit=qmt.matrixtr(prji) # transposed prji matrix 
@@ -256,7 +271,7 @@ def get_qnr(prj,prji,r,nr,n):
         #qnm.printqnm(str,qnr[i]) # for test
     return qnr
 
-def get_qnr0(r,nr,n,N):
+def get_qnr0(r,nr):
     qnr0=qna.QnNdarray((nr,n,n),N)
     for i in range(nr):
         qnr0[i]=qnm.intm2qnm(r[i],n,N)
@@ -265,12 +280,12 @@ def get_qnr0(r,nr,n,N):
     return qnr0
 
 # gemerate all rotation matrices from
-def mpso(r1,m1,r2,m2,m3,n):
+def mpso(r1,m1,r2,m2,m3):
     r2[m3]=r1[m1]@r2[m2]
 
 def set_r(rg,ord,r):
     ng=len(ord)
-    n=rg.shape[1] # rg nxn matrix
+    #n=rg.shape[1] # rg nxn matrix
     r[0]=np.identity(n,dtype=np.int64) # this should be a unit matrix
     impt=1
     for ns in range(ng):
@@ -286,7 +301,7 @@ def set_r(rg,ord,r):
 def set_r0(rg,ord,r):
     #print("r.shape",r.shape)  # for test
     nr=r.shape[0]
-    n=r.shape[1]
+    #n=r.shape[1]
     ndim=len(ord)
     print("ord",ord,"ord[0]",ord[0],"ord[1]",ord[1],"ndim",ndim)
     #for k in range(ndim):
@@ -308,7 +323,7 @@ def set_r0(rg,ord,r):
 # matrix multiple
 # this can be replaced by r1*r2
 # when r1 and r2 are qnmatrices
-def get_r(r1,r2,n):
+def get_r(r1,r2):
     r=np.zeros((n, n),dtype=np.int64)
     for i in range(n):
         for j in range(n):
@@ -323,7 +338,7 @@ def print_r(r):
     #print("r.shape",r.shape)
     #print("r.ndim",ndim)
     nr=shape[0]
-    n=shape[1]
+    #n=shape[1]
     for i in range(nr):
         print("#",i+1)
         for j in range(n):
@@ -339,13 +354,13 @@ def print_r0(r0):
     #print("r.shape",r.shape)
     #print("r.ndim",ndim)
     nr=shape[0]
-    n=shape[1]
+    #n=shape[1]
     for i in range(nr):
         print("#",i+1)
         qnm.printqnm("",r0[i])
 
 # integer matrix to qnnumber matrix transformation
-def intr2qnmr(r,n,N,nr):
+def intr2qnmr(r,nr):
     qnmr=qna.QnNdarray((nr,n,n),N) #[qm0]*nr
     for i in range(nr):
         qnmr[i]=qnm.intm2qnm(r[i],n,N) # qnmat for i-th rotation operator r[i]

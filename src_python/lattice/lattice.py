@@ -2,11 +2,16 @@ import sys
 import numpy as np
 import cython
 
+import crsys
 import qnnum.qnnum as qnn
 import qnvec.qnvec as qnv
 import qnndarray.qnndarray as qna
 
-def get_tr(brv,n,N):
+def lattice_init():
+    n=crsys.n
+    N=crsys.N
+
+def get_tr(brv):
     global ntr
     qn0=qnn.Qnnum([0,0,1],N) # 0
     qn1=qnn.Qnnum([1,0,2],N) # 1/2

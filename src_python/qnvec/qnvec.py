@@ -1,6 +1,7 @@
 import sys
 import numpy as np
 from numpy.typing import NDArray
+import crsys
 import qnnum as qnn
 from typing import Self
 
@@ -49,15 +50,20 @@ class Qnvec(np.ndarray):
     
     def __not__(a:Self,b:Self):
         return not_eq(a,b)
+    
+def qnvec_init():
+    global n,N
+    n=crsys.n
+    N=crsys.N
         
 def zerovs(shape) -> Qnvec:  # qnvec ndarray
     return np.zeros(shape,dtype=Qnvec)
 
-def zerov(n:np.int64,N:np.int64)->Qnvec: # qnnumber zero vector
+def zerov()->Qnvec: # qnnumber zero vector
     qnv=Qnvec(n,N)
     return qnv
 
-def anyv(v:NDArray[qnn.Qnnum], n: np.int64,N: np.int64):
+def anyv(v:NDArray[qnn.Qnnum]):
     v1=Qnvec(n,N)
     for i in range(n):
         v1[i]=v[i]
@@ -79,8 +85,8 @@ def iadd(self:Qnvec, b:Qnvec):
     return self
 
 def sub(v1:Qnvec, v2:Qnvec)-> Qnvec:
-    n=v1.shape[0]
-    N=v1[0].N
+    #n=v1.shape[0]
+    #N=v1[0].N
     a=Qnvec(n,N)
     for i in range(n):
         a[i]=v1[i]-v2[i]
@@ -92,8 +98,8 @@ def isub(self:Qnvec, b:Qnvec):
 
 def mul_vector_i(v:Qnvec, coeff:int) -> Qnvec:
     if v.ndim==1:
-        n=v.shape
-        N=v.N
+        #n=v.shape
+        #N=v.N
         a=Qnvec(n,N)  #np.zeros(v.shape,dtype=np.int64)
         for i in range(n):
             a[i]=v[i]*coeff  #mul(v,coeff)
@@ -104,8 +110,8 @@ def mul_vector_i(v:Qnvec, coeff:int) -> Qnvec:
 
 def mul_vector_qn(v:Qnvec, coeff:qnn.Qnnum) -> Qnvec:
     if v.ndim==1:
-        n=v.shape
-        N=v.N
+        #n=v.shape
+        #N=v.N
         a=Qnvec(n,N)  #np.zeros(v.shape,dtype=np.int64)
         for i in range(n):
             a[i]=v[i]*coeff  #mul(v,coeff)
@@ -116,8 +122,8 @@ def mul_vector_qn(v:Qnvec, coeff:qnn.Qnnum) -> Qnvec:
 
 def mul_vectors_i(vs:Qnvec, coeff:int) -> Qnvec:
     if vs.ndim==2:
-        n=vs.shape[0]
-        N=vs[0].N
+        #n=vs.shape[0]
+        #N=vs[0].N
         a=[Qnvec(n,N)]*vs.shape
         la=vs.shape
         for i in range(2):
@@ -130,8 +136,8 @@ def mul_vectors_i(vs:Qnvec, coeff:int) -> Qnvec:
 
 def mul_vectors_qn(vs:Qnvec, coeff:qnn.Qnnum):
     if vs.ndim==2:
-        n=vs.shape[0]
-        N=vs[0].N
+        #n=vs.shape[0]
+        #N=vs[0].N
         a=[Qnvec(n,N)]*vs.shape
         la=vs.shape
         for i in range(2):
@@ -176,9 +182,9 @@ def cros(v1:Qnvec, v2:Qnvec) -> Qnvec:
     
 # for octagonal and dodecagonal
 def dot(v1:Qnvec, v2:Qnvec) -> qnn.Qnnum:
-    n=v1.shape[0]
-    N=v1[0].N
-    v=qnn.zero(N) # qnnum zero
+    #n=v1.shape[0]
+    #N=v1[0].N
+    v=qnn.zero() # qnnum zero
     for i in range(n):
         v=v+v1[i]*v2[i]
     return v
@@ -208,14 +214,14 @@ def qnv2flt(a:Qnvec):
     la=a.shape
     b=np.zeros(la, dtype=np.float64)
     #print("b",b)
-    N=a[0].N
+    #N=a[0].N
     for i in range(la):
         ai=a[i]
         b[i]=(ai.n[0]+ai.n[1]*np.sqrt(N))/ai.n[2]
     return b
 
-def intv2qnv(a:np.ndarray,N:np.int64):
-    n=a.shape[0]
+def intv2qnv(a:np.ndarray):
+    #n=a.shape[0]
     qn0=qnn.Qnnum([0,0,1],N) # qnnum zero
     b=Qnvec(np.full(n,qn0)) #qnnum zero vector
     for i in range(n):
@@ -253,21 +259,21 @@ def printqnv2(str:str,qnv1:Qnvec,qnv2:Qnvec):
 def printqnvs(str:str,qnv1:Qnvec):
     shape=qnv1.shape
     print("shape",shape)
-    n1=shape[0]
-    for j in range(n1):
+    n_=shape[0]
+    for j in range(n_):
         print(str+"["+format(j)+"]",end=" ")
         printqnv("",qnv1[j])
      
 def eq(qnv1:Qnvec, qnv2:Qnvec):
-    n=qnv1.n
-    for i in range(n):
+    n_=qnv1.n
+    for i in range(n_):
         if qnv1[i]!=qnv2[i]:
             return False
     return True
 
 def not_eq(qnv1:Qnvec, qnv2:Qnvec):
-    n=qnv1.n
-    for i in range(n):
+    n_=qnv1.n
+    for i in range(n_):
         if qnv1[i]!=qnv2[i]:
             return True
     return False
