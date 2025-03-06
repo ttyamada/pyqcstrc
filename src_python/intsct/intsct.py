@@ -4,6 +4,7 @@ from numpy.typing import NDArray
 import time # in object_subtraction_dev1, tetrahedron_not_obj
 import itertools
 
+import crsys
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm

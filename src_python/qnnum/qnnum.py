@@ -2,19 +2,21 @@ import sys
 import numpy as np
 import cython
 
+import crsys
 from numpy.typing import NDArray
 from typing import Self
 
 import crsys
 
 class Qnnum:
-    def __init__(self, n: NDArray[np.int64], N: np.int64):
-        self.n=n
+    def __init__(self, n: NDArray[np.int64]):
+        self.n=crsys.n
         #N :2 5 3 for octagonal, decagonal and dodecagonal Qnnumber   
-        self.N=N
-        self.n[0]=n[0]
-        self.n[1]=n[1]
-        self.n[2]=n[2]
+        n_=np.array([n[0],n[1],n[2]])
+        #print("n in Qnnum__init__",n)
+        #print("n_ in Qnnum__init__",n_)
+        self.n=n_
+        self.N=crsys.N
     
     def __add__(a:Self, b:Self):
         return add(a,b)
@@ -71,7 +73,7 @@ def zeros(shape): # qnnum ndarray
     return np.zeros(shape,dtype=Qnnum)
     
 def copy(a:Qnnum):
-    self=Qnnum([0,0,1],N)
+    self=Qnnum([0,0,1])
     self.n[0]=np.copy(a.n[0])
     self.n[1]=np.copy(a.n[1])
     self.n[2]=np.copy(a.n[2])
@@ -79,15 +81,15 @@ def copy(a:Qnnum):
     return self
 
 def zero():
-    return Qnnum([0,0,1],N)
+    return Qnnum([0,0,1])
 
 def one():
-    return Qnnum([1,0,1],N)
+    return Qnnum([1,0,1])
 
 def any_i(n_: np.int64):
-    return Qnnum([n_,0,1],N)
+    return Qnnum([n_,0,1])
 def any(n:NDArray[np.int64]):
-    Qnnum([n[0],n[1],n[2]],N)
+    Qnnum([n[0],n[1],n[2]])
 
 def add(a:Qnnum, b:Qnnum):
     #print("a1",a.n[0],"a2",a.n[1],"a3",a.n[2])
@@ -103,9 +105,9 @@ def add(a:Qnnum, b:Qnnum):
     c3=int(c3/g)
     #print("c1",c1,"c2",c2,"c3",c3)
     if c3<0:
-        return Qnnum(np.array([-c1,-c2,-c3]),N)
+        return Qnnum(np.array([-c1,-c2,-c3]))
     else:
-        return Qnnum(np.array([c1,c2,c3]),N)
+        return Qnnum(np.array([c1,c2,c3]))
 
 def iadd(self:Qnnum, b:Qnnum):
     self=add(self,b)
@@ -121,9 +123,9 @@ def sub(a:Qnnum, b:Qnnum):
     c2=int(c2/g)
     c3=int(c3/g)
     if c3<0:
-        return Qnnum(np.array([-c1,-c2,-c3]),N)
+        return Qnnum(np.array([-c1,-c2,-c3]))
     else:
-        return Qnnum(np.array([c1,c2,c3]),N)
+        return Qnnum(np.array([c1,c2,c3]))
 
 def isub(self:Qnnum, b:Qnnum):
     self=sub(self,b)
@@ -141,15 +143,15 @@ def mul(a:Qnnum, b:Qnnum):
     c2=int(c2/g)
     c3=int(c3/g)
     if c3<0:
-        return Qnnum(np.array([-c1,-c2,-c3]),N)
+        return Qnnum(np.array([-c1,-c2,-c3]))
     else:
-        return Qnnum(np.array([c1,c2,c3]),N)
+        return Qnnum(np.array([c1,c2,c3]))
     
 def mul_i(a:Qnnum, b:Qnnum): # b should be int
     c1=a.n[0]*b
     c2=a.n[1]*b
     c3=a.n[2]
-    return Qnnum(np.array([c1,c2,c3]),N)
+    return Qnnum(np.array([c1,c2,c3]))
 
 def div(a:Qnnum, b:Qnnum):
     #N = (int)(a.N)
@@ -160,14 +162,14 @@ def div(a:Qnnum, b:Qnnum):
     if c3==0:
         print('ERROR_1:division error')
         return
-    c=Qnnum(np.array([c1,c2,c3]),N)
+    c=Qnnum(np.array([c1,c2,c3]))
     return mul(a,c)
 
 def div_i(a:Qnnum, b:Qnnum): # b should be int
     c1=a.n[0]
     c2=a.n[1]
     c3=b.n[2]*b
-    c=Qnnum(np.array([c1,c2,c3]),N)
+    c=Qnnum(np.array([c1,c2,c3]))
     return c
 
 def pow(a:Qnnum, b:np.int64):
@@ -215,7 +217,7 @@ def leq(a:Qnnum, b:Qnnum):
     
 def neg(a:Qnnum):
     #print("a.n[0]",a.n[0],"a.n[1]",a.n[1],"a.n[2]",a.n[2],"N",N) # for test
-    b=Qnnum([-a.n[0],-a.n[1],a.n[2]],N) # -self
+    b=Qnnum([-a.n[0],-a.n[1],a.n[2]]) # -self
     #printqnn("b",b)  # for test
     return b
 
@@ -233,7 +235,7 @@ def qn2flt(a:Qnnum) -> float:
 
 def int2qn(i:np.int64,N:np.int64):
     #N=self.N
-    return Qnnum([i,0,1],N)
+    return Qnnum([i,0,1])
 
 def flt2qn(qr:float) -> Qnnum:
     xm=np.abs(qr)
@@ -242,7 +244,7 @@ def flt2qn(qr:float) -> Qnnum:
     #print("N",N,"sqrtn",sqrtn) # for test
     eps=0.000001
     n1m=200; n2m=200; n3m=200
-    xn=Qnnum([0,0,1],N)
+    xn=Qnnum([0,0,1])
     for k in range(n3m):
         n3=k+1
         for i in range(n1m):

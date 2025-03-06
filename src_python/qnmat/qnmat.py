@@ -1,24 +1,23 @@
 import sys
 import numpy as np
 import cython
+from typing import Self
+from numpy.typing import NDArray
 
 import crsys
 import qnnum as qnn
 import qnvec as qnv
-#import qnmath as qmt
 import qnndarray as qna
-from typing import Self
-from numpy.typing import NDArray
 
 #class Qnmat(np.ndarray):
 class Qnmat(qna.QnNdarray):
-    def __new__(cls, shape:np.int64, N:np.int64):
-        return super().__new__(cls,shape,N)
+    def __new__(cls, shape:np.int64):
+        return super().__new__(cls,shape)
         #return super().__new__(cls,shape,dtype=qnn.Qnnum)
 
-    def __init__(self,shape:np.int64, N:np.int64):
+    def __init__(self,shape:np.int64):
         #global n,N
-        qn0=qnn.zero(N)
+        qn0=qnn.zero()
         self.N=N
         self.shape=shape
         for i in range(n):
@@ -191,7 +190,7 @@ def qnm2flt(a) -> np.ndarray:
 
 # get qnmat from int matrix
 def intm2qnm(a:np.array,n_:np.int64) -> Qnmat:
-    b=Qnmat(n_,N) #qnnum zero vector
+    b=Qnmat(n_) #qnnum zero vector
     for i in range(n_):
         for j in range(n_):
             b[i][j]=qnn.int2qn(a[i][j],N)

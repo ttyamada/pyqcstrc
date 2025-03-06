@@ -1,19 +1,20 @@
 import sys
 import numpy as np
 from numpy.typing import NDArray
+
 import crsys
 import qnnum as qnn
 from typing import Self
 
 #class Qnvec(qna.QnNdarray):
 class Qnvec(np.ndarray):
-    def __new__(cls, n:np.int64, N:np.int64):
+    def __new__(cls, n:np.int64):
         global shape
         shape=(n)
         return super().__new__(cls,shape,dtype=qnn.Qnnum)
     
-    def __init__(self, n:np.int64, N:np.int64):
-        qn0=qnn.zero(N) #int2qnn(0,N)
+    def __init__(self, n:np.int64):
+        qn0=qnn.zero() #int2qnn(0,N)
         self.n=n
         self.N=N
         self.shape=shape
@@ -60,11 +61,11 @@ def zerovs(shape) -> Qnvec:  # qnvec ndarray
     return np.zeros(shape,dtype=Qnvec)
 
 def zerov()->Qnvec: # qnnumber zero vector
-    qnv=Qnvec(n,N)
+    qnv=Qnvec(n)
     return qnv
 
 def anyv(v:NDArray[qnn.Qnnum]):
-    v1=Qnvec(n,N)
+    v1=Qnvec(n)
     for i in range(n):
         v1[i]=v[i]
     return v1
@@ -74,8 +75,8 @@ def copy(v1: Qnvec) -> Qnvec:
     
 def add(v1:Qnvec, v2:Qnvec) -> Qnvec:
     n=v1.shape[0]
-    N=v1[0].N
-    a=Qnvec(n,N)
+    #N=v1[0].N
+    a=Qnvec(n)
     for i in range(n):
         a[i]=v1[i]+v2[i]
     return a
@@ -87,7 +88,7 @@ def iadd(self:Qnvec, b:Qnvec):
 def sub(v1:Qnvec, v2:Qnvec)-> Qnvec:
     #n=v1.shape[0]
     #N=v1[0].N
-    a=Qnvec(n,N)
+    a=Qnvec(n)
     for i in range(n):
         a[i]=v1[i]-v2[i]
     return a
@@ -100,7 +101,7 @@ def mul_vector_i(v:Qnvec, coeff:int) -> Qnvec:
     if v.ndim==1:
         #n=v.shape
         #N=v.N
-        a=Qnvec(n,N)  #np.zeros(v.shape,dtype=np.int64)
+        a=Qnvec(n)  #np.zeros(v.shape,dtype=np.int64)
         for i in range(n):
             a[i]=v[i]*coeff  #mul(v,coeff)
         return a
@@ -112,7 +113,7 @@ def mul_vector_qn(v:Qnvec, coeff:qnn.Qnnum) -> Qnvec:
     if v.ndim==1:
         #n=v.shape
         #N=v.N
-        a=Qnvec(n,N)  #np.zeros(v.shape,dtype=np.int64)
+        a=Qnvec(n)  #np.zeros(v.shape,dtype=np.int64)
         for i in range(n):
             a[i]=v[i]*coeff  #mul(v,coeff)
         return a
@@ -124,7 +125,7 @@ def mul_vectors_i(vs:Qnvec, coeff:int) -> Qnvec:
     if vs.ndim==2:
         #n=vs.shape[0]
         #N=vs[0].N
-        a=[Qnvec(n,N)]*vs.shape
+        a=[Qnvec(n)]*vs.shape
         la=vs.shape
         for i in range(2):
             for j in range(n):
@@ -138,7 +139,7 @@ def mul_vectors_qn(vs:Qnvec, coeff:qnn.Qnnum):
     if vs.ndim==2:
         #n=vs.shape[0]
         #N=vs[0].N
-        a=[Qnvec(n,N)]*vs.shape
+        a=[Qnvec(n)]*vs.shape
         la=vs.shape
         for i in range(2):
             for j in range(n):
@@ -225,7 +226,7 @@ def intv2qnv(a:np.ndarray):
     qn0=qnn.Qnnum([0,0,1],N) # qnnum zero
     b=Qnvec(np.full(n,qn0)) #qnnum zero vector
     for i in range(n):
-        b[i]=qnn.int2qnn(a[i],N)
+        b[i]=qnn.int2qnn(a[i])
     return b
 
 def printqnv(str:str,qnv:Qnvec):

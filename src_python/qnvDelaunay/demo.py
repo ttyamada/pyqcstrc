@@ -2,10 +2,10 @@ from pyDelaunay import Graph, Point, Edge, Triangle
 import random
 import sys
 import pygame
-import qnnum.qnnum as qnn   # for qnnumber
-import qnvec.qnvec as qnv
-import qnmath.qnmath as qmt # for dot product
-import qnvDelaunay.qnvDelaynay as qnvD
+import qnnum as qnn   # for qnnumber
+import qnvec as qnv
+import qnmath as qmt # for dot product
+import qnvDelaynay as qnvD
 
 graph = Graph()
 random.seed(1)

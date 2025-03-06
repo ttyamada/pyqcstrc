@@ -3,9 +3,9 @@ import numpy as np
 import cython
 
 import crsys
-import qnnum.qnnum as qnn
-import qnvec.qnvec as qnv
-import qnndarray.qnndarray as qna
+import qnnum as qnn
+import qnvec as qnv
+import qnndarray as qna
 
 def lattice_init():
     n=crsys.n
@@ -13,8 +13,8 @@ def lattice_init():
 
 def get_tr(brv):
     global ntr
-    qn0=qnn.Qnnum([0,0,1],N) # 0
-    qn1=qnn.Qnnum([1,0,2],N) # 1/2
+    qn0=qnn.Qnnum([0,0,1]) # 0
+    qn1=qnn.Qnnum([1,0,2]) # 1/2
     if brv=='p':
         ntr=1
         tr=np.zeros((ntr,n),dtype=qnn.Qnnum)

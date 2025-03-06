@@ -108,8 +108,8 @@ def point_on_segment(point: qnv.Qnvec, line_segment: qnv.Qnvec) -> bool:
     vecBA=xyx2-xyx1
     lPA=qnv.dot(vecPA,vecPA)  # squared norm for qnnumber np.linalg.norm(vecPA)
     lBA=qnv.dot(vecBA,vecBA)  # squared norm for qnnumber np.linalg.norm(vecBA)
-    qn1=qnn.Qnnum(1,0,1)
-    qn0=qnn.Qnnum(0,0,1)
+    qn1=qnn.one()
+    qn0=qnn.zero()
     #if lBA>0.0 and abs(np.dot(vecPA,vecBA)-lPA*lBA)<EPS:
     if lBA>qnn.zero and abs(qnv.dot(vecPA,vecBA)-lPA*lBA)==qn0:
         s=lPA/lBA
@@ -160,7 +160,7 @@ def on_out_surface(point: qnv.Qnvec, triangle: qnv.Qnvec) -> bool:
         triangle_area_numerical(triangle2)+\
         triangle_area_numerical(triangle3)
     #N=point.N
-    qn0=qnn.Qnnum([0,0,1],N) # 0 in qnnum
+    qn0=qnn.zero() # 0 in qnnum
     if abs(area0-area1)==qn0:  #< EPS:
         return True
     else:
@@ -523,7 +523,7 @@ def triangle_area_numerical(a: qnv.Qnvec) -> qnv.Qnvec:
     v1=a[1]-a[0]
     v2=a[2]-a[0]
     v3=qnv.cros(v2,v1) # cross product (qnnum area)
-    qn2=qnn.Qnnum([2,0,1]) # 2
+    qn2=qnn.any_i(2) # 2
     return abs(v3)/qn2
 
 def inside_outside_obj_tau(point: qnv.Qnvec, obj: qnv.Qnvec) -> bool:
@@ -615,7 +615,7 @@ def obj_volume_6d_numerical(obj: qnv.Qnvec) -> qnn.Qnnum:  #float:
         6-dimensional vertex coordinates of triangle.
     """
     #N=point.N
-    qn0=qnn.Qnnum([0,0,1],N) # 0 in qnnum
+    qn0=qnn.zero() # 0 in qnnum
     vol=qn0
     for triangle in obj:
         vol+=triangle_volume_6d_numerical(triangle)
@@ -897,7 +897,7 @@ def inside_outside_triangle_numerical(triangle: qnv.Qnvec, point: qnv.Qnvec):
     tmp=tmp.reshape(3,3)
     area1+=triangle_area_numerical(tmp)
     #N=triangle[0].N
-    qn0=qnn.Qnnum([0,0,1],N)
+    qn0=qnn.zero()
     if abs(area0-area1)<qn0:  #EPS:
         return True # inside
     else:

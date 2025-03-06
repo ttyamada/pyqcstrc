@@ -1,11 +1,16 @@
+import numpy as np
 import cython
 
 import crsys
-from qnmat import (qnmat_init,Qnmat,copy,printqnm)
+import qnnum as qnn
+import qnvec as qnv
+from qnmat import (qnmat_init,Qnmat,copy,printqnm,unitm)
+
 #if __name__ == '__main__':
 # test
 def qnmat_tst(str,isys):
     crsys.crsys_init(isys)
+    qnmat_init()
     n=crsys.n
     N=crsys.N
     print(str)

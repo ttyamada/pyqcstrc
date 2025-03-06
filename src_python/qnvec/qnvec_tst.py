@@ -8,15 +8,16 @@ from qnvec import (qnvec_init,anyv,printqnv,dot,cros,printqnvs,Qnvec)
 # test
 def qnvec_tst(str,isys):
     crsys.crsys_init(isys)
+    qnn.qnnum_init()
     qnvec_init()
     
     n=crsys.n
     N=crsys.N
     print(str)
     print("n",n,"N",N)
-    M0=qnn.Qnnum([0,0,1],N)
-    M1=qnn.Qnnum([1,0,1],N)
-    M2=qnn.Qnnum([0,1,1],N)
+    M0=qnn.Qnnum([0,0,1])
+    M1=qnn.Qnnum([1,0,1])
+    M2=qnn.Qnnum([0,1,1])
     if n==5:
         vec1=np.array([M0,M1,M2,M0,M1],dtype=qnn.Qnnum)    
         vec2=np.array([M0,M1,M2,M0,M1],dtype=qnn.Qnnum)
@@ -25,9 +26,9 @@ def qnvec_tst(str,isys):
         vec1=np.array([M0,M1,M2,M0,M1,M2],dtype=qnn.Qnnum)    
         vec2=np.array([M0,M1,M2,M0,M1,M2],dtype=qnn.Qnnum)
         vec3=np.array([M1,M2,M0,M1,M2,M0],dtype=qnn.Qnnum)
-    qnv1=anyv(n,N,vec1)
-    qnv2=anyv(n,N,vec2)
-    qnv3=anyv(n,N,vec3)
+    qnv1=anyv(vec1)
+    qnv2=anyv(vec2)
+    qnv3=anyv(vec3)
 
     printqnv("qnv1",qnv1)
     printqnv("qnv2",qnv2)

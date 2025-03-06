@@ -4,8 +4,8 @@ import sys
 import pygame
 import cython
 
-import qnnum.qnnum as qnn   # for qnnumber
-import qnmath.qnmath as qmt # for dot product
+import qnnum as qnn   # for qnnumber
+import qnmath as qmt # for dot product
 #import qnnpyDelaunay.qnnpyDelaynay as qnnD
 
 

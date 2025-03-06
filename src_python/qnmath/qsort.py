@@ -1,7 +1,7 @@
 import numpy as np
 import cython
-import qnvec.qnvec as qnv
-import qnnum.qnnum as qnn
+import qnvec as qnv
+import qnnum as qnn
 
 def qsort(x:qnv.Qnvec,ip:np.array,nx: np.int64):
     #     quick sort (ascending order of x)
