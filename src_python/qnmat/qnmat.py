@@ -20,8 +20,8 @@ class Qnmat(qna.QnNdarray):
         qn0=qnn.zero()
         self.N=N
         self.shape=shape
-        for i in range(n):
-            for j in range(n):
+        for i in range(shape[0]):
+            for j in range(shape[1]):
                 self[i][j]=qn0
         #print("self.shape",self.shape)
         #print("self.ndim",self.ndim)
@@ -41,10 +41,11 @@ class Qnmat(qna.QnNdarray):
         return mul(ma1,ma2)
     
     def set_mt(self:Self,mt:np.array): # QnNdarray*
-        n=self.shape[0]
+        n1=self.shape[0]
+        n2=self.shape[1]
         #N=self[0][0].N
-        for i in range(n):
-            for j in range(n):
+        for i in range(n_):
+            for j in range(n_):
                 self.mt[i][j]=qnn.copy(mt[i][j]) # copy qnnum
 
 def qnmat_init():
@@ -53,7 +54,7 @@ def qnmat_init():
     N=crsys.N
 
 def zerom(shape:np.int64) -> Qnmat:
-    qnm=Qnmat(shape,N)
+    qnm=Qnmat(shape)
     return qnm
 
 #def zeroms(shape:np.int64,N:np.int64) -> Qnmat: # qnmat ndarray
@@ -61,28 +62,25 @@ def zerom(shape:np.int64) -> Qnmat:
 
 def anym(m:NDArray[qnn.Qnnum]):
     N=m.N
-    shape=m.shape
-    m1=Qnmat(shape,N)
-    for i in range(shape[0]):
-        for j in range(shape[1]):
+    n1=m.shape[0]
+    n2=m.shape[1]
+    shape=(n1,n2)
+    m1=Qnmat(shape)
+    for i in range(n1):
+        for j in range(n2):
             m1[i][j]=m[i][j]
     return m1
 
 def unitm(n_:np.int64) -> Qnmat:
-    qn1=qnn.Qnnum([1,0,1],N)
+    qn1=qnn.Qnnum([1,0,1])
     shape=(n_,n_)
-    qnm=Qnmat(shape,N)
+    qnm=zerom(shape)
     for i in range(n_):
         qnm[i][i]=qn1
     return qnm
         
 def copy(qnm: Qnmat) -> Qnmat:
     return np.copy(qnm)
-    # original code
-    #n=qnm.n
-    #N=qnm.N
-    #qnm1=Qnmat(n,N)
-    #print("qnm1.N",qnm1.N,"qnm1.shape",qnm1.shape,"ndim",qnm1.ndim) # for test
     #for i in range(n):
     #    for j in range(n):
     #        qnm1[i][j]=qnn.copy(qnm[i][j])
@@ -97,12 +95,13 @@ def int2qnm(r:np.ndarray, n_:np.int64) -> Qnmat:
     
 def add(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
     #a=np.empty(mat1.shape, dtype=qnn.Qnnum)
-    la1=ma1.shape[0]
-    la2=ma1.shape[1]
+    shape=ma1.shape
+    la1=shape[0]
+    la2=shape[1]
     n1=ma1.ndim
     n2=ma2.ndim
     N=ma1.N
-    a=Qnmat(n1,N)
+    a=Qnmat(shape)
     if(n1==1 and n2==1): # vectors
         for i in range(la1):
             a[i]=ma1[i]+ma2[i]  #add(v1[i],v2[i])
@@ -115,12 +114,13 @@ def add(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
     
 def sub(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
     #a=np.empty(mat1.shape, dtype=qnn.Qnnum)
-    la1=ma1.shape[0]
-    la2=ma2.shape[1]
+    shape=ma1.shape
+    la1=shape[0]
+    la2=shape[1]
     n1=ma1.ndim
     n2=ma2.ndim
     #N=ma1[0][0].N
-    a=Qnmat(n1,N)
+    a=Qnmat(shape)
     if(n1==1 and n2==1): # vectors
         for i in range(la1):
             a[i]=ma1[i]-ma2[i]  #add(v1[i],v2[i])
@@ -172,17 +172,16 @@ def pow(ma: Qnmat, n_: int) -> Qnmat:
 
 def qnm2npa(a) -> np.ndarray:
     # Qnmatrix to np.array converter
-    la=a.shape #len(a)
-    b=np.zeros(la[0],la[1],3) #la x la qnnum matrix 
-    for i in range(la[0]):
-        for j in range(la[1]):
+    shape=a.shape
+    b=np.zeros(shape,dtype=qnn.Qnnum)
+    for i in range(shape[0]):
+        for j in range(shape[1]):
             b[i][j]=[a[i][j].n[0],a[i][j].n[1],a[i][j].n[2]]
     return b
 
 def qnm2flt(a) -> np.ndarray:
-    la=a.shape #len(a)
-    b=np.zeros(la[0],la[1],3)  #la x la qnnum matrix 
-    #N=a[0].N
+    shape=a.shape
+    b=np.zeros(shape,dtype=qnn.Qnnum)
     for i in range(la[0]):
         for j in range(la[1]):
             b[i][j]=(a[i][j].n[0]+a[i][j].n[1]*np.sqrt(N))/a[i][j].n[2]
@@ -190,9 +189,10 @@ def qnm2flt(a) -> np.ndarray:
 
 # get qnmat from int matrix
 def intm2qnm(a:np.array,n_:np.int64) -> Qnmat:
-    b=Qnmat(n_) #qnnum zero vector
-    for i in range(n_):
-        for j in range(n_):
+    shape=a.shape
+    b=Qnmat(shape) #qnnum zero vector
+    for i in range(shape[0]):
+        for j in range(shape[1]):
             b[i][j]=qnn.int2qn(a[i][j],N)
     return b
 
@@ -222,7 +222,7 @@ def printqnm(str:str,qnm:qna.QnNdarray):
                 print(qnn.qn2npa(qnm[i][j]),end=" ")
             print("]")
         print("")
-    elif ndim==3:
+    elif ndim==3: # for several matrices
         for i in range(qnm.shape[0]):
             print("")
             for j in range(qnm.shape[1]):

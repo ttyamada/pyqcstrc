@@ -2,6 +2,7 @@ import sys
 import numpy as np
 import cython
 
+import crsys
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
@@ -9,8 +10,7 @@ import qnmath as qmt
 import qnndarray as qna
 
 class Prjop(qnm.Qnmat):
-    def __init__(self,isys:np.int64):
-        global prj0,prji
+    def __init__(self):
         if(isys==2): # projection operator for icosahedral
             self=Qnprj_Icos()
         elif(isys==3): # projection operator for decagonal
@@ -22,18 +22,15 @@ class Prjop(qnm.Qnmat):
 
 class Qnprj_Octa(qnm.Qnmat):
     def __new__(cls) : 
-        global n,N,isys
-        n=5
-        N=2
-        isys=4
-        return super().__new__(cls,n,N)
+        shape=(n,n)
+        return super().__new__(cls,shape)
  
     def __init__(self):
-        M0=qnn.Qnnum([ 0, 0, 1],N) #  0
-        M1=qnn.Qnnum([ 1, 0, 1],N) #  1
-        M2=qnn.Qnnum([-1, 0, 1],N) # -1
-        M3=qnn.Qnnum([ 0, 1, 2],N) #  sqrt(2)/2
-        M4=qnn.Qnnum([ 0,-1, 2],N) # -sqrt(2)/2
+        M0=qnn.Qnnum([ 0, 0, 1]) #  0
+        M1=qnn.Qnnum([ 1, 0, 1]) #  1
+        M2=qnn.Qnnum([-1, 0, 1]) # -1
+        M3=qnn.Qnnum([ 0, 1, 2]) #  sqrt(2)/2
+        M4=qnn.Qnnum([ 0,-1, 2]) # -sqrt(2)/2
         #self=qnm.Qnmat(n,N)
         #mt=[\
         prj0=np.array([\
@@ -60,20 +57,17 @@ class Qnprj_Octa(qnm.Qnmat):
 #class Qnprj_Deca(qna.QnNdarray):
 class Qnprj_Deca(qnm.Qnmat):
     def __new__(cls):
-        global n,N,isys
-        n=5
-        N=5
-        isys=3
-        return super().__new__(cls,n,N)
+        shape=(n,n)
+        return super().__new__(cls,shape)
  
     # note that this use orthorhombic coordinate system
     def __init__(self):
-        qn2=qnn.Qnnum([2,0,1],N)   #  2
-        M0=qnn.Qnnum([ 0, 0, 1],N) #  0
-        M1=qnn.Qnnum([ 1, 0, 1],N) #  1
-        M2=qnn.Qnnum([-1, 0, 1],N) # -1
-        M3=qnn.Qnnum([1,1,2],N)    # tau
-        M4=qnn.Qnnum([-1,1,2],N)   # tau^-1
+        qn2=qnn.Qnnum([2,0,1])   #  2
+        M0=qnn.Qnnum([ 0, 0, 1]) #  0
+        M1=qnn.Qnnum([ 1, 0, 1]) #  1
+        M2=qnn.Qnnum([-1, 0, 1]) # -1
+        M3=qnn.Qnnum([1,1,2])    # tau
+        M4=qnn.Qnnum([-1,1,2])   # tau^-1
         M5=M4*M4 # tau^-2
         M6=M4-qn2
         M7=-M3-qn2
@@ -105,20 +99,17 @@ class Qnprj_Deca(qnm.Qnmat):
 #class Qnprj_Dode(qna.QnNdarray):
 class Qnprj_Dode(qnm.Qnmat):
     def __new__(cls):
-        global n,N,isys
-        n=5
-        N=3
-        isys=5
-        return super().__new__(cls,n,N)
+        shape=(n,n)
+        return super().__new__(cls,shape)
 
     def __init__(self):
-        M0=qnn.Qnnum([ 0, 0, 1],N) #0
-        M1=qnn.Qnnum([ 1, 0, 1],N) # 1
-        M2=qnn.Qnnum([-1, 0, 1],N) #-1
-        M3=qnn.Qnnum([ 1, 0, 2],N) # 1/2
-        M4=qnn.Qnnum([-1, 0, 2],N) # 1/2
-        M5=qnn.Qnnum([ 0, 1, 2],N) #  sqrt(3)/2
-        M6=qnn.Qnnum([ 0,-1, 2],N) # -sqrt(3)/2
+        M0=qnn.Qnnum([ 0, 0, 1]) #0
+        M1=qnn.Qnnum([ 1, 0, 1]) # 1
+        M2=qnn.Qnnum([-1, 0, 1]) #-1
+        M3=qnn.Qnnum([ 1, 0, 2]) # 1/2
+        M4=qnn.Qnnum([-1, 0, 2]) # 1/2
+        M5=qnn.Qnnum([ 0, 1, 2]) #  sqrt(3)/2
+        M6=qnn.Qnnum([ 0,-1, 2]) # -sqrt(3)/2
 
         #mt=[\
         prj0=np.array([\
@@ -148,18 +139,15 @@ class Qnprj_Dode(qnm.Qnmat):
 #class Qnprj_Icos(qna.QnNdarray):
 class Qnprj_Icos(qnm.Qnmat):
     def __new__(cls):
-        global n,N,isys
-        n=6
-        N=5
-        isys=2
-        return super().__new__(cls,n,N)
+        shape=(n,n)
+        return super().__new__(cls,shape)
     
     def __init__(self):
-        M0=qnn.Qnnum([ 0, 0, 1],N) #  0 
-        M1=qnn.Qnnum([ 1, 0, 1],N) #  1
-        M2=qnn.Qnnum([-1, 0, 1],N) # -1
-        M3=qnn.Qnnum([ 1, 1, 2],N) #  tau=(1+sqrt(5))/2
-        M4=qnn.Qnnum([-1,-1, 2],N) # -tau
+        M0=qnn.Qnnum([ 0, 0, 1]) #  0 
+        M1=qnn.Qnnum([ 1, 0, 1]) #  1
+        M2=qnn.Qnnum([-1, 0, 1]) # -1
+        M3=qnn.Qnnum([ 1, 1, 2]) #  tau=(1+sqrt(5))/2
+        M4=qnn.Qnnum([-1,-1, 2]) # -tau
 
         #mt=[\
         prj0=np.array([\
@@ -184,11 +172,12 @@ class Qnprj_Icos(qnm.Qnmat):
         #print("self.ndim",self.ndim) # fpr test
         #print("self.shape",self.shape) # fpr test
         
-def prjop_init(isys):
-    global prj0,prj
-    prj=Prjop(isys)
-    prj0=prj.prj0
-    prj=prj.prj
+def prjop_init():
+    global isys,n,N,prj
+    isys=crsys.isys
+    n=crsys.n
+    N=crsys.N    
+    prj=Prjop()
     
 def copy(qna1: qnm.Qnmat):
     #return np.copy(qna1,dtype=qnn.Qnnum)

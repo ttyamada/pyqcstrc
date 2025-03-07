@@ -14,11 +14,11 @@ import qnvec as qnv
 
 class QnNdarray(np.ndarray):
     
-    def __new__(cls, shape, N):
+    def __new__(cls, shape):
         return super().__new__(cls,shape,dtype=qnn.Qnnum)
 
-    def __init__(self, shape, N:np.int64): # only for ndim=2
-        qn0=qnn.Qnnum([0,0,1],N)
+    def __init__(self, shape): # only for ndim=2
+        qn0=qnn.Qnnum([0,0,1])
         qnn.printqnn("qn0",qn0)
         #global N
         #print("self.shape",self.shape)  # for test

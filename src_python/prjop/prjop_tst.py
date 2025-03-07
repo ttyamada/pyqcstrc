@@ -9,19 +9,19 @@ import qnvec as qnv
 import qnmat as qnm
 import qnmath as qmt
 import qnndarray as qna
-import prjop as prj
-from prjop import (prjop_init)
-
+import prjop
 
 # test for qnnum projection operators
 def prj_tst(isys):
     print("isys",isys)
     crsys.crsys_init(isys)
-    prj.prjop_init()
+    qnn.qnnum_init()
+    qnv.qnvec_init()
     qnm.qnmat_init()
+    prjop.prjop_init()
     
-    prj0=prj.prj0
-    prji=prj.prji
+    prj0=prjop.prj.prj0
+    prji=prjop.prj.prji
     qnm.printqnm("prj0",prj0)
     #prji=qmt.qnmatinv(prj0,n)
     qnm.printqnm("prji",prji)

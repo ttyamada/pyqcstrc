@@ -86,10 +86,11 @@ def zero():
 def one():
     return Qnnum([1,0,1])
 
-def any_i(n_: np.int64):
+def any_i(n_: NDArray[np.int64]):
     return Qnnum([n_,0,1])
-def any(n:NDArray[np.int64]):
-    Qnnum([n[0],n[1],n[2]])
+
+def any(n_:NDArray[np.int64]):
+    return Qnnum([n_[0],n_[1],n_[2]])
 
 def add(a:Qnnum, b:Qnnum):
     #print("a1",a.n[0],"a2",a.n[1],"a3",a.n[2])

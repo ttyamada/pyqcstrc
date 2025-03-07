@@ -4,19 +4,21 @@ import cython
 import crsys
 import qnnum as qnn
 import qnvec as qnv
-from qnmat import (qnmat_init,Qnmat,copy,printqnm,unitm)
+from qnmat import (qnmat_init,zerom,unitm,copy,printqnm)
 
 #if __name__ == '__main__':
 # test
-def qnmat_tst(str,isys):
+def qnmat_tst(str: str, isys:np.int64):
+    print(str)
     crsys.crsys_init(isys)
+    qnn.qnnum_init()
+    qnv.qnvec_init()
     qnmat_init()
+    
     n=crsys.n
     N=crsys.N
-    print(str)
     print("n",n,"N",N)
-    print("n=",n,"N",N)
-    qnm=Qnmat(n) # nxn qmnum zero matrix
+    qnm=zerom((n,n)) # nxn qmnum zero matrix
     print("qnm.ndim",qnm.ndim)
     print("qnm.shape",qnm.shape)
     printqnm("qnm",qnm)
@@ -38,23 +40,25 @@ def qnmat_tst(str,isys):
 
     unm3=unm2@unm1
     printqnm("unm2@unm1",unm3)
-    M0=qnn.Qnnum([0,0,1],N)
-    M1=qnn.Qnnum([1,0,1],N)
-    M2=qnn.Qnnum([0,1,1],N)
-    M3=qnn.Qnnum([1,1,2],N)
-    M4=qnn.Qnnum([1,-1,2],N)
+    
+    M0=qnn.Qnnum([0,0,1])
+    M1=qnn.Qnnum([1,0,1])
+    M2=qnn.Qnnum([0,1,1])
+    M3=qnn.Qnnum([1,1,2])
+    M4=qnn.Qnnum([1,-1,2])
     if n==5:
-        qnv1=qnv.anyv(n,N,[M0,M1,M2,M3,M4])
+        qnv1=qnv.anyv([M0,M1,M2,M3,M4])
     elif n==6:
-        qnv1=qnv.anyv(n,N,[M0,M1,M2,M3,M4,M0])
+        qnv1=qnv.anyv([M0,M1,M2,M3,M4,M0])
     qnv.printqnv("qnv1",qnv1)
     qnv2=unm2@qnv1
     qnv.printqnv("qnv2",qnv2)
 
 isys=3
-
 qnmat_tst("decagonal",isys)
 
 isys=2
 qnmat_tst("icosahedral",isys)
+
+
 
