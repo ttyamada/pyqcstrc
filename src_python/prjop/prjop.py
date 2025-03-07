@@ -175,13 +175,10 @@ class Qnprj_Icos(qnm.Qnmat):
         #print("self.shape",self.shape) # fpr test
         
 def prjop_init():
-    global isys,n,N,prj,prj0
+    global isys,n,N
     isys=crsys.isys
     n=crsys.n
     N=crsys.N    
-    prjm=Prjop()
-    prj0=prjm.prj0
-    prji=prjm.prji
     
 def copy(qna1: qnm.Qnmat):
     #return np.copy(qna1,dtype=qnn.Qnnum)

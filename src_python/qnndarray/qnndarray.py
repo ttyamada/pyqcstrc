@@ -18,19 +18,19 @@ class QnNdarray(np.ndarray):
         return super().__new__(cls,shape,dtype=qnn.Qnnum)
 
     def __init__(self, shape): # only for ndim=2
-        qn0=qnn.Qnnum([0,0,1])
+        qn0=qnn.zero()
         qnn.printqnn("qn0",qn0)
-        #global N
+        self.shape=shape
         #print("self.shape",self.shape)  # for test
         #print("self.ndim",self.ndim)    # for test
         #print("self.dtype",self.dtype)  # for test
         
-        it = np.nditer(self, flags=['multi_index','refs_ok'], op_flags=['readwrite'])
-        while not it.finished:  # loop up to last index
-            it[0] = qn0
-            idx = it.multi_index
-            #print('idx=', idx ,', self[idx]=', self[idx], ', it[0]=', it[0]) # for test
-            it.iternext()   #it : next index
+        #it = np.nditer(self, flags=['multi_index','refs_ok'], op_flags=['readwrite'])
+        #while not it.finished:  # loop up to last index
+        #    it[0] = qn0
+        #    idx = it.multi_index
+        #    #print('idx=', idx ,', self[idx]=', self[idx], ', it[0]=', it[0]) # for test
+        #    it.iternext()   #it : next index
             
     def __add__(self,b):
         # shap should be (n)
@@ -51,7 +51,15 @@ def copy(qna1: QnNdarray):
     return np.copy(qna1)
 
 def zeros(shape):
-    np.zeros(shape,dtype=qnn.Qnnum)
+    qna=QnNdarray(shape)
+    qn0=qnn.zero()
+    it = np.nditer(qna, flags=['multi_index','refs_ok'], op_flags=['readwrite'])
+    while not it.finished:  # loop up to last index
+        it[0] = qn0
+        idx = it.multi_index
+        #print('idx=', idx ,', self[idx]=', self[idx], ', it[0]=', it[0]) # for test
+        it.iternext()   #it : next index
+    #np.zeros(shape,dtype=qnn.Qnnum)
     
 # any kind of 3D array assumed
 def anya(vec:NDArray[qnn.Qnnum], shape)->QnNdarray:

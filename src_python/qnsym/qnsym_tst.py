@@ -15,8 +15,10 @@ crsys.crsys_init(isys)
 qnn.qnnum_init()
 qnv.qnvec_init()
 qnm.qnmat_init()
-prj4=prj.prjop_init()
-qns4=qnsym_init()
+prj.prjop_init()
+
+qnsym_init()
+qns4=Qnsym()
 test_wt("Octa",qns4)
 
 isys=3
@@ -26,7 +28,7 @@ qnv.qnvec_init()
 qnm.qnmat_init()
 prj.prjop_init()
 qns3=qnsym_init()
-qbs3.test_wt("Deca",qns3)
+qns3.test_wt("Deca",qns3)
 
 isys=5
 crsys.crsys_init(isys)

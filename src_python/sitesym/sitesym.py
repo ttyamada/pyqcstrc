@@ -19,8 +19,8 @@ def sitesym_init():
     n=crsys.n
     N=crsys.N
 
-def site_symmetry(x:qnv.Qnvec,qns:qnm.Qnmat,brv) -> np.ndarray: # return irs
-    global nr,n,N,mpltbl,r
+def site_symmetry(x:qnv.Qnvec,qns:qnm.Qnsym,brv) -> np.ndarray: # return irs
+    global nr,mpltbl,r
     """symmetry operator insixwa irs in the site symmetry group G.
     
     Args:
@@ -37,8 +37,9 @@ def site_symmetry(x:qnv.Qnvec,qns:qnm.Qnmat,brv) -> np.ndarray: # return irs
 
     #n=len(x)
     #N=x.N
+    n=crsys.n
     nr=qns.nr
-    qnr=qns.qnr
+    qnr=qns.qnr  # symmetry operator for Q coordinates
     mpltbl=qns.mpltbl
     r=qns.r
     a=np.zeros((nr,n),dtype=qnn.Qnnum)
@@ -47,9 +48,9 @@ def site_symmetry(x:qnv.Qnvec,qns:qnm.Qnmat,brv) -> np.ndarray: # return irs
     #tr=lt.get_tr(brv)
     traop=lt.get_tr(brv)  # centering translation vectors including zero vector
     for i in range(nr):
-        op=qnr[i]
-        a[i]=op@x    
-        for tr in trop:
+        qnx=prj.prjvec_i(x) # internal spece components of x
+        a[i]=qnr[i]@qnx         # Q coordinates for nD vector x
+        for tr in qns.trop:
             b=a[i]+tr
             if np.all(b==x):
                 irs=np.append(irs,i)
@@ -134,10 +135,10 @@ def reduce_x(xs:np.ndarray,brv):
     #N=xs[0][0].N
     shape=xs.shape
     n=shape[1]
-    qn1=qnn.Qnnum([1,0,2],N)  # 1/2
-    qn2=qnn.Qnnum([-1,0,2],N) # -/2
-    qn3=qnn.Qnnum([1,0,1],N)  # 1
-    qn4=qnn.Qnnum([-1,0,1],N) # -1
+    qn1=qnn.Qnnum([1,0,2])  # 1/2
+    qn2=qnn.Qnnum([-1,0,2]) # -/2
+    qn3=qnn.Qnnum([1,0,1])  # 1
+    qn4=qnn.Qnnum([-1,0,1]) # -1
     for i in range(nv):
         for j in range(n):
             if xs[i][j]<qn2:
@@ -157,8 +158,7 @@ def symop_vec(symop:qnm.Qnmat,vt:qnv.Qnvec,centre:qnv.Qnvec):
 def generator_obj_symmetric_obj(obj:qnv.Qnvec, centre:qnv.Qnvec, pg:str):
     """
     """
-    #N=obj.N
-    V0=qnv.zero(N)
+    V0=qnv.zero()
     if obj.ndim==3 or obj.ndim==4:
         if np.all(centre==V0):
             mop=octasymop_array()
