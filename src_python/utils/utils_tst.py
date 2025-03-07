@@ -6,6 +6,10 @@ import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
 import numeric as num
+import qnmath as qmt
+import prjop as prj
+from utils import (remove_doubling,
+                   generator_all_edges)
 
 #if __name__ == '__main__':
 

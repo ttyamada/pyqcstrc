@@ -9,6 +9,8 @@ import qnmath as qnm
 import utils as utl
 import numeric as num
 import intsct as ints
+import projection as prj
+import math1
 
 #import pyqcstrc.qnsym.qnsym as qnsym
 #import pyqcstrc.dode2.intsct as intsct
@@ -494,7 +496,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             return 0
         else:
             # get independent edges
-            #edges = utils.generator_obj_edge(obj, verbose)
+            #edges = utl.generator_obj_edge(obj, verbose)
             edges = utl.generator_unique_edges(obj)
             #print(len(edges))
             # get independent vertices of the edges
@@ -829,8 +831,8 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f.write('%d\n'%(len(obj)))
         f.write('%s\n'%(filename))
         counter=0
-        for triangle in range(len(obj)):
-            for point in range(len(triangle)):
+        for tri in range(len(obj)):
+            for point in enumerate(tri):
                 v=qnm.projection3(point)
                 f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # # # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
                 (num.numeric_value(v[0]),\
@@ -1012,7 +1014,7 @@ def simplification(obj,verbose=0):
         return 
     else:
         vol0=utl.obj_area_6d(obj)
-        obj_convex_hull=utils.generate_convex_hull(obj)
+        obj_convex_hull=utl.generate_convex_hull(obj)
         obj_tmp=ints.intersection_two_obj_1(obj_convex_hull,obj)
         vol1=utl.obj_area_6d(obj_tmp)
         if np.all(vol0==vol1):
@@ -1177,9 +1179,9 @@ def write_podatm(obj, position, vlist=[0], path='.', basename='tmp', shift=[0., 
     
         """
         # get independent edges
-        edges = utils.generator_obj_edge(obj, verbose-1)
+        edges = utl.generator_obj_edge(obj, verbose-1)
         # get independent vertices of the edges
-        v = utils.remove_doubling_dim4_in_perp_space(edges)
+        v = utl.remove_doubling_dim4_in_perp_space(edges)
         """
         #v=vertices
         v=obj
