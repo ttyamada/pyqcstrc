@@ -11,6 +11,7 @@ import qnndarray as qna
 
 class Prjop(qnm.Qnmat):
     def __init__(self):
+        print("isys in Prjop __init__",isys)
         if(isys==2): # projection operator for icosahedral
             self=Qnprj_Icos()
         elif(isys==3): # projection operator for decagonal
@@ -22,6 +23,7 @@ class Prjop(qnm.Qnmat):
 
 class Qnprj_Octa(qnm.Qnmat):
     def __new__(cls) : 
+        print("n in __new__",n) # for test
         shape=(n,n)
         return super().__new__(cls,shape)
  
@@ -173,11 +175,13 @@ class Qnprj_Icos(qnm.Qnmat):
         #print("self.shape",self.shape) # fpr test
         
 def prjop_init():
-    global isys,n,N,prj
+    global isys,n,N,prj,prj0
     isys=crsys.isys
     n=crsys.n
     N=crsys.N    
-    prj=Prjop()
+    prjm=Prjop()
+    prj0=prjm.prj0
+    prji=prjm.prji
     
 def copy(qna1: qnm.Qnmat):
     #return np.copy(qna1,dtype=qnn.Qnnum)
@@ -191,14 +195,14 @@ def copy(qna1: qnm.Qnmat):
     #return qna2
             
 # for class cls cls should be icos octa, deca or dode
-def prjop(v: qnv.Qnvec) -> qnv.Qnvec:
+def prjvec(v: qnv.Qnvec) -> qnv.Qnvec:
     #qnm.printqnm("prj",prj0)
     #qnv.printqnv("v",v)
     vei=v@prj0  #@v # vt assumed to be qnvec
     return vei
 
 # projection into external space for class cls
-def prjop_e(v:qnv.Qnvec) -> qnv.Qnvec:
+def prjvec_e(v:qnv.Qnvec) -> qnv.Qnvec:
     vei=v@prj0  #@v # vt assumed to be qnvec
     ve=qnv.zerovs(3)
     if isys>2: # dihedral
@@ -209,7 +213,7 @@ def prjop_e(v:qnv.Qnvec) -> qnv.Qnvec:
         return ve
 
 # projection into internal space for class cls
-def prjop_i(v: qnv.Qnvec) -> qnv.Qnvec:
+def prjvec_i(v: qnv.Qnvec) -> qnv.Qnvec:
     vei=v@prj0  #@v
     if isys>2: # dihedral
         vi=qnv.zerovs(2)
@@ -222,11 +226,11 @@ def prjop_i(v: qnv.Qnvec) -> qnv.Qnvec:
 
 # alias for prjop_i
 def projection3(v: qnv.Qnvec) -> qnv.Qnvec:
-    return prjop_i(v)
+    return prjvec_i(v)
 
 # alias for prjop
 def projection_numerical(vn: qnv.Qnvec) -> qnv.Qnvec:
-    return prjop(vn)
+    return prjvec(vn)
 
 def projection_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
     #Parameters
@@ -240,11 +244,11 @@ def projection_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
 
 # alias for prjop_e
 def projection_numerical_par(v: qnv.Qnvec) -> qnv.Qnvec:
-    return prjop_e(v)
+    return prjvec_e(v)
 
 # alias for prjop_i
 def get_internal_component_numerical(v: qnv.Qnvec) -> qnv.Qnvec:
-    return prjop_i(v)
+    return prjvec_i(v)
 
 def check_ltv(n,N):
     # check lattice vector external and internal space components

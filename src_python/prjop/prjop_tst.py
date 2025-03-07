@@ -28,15 +28,15 @@ def prj_tst(isys):
     unitm=prji@prj0
     qnm.printqnm("untm",unitm)
     
-    prjf=prj.qnm2flnm(prj0)
+    prjf=prjop.qnm2flnm(prj0)
     n=5
-    prj.printfm("prjf",prjf,n)
+    prjop.printfm("prjf",prjf,n)
     #prjif=qnm2flnm(prji)
     prjif=qmt.matinv_f(prjf,n)
     #prji3f=np.linalg.inv(prj3f)
-    prj.printfm("prjif",prjif,n)
+    prjop.printfm("prjif",prjif,n)
     unitmf=prjif@prjf
-    prj.printfm("unitmf",unitmf,n)
+    prjop.printfm("unitmf",unitmf,n)
 
 prj_tst(4)
 prj_tst(3)
