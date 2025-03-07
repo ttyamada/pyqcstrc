@@ -19,7 +19,7 @@ def sitesym_init():
     n=crsys.n
     N=crsys.N
 
-def site_symmetry(x:qnv.Qnvec,qns:qnm.Qnsym,brv) -> np.ndarray: # return irs
+def site_symmetry(x:qnv.Qnvec,qns:qns.Qnsym,brv) -> np.ndarray: # return irs
     global nr,mpltbl,r
     """symmetry operator insixwa irs in the site symmetry group G.
     
@@ -158,7 +158,7 @@ def symop_vec(symop:qnm.Qnmat,vt:qnv.Qnvec,centre:qnv.Qnvec):
 def generator_obj_symmetric_obj(obj:qnv.Qnvec, centre:qnv.Qnvec, pg:str):
     """
     """
-    V0=qnv.zero()
+    V0=qnv.zerov()
     if obj.ndim==3 or obj.ndim==4:
         if np.all(centre==V0):
             mop=octasymop_array()

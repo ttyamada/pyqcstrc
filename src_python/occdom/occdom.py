@@ -10,13 +10,7 @@ import sys
 import numpy as np
 import cython
 
-#try:
-#import qnmath as qmt #math12
-#import dode2.math1 as math1
-#import utils as utl
-#import dode2.symmetry as symmetry
-#import dode2.intsct as intsct
-#import dode2.projection12 as proj
+import crsys
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
@@ -33,6 +27,11 @@ from vesta import (write_vesta,write_xyz)
 #    print('import error\n')
 
 #TAU=np.sqrt(3)/2.0
+
+def occdom_init():
+    isys=crsys.isys
+    n=crsys.n
+    N=crsys.N
 
 def volume(obj:qnv.Qnvec):
     return utl.obj_area_6d(obj)

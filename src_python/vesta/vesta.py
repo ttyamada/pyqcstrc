@@ -9,7 +9,7 @@ import qnmath as qnm
 import utils as utl
 import numeric as num
 import intsct as ints
-import projection as prj
+import prjop as prj
 import math1
 
 #import pyqcstrc.qnsym.qnsym as qnsym

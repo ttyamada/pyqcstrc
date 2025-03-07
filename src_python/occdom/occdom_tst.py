@@ -17,16 +17,23 @@ import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
 import numeric as num
-import utils as utils
+import utils as utl
 import vesta as vst
 import qnsym as qns
+import sitesym as ssm
 import intsct as isct
 import prjop as prj
-import occdom as occ
-from occdom import (occdom_init,symmetric)
+from occdom import (occdom_init,symmetric,write)
 
+isys=4
 crsys.crsys_init(isys)
-occ.occupdom_init()
+qnn.qnnum_init()
+qnv.qnvec_init()
+qnm.qnmat_init()
+qns.qnsym_init()
+ssm.sitesym_init()
+
+occdom_init()
 
 test_dir='../../tests/dode2/tests'
 xyz_dir='../../xyz/dode'
@@ -36,9 +43,9 @@ print(od_asym)
 
 pos0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
 png = "p12m"
-od_sym = occ.symmetric(obj = od_asym, centre = pos0, png = png)
-occ.write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
-occ.write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
+od_sym = symmetric(obj = od_asym, centre = pos0, png = png)
+write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
+write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
 
 # move STRT OD to a position 1 1 1 0 -1 0.
 #pos_b1=np.array([[ 1, 0, 1],[ 1, 0, 1],[ 1, 0, 1],[ 0, 0, 1],[-1, 0, 1],[ 0, 0, 1]]) # b_1
