@@ -9,7 +9,8 @@ import qnvec as qnv
 import qnmat as qnm
 import qnmath as qmt
 import qnndarray as qna
-from prjop import (prjop_init, Prjop, qnm2flnm, printfm)
+from prjop import (prjop_init, Prjop,\
+                    qnm2flnm, printfm)
 
 # test for qnnum projection operators
 def prj_tst(isys: np.int64):

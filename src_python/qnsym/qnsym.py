@@ -163,12 +163,27 @@ def qnsym_init():
     isys=crsys.isys
     n=crsys.n
     N=crsys.N
+    print("qnsym_init isys",isys,"n",n,"N",N)  # for test
+
+def Qnsym():
+    if isys==2:
+        return Qnsym_Icos() #Pn35
+    elif isys==3:
+        return Qnsym_Deca() #P10mm
+    elif isys==4:
+        return Qnsym_Octa() #P8mm
+    elif isys==5:
+        return Qnsym_Dode() #P12mm
+    else:
+        print("isys should be 2,3,4 or 5 but",isys)
+        exit()
 
 def rtoqnr(r):
     shape=r.shape # (nr,n,n)
     nr=shape[0]
-    prj0=prjop.prj0
-    prji=prjop.prji
+    prj=prjop.Prjop()
+    prj0=prj.prj0
+    prji=prj.prji
     return get_qnr(prj0,prji,r,nr,n)
 
 def rtoqnr_e(r):
@@ -245,7 +260,7 @@ def set_r(rg,gorf,r):
             for j in range(impt):
                 mp1=j+(i-1)*impt
                 mp2=j+i*impt
-                mpso(rg,ns,r,mp1,mp2,n)
+                mpso(rg,ns,r,mp1,mp2)
         impt=impt*imp
     nsymo=impt
 

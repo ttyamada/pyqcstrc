@@ -9,17 +9,24 @@ import qnmat as qnm
 import qnmath as qmt
 import qnndarray as qna
 
-class Prjop(qnm.Qnmat):
-    def __init__(self):
-        print("isys in Prjop __init__",isys)
-        if(isys==2): # projection operator for icosahedral
-            self=Qnprj_Icos()
-        elif(isys==3): # projection operator for decagonal
-            self=Qnprj_Deca()
-        elif(isys==4): # projection operator for octagonal
-            self=Qnprj_Octa()
-        elif(isys==5): # projection operator dodecagonal
-            self=Qnprj_Dode()
+#class Prjop(qnm.Qnmat):
+#    def __new__(cls):
+#        global shape
+#        shape=(n,n)
+#        #print("shape in __new__",shape) # for test
+#        return super().__new__(cls,shape)
+#        
+#    def __init__(self):
+#        print("isys in Prjop __init__",isys)
+#        if(isys==2): # projection operator for icosahedral
+#            self=Qnprj_Icos()
+#        elif(isys==3): # projection operator for decagonal
+#            self=Qnprj_Deca()
+#        elif(isys==4): # projection operator for octagonal
+#            self=Qnprj_Octa()
+#        elif(isys==5): # projection operator dodecagonal
+#            self=Qnprj_Dode()
+
 
 class Qnprj_Octa(qnm.Qnmat):
     def __new__(cls) : 
@@ -179,6 +186,17 @@ def prjop_init():
     isys=crsys.isys
     n=crsys.n
     N=crsys.N    
+    
+def Prjop():
+    print("isys in Prjop __init__",isys)
+    if(isys==2): # projection operator for icosahedral
+        return Qnprj_Icos()
+    elif(isys==3): # projection operator for decagonal
+        return Qnprj_Deca()
+    elif(isys==4): # projection operator for octagonal
+        return Qnprj_Octa()
+    elif(isys==5): # projection operator dodecagonal
+        return Qnprj_Dode()
     
 def copy(qna1: qnm.Qnmat):
     #return np.copy(qna1,dtype=qnn.Qnnum)

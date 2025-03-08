@@ -15,7 +15,7 @@ def qnmath_init():
 
 def abs(a:qnn.Qnnum):
     #N=a.N
-    qn0=qnn.Qnnum([0,0,1],N)
+    qn0=qnn.Qnnum([0,0,1])
     if(a<qn0):
         return -a
     if(a>=qn0):
@@ -34,8 +34,8 @@ def qnmatinv(a_i:qnm.Qnmat,n:np.int64): # qnmatrix inversion
     ipivot=np.ndarray(n,dtype=np.int64) 
     index=np.ndarray((n,2),dtype=np.int64)
     #N=a[0][0].N
-    qn0=qnn.Qnnum([0,0,1],N)  # 0
-    qn1=qnn.Qnnum([1,0,1],N)  # 1
+    qn0=qnn.Qnnum([0,0,1])  # 0
+    qn1=qnn.Qnnum([1,0,1])  # 1
     
     det=qn1  #1.0 
     for  j in range(n):
@@ -363,8 +363,8 @@ def centroid(obj: qnv.Qnvec) -> qnv.Qnvec:
     #N=obj[0].N
     n_=obj.shape[0]
     num=len(obj) # length of obj
-    v2=qnv.Qnvec(n_,N) # nD zero qnvector
-    qnnum=qnn.Qnnum([1,0,num],N) # 1/num
+    v2=qnv.Qnvec(n_) # nD zero qnvector
+    qnnum=qnn.Qnnum([1,0,num]) # 1/num
     for i1 in range(num):
         v2=v2+obj[i1]
     v0=v2*qnnum
@@ -390,7 +390,7 @@ def centroid_obj(obj: qnv.Qnvec) -> qnv.Qnvec:
     shape=qnv.shape
     n=shape[1]
     len=shape[0]  # 1/len(obj)
-    tmp=qnv.Qnvec(n,N) # zero vector
+    tmp=qnv.Qnvec(n) # zero vector
     for thd in obj:
         tmp=tmp+thd
     tmp=tmp*len
@@ -418,7 +418,7 @@ def det_matrix_3d(mtx: qnm.Qnmat) -> qnn.Qnnum:
     shape=mtx.shape
     if shape[0]!=3:
         print("shape of mtx in det_matrix_3d should be (3,3) but",shape); exit(0)
-    det=qnn.Qnmtrx([0,0,1],N) # zero qnnumber
+    det=qnn.Qnmtrx([0,0,1]) # zero qnnumber
     det=det+mtx[0][0]*mtx[1][1]*mtx[2][2]
     det=det+mtx[0][1]*mtx[1][2]*mtx[2][0]    
     det=det+mtx[0][2]*mtx[1][0]*mtx[2][1]
@@ -444,7 +444,7 @@ def det_matrix_2d(mtx: qnm.Qnmat) -> qnn.Qnnum:
     shape=mtx.shape
     if shape[0]!=2:
         print("shape of mtx in det_matrix_2d should be (3,3) but",shape); exit(0)
-    det=qnn.Qnmtrx([0,0,1],N) # zero qnnumber
+    det=qnn.Qnmtrx([0,0,1]) # zero qnnumber
     det=det+mtx[0][0]*mtx[1][1]
     det=det-mtx[0][1]*mtx[1][0]
     return det
@@ -455,7 +455,7 @@ def matrixtr(mtx: qnm.Qnmat) -> qnm.Qnmat:
     """ return transposed matrix of mtx """
     #N=mtx[0][0].N
     n_=mtx.shape[0]
-    mtxt=qnm.Qnmat(n_,N)
+    mtxt=qnm.Qnmat(n_)
     for i in range(n_):
         for j in range(n_):
             mtxt[i][j]=qnn.copy(mtx[j][i])
