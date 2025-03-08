@@ -54,6 +54,7 @@ def symmetric(obj: qnv.Qnvec, centre:qnv.Qnvec, png:str):
             The shape is (num,3,6,3), where num=numbre_of_tetrahedron.
     
     """
+    print("obj.ndim",obj.ndim) # for test
     if obj.ndim==3 or obj.ndim==4:
         #return symmetry.generator_obj_symmetric_tetrahedron(obj,centre)
         return ssm.generator_obj_symmetric_triangle(obj,centre,png)
@@ -78,6 +79,7 @@ def symmetric_0(obj: qnv.Qnvec,centre: qnv.Qnvec ,indx_symop : np.int64,pg : qnv
             The shape is (num,3,6,3), where num=numbre_of_tetrahedron.
     
     """
+    print("obj.ndim",obj.ndim) # for test
     if obj.ndim==3 or obj.ndim==4:
         return qns.generator_obj_symmetric_triangle_0(obj,centre,indx_symop,pg)
     else:

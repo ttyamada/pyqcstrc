@@ -23,9 +23,10 @@ import qnsym as qns
 import sitesym as ssm
 import intsct as isct
 import prjop as prj
+import qnndarray as qna
 from occdom import (occdom_init,symmetric,write)
 
-isys=4
+isys=4 # for octagonal
 crsys.crsys_init(isys)
 qnn.qnnum_init()
 qnv.qnvec_init()
@@ -35,10 +36,10 @@ ssm.sitesym_init()
 
 occdom_init()
 
-test_dir='../../tests/dode2/tests'
-xyz_dir='../../xyz/dode'
+test_dir='../../tests/octa2/tests'
+xyz_dir='../../xyz/octa'
 # import asymmetric part of OD(occupation domain) located at origin,0,0,0,0,0,0.
-od_asym = vst.read_xyz(path=xyz_dir,basename='od_vertex_asymmetric')
+od_asym = vst.read_xyz(path=xyz_dir,basename='od_1_asym')
 print(od_asym)
 
 pos0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])

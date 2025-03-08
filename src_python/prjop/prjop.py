@@ -28,11 +28,11 @@ class Qnprj_Octa(qnm.Qnmat):
         return super().__new__(cls,shape)
  
     def __init__(self):
-        M0=qnn.Qnnum([ 0, 0, 1]) #  0
-        M1=qnn.Qnnum([ 1, 0, 1]) #  1
-        M2=qnn.Qnnum([-1, 0, 1]) # -1
-        M3=qnn.Qnnum([ 0, 1, 2]) #  sqrt(2)/2
-        M4=qnn.Qnnum([ 0,-1, 2]) # -sqrt(2)/2
+        M0=qnn.any([ 0, 0, 1]) #  0
+        M1=qnn.any([ 1, 0, 1]) #  1
+        M2=qnn.any([-1, 0, 1]) # -1
+        M3=qnn.any([ 0, 1, 2]) #  sqrt(2)/2
+        M4=qnn.any([ 0,-1, 2]) # -sqrt(2)/2
         #self=qnm.Qnmat(n,N)
         #mt=[\
         prj0=np.array([\
@@ -64,12 +64,12 @@ class Qnprj_Deca(qnm.Qnmat):
  
     # note that this use orthorhombic coordinate system
     def __init__(self):
-        qn2=qnn.Qnnum([2,0,1])   #  2
-        M0=qnn.Qnnum([ 0, 0, 1]) #  0
-        M1=qnn.Qnnum([ 1, 0, 1]) #  1
-        M2=qnn.Qnnum([-1, 0, 1]) # -1
-        M3=qnn.Qnnum([1,1,2])    # tau
-        M4=qnn.Qnnum([-1,1,2])   # tau^-1
+        qn2=qnn.any([2,0,1])   #  2
+        M0=qnn.any([ 0, 0, 1]) #  0
+        M1=qnn.any([ 1, 0, 1]) #  1
+        M2=qnn.any([-1, 0, 1]) # -1
+        M3=qnn.any([1,1,2])    # tau
+        M4=qnn.any([-1,1,2])   # tau^-1
         M5=M4*M4 # tau^-2
         M6=M4-qn2
         M7=-M3-qn2
@@ -105,13 +105,13 @@ class Qnprj_Dode(qnm.Qnmat):
         return super().__new__(cls,shape)
 
     def __init__(self):
-        M0=qnn.Qnnum([ 0, 0, 1]) #0
-        M1=qnn.Qnnum([ 1, 0, 1]) # 1
-        M2=qnn.Qnnum([-1, 0, 1]) #-1
-        M3=qnn.Qnnum([ 1, 0, 2]) # 1/2
-        M4=qnn.Qnnum([-1, 0, 2]) # 1/2
-        M5=qnn.Qnnum([ 0, 1, 2]) #  sqrt(3)/2
-        M6=qnn.Qnnum([ 0,-1, 2]) # -sqrt(3)/2
+        M0=qnn.any([ 0, 0, 1]) #0
+        M1=qnn.any([ 1, 0, 1]) # 1
+        M2=qnn.any([-1, 0, 1]) #-1
+        M3=qnn.any([ 1, 0, 2]) # 1/2
+        M4=qnn.any([-1, 0, 2]) # 1/2
+        M5=qnn.any([ 0, 1, 2]) #  sqrt(3)/2
+        M6=qnn.any([ 0,-1, 2]) # -sqrt(3)/2
 
         #mt=[\
         prj0=np.array([\
@@ -145,11 +145,11 @@ class Qnprj_Icos(qnm.Qnmat):
         return super().__new__(cls,shape)
     
     def __init__(self):
-        M0=qnn.Qnnum([ 0, 0, 1]) #  0 
-        M1=qnn.Qnnum([ 1, 0, 1]) #  1
-        M2=qnn.Qnnum([-1, 0, 1]) # -1
-        M3=qnn.Qnnum([ 1, 1, 2]) #  tau=(1+sqrt(5))/2
-        M4=qnn.Qnnum([-1,-1, 2]) # -tau
+        M0=qnn.any([ 0, 0, 1]) #  0 
+        M1=qnn.any([ 1, 0, 1]) #  1
+        M2=qnn.any([-1, 0, 1]) # -1
+        M3=qnn.any([ 1, 1, 2]) #  tau=(1+sqrt(5))/2
+        M4=qnn.any([-1,-1, 2]) # -tau
 
         #mt=[\
         prj0=np.array([\
@@ -251,16 +251,16 @@ def check_ltv(n,N):
     # check lattice vector external and internal space components
     ndv=np.ndarray(3**3,dtype=qnn.Qnnum)
     n=5
-    V0=qnn.Qnnum(np.array([ 0, 0, 1]),N)
+    V0=qnn.any(([ 0, 0, 1]))
     for i1 in range(-1,2):
         for i2 in range(-1,2):
             for i3 in range(-1,2):
                 for i4 in range(-1,2):
-                    V1=qnn.Qnnum(np.array([ i1, 0, 1]),N)
-                    V2=qnn.Qnnum(np.array([ i2, 0, 1]),N)
-                    V3=qnn.Qnnum(np.array([ i3, 0, 1]),N)
-                    V4=qnn.Qnnum(np.array([ i4, 0, 1]),N)
-                    #V0=qnn.Qnnum(np.array([ 0, 0, 1]),N)
+                    V1=qnn.any([ i1, 0, 1])
+                    V2=qnn.any([ i2, 0, 1])
+                    V3=qnn.any([ i3, 0, 1])
+                    V4=qnn.any([ i4, 0, 1])
+                    #V0=qnn.any(np.array([ 0, 0, 1]),N)
                     #VT=np.array([v1,v2,v3,V4,V0])
                     vt=qnv.anyv(n,N,[V1,V2,V3,V4,V0])
                     qnn.printqnv("ndv",vt) #print qnvector expression

@@ -231,7 +231,7 @@ def intv2qnv(a:np.ndarray):
 
 def printqnv(str:str,qnv:Qnvec):
 #def printqnv(str:str,qnv:qna.QnNdarray):
-    ndim=qnv.ndim
+    ndim=qnv.shape[0]
     if ndim==1 :
         print(str,"[",end=" ")
         for i in range(qnv.shape[0]):

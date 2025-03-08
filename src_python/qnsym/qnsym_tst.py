@@ -4,6 +4,7 @@ import crsys
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
+import qnndarray as qna
 import prjop as prj
 from qnsym import (qnsym_init,Qnsym,test_wt)
 
@@ -16,7 +17,7 @@ qnn.qnnum_init()
 qnv.qnvec_init()
 qnm.qnmat_init()
 prj.prjop_init()
-
+qna.qnndarray_init()
 qnsym_init()
 qns4=Qnsym()
 test_wt("Octa",qns4)

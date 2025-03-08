@@ -3,7 +3,8 @@ import numpy as np
 import crsys
 import qnnum as qnn
 import qnvec as qnv
-from qnndarray import (qnndarray_init,QnNdarray,printqndm,copy)
+import qnmat as qnm
+from qnndarray import (qnndarray_init,QnNdarray,printqndm,copy,zeros)
 
 #if __name__ == '__main__':
 # test
@@ -12,32 +13,31 @@ crsys.crsys_init(isys)
 qnn.qnnum_init()
 qnv.qnvec_init()
 qnndarray_init()
+qnm.qnmat_init()
+
 n=crsys.n
 N=crsys.N
 
-#print("n=",n)
 shape=(n,n)
-qndm=QnNdarray(shape) # nxn qmnum zero matrix
-print("qndm.ndim",qndm.ndim)
+qndm=qnm.zerom(shape) # nxn qmnum zero matrix
 print("qndm.shape",qndm.shape)
 printqndm("zero qnmat",qndm)
+unitm=qnm.unitm(n)
+print("unitm.shape",unitm.shape)
+printqndm("unit qnmat",unitm)
+
+unitmi=copy(unitm) # copy of qnmi
+print("unitmi.shape",unitmi.shape)
+printqndm("unitmi",unitmi)
 
 nr=10
-print("n=",n)
+print("nr",nr,"n=",n)
 shape=(nr,n,n)
-qndm=QnNdarray(shape) # nxn qmnum zero matrix
-print("qndm.ndim",qndm.ndim)
-print("qndm.shape",qndm.shape)
+print("shape",shape)
+qnda=zeros(shape) # nr nxn qmnum zero matrices
+print("qnda.shape",qnda.shape)
 for i in range(nr):
-    printqndm("zero qnmat",qndm[i])
-    
-qndmi=copy(qndm) # copy of qnmi
-print("qndmi.ndim",qndmi.ndim)
-print("qndmi.shape",qndmi.shape)
-printqndm("zero qnmat",qndmi)
+    str="qnmat "+format(i+1)
+    printqndm(str,qnda[i])
 
-qndma=QnNdarray((2,n,n))
-print("qndma.ndim",qndma.ndim)
-print("qndma.shape",qndma.shape)
-printqndm("qndma",qndma)
     

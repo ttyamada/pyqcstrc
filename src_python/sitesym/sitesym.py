@@ -19,7 +19,7 @@ def sitesym_init():
     n=crsys.n
     N=crsys.N
 
-def site_symmetry(x:qnv.Qnvec,qns:qns.Qnsym,brv) -> np.ndarray: # return irs
+def site_symmetry(x: qnv.Qnvec, qns: qns.Qnsym, brv: str) -> np.ndarray: # return irs
     global nr,mpltbl,r
     """symmetry operator insixwa irs in the site symmetry group G.
     
@@ -43,13 +43,14 @@ def site_symmetry(x:qnv.Qnvec,qns:qns.Qnsym,brv) -> np.ndarray: # return irs
     mpltbl=qns.mpltbl
     r=qns.r
     a=np.zeros((nr,n),dtype=qnn.Qnnum)
+    qnx_i=prj.prji(x) # internal space component os nD vector x
 
     irs=np.zeros(0,dtype=np.int64)
     #tr=lt.get_tr(brv)
     traop=lt.get_tr(brv)  # centering translation vectors including zero vector
     for i in range(nr):
-        qnx=prj.prjvec_i(x) # internal spece components of x
-        a[i]=qnr[i]@qnx         # Q coordinates for nD vector x
+        #qnx=prj.prjvec_i(qnx_i) # internal spece components of x
+        a[i]=qnr[i]@qnx_i         # Q coordinates for nD vector x
         for tr in qns.trop:
             b=a[i]+tr
             if np.all(b==x):
@@ -135,10 +136,10 @@ def reduce_x(xs:np.ndarray,brv):
     #N=xs[0][0].N
     shape=xs.shape
     n=shape[1]
-    qn1=qnn.Qnnum([1,0,2])  # 1/2
-    qn2=qnn.Qnnum([-1,0,2]) # -/2
-    qn3=qnn.Qnnum([1,0,1])  # 1
-    qn4=qnn.Qnnum([-1,0,1]) # -1
+    qn1=qnn.any([1,0,2])  # 1/2
+    qn2=qnn.any([-1,0,2]) # -/2
+    qn3=qnn.any([1,0,1])  # 1
+    qn4=qnn.any([-1,0,1]) # -1
     for i in range(nv):
         for j in range(n):
             if xs[i][j]<qn2:
@@ -148,7 +149,8 @@ def reduce_x(xs:np.ndarray,brv):
     return xs
 
 def symop_vec(symop:qnm.Qnmat,vt:qnv.Qnvec,centre:qnv.Qnvec):
-    """ Apply a symmetric operation on a vector around given centre. in TAU-style
+    """ 
+    Apply a symmetric operation on a vector around given centre. in TAU-style
     """
     #vt=sub_vectors(vt,centre)
     vt=qnv.sub(vt,centre)
@@ -158,8 +160,9 @@ def symop_vec(symop:qnm.Qnmat,vt:qnv.Qnvec,centre:qnv.Qnvec):
 def generator_obj_symmetric_obj(obj:qnv.Qnvec, centre:qnv.Qnvec, pg:str):
     """
     """
-    V0=qnv.zerov()
-    if obj.ndim==3 or obj.ndim==4:
+    V0=qnv.zerov()  # origin
+    ndim=obj.shape[0]
+    if ndim==3 or ndim==4:
         if np.all(centre==V0):
             mop=octasymop_array()
         else:

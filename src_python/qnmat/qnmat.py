@@ -72,7 +72,7 @@ def anym(m:NDArray[qnn.Qnnum]):
     return m1
 
 def unitm(n_:np.int64) -> Qnmat:
-    qn1=qnn.Qnnum([1,0,1])
+    qn1=qnn.one()
     shape=(n_,n_)
     qnm=zerom(shape)
     for i in range(n_):
