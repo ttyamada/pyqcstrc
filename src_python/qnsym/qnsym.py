@@ -76,7 +76,7 @@ class Qnsym_Deca(qna.QnNdarray):
         self.r=r
         self.qnr=qnm.copyms(rtoqnr(r))
         self.qnr_e=qnm.copyms(rtoqnr_e(r))
-        self.qnr_i=qnn.copyms(rtoqnr_i(r))
+        self.qnr_i=qnm.copyms(rtoqnr_i(r))
         self.nr=nr
         self.n=n
         self.N=N
