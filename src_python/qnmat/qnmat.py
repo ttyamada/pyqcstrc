@@ -84,7 +84,8 @@ def copy(m: Qnmat) -> Qnmat:
 
 def copyms(ms: Qnmat) -> Qnmat:
     shape=ms.shape
-    m1s=Qnmat[shape[0]]
+    print("ms.shape",ms.shape)  # for test
+    m1s=Qnmat(shape)
     for i in range(shape[0]):
         m1s[i]=ms[i]
     return m1s
