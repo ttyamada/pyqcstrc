@@ -188,7 +188,7 @@ def prjop_init():
     N=crsys.N    
     
 def Prjop():
-    global prj0,prji
+    global prj0,prji,prj0t,prjit
     print("isys in Prjop __init__",isys)
     if(isys==2): # projection operator for icosahedral
         prj=Qnprj_Icos()
@@ -200,6 +200,8 @@ def Prjop():
         prj=Qnprj_Dode()
     prj0=prj.prj0
     prji=prj.prji
+    prj0t=qmt.matrixtr(prj0)  # transposed prj matrix
+    prjit=qmt.matrixtr(prji) # transposed prji matrix 
     return prj
     
 def copy(qna1: qnm.Qnmat):

@@ -41,11 +41,9 @@ class Qnmat(qna.QnNdarray):
         return mul(ma1,ma2)
     
     def set_mt(self:Self,mt:np.array): # QnNdarray*
-        n1=self.shape[0]
-        n2=self.shape[1]
-        #N=self[0][0].N
-        for i in range(n_):
-            for j in range(n_):
+        shape=self.shape
+        for i in range(shape[0]):
+            for j in range(shape[1]):
                 self.mt[i][j]=qnn.copy(mt[i][j]) # copy qnnum
 
 def qnmat_init():
@@ -84,6 +82,13 @@ def copy(m: Qnmat) -> Qnmat:
             m1[i][j]=m[i][j]
     return m1
 
+def copyms(ms: Qnmat) -> Qnmat:
+    shape=ms.shape
+    m1s=Qnmat[shape[0]]
+    for i in range(shape[0]):
+        m1s[i]=ms[i]
+    return m1s
+                
 def int2qnm(r:np.ndarray, n_:np.int64) -> Qnmat:
     qnr=Qnmat(n_) # n_ x n_ matrix
     for i in range(n_):
@@ -180,8 +185,8 @@ def qnm2npa(a) -> np.ndarray:
 def qnm2flt(a) -> np.ndarray:
     shape=a.shape
     b=np.zeros(shape,dtype=qnn.Qnnum)
-    for i in range(la[0]):
-        for j in range(la[1]):
+    for i in range(shape[0]):
+        for j in range(shape[1]):
             b[i][j]=(a[i][j].n[0]+a[i][j].n[1]*np.sqrt(N))/a[i][j].n[2]
     return b
 

@@ -74,9 +74,9 @@ class Qnsym_Deca(qna.QnNdarray):
         set_r(rg,gorf,r)  # set all integer rotation matrices
         #print_r(r)  # for test
         self.r=r
-        self.qnr=qna.copy(rtoqnr(r))
-        self.qnr_e=qna.copy(rtoqnr_e(r))
-        self.qnr_i=qna.copy(rtoqnr_i(r))
+        self.qnr=qnm.copyms(rtoqnr(r))
+        self.qnr_e=qnm.copyms(rtoqnr_e(r))
+        self.qnr_i=qnn.copyms(rtoqnr_i(r))
         self.nr=nr
         self.n=n
         self.N=N
@@ -190,9 +190,9 @@ def rtoqnr(r):
     shape=r.shape # (nr,n,n)
     nr=shape[0]
     prj=prjop.Prjop()
-    prj0=prj.prj0
-    prji=prj.prji
-    return get_qnr(prj0,prji,r,nr)
+    prj0t=prjop.prj0t
+    prjit=prjop.prjit
+    return get_qnr(prj0t,prjit,r,nr)
 
 def rtoqnr_e(r):
     qr=rtoqnr(r)
@@ -229,15 +229,13 @@ def wt_mpltbl(mpltbl: np.ndarray):
     for i in range(n_):
         print("",mpltbl[i][n_-1:n_*2])
     
-def get_qnr(prj,prji,r,nr):
-    #N=prj[0][0].N
-    qnr=qna.QnNdarray((nr,n,n))
-    prjt=qmt.matrixtr(prj)  # transposed prj matrix
-    prjit=qmt.matrixtr(prji) # transposed prji matrix 
+def get_qnr(prj0t,prjit,r,nr):
+    shape=r.shape
+    qnr=np.zeros(shape,dtype=qnn.Qnnum)
     for i in range(nr):
         rqn=qnm.intm2qnm(r[i],n)
         #qnr[i]=qnm.copy(prjt@rqn@prjit)  # qnmat x intmat nesessary
-        qnr[i]=prjt@rqn@prjit  # qnmat x intmat nesessary
+        qnr[i]=prj0t@rqn@prjit  # qnmat x intmat nesessary
         #str="# "+format(i+1) # for test
         #qnm.printqnm(str,qnr[i]) # for test
     return qnr
@@ -332,9 +330,10 @@ def print_r0(r0):
 
 # integer matrix to qnnumber matrix transformation
 def intr2qnmr(r,nr):
-    qnmr=qna.QnNdarray((nr,n,n),N) #[qm0]*nr
+    #qnmr=qna.QnNdarray((nr,n,n)) #[qm0]*nr
+    qnmr=qnm.Qnmat[nr]
     for i in range(nr):
-        qnmr[i]=qnm.intm2qnm(r[i],n,N) # qnmat for i-th rotation operator r[i]
+        qnmr[i]=qnm.intm2qnm(r[i],n) # qnmat for i-th rotation operator r[i]
     return qnmr
 
 def test_wt(str:str,qns:qna.QnNdarray):
@@ -342,6 +341,7 @@ def test_wt(str:str,qns:qna.QnNdarray):
     print("nr",nr)
     print(str)
     for i in range(nr):
-        qnm.printqnm("qnr[i]",qns.qnr[i])
+        str="qnr["+format(i)+"]"
+        qnm.printqnm(str,qns.qnr[i])
         
         
