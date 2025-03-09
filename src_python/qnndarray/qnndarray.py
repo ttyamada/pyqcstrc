@@ -14,10 +14,10 @@ import qnvec as qnv
 
 class QnNdarray(np.ndarray):
     
-    def __new__(cls, shape):
+    def __new__(cls,shape):
         return super().__new__(cls,shape,dtype=qnn.Qnnum)
 
-    def __init__(self, shape): # only for ndim=2
+    def __init__(self, shape):
         self.shape=shape
             
     def __add__(self,b):
@@ -27,11 +27,10 @@ class QnNdarray(np.ndarray):
     def __sub__(self,b):
         # shap should be (n)
         return sub_vectors(self,b)
-
-        #printqndm("Qnmat self",self) # for test
    
 def qnndarray_init():
-    global n,N
+    global n,N,isys
+    isys=crsys.isys
     n=crsys.n
     N=crsys.N
      
@@ -51,7 +50,7 @@ def zeros(shape) -> QnNdarray:
     
 # any kind of 3D array assumed
 def anya(vec:NDArray[qnn.Qnnum], shape)->QnNdarray:
-    qnva=QnNdarray(shape,N)
+    qnva=QnNdarray(shape)
     ndim=vec.ndim
     if ndim==1:
         for i in range(shape[0]):

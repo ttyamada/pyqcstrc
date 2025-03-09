@@ -24,25 +24,25 @@ def qnsym_tst_init(isys):
 # for test
 #if __name__ == '__main__':
 # test for qnnum projection operators
-isys=4
+
+isys=3 # for decagonal
+qnsym_tst_init(isys)
+qns3=Qnsym()
+test_wt("Deca",qns3)
+
+isys=4 # for octabonal
 qnsym_tst_init(isys)
 qns4=Qnsym()
 test_wt("Octa",qns4)
 
-isys=3
-qnsym_tst_init(isys)
-qns3=Qnsym()
-qns3.test_wt("Deca",qns3)
-
-
-isys=5
+isys=5 # for dodecagonal
 qnsym_tst_init(isys)
 qns5=Qnsym()
-qns5.test_wt("Dode",qns5)
+test_wt("Dode",qns5)
 
-isys=2
+isys=2 # for icosahedral
 qnsym_tst_init(isys)
 qns2=Qnsym() #qns2=qnsym_init(isys)
-qns2.test_wt("Icos",qns2)
+test_wt("Icos",qns2)
     
 

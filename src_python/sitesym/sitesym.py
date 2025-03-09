@@ -39,18 +39,17 @@ def site_symmetry(x: qnv.Qnvec, qns: qns.Qnsym, brv: str) -> np.ndarray: # retur
     #N=x.N
     n=crsys.n
     nr=qns.nr
-    qnr=qns.qnr  # symmetry operator for Q coordinates
+    qnr_i=qns.qnr_i  # symmetry operator for Q coordinates
     mpltbl=qns.mpltbl
     r=qns.r
     a=np.zeros((nr,n),dtype=qnn.Qnnum)
-    qnx_i=prj.prji(x) # internal space component os nD vector x
+    qnx_i=prj.prjvec_i(x) # internal space component os nD vector x
 
     irs=np.zeros(0,dtype=np.int64)
     #tr=lt.get_tr(brv)
     traop=lt.get_tr(brv)  # centering translation vectors including zero vector
     for i in range(nr):
-        #qnx=prj.prjvec_i(qnx_i) # internal spece components of x
-        a[i]=qnr[i]@qnx_i         # Q coordinates for nD vector x
+        a[i]=qnr_i[i]@qnx_i         # Q coordinates for nD vector x
         for tr in qns.trop:
             b=a[i]+tr
             if np.all(b==x):

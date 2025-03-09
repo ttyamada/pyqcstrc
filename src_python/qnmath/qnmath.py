@@ -454,10 +454,11 @@ def det_matrix_2d(mtx: qnm.Qnmat) -> qnn.Qnnum:
 def matrixtr(mtx: qnm.Qnmat) -> qnm.Qnmat:
     """ return transposed matrix of mtx """
     #N=mtx[0][0].N
-    n_=mtx.shape[0]
-    mtxt=qnm.Qnmat(n_)
-    for i in range(n_):
-        for j in range(n_):
+    shape=mtx.shape
+    #n_=mtx.shape[0]
+    mtxt=qnm.Qnmat(shape)
+    for i in range(shape[0]):
+        for j in range(shape[1]):
             mtxt[i][j]=qnn.copy(mtx[j][i])
     return mtxt
         

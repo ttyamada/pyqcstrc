@@ -8,6 +8,7 @@ import qnvec as qnv
 import qnndarray as qna
 
 def lattice_init():
+    global n,N
     n=crsys.n
     N=crsys.N
 

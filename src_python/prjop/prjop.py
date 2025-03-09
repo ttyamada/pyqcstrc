@@ -188,15 +188,19 @@ def prjop_init():
     N=crsys.N    
     
 def Prjop():
+    global prj0,prji
     print("isys in Prjop __init__",isys)
     if(isys==2): # projection operator for icosahedral
-        return Qnprj_Icos()
+        prj=Qnprj_Icos()
     elif(isys==3): # projection operator for decagonal
-        return Qnprj_Deca()
+        prj=Qnprj_Deca()
     elif(isys==4): # projection operator for octagonal
         return Qnprj_Octa()
     elif(isys==5): # projection operator dodecagonal
-        return Qnprj_Dode()
+        prj=Qnprj_Dode()
+    prj0=prj.prj0
+    prji=prj.prji
+    return prj
     
 def copy(qna1: qnm.Qnmat):
     #return np.copy(qna1,dtype=qnn.Qnnum)

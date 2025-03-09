@@ -67,11 +67,11 @@ prj.prjop_init()
 qna.qnndarray_init()
 
 N=2 # for octagonal
-M0=qnn.Qnnum([0,0,1],N)
-M1=qnn.Qnnum([1,0,1],N)
-M2=qnn.Qnnum([3,0,2],N)
-M3=qnn.Qnnum([1,0,2],N)
-M4=qnn.Qnnum([-1,0,2],N)
+M0=qnn.Qnnum([0,0,1])
+M1=qnn.Qnnum([1,0,1])
+M2=qnn.Qnnum([3,0,2])
+M3=qnn.Qnnum([1,0,2])
+M4=qnn.Qnnum([-1,0,2])
 
 seg_1=np.array([
            [M1,M1,M0,M0,M0,M0],

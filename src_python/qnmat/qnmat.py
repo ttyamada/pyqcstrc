@@ -60,14 +60,11 @@ def zerom(shape:np.int64) -> Qnmat:
 #def zeroms(shape:np.int64,N:np.int64) -> Qnmat: # qnmat ndarray
 #    return np.zeros(shape,dtype=Qnmat)
 
-def anym(m:NDArray[qnn.Qnnum]):
-    N=m.N
-    n1=m.shape[0]
-    n2=m.shape[1]
-    shape=(n1,n2)
+def anym(m:NDArray[qnn.Qnnum]) -> Qnmat:
+    shape=m.shape
     m1=Qnmat(shape)
-    for i in range(n1):
-        for j in range(n2):
+    for i in range(shape[0]):
+        for j in range(shape[1]):
             m1[i][j]=m[i][j]
     return m1
 
@@ -79,12 +76,13 @@ def unitm(n_:np.int64) -> Qnmat:
         qnm[i][i]=qn1
     return qnm
         
-def copy(qnm: Qnmat) -> Qnmat:
-    return np.copy(qnm)
-    #for i in range(n):
-    #    for j in range(n):
-    #        qnm1[i][j]=qnn.copy(qnm[i][j])
-    #return qnm1
+def copy(m: Qnmat) -> Qnmat:
+    shape=m.shape
+    m1=Qnmat(shape)
+    for i in range(shape[0]):
+        for j in range(shape[1]):
+            m1[i][j]=m[i][j]
+    return m1
 
 def int2qnm(r:np.ndarray, n_:np.int64) -> Qnmat:
     qnr=Qnmat(n_) # n_ x n_ matrix
@@ -168,7 +166,7 @@ def pow(ma: Qnmat, n_: int) -> Qnmat:
             return tmp
     else:
         print('matrix has not regular shape')
-        return 
+        exit()
 
 def qnm2npa(a) -> np.ndarray:
     # Qnmatrix to np.array converter

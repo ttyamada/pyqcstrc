@@ -10,20 +10,6 @@ import prjop
 import qnmath as qmt
 import qnndarray as qna
 
-class Qnsym(qna.QnNdarray):
-    def __init__(self):
-        if isys==2:
-            self=Qnsym_Icos() #Pn35
-        elif isys==3:
-            self=Qnsym_Deca() #P10mm
-        elif isys==4:
-            self=Qnsym_Octa() #P8mm
-        elif isys==5:
-            self=Qnsym_Dode() #P12mm
-        else:
-            print("isys should be 2,3,4 or 5 but",isys)
-            exit()
-
 class Qnsym_Octa(qna.QnNdarray):
     def __new__(cls):
         global nr,shape
@@ -57,6 +43,9 @@ class Qnsym_Octa(qna.QnNdarray):
         self.n=n
         self.N=N
         self.shape=shape
+        mpltbl=np.zeros((nr,nr),dtype=np.int64)
+        set_mpltbl(mpltbl,r)
+        self.mpltbl=mpltbl
  
     
 # for decagonal QCs
@@ -92,6 +81,10 @@ class Qnsym_Deca(qna.QnNdarray):
         self.n=n
         self.N=N
         self.shape=shape
+        mpltbl=np.zeros((nr,nr),dtype=np.int64)       
+        set_mpltbl(mpltbl,r)
+        self.mpltbl=mpltbl
+ 
 
 ## for dodecagonal QCs
 class Qnsym_Dode(qna.QnNdarray):
@@ -122,6 +115,10 @@ class Qnsym_Dode(qna.QnNdarray):
         self.n=n
         self.N=N
         self.shape=shape
+        mpltbl=np.zeros((nr,nr),dtype=np.int64)
+        set_mpltbl(mpltbl,r)
+        self.mpltbl=mpltbl
+ 
  
         
 ## for icosahedral QCs
@@ -156,6 +153,10 @@ class Qnsym_Icos(qna.QnNdarray):
         self.n=n
         self.N=N
         self.shape=shape
+        mpltbl=np.zeros((nr,nr),dtype=np.int64)
+        set_mpltbl(mpltbl,r)
+        self.mpltbl=mpltbl
+ 
 
         
 def qnsym_init():
@@ -166,25 +167,32 @@ def qnsym_init():
     print("qnsym_init isys",isys,"n",n,"N",N)  # for test
 
 def Qnsym():
+    global qnr,qnr_e,qnr_i,mpltbl
     if isys==2:
-        return Qnsym_Icos() #Pn35
+        qns=Qnsym_Icos() #Pn35
     elif isys==3:
-        return Qnsym_Deca() #P10mm
+        qns=Qnsym_Deca() #P10mm
     elif isys==4:
-        return Qnsym_Octa() #P8mm
+        qns=Qnsym_Octa() #P8mm
     elif isys==5:
-        return Qnsym_Dode() #P12mm
+        qns=Qnsym_Dode() #P12mm
     else:
         print("isys should be 2,3,4 or 5 but",isys)
         exit()
-
+    
+    qnr=qns.qnr
+    qnr_e=qns.qnr_e
+    qnr_i=qns.qnr_i
+    mpltbl=qns.mpltbl
+    return qns
+    
 def rtoqnr(r):
     shape=r.shape # (nr,n,n)
     nr=shape[0]
     prj=prjop.Prjop()
     prj0=prj.prj0
     prji=prj.prji
-    return get_qnr(prj0,prji,r,nr,n)
+    return get_qnr(prj0,prji,r,nr)
 
 def rtoqnr_e(r):
     qr=rtoqnr(r)
@@ -202,9 +210,7 @@ def is_equal(r1,r2):
                 return False
     return True
         
-def set_mpltbl(r:np.ndarray): # r: integer rotation matrices in nD lattice
-    global mpltbl
-    mpltbl=np.zeros((nr,nr),dtype=np.int64)
+def set_mpltbl(mpltbl:np.ndarray,r:np.ndarray): # r: integer rotation matrices in nD lattice
     rt=np.zeros((n,n),dtype=np.int64)
     for i in range(nr):
         for j in range(nr):
@@ -212,10 +218,9 @@ def set_mpltbl(r:np.ndarray): # r: integer rotation matrices in nD lattice
                 rt=r[i]@r[j]
                 if is_equal(rt,r[k]):  # ???
                     mpltbl[i][j]=k
-    wt_mpltbl() # for test
+    wt_mpltbl(mpltbl) # for test
 
-def wt_mpltbl():
-    shape=mpltbl.shape
+def wt_mpltbl(mpltbl: np.ndarray):
     n_=(int)(shape[0]/2) # when centrosymmetric
     print("mpltbl 1st block")
     for i in range(n_):
@@ -226,11 +231,11 @@ def wt_mpltbl():
     
 def get_qnr(prj,prji,r,nr):
     #N=prj[0][0].N
-    qnr=qna.QnNdarray((nr,n,n),N)
+    qnr=qna.QnNdarray((nr,n,n))
     prjt=qmt.matrixtr(prj)  # transposed prj matrix
     prjit=qmt.matrixtr(prji) # transposed prji matrix 
     for i in range(nr):
-        rqn=qnm.intm2qnm(r[i],n,N)
+        rqn=qnm.intm2qnm(r[i],n)
         #qnr[i]=qnm.copy(prjt@rqn@prjit)  # qnmat x intmat nesessary
         qnr[i]=prjt@rqn@prjit  # qnmat x intmat nesessary
         #str="# "+format(i+1) # for test
@@ -238,9 +243,9 @@ def get_qnr(prj,prji,r,nr):
     return qnr
 
 def get_qnr0(r,nr):
-    qnr0=qna.QnNdarray((nr,n,n),N)
+    qnr0=qna.QnNdarray((nr,n,n))
     for i in range(nr):
-        qnr0[i]=qnm.intm2qnm(r[i],n,N)
+        qnr0[i]=qnm.intm2qnm(r[i],n)
         #str="# "+format(i+1) # for test
         #qnm.printqnm(str,qnr[i]) # for test
     return qnr0

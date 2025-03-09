@@ -6,7 +6,9 @@ import qnvec as qnv
 import qnmat as qnm
 import qnndarray as qna
 import prjop as prj
+import lattice as lt
 import qnsym
+
 from sitesym import (sitesym_init,\
                      site_symmetry,\
                      coset,\
@@ -24,6 +26,7 @@ qna.qnndarray_init()
 qnm.qnmat_init()
 prj.prjop_init()
 qnsym.qnsym_init()
+lt.lattice_init()
 
 brv='p'
 N=crsys.N

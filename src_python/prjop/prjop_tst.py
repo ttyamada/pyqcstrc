@@ -36,7 +36,7 @@ def prj_tst(isys: np.int64):
     #prjif=qnm2flnm(prji)
     prjif=qmt.matinv_f(prjf,n)
     #prji3f=np.linalg.inv(prj3f)
-    prjop.printfm("prjif",prjif,n)
+    printfm("prjif",prjif,n)
     unitmf=prjif@prjf
     printfm("unitmf",unitmf,n)
 
