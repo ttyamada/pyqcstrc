@@ -22,15 +22,15 @@ qnm.qnmat_init()
 N=crsys.N
 n=crsys.n
 ns=3
-M0=qnn.Qnnum([0,0,1],N)
-M1=qnn.Qnnum([1,0,1],N)
-M2=qnn.Qnnum([0,1,1],N)
-M3=qnn.Qnnum([1,1,2],N)
+M0=qnn.Qnnum([0,0,1])
+M1=qnn.Qnnum([1,0,1])
+M2=qnn.Qnnum([0,1,1])
+M3=qnn.Qnnum([1,1,2])
 
 qnv0=np.zeros(ns,dtype=qnv.Qnvec) 
-qnv0[0]=qnv.anyv(n,N,[M2,M3,M0])
-qnv0[1]=qnv.anyv(n,N,[M0,M1,M2])
-qnv0[2]=qnv.anyv(n,N,[M1,M2,M0])
+qnv0[0]=qnv.anyv(np.array([M2,M3,M0]))
+qnv0[1]=qnv.anyv(np.array([M0,M1,M2]))
+qnv0[2]=qnv.anyv(np.array([M1,M2,M0]))
 for i in range(3):
     qnv.printqnv("qnv0["+format(i)+"]",qnv0[i])
 
@@ -62,20 +62,20 @@ qnv.printqnv("vts1",vts1)
 #N=2
 # 8 corner vectors for AB tiling OD
 vts2=qnv.zerovs((8)) # for octagon for Ammann-Beenker tiling
-M0=qnn.Qnnum([0,0,1],N)
-M1=qnn.Qnnum([1,0,2],N)  # 1
-M2=qnn.Qnnum([-1,0,2],N) # -1
-M3=qnn.Qnnum([0,1,4],N)  # sqrt(2)/2
-M4=qnn.Qnnum([0,-1,4],N) # -sqrt(2)/2
+M0=qnn.Qnnum([0,0,1])
+M1=qnn.Qnnum([1,0,2])  # 1
+M2=qnn.Qnnum([-1,0,2]) # -1
+M3=qnn.Qnnum([0,1,4])  # sqrt(2)/2
+M4=qnn.Qnnum([0,-1,4]) # -sqrt(2)/2
 # AB OD edge vectors in qnnum
-vts2[0]=qnv.anyv(n,N,[M1,M0,M0,M1,M0]) #(1 0 0 1 0)/2
-vts2[1]=qnv.anyv(n,N,[M0,M0,M2,M1,M0]) #(0 0 -1 1 0)/2
-vts2[2]=qnv.anyv(n,N,[M0,M1,M2,M0,M0]) #(0 1 -1 0 0)/2
-vts2[3]=qnv.anyv(n,N,[M2,M1,M0,M0,M0]) #(-1 1 0 0 0)/2
-vts2[4]=qnv.anyv(n,N,[M2,M0,M0,M2,M0]) #(-1 0 0 -1 0)/2
-vts2[5]=qnv.anyv(n,N,[M0,M0,M1,M2,M0]) #(0 0 1 -1 0)/2
-vts2[6]=qnv.anyv(n,N,[M0,M2,M1,M0,M0]) #(0 -1 1 0 0)/2
-vts2[7]=qnv.anyv(n,N,[M1,M2,M0,M0,M0]) #(1 -1 0 0 0)/2
+vts2[0]=qnv.anyv(np.array([M1,M0,M0,M1,M0])) #(1 0 0 1 0)/2
+vts2[1]=qnv.anyv(np.array([M0,M0,M2,M1,M0])) #(0 0 -1 1 0)/2
+vts2[2]=qnv.anyv(np.array([M0,M1,M2,M0,M0])) #(0 1 -1 0 0)/2
+vts2[3]=qnv.anyv(np.array([M2,M1,M0,M0,M0])) #(-1 1 0 0 0)/2
+vts2[4]=qnv.anyv(np.array([M2,M0,M0,M2,M0])) #(-1 0 0 -1 0)/2
+vts2[5]=qnv.anyv(np.array([M0,M0,M1,M2,M0])) #(0 0 1 -1 0)/2
+vts2[6]=qnv.anyv(np.array([M0,M2,M1,M0,M0])) #(0 -1 1 0 0)/2
+vts2[7]=qnv.anyv(np.array([M1,M2,M0,M0,M0])) #(1 -1 0 0 0)/2
 qnv.printqnvs("vts2",vts2)
 
 #isys=4
@@ -98,13 +98,13 @@ qnv.printqnvs("vts2",vts2)
 #vst=generate_random_vectors(nset)
 vst=qnv.zerovs((n))
 #for i in range(nset):
-#    vst[i]=qnv.Qnvec(n,N)
+#    vst[i]=qnv.Qnvec(n)
 # set vt values
-vst[0]=qnv.anyv([M0,M1])
-vst[1]=qnv.anyv([M1,M2])
-vst[2]=qnv.anyv([M1,M3])
-vst[3]=qnv.anyv([M0,M3])
-vst[4]=qnv.anyv([M2,M1])
+vst[0]=qnv.anyv(np.array([M0,M1]))
+vst[1]=qnv.anyv(np.array([M1,M2]))
+vst[2]=qnv.anyv(np.array([M1,M3]))
+vst[3]=qnv.anyv(np.array([M0,M3]))
+vst[4]=qnv.anyv(np.array([M2,M1]))
 print("vst.shape",vst.shape)
 qnv.printqnvs("vst",vst)
 
