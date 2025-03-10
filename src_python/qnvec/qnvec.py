@@ -5,13 +5,14 @@ from numpy.typing import NDArray
 import crsys
 import qnnum as qnn
 from typing import Self
+import qnndarray as qna
 
-#class Qnvec(qna.QnNdarray):
-class Qnvec(np.ndarray):
+class Qnvec(qna.QnNdarray):
+#class Qnvec(np.ndarray):
     def __new__(cls, n:np.int64):
         global shape
         shape=(n)
-        return super().__new__(cls,shape,dtype=qnn.Qnnum)
+        return super().__new__(cls,shape)
     
     def __init__(self, n:np.int64):
         qn0=qnn.zero() #int2qnn(0,N)
@@ -62,13 +63,15 @@ def qnvec_init():
     else:
         n_e=2; n_i=2
    
-def zerovs(shape) -> Qnvec:  # qnvec ndarray
+def zerovs(shape:np.int64) -> Qnvec:  # qnvec ndarray
     print("shape in zerovs",shape)  # for test
-    qnvs = [Qnvec(shape[1]) for i in range(shape[0]) ]
-    print("type(qnvs)",type(qnvs))
-    #qnvs=np.array(shape,dtype=Qnvec)
-    for i in range(shape[0]):
-        qnvs[i]=zerov(shape[1])
+    nv=shape[0]
+    n=shape[1]
+    qnvs=np.zeros(shape,dtype=Qnvec)
+    print("type(qnvs)",type(qnvs))  # for test
+    print("type(qnvs[0])",type(nv))  # for test
+    for i in range(nv):
+        qnvs[i]=zerov(n)
     return qnvs
 
 def zerov(n: np.int64)->Qnvec: # qnnumber zero vector

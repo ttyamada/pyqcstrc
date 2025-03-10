@@ -20,9 +20,16 @@ class Qnmat(qna.QnNdarray):
         qn0=qnn.zero()
         self.N=N
         self.shape=shape
-        for i in range(shape[0]):
-            for j in range(shape[1]):
-                self[i][j]=qn0
+        ndim=len(shape)
+        #print("ndim in Qnmat",ndim)  # for test
+        if ndim==1:
+            for i in range(shape[0]):
+                self[i]=qn0
+        
+        if ndim==2:
+            for i in range(shape[0]):
+                for j in range(shape[1]):
+                    self[i][j]=qn0
         #print("self.shape",self.shape)
         #print("self.ndim",self.ndim)
         #print("self.dtype",self.dtype)
@@ -94,44 +101,49 @@ def int2qnm(r:np.ndarray, n_:np.int64) -> Qnmat:
     qnr=Qnmat(n_) # n_ x n_ matrix
     for i in range(n_):
         for j in range(n_):
-            qnr[i][j]=qnn.int2qnn(r[i][j],N)
+            qnr[i][j]=qnn.int2qnn(r[i][j])
     return qnr
+
+def qnm2qnv(qnm: Qnmat) -> qnv.Qnvec:
+    if len(qnm.shape)!=1:
+        print("size(shape) != 1 so cannt convert to Qnvec")
+    nv=qnm.shape[0]
+    print("nv",nv,"n",n)  # for test
+    qnvt=qnv.zerovs((nv,n))
+    for i in range(nv):
+        qnvt[i]=qnm[i]
+    return qnvt
     
 def add(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
     #a=np.empty(mat1.shape, dtype=qnn.Qnnum)
     shape=ma1.shape
-    la1=shape[0]
-    la2=shape[1]
     n1=ma1.ndim
     n2=ma2.ndim
-    N=ma1.N
     a=Qnmat(shape)
     if(n1==1 and n2==1): # vectors
-        for i in range(la1):
+        for i in range(shape[0]):
             a[i]=ma1[i]+ma2[i]  #add(v1[i],v2[i])
         return a
     elif(n1==2 and n2==2): # matrices
-        for i in range(la1):
-            for j in range(la2):
+        for i in range(shape[0]):
+            for j in range(shape[1]):
                 a[i][j]=ma1[i][j]+ma2[i][j]  #add(v1[i],v2[i])
         return a 
     
 def sub(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
     #a=np.empty(mat1.shape, dtype=qnn.Qnnum)
     shape=ma1.shape
-    la1=shape[0]
-    la2=shape[1]
     n1=ma1.ndim
     n2=ma2.ndim
     #N=ma1[0][0].N
     a=Qnmat(shape)
     if(n1==1 and n2==1): # vectors
-        for i in range(la1):
+        for i in range(shape[0]):
             a[i]=ma1[i]-ma2[i]  #add(v1[i],v2[i])
         return a
     elif(n1==2 and n2==2): # matrices
-        for i in range(la1):
-            for j in range(la2):
+        for i in range(shape[0]):
+            for j in range(shape[1]):
                 a[i][j]=ma1[i][j]-ma2[i][j]  #add(v1[i],v2[i])
         return a 
     

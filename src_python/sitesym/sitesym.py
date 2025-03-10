@@ -53,26 +53,30 @@ def site_symmetry(x: qnv.Qnvec, qns: qns.Qnsym, brv: str) -> np.ndarray: # retur
     #a=np.zeros((nr,n),dtype=qnn.Qnnum)
     a=qnv.zerovs((nr,n))
     qnx=prj.prjvec(x)
+    b=qnv.zerov(n)
 
     irs=np.zeros(0,dtype=np.int64)
     #tr=lt.get_tr(brv)
     trop=lt.get_tr(brv)  # centering translation vectors including zero vector
+    print("type(trop[0])",type(trop[0]))  # for test
     for i in range(nr):
         #qnm.printqnm("qnr_i",qnr_i[i]) # for test
         #qnv.printqnv("qnx_i",qnx_i) # for test
         #a_i[i]=qnr_i[i]@qnx_i         # Q coordinates for 2D (3D) vector x_i
         qnm.printqnm("qnr",qnr[i]) # for test
-        a[i]=qnr[i]@qnx         # Q coordinates for 2D (3D) vector x_i
-        qnv.printqnv("a[i]",a[i])  # for test
+        a[i]=qnr[i]@qnx   # Q coordinates for 2D (3D) vector x_i
+        print("tihpe(a[i]",type(a[i]))  # for test
+        # **** a[i] is not Qnvec but Qnmat
+        # Qnmat to Qnvec transformation necessary 
+        print("a[i].shape",a[i].shape)  # for test
+        print("type(trop[0])",type(trop[0]))  # for test
+        b0=a[0]+trop[0]
+        b=qnm.qnm2qnv(b0)
+        print("type(b)",type(b),"b.shape",b.shape)  # for test
+        qnv.printqnv("qnx",qnx)  # for test
         for tr in trop:
-            qnv.printqnv("tr",tr) # for test
-            b=a[i]+tr
-            qnv.printqnv("b",b)  # for test
-            qnv.printqnv("qnx",qnx)  # for test
-            print("type(a[i]",type(a[i])) # for test
-            print("type(tr(",type(tr))  # for test
-            print("type(b)",type(b))  # for test
-            print("type(qnx)",type(qnx))  # for test
+            b0=a[i]+tr
+            b=qnm.qnm2qnv(b0)
             if b==qnx:
                 irs=np.append(irs,i)
             else:
