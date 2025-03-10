@@ -198,8 +198,7 @@ def cros(v1:Qnvec, v2:Qnvec) -> Qnvec:
     
 # for octagonal and dodecagonal
 def dot(v1:Qnvec, v2:Qnvec) -> qnn.Qnnum:
-    #n=v1.shape[0]
-    #N=v1[0].N
+    n=v1.shape[0]
     v=qnn.zero() # qnnum zero
     for i in range(n):
         v=v+v1[i]*v2[i]

@@ -22,6 +22,7 @@ import qnndarray as qna
 #EPS=1e-6 # tolerance
 
 def numeric_init():
+    global n,N
     n=crsys.n
     N=crsys.N
 
@@ -755,7 +756,7 @@ def projection3_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
     #n=vns[0].n
     #N=vns[0].N
     nc=shape[0]
-    print("N",N)
+    #print("N",N)
     #if N==2:
     #    prj0=prj.Qnprj_Octa()
     #elif N==5:
