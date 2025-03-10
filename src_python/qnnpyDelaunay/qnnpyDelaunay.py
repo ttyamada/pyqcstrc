@@ -313,7 +313,7 @@ class Graph():
 def circumcircle(tri:Triangle):
     n=tri[0][0].n
     N=tri[0][0].N
-    center=qnv.zerov(n,N)
+    center=qnv.zerov(n)
     try:
         D = ((tri[0][0]-tri[2][0])*(tri[1][1]-tri[2][1])-(tri[1][0]-tri[2][0])*(tri[0][1]-tri[2][1]))
         

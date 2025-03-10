@@ -196,12 +196,18 @@ def rtoqnr(r):
 
 def rtoqnr_e(r):
     qr=rtoqnr(r)
-    return qr[0:3,0:3] #3x3 diagonal block 
+    if isys==2:
+        return qr[:,0:3,0:3] #3x3 diagonal block 
+    else:
+        return qr[:,0:2,0:2] #2x2 diagonal block not correct at the moment
 
 def rtoqnr_i(r):
     qr=rtoqnr(r)
     #n_=r.shape[0]
-    return qr[3:n,3:n] # 2x2 or 3x3 second diagonal block
+    if isys==2:
+        return qr[:,3:6,3:6] # 3x3 second diagonal block
+    else:
+        return qr[:,2:4,2:4] # 2x2 or 3x3 second diagonal block
     
 def is_equal(r1,r2):
     for i in range(n):
@@ -224,10 +230,15 @@ def wt_mpltbl(mpltbl: np.ndarray):
     n_=(int)(shape[0]/2) # when centrosymmetric
     print("mpltbl 1st block")
     for i in range(n_):
-        print("",mpltbl[i][0:n_])
+        for j in range(n_):
+            print("","{:2d}".format(mpltbl[i][j]),end="")
+        print("")
+    
     print("mpltbl 2nd block")
     for i in range(n_):
-        print("",mpltbl[i][n_-1:n_*2])
+        for j in range(n_):
+            print("",mpltbl[i][j+n_],end="")
+        print("")
     
 def get_qnr(prj0t,prjit,r,nr):
     shape=r.shape
@@ -336,12 +347,27 @@ def intr2qnmr(r,nr):
         qnmr[i]=qnm.intm2qnm(r[i],n) # qnmat for i-th rotation operator r[i]
     return qnmr
 
-def test_wt(str:str,qns:qna.QnNdarray):
+def test_wt_qnr(str:str,qns:qna.QnNdarray):
     nr=qns.nr
     print("nr",nr)
     print(str)
     for i in range(nr):
         str="qnr["+format(i)+"]"
         qnm.printqnm(str,qns.qnr[i])
-        
+     
+def test_wt_qnr_e(str:str,qns:qna.QnNdarray):
+    nr=qns.nr
+    print("nr",nr)
+    print(str)
+    for i in range(nr):
+        str="qnr["+format(i)+"]"
+        qnm.printqnm(str,qns.qnr_e[i])   
+
+def test_wt_qnr_i(str:str,qns:qna.QnNdarray):
+    nr=qns.nr
+    print("nr",nr)
+    print(str)
+    for i in range(nr):
+        str="qnr["+format(i)+"]"
+        qnm.printqnm(str,qns.qnr_i[i])   
         

@@ -12,7 +12,7 @@ class Point():
     def __init__(self, x:qnn.Qnnum, y:qnn.Qnnum): # x and y coordinates of a point
         n=2
         N=x.N
-        self=qnv.zerov(n,N)
+        self=qnv.zerov(n)
         self[0] = x
         self[1] = y
     
@@ -297,7 +297,7 @@ class Graph():
 def circumcircle(tri:qnv.Qnvec):
     n=tri[0].n
     N=tri[0].N
-    center=qnv.zerov(n,N)
+    center=qnv.zerov(n)
     try:
         D = ((tri[0][0]-tri[2][0])*(tri[1][1]-tri[2][1])-(tri[1][0]-tri[2][0])*(tri[0][1]-tri[2][1]))
         
@@ -322,7 +322,7 @@ def circumcircle2(tri:qnv.Qnvec):
     #tri[0]-tri[2] and tri[1]-tri[2] are edige vectors form tri[2]
     n=tri[0].n
     N=tri[0].N
-    center=qnv.zerov(n,N)
+    center=qnv.zerov(n)
     edg=qnv.zeros((3))
     edg[0]=tri[0]-tri[2]; edg[1]=tri[1]-tri[2]; edg[2]=tri[1]+tri[2]
     try:

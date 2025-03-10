@@ -10,7 +10,7 @@ import qnmat as qnm
 import qnmath as qmt
 import qnndarray as qna
 from prjop import (prjop_init, Prjop,\
-                    qnm2flnm, printfm)
+                    qnm2flnm, printfm,tstwt_prjop)
 
 # test for qnnum projection operators
 def prj_tst(isys: np.int64):
@@ -22,22 +22,24 @@ def prj_tst(isys: np.int64):
     
     prjop_init()
     prj=Prjop()
+    tstwt_prjop()
+    
     prj0=prj.prj0
     prji=prj.prji
-    qnm.printqnm("prj0",prj0)
-    #prji=qmt.qnmatinv(prj0,n)
-    qnm.printqnm("prji",prji)
     unitm=prji@prj0
     qnm.printqnm("untm",unitm)
     
-    prjf=qnm2flnm(prj0)
-    n=5
-    printfm("prjf",prjf,n)
+    prj0f=qnm2flnm(prj0)
+    if isys==2:
+        n=6
+    else:
+        n=5
+    printfm("prj0f",prj0f,n)
     #prjif=qnm2flnm(prji)
-    prjif=qmt.matinv_f(prjf,n)
+    prjif=qmt.matinv_f(prj0f,n)
     #prji3f=np.linalg.inv(prj3f)
     printfm("prjif",prjif,n)
-    unitmf=prjif@prjf
+    unitmf=prjif@prj0f
     printfm("unitmf",unitmf,n)
 
 prj_tst(4)

@@ -30,7 +30,7 @@ import qnndarray as qna
 
 class Qnprj_Octa(qnm.Qnmat):
     def __new__(cls) : 
-        print("n in __new__",n) # for test
+        #print("n in __new__",n) # for test
         shape=(n,n)
         return super().__new__(cls,shape)
  
@@ -53,7 +53,7 @@ class Qnprj_Octa(qnm.Qnmat):
         #for i in range(n):
         #    for j in range(n):
         #        prj0[i][j]=mt[i][j]
-        qnm.printqnm("Qnprj_Octa prj",prj0) # for 
+        #qnm.printqnm("Qnprj_Octa prj",prj0) # for 
         self.prj0=prj0
         self.prji=qmt.qnmatinv(prj0,n) # get inversion matrix of prj
         self.n=n
@@ -93,7 +93,7 @@ class Qnprj_Deca(qnm.Qnmat):
         #for i in range(n):
         #    for j in range(n):
         #        prj0[i][j]=mt[i][j]
-        qnm.printqnm("Qnprj_Deca prj",prj0) # for test
+        #qnm.printqnm("Qnprj_Deca prj",prj0) # for test
         self.prj0=prj0
         self.prji=qmt.qnmatinv(prj0,n) # get inversion matrix of prj
         self.n=n
@@ -133,7 +133,7 @@ class Qnprj_Dode(qnm.Qnmat):
         #for i in range(n):
         #    for j in range(n):
         #        prj0[i][j]=mt[i][j]
-        qnm.printqnm("Qnprj_Dode prj",prj0) # for test
+        #qnm.printqnm("Qnprj_Dode prj",prj0) # for test
         self.prj0=prj0
         self.prji=qmt.qnmatinv(prj0,n) # get inversion matrix of prj
         self.n=n
@@ -172,7 +172,7 @@ class Qnprj_Icos(qnm.Qnmat):
         #for i in range(n):
         #    for j in range(n):
         #        prj0[i][j]=mt[i][j]
-        qnm.printqnm("Qnprj_Icos prj0",prj0) # for test
+        #qnm.printqnm("Qnprj_Icos prj0",prj0) # for test
         self.prj0=prj0
         self.prji=qmt.qnmatinv(prj0,n) # get inversion matrix of prj
         self.n=n
@@ -189,13 +189,13 @@ def prjop_init():
     
 def Prjop():
     global prj0,prji,prj0t,prjit
-    print("isys in Prjop __init__",isys)
+    print("isys in Prjop",isys)
     if(isys==2): # projection operator for icosahedral
         prj=Qnprj_Icos()
     elif(isys==3): # projection operator for decagonal
         prj=Qnprj_Deca()
     elif(isys==4): # projection operator for octagonal
-        return Qnprj_Octa()
+        prj=Qnprj_Octa()
     elif(isys==5): # projection operator dodecagonal
         prj=Qnprj_Dode()
     prj0=prj.prj0
@@ -203,6 +203,12 @@ def Prjop():
     prj0t=qmt.matrixtr(prj0)  # transposed prj matrix
     prjit=qmt.matrixtr(prji) # transposed prji matrix 
     return prj
+
+def tstwt_prjop():
+    qnm.printqnm("prj0",prj0)
+    qnm.printqnm("prji",prji)
+    qnm.printqnm("prj0t",prj0t)
+    qnm.printqnm("prjit",prjit)
     
 def copy(qna1: qnm.Qnmat):
     #return np.copy(qna1,dtype=qnn.Qnnum)
@@ -225,25 +231,23 @@ def prjvec(v: qnv.Qnvec) -> qnv.Qnvec:
 # projection into external space for class cls
 def prjvec_e(v:qnv.Qnvec) -> qnv.Qnvec:
     vei=v@prj0  #@v # vt assumed to be qnvec
-    ve=qnv.zerovs(3)
+    ve=qnv.zerov(3)
     if isys>2: # dihedral
-        ve[0]=vei[0]; ve[1]=vei[1]; ve[2]=vei[4]
-        return ve
+        ve[0:3]=vei[0:3]
     elif isys==2: # icosahedral
-        ve[0]=vei[0]; ve[1]=vei[1]; ve[2]=vei[2]
-        return ve
+        ve[0:3]=vei[0:3]
+    return ve
 
 # projection into internal space for class cls
 def prjvec_i(v: qnv.Qnvec) -> qnv.Qnvec:
     vei=v@prj0  #@v
     if isys>2: # dihedral
-        vi=qnv.zerovs(2)
-        vi[0]=vei[2]; vi[1]=vei[3]
-        return vi
+        vi=qnv.zerov(2)
+        vi[0:2]=vei[3:5]
     elif isys==2: # icosahedral
-        vi=qnv.zerovs(3)
-        vi[0]=vei[3]; vi[1]=vei[4]; vi[2]=vei[5]
-        return vi
+        vi=qnv.zerov(3)
+        vi[0:3]=vei[3:6]
+    return vi
 
 # alias for prjop_i
 def projection3(v: qnv.Qnvec) -> qnv.Qnvec:
@@ -309,18 +313,19 @@ def printfm(str,prj3f,n):
     print(str)
     for i in range(n):
         for j in range(n):
-            print(prj3f[i][j],end=" ")
+            #print(prj3f[i][j],end=" ")
+            print("{:8f}".format(prj3f[i][j]),end=" ")
         print()
     print()
         
 def qnm2flnm(prj:qnm.Qnmat):
     n=prj.shape[0]
-    prjf=np.ndarray((n,n),dtype=float)
+    prj0f=np.ndarray((n,n),dtype=float)
     for i in range(n):
         for j in range(n):
             a=prj[i][j]
             #print("a",a.n[0],a.n[1],a.n[2])  # for test
-            prjf[i][j]=qnn.qn2flt(a)
-            #print("f",prjf[i][j])  # for test
-    return prjf
+            prj0f[i][j]=qnn.qn2flt(a)
+            #print("f",prj0f[i][j])  # for test
+    return prj0f
 

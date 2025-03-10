@@ -37,22 +37,43 @@ def site_symmetry(x: qnv.Qnvec, qns: qns.Qnsym, brv: str) -> np.ndarray: # retur
 
     #n=len(x)
     #N=x.N
+    if crsys.isys==2:
+        n_i=3
+    else:
+        n_i=2
     n=crsys.n
     nr=qns.nr
+    print("n",n,"n_i",n_i) # for test
+    qnr=qns.qnr  # symmetry operator for Q coordinates
     qnr_i=qns.qnr_i  # symmetry operator for Q coordinates
     mpltbl=qns.mpltbl
     r=qns.r
-    a=np.zeros((nr,n),dtype=qnn.Qnnum)
+    a_i=qnv.zerovs((nr,n_i))
     qnx_i=prj.prjvec_i(x) # internal space component os nD vector x
+    #a=np.zeros((nr,n),dtype=qnn.Qnnum)
+    a=qnv.zerovs((nr,n))
+    qnx=prj.prjvec(x)
 
     irs=np.zeros(0,dtype=np.int64)
     #tr=lt.get_tr(brv)
-    traop=lt.get_tr(brv)  # centering translation vectors including zero vector
+    trop=lt.get_tr(brv)  # centering translation vectors including zero vector
     for i in range(nr):
-        a[i]=qnr_i[i]@qnx_i         # Q coordinates for nD vector x
-        for tr in qns.trop:
+        #qnm.printqnm("qnr_i",qnr_i[i]) # for test
+        #qnv.printqnv("qnx_i",qnx_i) # for test
+        #a_i[i]=qnr_i[i]@qnx_i         # Q coordinates for 2D (3D) vector x_i
+        qnm.printqnm("qnr",qnr[i]) # for test
+        a[i]=qnr[i]@qnx         # Q coordinates for 2D (3D) vector x_i
+        qnv.printqnv("a[i]",a[i])  # for test
+        for tr in trop:
+            qnv.printqnv("tr",tr) # for test
             b=a[i]+tr
-            if np.all(b==x):
+            qnv.printqnv("b",b)  # for test
+            qnv.printqnv("qnx",qnx)  # for test
+            print("type(a[i]",type(a[i])) # for test
+            print("type(tr(",type(tr))  # for test
+            print("type(b)",type(b))  # for test
+            print("type(qnx)",type(qnx))  # for test
+            if b==qnx:
                 irs=np.append(irs,i)
             else:
                 pass

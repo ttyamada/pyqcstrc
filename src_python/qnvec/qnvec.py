@@ -53,18 +53,31 @@ class Qnvec(np.ndarray):
         return not_eq(a,b)
     
 def qnvec_init():
-    global n,N
+    global n,N,isys,n_e,n_i
+    isys=crsys.isys
     n=crsys.n
     N=crsys.N
-        
+    if isys==2:
+        n_e=3; n_i=3
+    else:
+        n_e=2; n_i=2
+   
 def zerovs(shape) -> Qnvec:  # qnvec ndarray
-    return np.zeros(shape,dtype=Qnvec)
+    print("shape in zerovs",shape)  # for test
+    qnvs = [Qnvec(shape[1]) for i in range(shape[0]) ]
+    print("type(qnvs)",type(qnvs))
+    #qnvs=np.array(shape,dtype=Qnvec)
+    for i in range(shape[0]):
+        qnvs[i]=zerov(shape[1])
+    return qnvs
 
-def zerov()->Qnvec: # qnnumber zero vector
+def zerov(n: np.int64)->Qnvec: # qnnumber zero vector
     qnv=Qnvec(n)
     return qnv
 
 def anyv(v:NDArray[qnn.Qnnum]):
+    shape=v.shape
+    n=shape[0]
     v1=Qnvec(n)
     for i in range(n):
         v1[i]=v[i]
@@ -75,7 +88,6 @@ def copy(v1: Qnvec) -> Qnvec:
     
 def add(v1:Qnvec, v2:Qnvec) -> Qnvec:
     n=v1.shape[0]
-    #N=v1[0].N
     a=Qnvec(n)
     for i in range(n):
         a[i]=v1[i]+v2[i]
@@ -230,8 +242,7 @@ def intv2qnv(a:np.ndarray):
     return b
 
 def printqnv(str:str,qnv:Qnvec):
-#def printqnv(str:str,qnv:qna.QnNdarray):
-    ndim=qnv.shape[0]
+    ndim=qnv.ndim
     if ndim==1 :
         print(str,"[",end=" ")
         for i in range(qnv.shape[0]):
@@ -244,6 +255,9 @@ def printqnv(str:str,qnv:Qnvec):
                 print(qnn.qn2npa(qnv[i][j]),end=" ")
             print("]")
         print("")
+    else:
+        print("qnv.shape[0] shoul be 1 or 2 but",qnv.shape[0])
+        exit()
 
 def printqnv2(str:str,qnv1:Qnvec,qnv2:Qnvec):
     print(str,"[",end=" ")

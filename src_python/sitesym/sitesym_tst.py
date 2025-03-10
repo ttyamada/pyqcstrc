@@ -1,4 +1,5 @@
 import cython
+import numpy as np
 
 import crsys
 import qnnum as qnn
@@ -33,7 +34,8 @@ N=crsys.N
 n=crsys.n
 M0=qnn.zero()         # 0
 M1=qnn.Qnnum([1,0,2]) # 1/2
-x0=qnv.anyv([M1,M0,M0,M0,M0])
+x00=np.array([M1,M0,M0,M0,M0],dtype=qnn.Qnnum)
+x0=qnv.anyv(x00)
 qnv.printqnv("x0",x0)
 #qnr=qns.qnr # symmetry operators
 qns=qnsym.Qnsym()
