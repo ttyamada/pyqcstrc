@@ -188,7 +188,7 @@ def symop_vec(symop:qnm.Qnmat,vt:qnv.Qnvec,centre:qnv.Qnvec):
 def generator_obj_symmetric_obj(obj:qnv.Qnvec, centre:qnv.Qnvec, pg:str):
     """
     """
-    V0=qnv.zerov()  # origin
+    V0=qnv.zerov(n)  # origin
     ndim=obj.shape[0]
     if ndim==3 or ndim==4:
         if np.all(centre==V0):

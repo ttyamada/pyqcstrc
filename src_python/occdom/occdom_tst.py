@@ -40,7 +40,17 @@ test_dir='../../tests/octa2/tests'
 xyz_dir='../../xyz/octa'
 # import asymmetric part of OD(occupation domain) located at origin,0,0,0,0,0,0.
 od_asym = vst.read_xyz(path=xyz_dir,basename='od_1_asym')
-print(od_asym)
+shape=od_asym.shape
+ndim=len(shape)
+print("type(od_asym)",type(od_asym),"od_saym.shape",od_asym.shape)  # for test
+print("len(od_asym.shape)",len(od_asym.shape))
+if ndim==2: # vertex
+    for i in range(shape[0]):
+        qnv.printqnv("od_asym[i]",od_asym[i])
+elif ndim==3: # triangle
+    for i in range(shape[0]):
+        for j in range(shape[1]):
+            qnv.printqnv("od_asym[i][j]",od_asym[i][j])
 
 pos0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
 png = "p12m"

@@ -5,7 +5,10 @@ import numpy as np
 import cython
 
 import crsys
-import qnmath as qnm
+import qnnum as qnn
+import qnvec as qnv
+import qnmath as qmt
+import qnndarray as qna
 import utils as utl
 import numeric as num
 import intsct as ints
@@ -133,7 +136,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
             \nSTRUC', file=f)
             for i2,vrtx in enumerate(vertices):
-                xyz = qnm.projection3(vrtx)
+                xyz = prj.projection3(vrtx)
                 xyz=num.numerical_vector(xyz)
                 print('%4d A        A%d  1.0000    %8.6f %8.6f %8.6f        1'%\
                 (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
@@ -332,7 +335,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
                 \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
                 \nSTRUC', file=f)
                 for i2,vertx in enumerate(obj1):
-                    xyz=qnm.projection3(vertx)
+                    xyz=prj.projection3(vertx)
                     xyz=num.numerical_vector(xyz)
                     print('%4d Xx        Xx%d  1.0000    %8.6f %8.6f %8.6f        1'%\
                     (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
@@ -552,7 +555,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \nSTRUC', file=f)
             i2=0
             for vrtx in vertices:
-                xyz = qnm.projection3(vrtx)
+                xyz = prj.projection3(vrtx)
                 print('%4d A        A%d  1.0000    %8.6f %8.6f %8.6f        1'%\
                 (i2+1,i2+1,num.numeric_value(xyz[0]),num.numeric_value(xyz[1]),num.numeric_value(xyz[2])), file=f)
                 i2+=1
@@ -799,7 +802,7 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f.write('%s\n'%(filename))
         for i1,edge in enumerate(obj):
             for i2,vt in enumerate(edge):
-                v=qnm.projection3(vt)
+                v=prj.projection3(vt)
                 f.write('Xx %8.6f %8.6f %8.6f # %3d-the edge %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
                 (num.numeric_value(v[0]),\
                 num.numeric_value(v[1]),\
@@ -833,7 +836,7 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         counter=0
         for tri in range(len(obj)):
             for point in enumerate(tri):
-                v=qnm.projection3(point)
+                v=prj.projection3(point)
                 f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # # # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
                 (num.numeric_value(v[0]),\
                 num.numeric_value(v[1]),\
@@ -866,7 +869,7 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f.write('%d\n'%(len(obj)))
         f.write('%s\n'%(filename))
         for i1,point in enumerate(obj):
-            v=qnm.projection3(point)
+            v=prj.projection3(point)
             f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # # # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
             (num.numeric_value(v[0]),\
             num.numeric_value(v[1]),\
@@ -944,50 +947,71 @@ def read_xyz(path,basename,select='triangle',verbose=0):
             sys.exit(0)
         line=[]
         while 1:
-            a=f.readline()
+            a=f.readline()  # read one line from a file f
             if not a:
                 break
-            line.append(a[:-1])
+            line.append(a[:-1]) # list of str
         return line
     
     filename='%s/%s.xyz'%(path,basename)
     
-    f1=read_file(filename)
-    f0=f1[0].split()
-    num=int(f0[0])
-    
-    for i in range(2,num+2):
-        fi=f1[i]
-        fi=fi.split()
-        a1=int(fi[10])
-        b1=int(fi[11])
-        c1=int(fi[12])
-        a2=int(fi[13])
-        b2=int(fi[14])
-        c2=int(fi[15])
-        a3=int(fi[16])
-        b3=int(fi[17])
-        c3=int(fi[18])
-        a4=int(fi[19])
-        b4=int(fi[20])
-        c4=int(fi[21])
-        a5=int(fi[22])
-        b5=int(fi[23])
-        c5=int(fi[24])
-        a6=int(fi[25])
-        b6=int(fi[26])
-        c6=int(fi[27])
-        if i==2:
-            tmp=np.array([a1,b1,c1,a2,b2,c2,a3,b3,c3,a4,b4,c4,a5,b5,c5,a6,b6,c6])
-        else:
-            tmp=np.append(tmp,[a1,b1,c1,a2,b2,c2,a3,b3,c3,a4,b4,c4,a5,b5,c5,a6,b6,c6])
+    f1=read_file(filename)  # read a file and return list of string
+    f0=f1[0].split()  # first line
+    num=int(f0[0]) # number of lines in the first line
+    print("num",num)  # for test
+    qnvs=qna.zeros((num,6))
+    nv=np.zeros((3),dtype=np.int64)
+    for i in range(num):  #for i in range(2,num+2):
+        fi=f1[i+2]  #fi=f1[i]  # skip first 2 lines
+        fj=fi.split() #fi=fi.split()
+        #print("fj",fj)  # for test
+        for j in range(6):
+            nv[0]=int(fj[10+j*3])
+            nv[1]=int(fj[11+j*3])
+            nv[2]=int(fj[12+j*3])
+            #print("nv",nv)  # for test
+            qnvs[i][j]=qnn.any(nv)
+        qnv.printqnv("qnv[i]",qnvs[i])
+#        a1=int(fi[10])
+#        b1=int(fi[11])
+#        c1=int(fi[12])
+
+#        a2=int(fi[13])
+#        b2=int(fi[14])
+#        c2=int(fi[15])
+#        
+#        a3=int(fi[16])
+#        b3=int(fi[17])
+#        c3=int(fi[18])
+#        
+#        a4=int(fi[19])
+#        b4=int(fi[20])
+#        c4=int(fi[21])
+#        
+#        a5=int(fi[22])
+#        b5=int(fi[23])
+#        c5=int(fi[24])
+#        
+#        a6=int(fi[25])
+#        b6=int(fi[26])
+#        c6=int(fi[27])
+        
+        # 6 ai bi ci i-th qnnumber elements
+#        qn1=qnn.Qnnum([])
+#        if i==2:
+#            tmp=np.array([a1,b1,c1,a2,b2,c2,a3,b3,c3,a4,b4,c4,a5,b5,c5,a6,b6,c6])
+#        else:
+#            tmp=np.append(tmp,[a1,b1,c1,a2,b2,c2,a3,b3,c3,a4,b4,c4,a5,b5,c5,a6,b6,c6])
     if verbose>0:
         print('    read %s/%s.xyz'%(path,basename))
     
+    print("select",select)  # for test
     if select == 'triangle':
-        return tmp.reshape(int(num/3),3,6,3)
+        return qnvs.reshape(int(num/3),6,3)
+        #return tmp.reshape(int(num/3),3,6,3)
     elif select == 'vertex':
-        return tmp.reshape(int(num),6,3)
+        return qnvs
+        #return tmp.reshape(int(num),6,3)
 
 def simplification(obj,verbose=0):
     """
@@ -1066,12 +1090,12 @@ def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
         counter1=0
         for i1 in [0,1,2]:
             vtx1=obj[0][i1]
-            xyz1=qnm.projection3(vtx1)
+            xyz1=prj.projection3(vtx1)
             counter2=0
             for i2 in range(1,len(obj)):
                 counter3=0
                 for i3 in [0,1,2]:
-                    xyz2=qnm.projection3(obj[i2][i3])
+                    xyz2=prj.projection3(obj[i2][i3])
                     if np.all(xyz1==xyz2):
                         counter3=1
                         break
