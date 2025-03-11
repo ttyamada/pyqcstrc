@@ -185,13 +185,15 @@ def symop_vec(symop:qnm.Qnmat,vt:qnv.Qnvec,centre:qnv.Qnvec):
     vt=qnm.mul(symop,vt)
     return qnv.add(vt,centre)
 
-def generator_obj_symmetric_obj(obj:qnv.Qnvec, centre:qnv.Qnvec, pg:str):
+#def generator_obj_symmetric_obj(obj:qnv.Qnvec, centre:qnv.Qnvec, pg:str):
+def generator_obj_symmetric_obj(obj:qnv.Qnvec, centre:qnv.Qnvec):
     """
     """
+    ndim=len(obj.shape)  #obj.shape[0]
+    n=obj.shape[ndim-1]
     V0=qnv.zerov(n)  # origin
-    ndim=obj.shape[0]
     if ndim==3 or ndim==4:
-        if np.all(centre==V0):
+        if centre==V0:  #np.all(centre==V0):
             mop=octasymop_array()
         else:
             lst_site_symmetry=site_symmetry(centre)
@@ -203,21 +205,24 @@ def generator_obj_symmetric_obj(obj:qnv.Qnvec, centre:qnv.Qnvec, pg:str):
         shape=tuple([num])
         a=np.zeros(shape+obj.shape,dtype=np.int64)
         for i,op in enumerate(mop):
-            a[i]=symop_obj(op,obj,centre)
+            a[i]=symop_obj(op,obj,centre)  # generate equivalent obj
         if obj.ndim==4:
             n1,n2,_,_=obj.shape
-            a=a.reshape(num*n1,n2,6,3)
+            #a=a.reshape(num*n1,n2,6,3)
+            a=a.reshape(num*n1,n2,6)
         return a
     else:
         print('object has an incorrect shape in generator_obj_symmetric_obj!')
         return
 
-def generator_obj_symmetric_triangle(obj:qnv.Qnvec, centre:qnv.Qnvec, pg:str):
+#def generator_obj_symmetric_triangle(obj:qnv.Qnvec, centre:qnv.Qnvec, pg:str):
+def generator_obj_symmetric_triangle(obj:qnv.Qnvec, centre:qnv.Qnvec):
     """
     """
-    return generator_obj_symmetric_obj(obj,centre,pg)
+    return generator_obj_symmetric_obj(obj,centre)
 
-def generator_obj_symmetric_vector_specific_symop(obj:qnv.Qnvec,centre:qnv.Qnvec,index_of_symmetry_operation:qnm.Qnmat,pg:str):
+#def generator_obj_symmetric_vector_specific_symop(obj:qnv.Qnvec,centre:qnv.Qnvec,index_of_symmetry_operation:qnm.Qnmat,pg:str):
+def generator_obj_symmetric_vector_specific_symop(obj:qnv.Qnvec,centre:qnv.Qnvec,index_of_symmetry_operation:qnm.Qnmat):
     """
     vector: triangles
     (6,3)
@@ -236,7 +241,8 @@ def generator_obj_symmetric_vector_specific_symop(obj:qnv.Qnvec,centre:qnv.Qnvec
         print('object has an incorrect shape!')
         return
 
-def generator_obj_symmetric_triangle_specific_symop(obj:qnv.Qnvec,centre:qnv.Qnvec,indx_sym:np.int64,pg=None):
+#def generator_obj_symmetric_triangle_specific_symop(obj:qnv.Qnvec,centre:qnv.Qnvec,indx_sym:np.int64,pg=None):
+def generator_obj_symmetric_triangle_specific_symop(obj:qnv.Qnvec,centre:qnv.Qnvec,indx_sym:np.int64):
     """
     triangle: triangles
     (3,6,3)

@@ -36,7 +36,8 @@ def occdom_init():
 def volume(obj:qnv.Qnvec):
     return utl.obj_area_6d(obj)
 
-def symmetric(obj: qnv.Qnvec, centre:qnv.Qnvec, png:str):
+#def symmetric(obj: qnv.Qnvec, centre:qnv.Qnvec, png:str):
+def symmetric(obj: qnv.Qnvec, centre:qnv.Qnvec):
     """
     Generate symmterical occupation domain by symmetric elements on the asymmetric unit.
     
@@ -57,7 +58,7 @@ def symmetric(obj: qnv.Qnvec, centre:qnv.Qnvec, png:str):
     print("obj.ndim",obj.ndim) # for test
     if obj.ndim==3 or obj.ndim==4:
         #return symmetry.generator_obj_symmetric_tetrahedron(obj,centre)
-        return ssm.generator_obj_symmetric_triangle(obj,centre,png)
+        return ssm.generator_obj_symmetric_triangle(obj,centre)
     else:
         print('object has an incorrect shape in symmetric!')
         return 

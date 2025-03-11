@@ -1007,7 +1007,7 @@ def read_xyz(path,basename,select='triangle',verbose=0):
     
     print("select",select)  # for test
     if select == 'triangle':
-        return qnvs.reshape(int(num/3),6,3)
+        return qnvs.reshape(int(num/3),3,6)
         #return tmp.reshape(int(num/3),3,6,3)
     elif select == 'vertex':
         return qnvs

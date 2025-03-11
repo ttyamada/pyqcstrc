@@ -52,9 +52,9 @@ elif ndim==3: # triangle
         for j in range(shape[1]):
             qnv.printqnv("od_asym[i][j]",od_asym[i][j])
 
-pos0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+pos0 = qnv.zerov(5)
 png = "p12m"
-od_sym = symmetric(obj = od_asym, centre = pos0, png = png)
+od_sym = symmetric(obj = od_asym, centre = pos0)
 write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
 write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
 
