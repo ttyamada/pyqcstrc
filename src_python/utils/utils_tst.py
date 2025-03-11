@@ -18,6 +18,7 @@ crsys.crsys_init(isys)
 qnn.qnnum_init()
 qnv.qnvec_init()
 qnm.qnmat_init()
+num.numeric_init()
 
 N=crsys.N
 n=crsys.n
@@ -61,7 +62,7 @@ qnv.printqnv("vts1",vts1)
 #n=5
 #N=2
 # 8 corner vectors for AB tiling OD
-vts2=qnv.zerovs((8)) # for octagon for Ammann-Beenker tiling
+vts2=qnv.zerovs((8,n)) # for octagon for Ammann-Beenker tiling
 M0=qnn.Qnnum([0,0,1])
 M1=qnn.Qnnum([1,0,2])  # 1
 M2=qnn.Qnnum([-1,0,2]) # -1
@@ -79,7 +80,7 @@ vts2[7]=qnv.anyv(np.array([M1,M2,M0,M0,M0])) #(1 -1 0 0 0)/2
 qnv.printqnvs("vts2",vts2)
 
 #isys=4
-qnm.qnmatrix_init()
+qnm.qnmat_init()
 prj.prjop_init()
 num.numeric_init()
 
@@ -96,7 +97,7 @@ qnv.printqnvs("vts2",vts2)
 #================
 #n=5
 #vst=generate_random_vectors(nset)
-vst=qnv.zerovs((n))
+vst=qnv.zerovs((5,n))
 #for i in range(nset):
 #    vst[i]=qnv.Qnvec(n)
 # set vt values
@@ -123,17 +124,17 @@ qnm.printqnm("prj.prj0",prj.prj0)
 vst_d4=np.concatenate([vts2,vts2])  # 5D vectors
 qnv.printqnvs("vst_d4",vst_d4)
               
-vst_d5=qnv.zerovs((16))
+vst_d5=qnv.zerovs((16,n))
 for i in range(16):
     vst_d5[i]=prj.prjop(vst_d4[i]) # 
 qnv.printqnvs("vst_d5",vst_d5)
 
-vst_d6=qnv.zerovs((16))
+vst_d6=qnv.zerovs((16,n))
 for i in range(16):
     vst_d6[i]=prj.prjop_e(vst_d4[i]) # 
 qnv.printqnvs("vst_d6",vst_d6)
 
-vst_d7=qnv.zerovs((16))
+vst_d7=qnv.zerovs((16,n))
 for i in range(16):
     vst_d7[i]=prj.prjop_i(vst_d4[i]) # 
 qnv.printqnvs("vst_d7",vst_d7)
@@ -152,7 +153,7 @@ else:
 #triangle=generate_random_triangle()
 
 # generate triangles
-tri=qnv.zerovs(3)
+tri=qnv.zerovs(3,n)
 print("triangle.shape",tri.shape)
 qnv.printqnv("vst[0]",vst[0])
 qnv.printqnv("vst[1]",vst[1])

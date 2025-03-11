@@ -47,7 +47,6 @@ class Qnsym_Octa(qna.QnNdarray):
         set_mpltbl(mpltbl,r)
         self.mpltbl=mpltbl
  
-    
 # for decagonal QCs
 class Qnsym_Deca(qna.QnNdarray):
     def __new__(cls):
@@ -85,7 +84,6 @@ class Qnsym_Deca(qna.QnNdarray):
         set_mpltbl(mpltbl,r)
         self.mpltbl=mpltbl
  
-
 ## for dodecagonal QCs
 class Qnsym_Dode(qna.QnNdarray):
     def __new__(cls):
@@ -119,8 +117,6 @@ class Qnsym_Dode(qna.QnNdarray):
         set_mpltbl(mpltbl,r)
         self.mpltbl=mpltbl
  
- 
-        
 ## for icosahedral QCs
 class Qnsym_Icos(qna.QnNdarray):
     def __new__(cls):
@@ -157,8 +153,6 @@ class Qnsym_Icos(qna.QnNdarray):
         set_mpltbl(mpltbl,r)
         self.mpltbl=mpltbl
  
-
-        
 def qnsym_init():
     global n,N,isys
     isys=crsys.isys

@@ -64,12 +64,13 @@ def qnvec_init():
         n_e=2; n_i=2
    
 def zerovs(shape:np.int64) -> Qnvec:  # qnvec ndarray
-    print("shape in zerovs",shape)  # for test
+    #print("shape in zerovs",shape)  # for test
     nv=shape[0]
     n=shape[1]
-    qnvs=np.zeros(shape,dtype=Qnvec)
-    print("type(qnvs)",type(qnvs))  # for test
-    print("type(qnvs[0])",type(nv))  # for test
+    #qnvs=np.zeros(shape,dtype=Qnvec)
+    qnvs = [Qnvec(n) for i in range(nv)] # list
+    #print("type(qnvs)",type(qnvs))  # for test
+    #print("type(qnvs[0])",type(qnvs[0]))  # for test
     for i in range(nv):
         qnvs[i]=zerov(n)
     return qnvs

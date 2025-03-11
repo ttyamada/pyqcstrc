@@ -43,7 +43,7 @@ def site_symmetry(x: qnv.Qnvec, qns: qns.Qnsym, brv: str) -> np.ndarray: # retur
         n_i=2
     n=crsys.n
     nr=qns.nr
-    print("n",n,"n_i",n_i) # for test
+    #print("n",n,"n_i",n_i) # for test
     qnr=qns.qnr  # symmetry operator for Q coordinates
     qnr_i=qns.qnr_i  # symmetry operator for Q coordinates
     mpltbl=qns.mpltbl
@@ -58,26 +58,29 @@ def site_symmetry(x: qnv.Qnvec, qns: qns.Qnsym, brv: str) -> np.ndarray: # retur
     irs=np.zeros(0,dtype=np.int64)
     #tr=lt.get_tr(brv)
     trop=lt.get_tr(brv)  # centering translation vectors including zero vector
-    print("type(trop[0])",type(trop[0]))  # for test
+    #print("type(trop[0])",type(trop[0]))  # for test
     for i in range(nr):
         #qnm.printqnm("qnr_i",qnr_i[i]) # for test
         #qnv.printqnv("qnx_i",qnx_i) # for test
         #a_i[i]=qnr_i[i]@qnx_i         # Q coordinates for 2D (3D) vector x_i
-        qnm.printqnm("qnr",qnr[i]) # for test
+        #qnm.printqnm("qnr",qnr[i]) # for test
         a[i]=qnr[i]@qnx   # Q coordinates for 2D (3D) vector x_i
-        print("tihpe(a[i]",type(a[i]))  # for test
+        #print("type(a[i])",type(a[i]))  # for test
         # **** a[i] is not Qnvec but Qnmat
         # Qnmat to Qnvec transformation necessary 
-        print("a[i].shape",a[i].shape)  # for test
-        print("type(trop[0])",type(trop[0]))  # for test
-        b0=a[0]+trop[0]
-        b=qnm.qnm2qnv(b0)
-        print("type(b)",type(b),"b.shape",b.shape)  # for test
-        qnv.printqnv("qnx",qnx)  # for test
+        ai=qnm.qnm2qnv(a[i])
+        #print("type(ai)",type(ai))  # for test
+        #print("type(trop[0])",type(trop[0]))  # for test
+        bi=ai+trop[0]
+        #print("type(bi)",type(bi))  # for test
+        #qnv.printqnv("qnx",qnx)  # for test
         for tr in trop:
-            b0=a[i]+tr
-            b=qnm.qnm2qnv(b0)
-            if b==qnx:
+            #print("type(tr)",type(tr),"type(ai)",type(ai)) # fpr test
+            bi=ai+tr
+            #print("type(bi)",type(bi)) # for test
+            #b=qnm.qnm2qnv(b0)
+            #print("type(b)",type(b),"type(qnx)",type(qnx)) # for test
+            if bi==qnx:
                 irs=np.append(irs,i)
             else:
                 pass
@@ -108,7 +111,7 @@ def coset(irs) -> np.array: # return coset representativ indices in symop
     isk=np.zeros(0,dtype=np.int64)  # coset representative indices
     ics=np.zeros(0,dtype=np.int64)  # all coset indices
     nc=(np.int64)(ns0/ns1) # number of cosets
-    print("nc",nc) # number of 
+    print("nunber of cosets",nc) # number of 
     for k in range(nc):
         #print("k",k) # for test
         if k==0:
@@ -127,39 +130,40 @@ def coset(irs) -> np.array: # return coset representativ indices in symop
                 m=qns.mpltbl[i,j]
                 #print("i",i,"ics[j]",ics[j],"m",m) # for test
                 ics=np.append(ics,m)
-    print("len(isk)",len(isk))
+    #print("len(isk)",len(isk))
     print("isk",isk) # for test
     return isk
 
-def equivalent_positions(x:np.ndarray,brv,isk:np.ndarray, r0:np.ndarray) -> qnv.Qnvec:
+def equivalent_positions(x:qnv.Qnvec,brv: str,isk:np.ndarray, r0: qnm.Qnmat) -> qnv.Qnvec:
     """
     siteに対して点群の対称性を施したサイトのうち、並進操作のみで結ばれない位置を求める。
         適切な名前を決める必要がある！！！
     """
-    print('equivalent_positions()')
     qnv.printqnv('x',x) # site : lattice coordinates
+    print('equivalent_positions()')
     neq=len(isk)
-    print("neq",neq)
+    #print("neq",neq)  # for test
     n=len(x)
-    xs=np.zeros((neq,n),dtype=qnn.Qnnum)
+    #xs=np.zeros((neq,n),dtype=qnn.Qnnum)
+    xs=qnv.zerovs((neq,n))
+    print("type(xs)",type(xs),"type(xs[0])",type(xs[0]))
     for i in range(neq):
         xs[i]=r0[isk[i]]@x
-        
+        qnv.printqnv("x",xs[i])
     return xs
 
-def equivalent_positions_in_unit_cell(x:qnv.Qnvec,brv,isk:np.ndarray,r0:np.ndarray) -> qnv.Qnvec:
+def equivalent_positions_in_unit_cell(x:qnv.Qnvec,brv:str,isk:np.ndarray,r0:qnm.Qnmat) -> qnv.Qnvec:
     """
          単位胞内にある等価なサイトを得る。
     """
     xs=equivalent_positions(x,brv,isk,r0)
-    xs=reduce_x(xs,brv) # -0.5 <=x[i] <0.5
+    reduce_x(xs,brv) # -0.5 <=x[i] <0.5
     return xs
     
-def reduce_x(xs:np.ndarray,brv):
+def reduce_x(xs:qnv.Qnvec,brv:str):
+    print("type(xs)",type(xs),"type(xs[0])",type(xs[0]))  # for test
     nv=len(xs)
-    #N=xs[0][0].N
-    shape=xs.shape
-    n=shape[1]
+    n=xs[0].shape[0]
     qn1=qnn.any([1,0,2])  # 1/2
     qn2=qnn.any([-1,0,2]) # -/2
     qn3=qnn.any([1,0,1])  # 1
@@ -170,7 +174,7 @@ def reduce_x(xs:np.ndarray,brv):
                 xs[i][j]+=qn3
             elif xs[i][j]>=qn1:
                 xs[i][j]+=qn4
-    return xs
+    return
 
 def symop_vec(symop:qnm.Qnmat,vt:qnv.Qnvec,centre:qnv.Qnvec):
     """ 

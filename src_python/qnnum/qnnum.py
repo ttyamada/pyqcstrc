@@ -69,8 +69,11 @@ def qnnum_init():
     n=crsys.n
     N=crsys.N
     
-def zeros(shape): # qnnum ndarray
-    return np.zeros(shape,dtype=Qnnum)
+def zeros(shape): # qnnum 1D darray
+    n=shape[0]
+    qnns = [Qnnum(n) for i in range(n)]
+    return qnns
+    #return np.zeros(shape,dtype=Qnnum)
     
 def copy(a:Qnnum):
     self=Qnnum([0,0,1])

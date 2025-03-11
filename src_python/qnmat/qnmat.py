@@ -62,6 +62,11 @@ def zerom(shape:np.int64) -> Qnmat:
     qnm=Qnmat(shape)
     return qnm
 
+def zeroms(shape:np.int64) -> Qnmat:
+    n=shape[0]
+    qnms=[Qnmat((shape[1],shape[2])) for i in range(n)]
+    return qnms
+
 #def zeroms(shape:np.int64,N:np.int64) -> Qnmat: # qnmat ndarray
 #    return np.zeros(shape,dtype=Qnmat)
 
@@ -107,10 +112,10 @@ def int2qnm(r:np.ndarray, n_:np.int64) -> Qnmat:
 def qnm2qnv(qnm: Qnmat) -> qnv.Qnvec:
     if len(qnm.shape)!=1:
         print("size(shape) != 1 so cannt convert to Qnvec")
-    nv=qnm.shape[0]
-    print("nv",nv,"n",n)  # for test
-    qnvt=qnv.zerovs((nv,n))
-    for i in range(nv):
+    n=qnm.shape[0]
+    #print("n",n,"n",n)  # for test
+    qnvt=qnv.zerov((n))
+    for i in range(n):
         qnvt[i]=qnm[i]
     return qnvt
     
