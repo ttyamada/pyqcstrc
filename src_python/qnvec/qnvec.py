@@ -1,10 +1,10 @@
 import sys
 import numpy as np
 from numpy.typing import NDArray
+from typing import Self
 
 import crsys
 import qnnum as qnn
-from typing import Self
 import qnndarray as qna
 
 class Qnvec(qna.QnNdarray):
@@ -53,6 +53,9 @@ class Qnvec(qna.QnNdarray):
     def __not__(a:Self,b:Self):
         return not_eq(a,b)
     
+    def __copy__(a:Self):
+        return copy(a)
+    
 def qnvec_init():
     global n,N,isys,n_e,n_i
     isys=crsys.isys
@@ -67,8 +70,8 @@ def zerovs(shape:np.int64) -> Qnvec:  # qnvec ndarray
     #print("shape in zerovs",shape)  # for test
     nv=shape[0]
     n=shape[1]
-    #qnvs=np.zeros(shape,dtype=Qnvec)
-    qnvs = [Qnvec(n) for i in range(nv)] # list
+    qnvs=qna.zeros((nv))
+    #qnvs = [Qnvec(n) for i in range(nv)] # list
     #print("type(qnvs)",type(qnvs))  # for test
     #print("type(qnvs[0])",type(qnvs[0]))  # for test
     for i in range(nv):
@@ -87,8 +90,13 @@ def anyv(v:NDArray[qnn.Qnnum]):
         v1[i]=v[i]
     return v1
 
-def copy(v1: Qnvec) -> Qnvec:
-    return np.copy(v1)
+def copy(v: Qnvec) -> Qnvec:
+    shape=v.shape
+    v1=Qnvec(shape)
+    for i in range(shape[0]):
+        v1[i]=v[i]
+    return v1
+    #return np.deepcopy(v1)
     
 def add(v1:Qnvec, v2:Qnvec) -> Qnvec:
     n=v1.shape[0]
@@ -275,9 +283,10 @@ def printqnv2(str:str,qnv1:Qnvec,qnv2:Qnvec):
         print(qnn.qn2npa(j),end="]")
         
 def printqnvs(str:str,qnv1:Qnvec):
-    shape=qnv1.shape
-    print("shape",shape)
-    n_=shape[0]
+    #shape=qnv1.shape
+    #print("shape",shape)
+    #n_=shape[0]
+    n_=len(qnv1)
     for j in range(n_):
         print(str+"["+format(j)+"]",end=" ")
         printqnv("",qnv1[j])

@@ -69,9 +69,12 @@ def qnnum_init():
     n=crsys.n
     N=crsys.N
     
+def zero():
+    return Qnnum([0,0,1])
+
 def zeros(shape): # qnnum 1D darray
     n=shape[0]
-    qnns = [Qnnum(n) for i in range(n)]
+    qnns = [zero() for i in range(n)]
     return qnns
     #return np.zeros(shape,dtype=Qnnum)
     

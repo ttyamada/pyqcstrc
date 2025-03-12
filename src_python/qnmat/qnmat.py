@@ -52,7 +52,10 @@ class Qnmat(qna.QnNdarray):
         for i in range(shape[0]):
             for j in range(shape[1]):
                 self.mt[i][j]=qnn.copy(mt[i][j]) # copy qnnum
-
+                
+    def __copy__(a:Self):
+        return copy(a)
+    
 def qnmat_init():
     global n,N
     n=crsys.n
@@ -63,8 +66,13 @@ def zerom(shape:np.int64) -> Qnmat:
     return qnm
 
 def zeroms(shape:np.int64) -> Qnmat:
-    n=shape[0]
-    qnms=[Qnmat((shape[1],shape[2])) for i in range(n)]
+    nm=shape[0]
+    n=shape[1]
+    #qnms=[Qnmat((shape[1],shape[2])) for i in range(n)]
+    qnms=qna.zeros((nm),dtype=qnn.Qnmat)
+    for i in range(nm):
+        qnvs[i]=zerom((shape[1],shape[2]))
+    return qnvs
     return qnms
 
 #def zeroms(shape:np.int64,N:np.int64) -> Qnmat: # qnmat ndarray

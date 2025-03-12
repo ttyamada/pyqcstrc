@@ -47,9 +47,9 @@ def qnmat_tst(str: str, isys:np.int64):
     M3=qnn.Qnnum([1,1,2])
     M4=qnn.Qnnum([1,-1,2])
     if n==5:
-        qnv1=qnv.anyv([M0,M1,M2,M3,M4])
+        qnv1=qnv.anyv(np.array([M0,M1,M2,M3,M4]))
     elif n==6:
-        qnv1=qnv.anyv([M0,M1,M2,M3,M4,M0])
+        qnv1=qnv.anyv(np.array([M0,M1,M2,M3,M4,M0]))
     qnv.printqnv("qnv1",qnv1)
     qnv2=unm2@qnv1
     qnv.printqnv("qnv2",qnv2)

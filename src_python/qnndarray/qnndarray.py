@@ -12,7 +12,7 @@ import qnvec as qnv
 # in nD space
 # as a special case, a point is represented by a[n]
 
-class QnNdarray(np.ndarray):
+class QnNdarray(NDArray):
     
     def __new__(cls,shape):
         return super().__new__(cls,shape,dtype=qnn.Qnnum)
@@ -49,7 +49,7 @@ def zeros(shape) -> QnNdarray:
     return qna
     
 # any kind of 3D array assumed
-def anya(vec:NDArray[qnn.Qnnum], shape)->QnNdarray:
+def anya(vec:NDArray[qnn.Qnnum],shape)->QnNdarray:
     qnva=QnNdarray(shape)
     ndim=vec.ndim
     if ndim==1:
