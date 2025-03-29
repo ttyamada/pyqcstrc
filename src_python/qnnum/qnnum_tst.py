@@ -4,8 +4,6 @@ import cython
 import crsys
 from qnnum import (zero,one,any,qnnum_init,printqnn,Qnnum,copy) 
 
-#if __name__ == '__main__':
-# test
 isys=4 # for octagonal
 crsys.crsys_init(isys)
 qnnum_init()

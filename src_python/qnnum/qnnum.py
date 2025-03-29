@@ -126,6 +126,7 @@ def sub(a:Qnnum, b:Qnnum):
     c3=a.n[2]*b.n[2]
     x=np.array([c1,c2,c3],dtype=np.int64)
     g=np.gcd.reduce(x)
+    #print("c1",c1,"c2",c2,"c3",c3,"g",g)
     c1=int(c1/g)
     c2=int(c2/g)
     c3=int(c3/g)

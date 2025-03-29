@@ -2,7 +2,7 @@ import sys
 import numpy as np
 import cython
 
-import crsys
+import crsys as crs
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
@@ -10,8 +10,8 @@ import qnndarray as qna
 
 def qnmath_init():
     global n,N
-    n=crsys.n
-    N=crsys.N
+    n=crs.n
+    N=crs.N
 
 def abs(a:qnn.Qnnum):
     #N=a.N
@@ -159,6 +159,7 @@ def matinv_f(a_i:np.matrix,n:np.int64): # qnmatrix inversion
             a[k][ic]=t
     return a
        
+
 def qsort(x:qnv.Qnvec,ip:np.array,nx: np.int64) -> qnv.Qnvec:
     #     quick sort (ascending order of x)
     #     nx: the number of data x
@@ -171,7 +172,7 @@ def qsort(x:qnv.Qnvec,ip:np.array,nx: np.int64) -> qnv.Qnvec:
         r=st[s][1] 
         s=s-1 
         return l,r,s
-#2   continue
+
     def setijxt(l:np.int64,r:np.int64,x):
         #label .l2
         i=l 
@@ -184,7 +185,8 @@ def qsort(x:qnv.Qnvec,ip:np.array,nx: np.int64) -> qnv.Qnvec:
     qnv.printqnv("qnvs",xc) # for test
     st=np.ndarray((nx,2),dtype=np.int64)
     if nx==0: return 
-    
+
+    print("nx",nx) # for test
     for i in range(nx): 
         ip[i]=i
 
@@ -196,11 +198,11 @@ def qsort(x:qnv.Qnvec,ip:np.array,nx: np.int64) -> qnv.Qnvec:
     i,j,xt=setijxt(l,r,x)
     
     while True:
+        #label .l3
         while True:
-            #label .l3
             if i<nx-1: #if i<nx: 
                 if x[i]<xt:
-                    i=i+1
+                    i+=1
                     continue
                 else:
                     break
@@ -209,7 +211,7 @@ def qsort(x:qnv.Qnvec,ip:np.array,nx: np.int64) -> qnv.Qnvec:
         while True:
             if j>0: #if j>1:
                 if xt<x[j]:
-                    j=j-1
+                    j-=1
                     continue
                 else:
                     break
@@ -217,15 +219,15 @@ def qsort(x:qnv.Qnvec,ip:np.array,nx: np.int64) -> qnv.Qnvec:
                 break
 
         if i<=j:
-            temp=xc[j]
-            xc[j]=qnn.copy(xc[i])
-            xc[i]=temp
+            temp=qnn.copy(x[j])  #temp=xc[j]
+            x[j]=qnn.copy(x[i])  #xc[j]=qnn.copy(xc[i])
+            x[i]=qnn.copy(temp)  #xc[i]=temp
             itemp=ip[j]
             ip[j]=np.copy(ip[i])
-            ip[i]=itemp
+            ip[i]=np.copy(itemp)
             if i<=nx-1 and j>=0:  #if i<=nx and j>=1:
-                i=i+1
-                j=j-1
+                i+=1
+                j-=1
                 continue
             else:
                 break
@@ -243,15 +245,15 @@ def qsort(x:qnv.Qnvec,ip:np.array,nx: np.int64) -> qnv.Qnvec:
                 st[s][1]=r
             r=j
         if l<r: 
-            i,j,xt=setijxt(l,r,xc)
+            i,j,xt=setijxt(l,r,x)  #i,j,xt=setijxt(l,r,xc)
             continue
         if s!=-1:  #if s!=0: 
             l,r,s=setlrs(s,st)
-            i,j,xt=setijxt(l,r,xc)
+            i,j,xt=setijxt(l,r,x) #i,j,xt=setijxt(l,r,xc)
             continue
         else:
             break
-    return xc
+    return x  #return xc
 
 # for test float version of qsort   
 def qsort_f(x:np.array,ip:np.array,nx: np.int64):
@@ -275,7 +277,8 @@ def qsort_f(x:np.array,ip:np.array,nx: np.int64):
         return i,j,xt
 
     xc=np.copy(x)
-    qnv.printqnv("qnvs",xc) # for test
+    print("xc",xc) # for test
+
     st=np.ndarray((nx,2),dtype=np.int64)
     if nx==0: return 
     
@@ -287,13 +290,12 @@ def qsort_f(x:np.array,ip:np.array,nx: np.int64):
     st[0][1]=nx-1  #st[1][1]=nx 
 
     l,r,s=setlrs(s,st)
-    i,j,xt=setijxt(l,r,xc)
-    
+    i,j,xt=setijxt(l,r,x)  #i,j,xt=setijxt(l,r,xc)
     while True:
         while True:
             #label .l3
             if i<nx-1:  #if i<nx: 
-                if xc[i]<xt:
+                if x[i]<xt:
                     i=i+1
                     continue
                 else:
@@ -302,7 +304,7 @@ def qsort_f(x:np.array,ip:np.array,nx: np.int64):
                 break
         while True:
             if j>0:  #if j>1:
-                if xt<xc[j]:
+                if xt<x[j]:
                     j=j-1
                     continue
                 else:
@@ -311,9 +313,9 @@ def qsort_f(x:np.array,ip:np.array,nx: np.int64):
                 break
 
         if i<=j:
-            temp=xc[j]
-            xc[j]=np.copy(xc[i])
-            xc[i]=temp
+            temp=x[j]           #temp=xc[j]
+            x[j]=np.copy(x[i])  #xc[j]=np.copy(xc[i])
+            x[i]=np.copy(temp)  #xc[i]=temp
             itemp=ip[j]
             ip[j]=np.copy(ip[i])
             ip[i]=itemp
@@ -326,27 +328,26 @@ def qsort_f(x:np.array,ip:np.array,nx: np.int64):
             
         if j-l>r-i:
             if l<j:
-                s=s+1
+                s+=1
                 st[s][0]=l
                 st[s][1]=j
             l=i 
         else:
             if i<r:
-                s=s+1
+                s+=1
                 st[s][0]=i
                 st[s][1]=r
             r=j
         if l<r: 
-            i,j,xt=setijxt(l,r,xc)
+            i,j,xt=setijxt(l,r,x)  #i,j,xt=setijxt(l,r,xc)
             continue
         if s!=-1:  #if s!=0: 
             l,r,s=setlrs(s,st)
-            i,j,xt=setijxt(l,r,xc)
+            i,j,xt=setijxt(l,r,x)  #i,j,xt=setijxt(l,r,xc)
             continue
         else:
             break
-    return xc
-
+    return x  #return xc
 
 def centroid(obj: qnv.Qnvec) -> qnv.Qnvec:
     """geometric center, centroid of tetrahedron, triangle or edge, in qnvec.

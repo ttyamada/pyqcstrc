@@ -1,16 +1,19 @@
 import numpy as np
 from numpy.typing import NDArray
 import cython
+from typing import Self
 
 import crsys
 import qnnum as qnn
-import qnvec as qnv
+#import qnvec as qnv
 
 # super class for edges,triangles and tetrahedra
 # which are composed of 2 3 and 4 points
 # they are represented by a[2][n] a[3][n] and a[4][n]
 # in nD space
 # as a special case, a point is represented by a[n]
+
+#add,sub,iadd,isub should be implemented in subclass
 
 class QnNdarray(NDArray):
     
@@ -19,15 +22,21 @@ class QnNdarray(NDArray):
 
     def __init__(self, shape):
         self.shape=shape
-            
-    def __add__(self,b):
-        # shap should be (n)
-        return add_vectors(self,b)
+
+    # def __add__(self,b):
+    #     # shap should be (n)
+    #     return add_vectors(self,b) 
+
+    # def __sub__(self,b):
+    #     # shap should be (n)
+    #     return sub_vectors(self,b)
     
-    def __sub__(self,b):
-        # shap should be (n)
-        return sub_vectors(self,b)
-   
+    # def __iadd__(self:Self, b:Self):
+    #     return iadd_vectors(self,b)
+    
+    # def __isub__(self:Self, b:Self):
+    #     return isub(self,b)
+
 def qnndarray_init():
     global n,N,isys
     isys=crsys.isys
@@ -96,62 +105,70 @@ def printqndm(str:str, qnm:QnNdarray):
     else:
         print("ord in printqnm should be 1, 2 or 3 but",ord); exit()
         
-def add_vectors(vt1: QnNdarray, vt2:QnNdarray) -> QnNdarray:
-    """Composition of two vectors, v1+v2
+# def add_vectors(vt1: QnNdarray, vt2:QnNdarray) -> QnNdarray:
+#     """Composition of two vectors, v1+v2
     
-    Parameters
-    ----------
-    vt1: array
-        a vector in SIN-style
-    vt2: array,
-        a scalar in SIN-style
+#     Parameters
+#     ----------
+#     vt1: array
+#         a vector in SIN-style
+#     vt2: array,
+#         a scalar in SIN-style
     
-    Returns
-    -------
-    Composition of two vectors: array in SIN-style
+#     Returns
+#     -------
+#     Composition of two vectors: array in SIN-style
     
-    """
-    a=np.zeros(vt1.shape,dtype=qnn.Qnnum)
-    for i in range(len(vt1)):
-        a[i]=qnv.add(vt1[i],vt2[i])
-    return a
+#     """
+#     a=np.zeros(vt1.shape,dtype=qnn.Qnnum)
+#     for i in range(len(vt1)):
+#         a[i]=qnv.add(vt1[i],vt2[i])
+#     return a
 
-def sub_vectors(vt1: QnNdarray, vt2:QnNdarray) -> QnNdarray:
-    """Subtraction of two vectors, v1-v2
+# def sub_vectors(vt1: QnNdarray, vt2:QnNdarray) -> QnNdarray:
+#     """Subtraction of two vectors, v1-v2
     
-    Parameters
-    ----------
-    vt1: array
-        a vector in SIN-style
-    vt2: array,
-        a scalar in SIN-style
+#     Parameters
+#     ----------
+#     vt1: array
+#         a vector in SIN-style
+#     vt2: array,
+#         a scalar in SIN-style
     
-    Returns
-    -------
-    Subtraction of two vectors: array in SIN-style
-    """
-    if vt1.ndim==1 and vt2.ndim==1:
-        #const=np.array([-1,0,1],dtype=qnn.Qnnum)
-        #vt2=mul_vector(vt2,const)
-        #return add_vectors(vt1,vt2)
-        return qnv.sub(vt1,vt2)
-    else:
-        print('incorrect shape in sub_vectors')
-        return
+#     Returns
+#     -------
+#     Subtraction of two vectors: array in SIN-style
+#     """
+#     if vt1.ndim==1 and vt2.ndim==1:
+#         #const=np.array([-1,0,1],dtype=qnn.Qnnum)
+#         #vt2=mul_vector(vt2,const)
+#         #return add_vectors(vt1,vt2)
+#         return qnv.sub(vt1,vt2)
+#     else:
+#         print('incorrect shape in sub_vectors')
+#         return
+
+# def iadd_vectors(self: QnNdarray, vt2:QnNdarray) -> QnNdarray:
+#     self=add_vectors(self,vt2)
+#     return self
+
+# def isub_vectors(self: QnNdarray, vt2:QnNdarray) -> QnNdarray:
+#     self=sub_vectors(self,vt2)
+#     return self
     
-def shift_vectors(vs:QnNdarray, v:QnNdarray) -> QnNdarray:
-    if vs.ndim==1:  #3:
-        a=np.zeros(vs.shape,dtype=qnn.Qnnum)
-        la=vs.shape
-        for i,v1 in enumerate(vs):  #range(la[0]):
-            a[i]=add_vectors(v1,v)
-        return a
-    elif vs.ndim==2:  #4:
-        a=np.zeros(vs.shape,dtype=qnn.Qnnum)
-        for i1,v1 in enumerate(vs):
-            for i2,v2 in enumerate(v1):
-                a[i1][i2]=add_vectors(v2,v)
-    else:
-        print('incorrect shape in shift_vectors')
-        return
+# def shift_vectors(vs:QnNdarray, v:QnNdarray) -> QnNdarray:
+#     if vs.ndim==1:  #3:
+#         a=np.zeros(vs.shape,dtype=qnn.Qnnum)
+#         la=vs.shape
+#         for i,v1 in enumerate(vs):  #range(la[0]):
+#             a[i]=add_vectors(v1,v)
+#         return a
+#     elif vs.ndim==2:  #4:
+#         a=np.zeros(vs.shape,dtype=qnn.Qnnum)
+#         for i1,v1 in enumerate(vs):
+#             for i2,v2 in enumerate(v1):
+#                 a[i1][i2]=add_vectors(v2,v)
+#     else:
+#         print('incorrect shape in shift_vectors')
+#         return
         

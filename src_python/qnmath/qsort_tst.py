@@ -1,17 +1,16 @@
-
 import cython
 
 import crsys as crs
 import qnnum as qnn
 import qnvec as qnv
 import qnndarray as qna
-from qnmath import (qnmath_init,qsort,qsort_f)
+from qsort import (qsort_init,qsort,qsort_f)
 
 isys=4 # octagonal
 crsys=crs.crsys_init(isys)
 qnn.qnnum_init()
 qnv.qnvec_init()
-qnmath_init()
+qsort_init()
 
 nr=10
 N=crs.N # for octagonal
@@ -31,7 +30,7 @@ qsort_f(fn,ip,nr)
 for i in range(nr):
     print(fn[i])
     
-#qn=qna.QnNdarray(shape)
+#qn=qna.QnNdarray(shape) # qn should be Qnvec
 qn=qnv.Qnvec(nr)
 ip=[0]*nr
 print("nr",nr)  # for test

@@ -38,6 +38,10 @@ qnda=zeros(shape) # nr nxn qmnum zero matrices
 print("qnda.shape",qnda.shape)
 for i in range(nr):
     str="qnmat "+format(i+1)
+    if i==0:
+        qnda[i]+=unitm
+    else:
+        qnda[i]=qnda[i-1]+unitm
     printqndm(str,qnda[i])
 
     

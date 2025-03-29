@@ -17,7 +17,6 @@ class Qnvec(qna.QnNdarray):
     def __init__(self, n:np.int64):
         qn0=qnn.zero() #int2qnn(0,N)
         self.n=n
-        self.N=N
         self.shape=shape
         for i in range(self.shape[0]):
             self[i]=qn0
