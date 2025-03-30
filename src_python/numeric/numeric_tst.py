@@ -1,4 +1,3 @@
-
 # test
 import numpy as np
 import cython
@@ -7,6 +6,7 @@ import random
 import crsys as crs
 import qnnum as qnn
 import qnvec as qnv
+import qnndarray as qna
 
 from numeric import (numeric_init,
                     check_intersection_segment_surface_numerical)
@@ -109,7 +109,8 @@ vec4=np.array([M5,M6,M0],dtype=qnn.Qnnum)
 vec5=np.array([M5,M0,M7],dtype=qnn.Qnnum)
 
 # triangle vertices (this should be Qnvec array)
-tr=[vec3,vec4,vec5]
+tr0=np.array([vec3,vec4,vec5])
+tr=qna.anya(tr0,(3,3))
 #tr=np.array([\
 #[3.61803399, -1.,          0.38197],\
 #[2.61803399, -0.38196601,  0.],\
