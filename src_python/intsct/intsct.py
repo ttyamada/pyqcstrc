@@ -171,37 +171,39 @@ def intersection_two_segment(segment_1: qna.QnNdarray, segment_2: qna.QnNdarray)
     if num.check_intersection_two_segment_numerical_6d_tau(segment_1,segment_2): # intersecting
         # calc in TAU-style
         vecAB_6d=segment_1[1]-segment_1[0]
-        vecAB=prj.projection3(vecAB_6d)               # AB
+        qnv.printqnv("vecAB_6d",vecAB_6d)    # for test
+        vecAB=prj.projection3(vecAB_6d)            # AB
         #
         tmp=segment_2[1]-segment_2[0]
-        vecCD=projection3(tmp)                    # CD
+        vecCD=prj.projection3(tmp)                 # CD
         #
         #tmp=sub_vectors(segment_1[0],segment_2[0])
         #vecCA=projection3(tmp)                    # CA
         #
         tmp=segment_2[0]-segment_1[0]
-        vecAC=projection3(tmp)                    # AC
+        vecAC=prj.projection3(tmp)                 # AC
         
         # bunbo=dot_product(vecAB,vecCD)*dot_product(vecCD,vecAB)-dot_product(vecAB,vecAB)*dot_product(vecCD,vecCD)
-        tmp1=dot(vecAB,vecCD)
-        tmp2=dot(vecCD,vecAB)
+        tmp1=qnv.dot(vecAB,vecCD)
+        tmp2=qnv.dot(vecCD,vecAB)
         tmp3=tmp1*tmp2  #mul(tmp1,tmp2)
         #
-        tmp1=dot(vecAB,vecAB)
-        tmp2=dot(vecCD,vecCD)
+        tmp1=qnv.dot(vecAB,vecAB)
+        tmp2=qnv.dot(vecCD,vecCD)
         tmp4=tmp1*tmp2 #mul(tmp1,tmp2)
         bunbo=tmp3-tmp4  #sub(tmp3,tmp4)
         
+        # ????
         if bunbo[0]==0 and bunbo[1]==bunbo:
             return 
         else:
             # bunshi=dot_product(vecAC,vecCD)*dot_product(vecCD,vecAB)-dot_product(vecCD,vecCD)*dot_product(vecAC,vecAB)
-            tmp1=dot(vecAC,vecCD)
-            tmp2=dot(vecCD,vecAB)
+            tmp1=qnv.dot(vecAC,vecCD)
+            tmp2=qnv.dot(vecCD,vecAB)
             tmp3=tmp1*tmp2  #mul(tmp1,tmp2)
             #
-            tmp1=dot(vecCD,vecCD)
-            tmp2=dot(vecAC,vecAB)
+            tmp1=qnv.dot(vecCD,vecCD)
+            tmp2=qnv.dot(vecAC,vecAB)
             tmp4=tmp1*tmp2  #mul(tmp1,tmp2)
             bunshi=tmp3-tmp4
         
@@ -209,7 +211,7 @@ def intersection_two_segment(segment_1: qna.QnNdarray, segment_2: qna.QnNdarray)
             #s=div(bunshi,bunbo)
             #
             # OP = OA + s*AB
-            tmp=mul_vector(vecAB_6d,s) # vec tunes scale
+            tmp=qnm.mul(vecAB_6d,s) # vec tunes scale
             return segment_1[0]+tmp
             
     else: # no intersection
@@ -238,7 +240,7 @@ def intersection_segment_surface(segment: qna.QnNdarray, surface: qna.QnNdarray)
         """
         # calc in TAU-style
         vec6AB=sub_vectors(segment[1],segment[0])
-        vecAB=projection3(vec6AB)                 # AB # R
+        vecAB=projection3(vec6AB)              # AB # R
         #
         tmp=sub_vectors(surface[1],surface[0])
         vecCD=projection3(tmp)                 # CD # E1

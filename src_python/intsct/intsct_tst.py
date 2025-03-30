@@ -76,16 +76,16 @@ M3=qnn.Qnnum([1,0,2])
 M4=qnn.Qnnum([-1,0,2])
 
 seg_1=np.array([
-           [M1,M1,M0,M0,M0,M0],
-           [M2,M3,M0,M0,M0,M0]
+           [M1,M1,M0,M0,M0],
+           [M2,M3,M0,M0,M0]
         ],dtype=qnn.Qnnum)
 seg_2=np.array([\
-           [M0,M0,M0,M1,M0,M0],
-           [M0,M0,M4,M3,M0,M0]
+           [M0,M0,M0,M1,M0],
+           [M0,M0,M4,M3,M0]
         ],dtype=qnn.Qnnum)
 
-segment_1=qna.anya(seg_1,(2,6))
-segment_2=qna.anya(seg_2,(2,6))
+segment_1=qna.anya(seg_1,(2,5))
+segment_2=qna.anya(seg_2,(2,5))
 qna.printqndm("segment_1",segment_1)
 qna.printqndm("segment_2",segment_2)
 
@@ -97,12 +97,12 @@ a=isct.intersection_two_segment(segment_1, segment_2)
 print('TEST1')
 
 seg_1=np.array([\
-           [M1,M1,M0,M0,M0,M0],\
-           [M3,M2,M0,M0,M0,M0]
+           [M1,M1,M0,M0,M0],\
+           [M3,M2,M0,M0,M0]
         ],dtype=qnn.Qnnum)
 seg_2=np.array([\
-           [M0,M1,M0,M0,M0,M0],\
-           [M0,M3,M4,M0,M0,M0]
+           [M0,M1,M0,M0,M0],\
+           [M0,M3,M4,M0,M0]
         ],dtype=qnn.Qnnum)
 segment_1=qna.anya(seg_1,(2,6))
 segment_2=qna.anya(seg_2,(2,6))
