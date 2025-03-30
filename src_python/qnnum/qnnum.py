@@ -176,16 +176,25 @@ def div(a:Qnnum, b:Qnnum):
 def div_i(a:Qnnum, b:Qnnum): # b should be int
     c1=a.n[0]
     c2=a.n[1]
-    c3=b.n[2]*b
+    c3=a.n[2]*b
     c=Qnnum(np.array([c1,c2,c3]))
     return c
 
 def pow(a:Qnnum, b:np.int64):
     #N=a.N
-    c=one()
-    for i in range(b):
-        c=mul(c,a)
-    return c
+    if b==0:
+        return Qnnum([1,1,1])
+    elif b>0:
+        c=one()
+        for i in range(b):
+            c=mul(c,a)
+        return c
+    elif b<0:
+        c=one()
+        ai=c/a
+        for i in range(b):
+            c=mul(c,ai)
+        return c
         
 def eq(a:Qnnum, b:Qnnum):
     c=a-b
