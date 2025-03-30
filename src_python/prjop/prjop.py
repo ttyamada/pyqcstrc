@@ -185,7 +185,8 @@ def prjop_init():
     global isys,n,N
     isys=crsys.isys
     n=crsys.n
-    N=crsys.N    
+    N=crsys.N
+    prj=Prjop()
     
 def Prjop():
     global prj0,prji,prj0t,prjit

@@ -6,7 +6,9 @@ import random
 import crsys as crs
 import qnnum as qnn
 import qnvec as qnv
+import qnmat as qnm
 import qnndarray as qna
+import prjop as prj
 
 from numeric import (numeric_init,
                     check_intersection_segment_surface_numerical)
@@ -77,6 +79,8 @@ isys=3  # decagonal
 crs.crsys_init(isys)
 qnn.qnnum_init()
 qnv.qnvec_init()
+qnm.qnmat_init()
+prj.prjop_init()
 numeric_init()
 
 M0=qnn.zero()

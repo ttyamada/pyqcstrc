@@ -9,6 +9,7 @@ import qnnum as qnn
 import qnvec as qnv
 import qnndarray as qna
 
+# this includes nD Qnvec as a special case (shape=(n))
 #class Qnmat(np.ndarray):
 class Qnmat(qna.QnNdarray):
     def __new__(cls, shape:np.int64):
@@ -170,7 +171,43 @@ def isub(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
     
 # for ma1@ma2 (ma1 and ma2 should be qnvec or qnmat)
 def mul(ma1: Qnmat, ma2: Qnmat, dtype=qnn.Qnnum) -> Qnmat: 
-    ma3=np.matmul(ma1,ma2,dtype=qnn.Qnnum)
+    ndm1=ma1.ndim
+    ndm2=ma2.ndim
+    print("ndm1=",ndm1,"ndm2=",ndm2)  # for test
+    if ndm1==1 and ndm2==1:  # dot product
+        if ma1.shape[0]==ma2.shape[0]:
+            ma3=qnn.zero()
+            for i in range(ma1.shape[0]):
+                ma3+=ma1[i]*ma2[i]
+        else:
+            print("ma1.shape[0] should be equal to ma2.shape[0] for ndim1==ndim2"); exit()
+    elif ndm1==1 and ndm2==2:  # vec*matrix
+        if ma1.shape[0]==ma2.shape[0]:
+            ma3=qnv.zerov(ma2.shape[1])
+            for j in range(ma2.shape[1]):
+                for i in range(ma1.shape[0]):
+                    ma3[j]+=ma1[i]*ma2[i][j]
+        else:
+            print("ma1.shape[0] should be equal to ma2.shape[0] for ndim1=1 and ndim2=2"); exit()
+    elif ndm1==2 and ndm2==1:  # matrix*vec
+        if ma1.shape[1]==ma2.shape[0]:
+            ma3=qnv.zerov(ma1.shape[0])
+            for j in range(ma2.shape[0]):
+                for i in range(ma1.shape[0]):
+                    ma3[j]+=ma1[j][i]*ma2[i]
+        else:
+            print("ma1.shape[1] should be equal to ma2.shape[0] for ndim1=2 and ndim2=1"); exit()
+    elif ndm1==2 and ndm2==2:
+        if ma1.shape[0]==ma1.shape[1] and ma2.shape[0]==ma2.shape[1] and ma1.shape[0]==ma2.shape[0]:
+            ma3=qnv.zerov(ma1.shape)
+            for k in range(ma2.shape[0]):
+                for j in range(ma1.shape[0]):
+                    for i in range(ma1.shape[0]):
+                        ma3[k][j]+=ma1[k][i]*ma2[i][j]
+        else:
+             print("square matrix is assumed for ndm1=ndm2=2"); exit()
+
+    #ma3=np.matmul(ma1,ma2,dtype=qnn.Qnnum)
     return ma3
 
 # for similarity transformation

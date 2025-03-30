@@ -63,6 +63,8 @@ def generate_random_triangle():
 isys=4  # for octabonal
 crsys.crsys_init(isys)
 qnn.qnnum_init()
+qnv.qnvec_init()
+qnm.qnmat_init()
 prj.prjop_init()
 qna.qnndarray_init()
 
