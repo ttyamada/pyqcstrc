@@ -104,8 +104,9 @@ seg_2=np.array([\
            [M0,M1,M0,M0,M0],\
            [M0,M3,M4,M0,M0]
         ],dtype=qnn.Qnnum)
-segment_1=qna.anya(seg_1,(2,6))
-segment_2=qna.anya(seg_2,(2,6))
+
+segment_1=qna.anya(seg_1,(2,5))
+segment_2=qna.anya(seg_2,(2,5))
 qna.printqndm("segment_1",segment_1)
 qna.printqndm("segment_2",segment_2)
 
@@ -120,7 +121,7 @@ qna.printqndm("segment_2",segment_2)
 #a=num.check_intersection_two_segment_numerical_nd_tau(segment_1,segment_2)
 #print(a)
 
-a=num.intersection_two_segment(segment_1, segment_2) 
+a=isct.intersection_two_segment(segment_1, segment_2) 
 print(a)
 
 """

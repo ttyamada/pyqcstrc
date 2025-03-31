@@ -183,36 +183,37 @@ def intersection_two_segment(segment_1: qna.QnNdarray, segment_2: qna.QnNdarray)
         tmp=segment_2[0]-segment_1[0]
         vecAC=prj.projection3(tmp)                 # AC
         
-        # bunbo=dot_product(vecAB,vecCD)*dot_product(vecCD,vecAB)-dot_product(vecAB,vecAB)*dot_product(vecCD,vecCD)
-        tmp1=qnv.dot(vecAB,vecCD)
-        tmp2=qnv.dot(vecCD,vecAB)
-        tmp3=tmp1*tmp2  #mul(tmp1,tmp2)
+        bunbo=qnv.dot(vecAB,vecCD)*qnv.dot(vecCD,vecAB)-qnv.dot(vecAB,vecAB)*qnv.dot(vecCD,vecCD)
+        #tmp1=qnv.qnv.dot(vecAB,vecCD)
+        #tmp2=qnv.qnv.dot(vecCD,vecAB)
+        #tmp3=tmp1*tmp2  #mul(tmp1,tmp2)
         #
-        tmp1=qnv.dot(vecAB,vecAB)
-        tmp2=qnv.dot(vecCD,vecCD)
-        tmp4=tmp1*tmp2 #mul(tmp1,tmp2)
-        bunbo=tmp3-tmp4  #sub(tmp3,tmp4)
+        #tmp1=qnv.qnv.dot(vecAB,vecAB)
+        #tmp2=qnv.qnv.dot(vecCD,vecCD)
+        #tmp4=tmp1*tmp2 #mul(tmp1,tmp2)
+        #bunbo=tmp3-tmp4  #sub(tmp3,tmp4)
         
-        # ????
-        if bunbo[0]==0 and bunbo[1]==bunbo:
-            return 
-        else:
-            # bunshi=dot_product(vecAC,vecCD)*dot_product(vecCD,vecAB)-dot_product(vecCD,vecCD)*dot_product(vecAC,vecAB)
-            tmp1=qnv.dot(vecAC,vecCD)
-            tmp2=qnv.dot(vecCD,vecAB)
-            tmp3=tmp1*tmp2  #mul(tmp1,tmp2)
-            #
-            tmp1=qnv.dot(vecCD,vecCD)
-            tmp2=qnv.dot(vecAC,vecAB)
-            tmp4=tmp1*tmp2  #mul(tmp1,tmp2)
-            bunshi=tmp3-tmp4
-        
-            s=bunshi/bunbo
-            #s=div(bunshi,bunbo)
-            #
-            # OP = OA + s*AB
-            tmp=qnm.mul(vecAB_nd,s) # vec tunes scale
-            return segment_1[0]+tmp
+        ## ????
+        #if bunbo[0]==0 and bunbo[1]==bunbo:
+        #    return 
+        #else:
+        bunshi=qnv.dot(vecAC,vecCD)*qnv.dot(vecCD,vecAB)-qnv.dot(vecCD,vecCD)*qnv.dot(vecAC,vecAB)
+        #tmp1=qnv.qnv.dot(vecAC,vecCD)
+        #tmp2=qnv.qnv.dot(vecCD,vecAB)
+        #tmp3=tmp1*tmp2  #mul(tmp1,tmp2)
+        ##
+        #tmp1=qnv.qnv.dot(vecCD,vecCD)
+        #tmp2=qnv.qnv.dot(vecAC,vecAB)
+        #tmp4=tmp1*tmp2  #mul(tmp1,tmp2)
+        #bunshi=tmp3-tmp4
+        if bunbo==qnn.zero():
+            return
+        s=bunshi/bunbo
+        #s=div(bunshi,bunbo)
+        #
+        # OP = OA + s*AB
+        tmp=qnm.mul(vecAB_nd,s) # vec tunes scale
+        return segment_1[0]+tmp
             
     else: # no intersection
         return 
