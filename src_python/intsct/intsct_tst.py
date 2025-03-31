@@ -89,7 +89,7 @@ segment_2=qna.anya(seg_2,(2,5))
 qna.printqndm("segment_1",segment_1)
 qna.printqndm("segment_2",segment_2)
 
-#a=num.check_intersection_two_segment_numerical_6d_tau(segment_1,segment_2)
+#a=num.check_intersection_two_segment_numerical_nd_tau(segment_1,segment_2)
 #print(a)
 a=isct.intersection_two_segment(segment_1, segment_2) 
 #print(a)
@@ -117,7 +117,7 @@ qna.printqndm("segment_2",segment_2)
 #[[ 0,  0,  1],[ 1,  0,  2],[-1,  0,  2],[ 0,  0,  1],[ 0,  0,  1],[ 0,  0,  1]]])
 
 
-#a=num.check_intersection_two_segment_numerical_6d_tau(segment_1,segment_2)
+#a=num.check_intersection_two_segment_numerical_nd_tau(segment_1,segment_2)
 #print(a)
 
 a=num.intersection_two_segment(segment_1, segment_2) 

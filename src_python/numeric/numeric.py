@@ -32,7 +32,7 @@ def coplanar_check_numeric_tau(pts: qnv.Qnvec, num_iteration: int=5) -> bool:
     Parameters
     ----------
     pns: array
-        6d coordinates of the points, xyz, in TAU-style
+        nd coordinates of the points, xyz, in TAU-style
     num_iteration: int
         number of iterations.
     
@@ -130,9 +130,9 @@ def on_out_surface(point: qnv.Qnvec, triangle: qnv.Qnvec) -> bool:
     Parameters
     ----------
     point: array
-        6d coordinates of the point in TAU-style.
+        nd coordinates of the point in TAU-style.
     triangle: array
-        6d coordinates of three vertices of triangle in TAU-style
+        nd coordinates of three vertices of triangle in TAU-style
     
     Returns
     -------
@@ -256,7 +256,7 @@ def length_numerical(vt: NDArray[np.int64]) -> float:
 
 
 
-def check_intersection_segment_surface_numerical_6d_tau(line_segment: qnv.Qnvec, triangle: qnv.Qnvec) -> bool:
+def check_intersection_segment_surface_numerical_nd_tau(line_segment: qnv.Qnvec, triangle: qnv.Qnvec) -> bool:
     """check intersection between a line segment and a triangle.
     
     Parameters
@@ -352,7 +352,7 @@ def check_intersection_segment_surface_numerical(line_segment: qnv.Qnvec, triang
     else:
         return False
 
-def check_intersection_two_segment_numerical_6d_tau(segment_1: qnv.Qnvec, segment_2: qnv.Qnvec) -> bool:
+def check_intersection_two_segment_numerical_nd_tau(segment_1: qnv.Qnvec, segment_2: qnv.Qnvec) -> bool:
     """check intersection between two line segments
     
     Parameters
@@ -564,9 +564,9 @@ def inside_outside_triangle_tau(point: qnv.Qnvec, triangle: qnv.Qnvec) -> bool:
     Parameters
     ----------
     point: array
-        6d coordinate of the point in TAU-style.
+        nd coordinate of the point in TAU-style.
     tetrahedron: array
-        6d vertex coordinates of triangle in TAU-style.
+        nd vertex coordinates of triangle in TAU-style.
     """
     point=get_internal_component_numerical(point)
     triangle=get_internal_component_sets_numerical(triangle)
@@ -607,7 +607,7 @@ def inside_outside_triangle(point: qnv.Qnvec, triangle: qnv.Qnvec) -> bool:
     else:
         return False # outside
 
-def obj_volume_6d_numerical(obj: qnv.Qnvec) -> qnn.Qnnum:  #float:
+def obj_volume_nd_numerical(obj: qnv.Qnvec) -> qnn.Qnnum:  #float:
     """This function returns volume of an object (set of triangle).
         
     Parameters
@@ -619,10 +619,10 @@ def obj_volume_6d_numerical(obj: qnv.Qnvec) -> qnn.Qnnum:  #float:
     qn0=qnn.zero() # 0 in qnnum
     vol=qn0
     for triangle in obj:
-        vol+=triangle_volume_6d_numerical(triangle)
+        vol+=triangle_volume_nd_numerical(triangle)
     return vol
 
-def triangle_volume_6d_numerical(triangle: qnv.Qnvec) -> qnn.Qnnum:  # float:
+def triangle_volume_nd_numerical(triangle: qnv.Qnvec) -> qnn.Qnnum:  # float:
     """This function returns volume of a triangle
         
     Parameters
@@ -664,14 +664,6 @@ def triangle_volume_6d_numerical(triangle: qnv.Qnvec) -> qnn.Qnnum:  # float:
 #    return abs(detm)/2
 
 
-
-
-
-
-
-
-
-
 #def get_internal_component_numerical(vt: NDArray[np.int64]) -> NDArray[np.float64]:
     """
     Parameters
@@ -683,7 +675,7 @@ def triangle_volume_6d_numerical(triangle: qnv.Qnvec) -> qnn.Qnnum:  # float:
 #    return projection3_numerical(vn)
 
 def get_internal_component_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
-    """parallel and perpendicular components of a 6D lattice vector in direct space.
+    """parallel and perpendicular components of a nd lattice vector in direct space.
     
     Parameters
     ----------
@@ -695,7 +687,7 @@ def get_internal_component_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
     return projection3_sets_numerical(vns)
 
 def projection_numerical(vn: qnv.Qnvec) -> qnv.Qnvec:
-    """parallel and perpendicular components of a 6D lattice vector in direct space.
+    """parallel and perpendicular components of a nd lattice vector in direct space.
     
     Parameters
     ----------
@@ -712,7 +704,7 @@ def projection_numerical(vn: qnv.Qnvec) -> qnv.Qnvec:
     return projop(vn)
 
 def projection_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
-    """parallel and perpendicular components of a 6D lattice vector in direct space.
+    """parallel and perpendicular components of a nd lattice vector in direct space.
     
     Parameters
     ----------
@@ -727,8 +719,8 @@ def projection_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
     return m
     
 def projection3_numerical(vn: qnv.Qnvec) -> float:
-    return prj.prjop_i(vn)
-#    """perpendicular component of a 6D lattice vector in direct space.
+    return prj.prjvec_i(vn)
+#    """perpendicular component of a nd lattice vector in direct space.
 #    
 #    Parameters
 #    ----------
@@ -745,7 +737,7 @@ def projection3_numerical(vn: qnv.Qnvec) -> float:
 #    return np.array([v4,v5,v6],dtype=np.float64)
 
 def projection3_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
-    """perpendicular component of a 6D lattice vector in direct space.
+    """perpendicular component of a nd lattice vector in direct space.
     
     Parameters
     ----------
@@ -774,7 +766,7 @@ def projection3_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
     return m
 
 def projection_numerical_phason(vn: qnv.Qnvec,mat: qnm.Qnmat) -> qnv.Qnvec:
-    """parallel and perpendicular components of a 6D lattice vector in direct space under uniform phason strain.
+    """parallel and perpendicular components of a nd lattice vector in direct space under uniform phason strain.
     
     Parameters
     ----------
@@ -797,7 +789,7 @@ def projection_numerical_phason(vn: qnv.Qnvec,mat: qnm.Qnmat) -> qnv.Qnvec:
 
 
 def get_internal_component_sets_numerical(vts: qnv.Qnvec) -> qnv.Qnvec:
-    """parallel and perpendicular components of a 6D lattice vector in direct space.
+    """parallel and perpendicular components of a nd lattice vector in direct space.
     
     Parameters
     ----------
@@ -814,7 +806,7 @@ def get_internal_component_sets_numerical(vts: qnv.Qnvec) -> qnv.Qnvec:
 # equivalent to prjop_e
 def projection_numerical_perp(vn: qnv.Qnvec) -> qnv.Qnvec:
     return prjop_e(vn)
-    """This returns 6D vector which corresponds to a projection of vn onto Eperp.
+    """This returns nd vector which corresponds to a projection of vn onto Eperp.
     
     Parameters
     ----------
@@ -823,7 +815,7 @@ def projection_numerical_perp(vn: qnv.Qnvec) -> qnv.Qnvec:
 
     Returns
     -------
-    6d vectors projected onto Eperp
+    nd vectors projected onto Eperp
     """
     #return 
 
@@ -833,7 +825,7 @@ def projection_numerical_perp(vn: qnv.Qnvec) -> qnv.Qnvec:
 # equivalent to prjop 
 def projection_numerical_par(vn: qnv.Qnvec) -> qnv.Qnvec:
     return prjop(vn)
-    """This returns 6D vector which corresponds to a projection of vn onto Epar.
+    """This returns nd vector which corresponds to a projection of vn onto Epar.
     
     Parameters
     ----------
@@ -842,7 +834,7 @@ def projection_numerical_par(vn: qnv.Qnvec) -> qnv.Qnvec:
 
     Returns
     -------
-    6d vectors projected onto Eperp.
+    nd vectors projected onto Eperp.
     """
     #m=np.array([\
     #        [ 0.5,          0.577350269,  0.0,         -0.288675135,  0.0,  0.0],\

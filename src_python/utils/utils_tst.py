@@ -122,22 +122,22 @@ qnv.printqnvs("a",a)
 qnm.printqnm("prj.prj0",prj.prj0)
 
 vst_d4=np.concatenate([vts2,vts2])  # 5D vectors
-qnv.printqnvs("vst_d4",vst_d4)
+qnv.printqnvs("vst_d4",vst_d4); print()
               
 vst_d5=qnv.zerovs((16,n))
 for i in range(16):
-    vst_d5[i]=prj.prjop(vst_d4[i]) # 
-qnv.printqnvs("vst_d5",vst_d5)
+    vst_d5[i]=prj.prjvec(vst_d4[i]) # 
+qnv.printqnvs("vst_d5",vst_d5); print()
 
 vst_d6=qnv.zerovs((16,n))
 for i in range(16):
-    vst_d6[i]=prj.prjop_e(vst_d4[i]) # 
-qnv.printqnvs("vst_d6",vst_d6)
+    vst_d6[i]=prj.prjvec_e(vst_d4[i]) # 
+qnv.printqnvs("vst_d6_e",vst_d6); print()
 
 vst_d7=qnv.zerovs((16,n))
 for i in range(16):
-    vst_d7[i]=prj.prjop_i(vst_d4[i]) # 
-qnv.printqnvs("vst_d7",vst_d7)
+    vst_d7[i]=prj.prjvec_i(vst_d4[i]) # 
+qnv.printqnvs("vst_d7_i",vst_d7); print()
 
 print("vst_d7.shape",vst_d7.shape)
 #a=remove_doubling_in_perp_space(vst_d7) # this does not work?
@@ -153,7 +153,7 @@ else:
 #triangle=generate_random_triangle()
 
 # generate triangles
-tri=qnv.zerovs(3,n)
+tri=qnv.zerovs((3,n))
 print("triangle.shape",tri.shape)
 qnv.printqnv("vst[0]",vst[0])
 qnv.printqnv("vst[1]",vst[1])
@@ -162,8 +162,18 @@ tri[0]=vst[0]
 tri[1]=vst[1]
 tri[2]=vst[2] # 3 vectors define a triangle
 qnv.printqnvs("triangle",tri) # triangle
+
 # doubled triangle
-obj=np.concatenate([tri,tri]) # doubled triangle
+#obj=np.concatenate([tri,tri]) # doubled triangle
+obj=np.stack([tri,tri]) # doubled triangle
+print("obj.shape",obj.shape,"obj.ndim",obj.ndim)
+qnv.printqnv("obj[0][0]",obj[0][0])
+qnv.printqnv("obj[0][1]",obj[0][1])
+qnv.printqnv("obj[0][2]",obj[0][2])
+qnv.printqnv("obj[1][0]",obj[1][0])
+qnv.printqnv("obj[1][1]",obj[1][1])
+qnv.printqnv("obj[1][2]",obj[1][2])
+#qnm.printqnm("obj",obj) # triangle
 #generator_surface_1(obj)
 
 # a tetrahedon
@@ -171,7 +181,7 @@ obj=np.concatenate([tri,tri]) # doubled triangle
 
 #surface=generator_surface_1(obj.reshape(1,3,6,3))
 #surface=obj.reshape(1,3,6,3)
-print("obj.shape",obj.shape)
+print("obj.shape",obj.shape,"obj.ndim",obj.ndim)
 #surface=obj.reshape(1,6)
 surface=obj
 #generator_edge(surface)

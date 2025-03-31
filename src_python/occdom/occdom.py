@@ -34,7 +34,7 @@ def occdom_init():
     N=crsys.N
 
 def volume(obj:qnv.Qnvec):
-    return utl.obj_area_6d(obj)
+    return utl.obj_area_nd(obj)
 
 #def symmetric(obj: qnv.Qnvec, centre:qnv.Qnvec, png:str):
 def symmetric(obj: qnv.Qnvec, centre:qnv.Qnvec):
@@ -46,7 +46,7 @@ def symmetric(obj: qnv.Qnvec, centre:qnv.Qnvec):
             Asymmetric unit of the occupation domain
             The shape is (num,3,6,3), where num=numbre_of_tetrahedron.
         centre (numpy.ndarray):
-            6d coordinate of the symmetric centre.
+            nd coordinate of the symmetric centre.
             The shape is (6,3)
         pg (string):
             point group, '12/mmm', '-12m2', '-12', '12'
@@ -72,7 +72,7 @@ def symmetric_0(obj: qnv.Qnvec,centre: qnv.Qnvec ,indx_symop : np.int64,pg : qnv
             Asymmetric unit of the occupation domain
             The shape is (num,3,6,3), where num=numbre_of_triangles.
         centre (numpy.ndarray):
-            6d coordinate of the symmetric centre.
+            nd coordinate of the symmetric centre.
             The shape is (6,3)
     
     Returns:
@@ -96,7 +96,7 @@ def shift(obj: qnv.Qnvec,shift : qnv.Qnvec):
             The occupation domain
             The shape is (num,3,6,3), where num=numbre_of_triangles.
         shift (numpy.ndarray):
-            6d coordinate to which the occupation domain is shifted.
+            nd coordinate to which the occupation domain is shifted.
             The shape is (6,3)
         verbose (int):
             verbose = 0 (silent, default)
@@ -183,10 +183,10 @@ def simplification(obj,verbose=0):
             print('    zero volume')
         return 
     else:
-        vol0=utl.obj_area_6d(obj)
+        vol0=utl.obj_area_nd(obj)
         obj_convex_hull=utl.generate_convex_hull(obj)
         obj_tmp=isct.intersection_two_obj_1(obj_convex_hull,obj)
-        vol1=utl.obj_area_6d(obj_tmp)
+        vol1=utl.obj_area_nd(obj_tmp)
         if np.all(vol0==vol1):
             if verbose>0:
                 print('      simplification succeed:')
@@ -321,7 +321,7 @@ def write_podatm(obj, position, vlist=[0], path='.', basename='tmp', shift=[0., 
     Args:
         obj (numpy.ndarray): the occupation domain
             The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
-        position (numpy.ndarray): 6D coordinates of the position of the occupation domain.
+        position (numpy.ndarray): nd coordinates of the position of the occupation domain.
         vertices (list): 
         vlist (list): 
         path (str): Path of the output files

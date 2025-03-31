@@ -13,6 +13,7 @@ import pyDelaunay2D as dln
 import itertools
 import time
 
+import crsys as crs
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
@@ -42,7 +43,7 @@ def shift_object(obj: qnv.Qnvec, shift: qnv.Qnvec) -> qnv.Qnvec:
 #----------------------------
 # Volume, area
 #----------------------------
-def obj_area_6d(obj: qnv.Qnvec) -> qnn.Qnnum:
+def obj_area_nd(obj: qnv.Qnvec) -> qnn.Qnnum:
     """Calculate volume of an object (set of triangles) in TAU style.
     
     Parameters
@@ -60,17 +61,17 @@ def obj_area_6d(obj: qnv.Qnvec) -> qnn.Qnnum:
     w=qn0
     if ndim==4:
         for tri in obj:
-            v=triangle_area_6d(tri)
+            v=triangle_area_nd(tri)
             w=w+v
         return w
     elif ndim==5:
         for tset in obj:
             for tri in tset:
-                v=triangle_area_6d(tri)
+                v=triangle_area_nd(tri)
                 w=w+v
         return w
     elif ndim==3:
-        return triangle_area_6d(obj)
+        return triangle_area_nd(obj)
     else:
         print('object has an incorrect shape!')
         return 
@@ -113,13 +114,13 @@ def tetrahedron_volume(tet: NDArray[np.float64]) -> qnn.Qnnum:
     det = qmt.det_matrix_3d(qnmt)
     return qnn.abs(det)/6
 
-def triangle_area_6d(tri: qnv.Qnvec) -> qnn.Qnnum:
+def triangle_area_nd(tri: qnv.Qnvec) -> qnn.Qnnum:
     """Calculate volume of triangle in TAU style.
     
     Parameters
     ----------
     tri: array
-        6d vectors of triangle vertices in TAU-style.
+        nd vectors of triangle vertices in TAU-style.
     
     Returns
     -------
@@ -171,7 +172,7 @@ def triangle_area(vts: qnv.Qnvec) -> qnn.Qnnum:
 # Remove doubling
 #----------------------------
 def remove_doubling(vts: qnv.Qnvec) -> qnv.Qnvec:
-    """Remove doubling 6d coordinates
+    """Remove doubling nd coordinates
     
     Parameters
     ----------
@@ -188,7 +189,7 @@ def remove_doubling(vts: qnv.Qnvec) -> qnv.Qnvec:
     shape=vts.shape
     dtype=vts.dtype
     print("ndim",ndim,"shape",shape,"dtype",dtype)
-    vt0=qnv.zerovs((shape[0]))
+    vt0=qnv.zerov(shape[0])
     print("vt0.shape",vt0.shape)
     ni=0
     for i in range(shape[0]):
@@ -256,16 +257,16 @@ def generator_all_edges(obj: qnv.Qnvec) -> qnv.Qnvec:
     # (1) preparing a list of edges
     n1,n2=obj.shape
     print("n1",n1,"n2",n2)
-    if n2==3:
+    if n2==3:  # triangles
         #edges=np.zeros((n1,3,2,6,3),dtype=np.int64)
         edges=qnv.zerovs((n1,n2))  #[qn0]*(n1,3,2,6)
         i1=0
-        for tri in obj:
-            qnv.printqnv("triangle",tri)
-            edges[i1]=get_triangle_edge(tri)
+        for i in range(n1):
+            qnv.printqnvs("triangle",obj[i])
+            edges[i1]=get_triangle_edge(obj[i])
             i1+=1
         return edges  #edges.reshape(n1*3,2,6)  #edges.reshape(n1*3,2,6,3)
-    elif n2==4:
+    elif n2==4:  # tetrahedra
         print("edges of tetrahedron is not implemented yet")
         return 
     else:
@@ -318,10 +319,10 @@ def get_triangle_edge(tri: qnv.Qnvec) -> qnv.Qnvec:
     [1,2]] 
     
     # Three egdes of the triangl.
-    N=tri[0][0].vt[0].N
-    qn0=qnn.Qnnum([0,0,1],N)
+    qn0=qnn.Qnnum([0,0,1])
     #a=np.zeros((3,2,6,3),dtype=np.int64)
-    a=np.array((3,2),dtype=qnv.Qnvec)  #[qn0]*(3,2,6)
+    n=crs.n
+    a=qnv.zerovs((3,2,n))  #[qn0]*(3,2,n)
     i1=0
     for k in comb:
         i2=0
@@ -666,7 +667,7 @@ def triangulation_points(points: qnv.Qnvec):
         for i in ltmp:
             #tmp3=np.array([points[i[0]],points[i[1]],points[i[2]]]).reshape(3,6,3)
             tmp3=np.array([points[i[0]],points[i[1]],points[i[2]]]).reshape(3,6) # triangle
-            vol=triangle_area_6d(tmp3) # volume (area) of a triangle
+            vol=triangle_area_nd(tmp3) # volume (area) of a triangle
             if vol[0]==0 and vol[1]==0:
                 pass
             else:
@@ -691,7 +692,7 @@ def triangulation_points(points: qnv.Qnvec):
 ####
 ##############################
 def remove_vectors(vts1: qnv.Qnvec, vts2: qnv.Qnvec) -> qnv.Qnvec:
-    """remove 6d vectors in a set vts2 from a set vts1.
+    """remove nd vectors in a set vts2 from a set vts1.
     6次元ベクトルリストvts1から6次元ベクトルリストvts2にあるベクトルを抜きとる
     """
     lst=[]
@@ -716,7 +717,7 @@ def remove_vectors(vts1: qnv.Qnvec, vts2: qnv.Qnvec) -> qnv.Qnvec:
         return vts1
 
 def remove_vector(vts: qnv.Qnvec, vt: qnv.Qnvec) -> qnv.Qnvec:
-    """ remove a 6d vector(vt2) from a set of 6d vectors (vts).
+    """ remove a nd vector(vt2) from a set of nd vectors (vts).
     6次元ベクトルリストvlst1から6次元ベクトルvt2を抜きとる
     """
     lst=[]

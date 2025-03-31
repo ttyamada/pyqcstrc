@@ -1,22 +1,29 @@
 import cython
 
-import crsys
-import lattice as lt
+import crsys as crs
+import qnnum as qnn
 import qnvec as qnv
+import qnndarray as qna
 from lattice import (lattice_init,get_tr)
 
 # for test
 #if __name__ == '__main__':
 isys=3  # for decagonal
-crsys.crsys_init(isys)
+crs.crsys_init(isys)
+qnn.qnnum_init()
+qna.qnndarray_init()
+qnv.qnvec_init()
 lattice_init()
 
 tr=get_tr('p')
-qnv.printqnv("tr in p",tr)
+for i in range(tr.shape[0]):
+    qnv.printqnv("tr in p",tr[i])
 n=6
 tr=get_tr('i')
-qnv.printqnv("tr in i",tr)
+for i in range(tr.shape[0]):
+    qnv.printqnv("tr in i",tr[i])
 
 tr=get_tr('f')
-qnv.printqnv("tr in f",tr)
+for i in range(tr.shape[0]):
+    qnv.printqnv("tr in f",tr[i])
   

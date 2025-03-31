@@ -775,10 +775,10 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
                 vt[3][0],vt[3][1],vt[3][2],\
                 vt[4][0],vt[4][1],vt[4][2],\
                 vt[5][0],vt[5][1],vt[5][2]))
-        v=utl.obj_area_6d(obj)
+        v=utl.obj_area_nd(obj)
         f.write('volume = %d %d %d (%8.6f)\n'%(v[0],v[1],v[2],num.numeric_value(v)))
         for i1,triangle in enumerate(obj):
-            v=utl.triangle_area_6d(triangle)
+            v=utl.triangle_area_nd(triangle)
             f.write('%3d-the triangle, %d %d %d (%8.6f)\n'\
                     %(i1,v[0],v[1],v[2],num.numeric_value(v)))
         f.closed
@@ -1037,10 +1037,10 @@ def simplification(obj,verbose=0):
             print('    zero volume')
         return 
     else:
-        vol0=utl.obj_area_6d(obj)
+        vol0=utl.obj_area_nd(obj)
         obj_convex_hull=utl.generate_convex_hull(obj)
         obj_tmp=ints.intersection_two_obj_1(obj_convex_hull,obj)
-        vol1=utl.obj_area_6d(obj_tmp)
+        vol1=utl.obj_area_nd(obj_tmp)
         if np.all(vol0==vol1):
             if verbose>0:
                 print('      simplification succeed:')
@@ -1175,7 +1175,7 @@ def write_podatm(obj, position, vlist=[0], path='.', basename='tmp', shift=[0., 
     Args:
         obj (numpy.ndarray): the occupation domain
             The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
-        position (numpy.ndarray): 6D coordinates of the position of the occupation domain.
+        position (numpy.ndarray): nd coordinates of the position of the occupation domain.
         vertices (list): 
         vlist (list): 
         path (str): Path of the output files

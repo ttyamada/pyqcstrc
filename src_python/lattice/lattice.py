@@ -14,23 +14,29 @@ def lattice_init():
 
 def get_tr(brv) -> qnv.Qnvec:
     global ntr
+    #print("n in get_tr",n)  # for test
     qn0=qnn.Qnnum([0,0,1]) # 0
     qn1=qnn.Qnnum([1,0,2]) # 1/2
+    #qnn.printqnn("qn0",qn0)  # for test
+    #qnn.printqnn("qn1",qn1)  # for test
     if brv=='p':
         ntr=1
-        tr=qnv.zerovs((ntr,n))
+        shape=(ntr,n)
+        tr=qnv.zerovs(shape)
         if n==5: # dihedral
             tr[0]=qnv.anyv(np.array([qn0,qn0,qn0,qn0,qn0]))
         elif n==6: # icosahedral
             tr[0]=qnv.anyv(np.array([qn0,qn0,qn0,qn0,qn0,qn0]))
     elif brv=='i': # only icosahedral
         ntr=2
-        tr=qnv.zerovs((ntr,n))
+        shape=(ntr,n)
+        tr=qnv.zerovs(shape)
         tr[0]=qnv.anyv(np.array([qn0,qn0,qn0,qn0,qn0,qn0]))
         tr[1]=qnv.anyv(np.array([qn1,qn1,qn1,qn1,qn1,qn1]))
     elif brv=='f':  # only icosahedral
         ntr=32
-        tr=qnv.zerovs((ntr,n))
+        shape=(ntr,n)
+        tr=qnv.zerovs(shape)
         tr[0]=qnv.anyv(np.array([qn0,qn0,qn0,qn0,qn0,qn0]))
         tr[1]=qnv.anyv(np.array([qn1,qn1,qn0,qn0,qn0,qn0]))
         tr[2]=qnv.anyv(np.array([qn1,qn0,qn1,qn0,qn0,qn0]))
@@ -63,6 +69,7 @@ def get_tr(brv) -> qnv.Qnvec:
         tr[29]=qnv.anyv(np.array([qn0,qn1,qn0,qn1,qn1,qn1]))
         tr[30]=qnv.anyv(np.array([qn0,qn0,qn1,qn1,qn1,qn1]))
         tr[31]=qnv.anyv(np.array([qn1,qn1,qn1,qn1,qn1,qn1]))
+    #print("tr.shape",tr.shape,"tr.shape[0]",tr.shape[0])  # for test
     return tr
         
       

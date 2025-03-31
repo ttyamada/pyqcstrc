@@ -83,10 +83,12 @@ def zerov(n: np.int64)->Qnvec: # qnnumber zero vector
 
 def anyv(v:NDArray[qnn.Qnnum]):
     shape=v.shape
+    #print("shape in anyv",shape)  # for test
     n=shape[0]
     v1=Qnvec(n)
     for i in range(n):
         v1[i]=v[i]
+    #printqnv("v1",v1)  # for test
     return v1
 
 def copy(v: Qnvec) -> Qnvec:

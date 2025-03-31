@@ -527,7 +527,7 @@ from numpy.typing import NDArray
 #
 #
 #def projection(vt: NDArray[np.int64]) -> NDArray[np.int64]:
-#    """projection of a 6d vector onto Epar and Eperp in "SIN-style"
+#    """projection of a nd vector onto Epar and Eperp in "SIN-style"
 #    NOTE: coefficient (alpha) of the projection matrix is set to be 1.
 #    alpha = 2*a/np.sqrt(6)
 #    see Yamamoto ActaCrystal (1997)
@@ -559,7 +559,7 @@ from numpy.typing import NDArray
 #    return np.array([[v1e,v2e,v3e],[v1i,v2i,v3i]],dtype=np.int64)
 #
 #def projection3(vt: NDArray[np.int64]) -> NDArray[np.int64]:
-#    """projection of a 6d vector onto Eperp in "SIN-style"
+#    """projection of a nd vector onto Eperp in "SIN-style"
 #    NOTE: coefficient (alpha) of the projection matrix is set to be 1.
 #    alpha = 2*a/np.sqrt(6)
 #    see Yamamoto ActaCrystal (1997)
@@ -605,7 +605,7 @@ from numpy.typing import NDArray
 #
 #    Returns
 #    -------
-#    6d vectors projected onto Eperp in SQRT3-style.
+#    nd vectors projected onto Eperp in SQRT3-style.
 #    """
 #    a1=m1*v[0]  #mul(m1,v[0])
 #    a2=m2*v[1]  #mul(m2,v[1])
@@ -759,7 +759,7 @@ def det_matrix(mtx: NDArray[np.int64]) -> NDArray[np.int64]:
 
     Returns
     -------
-    6d vectors projected onto Eperp in SQRT3-style.
+    nd vectors projected onto Eperp in SQRT3-style.
     """
     
     t3=mtx[0][0]*mtx[1][1]  #mul(mtx[0][0],mtx[1][1])

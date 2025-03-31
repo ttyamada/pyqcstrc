@@ -71,7 +71,7 @@ print('check tetrahedron')
 triangle=generate_random_triangle() # in TAU-style
 triangle_num=numerical_vectors(triangle) # in float
 #print(triangle_num)
-area=triangle_area_6d_numerical(triangle_num)
+area=triangle_area_nd_numerical(triangle_num)
 print(area)
 """
 

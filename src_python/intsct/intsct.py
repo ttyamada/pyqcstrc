@@ -135,7 +135,7 @@ def check_intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.
             # 1 surfaces of triangle_2
             segment=np.stack([triangle_1[c[0]],triangle_1[c[1]]])
             surface=triangle_2
-            if check_intersection_segment_surface_numerical_6d_tau(segment,surface): # intersectiing
+            if check_intersection_segment_surface_numerical_nd_tau(segment,surface): # intersectiing
                 counter1+=1
                 break
             else:
@@ -145,7 +145,7 @@ def check_intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.
             # 1 surfaces of triangle_1
             segment=np.stack([triangle_2[c[0]],triangle_2[c[1]]])
             surface=triangle_1
-            if check_intersection_segment_surface_numerical_6d_tau(segment,surface): # intersectiing
+            if check_intersection_segment_surface_numerical_nd_tau(segment,surface): # intersectiing
                 counter1+=1
                 break
             else:
@@ -168,11 +168,11 @@ def intersection_two_segment(segment_1: qna.QnNdarray, segment_2: qna.QnNdarray)
     
     """
     # check whether two line segments are intersecting or not by numerical calc.
-    if num.check_intersection_two_segment_numerical_6d_tau(segment_1,segment_2): # intersecting
+    if num.check_intersection_two_segment_numerical_nd_tau(segment_1,segment_2): # intersecting
         # calc in TAU-style
-        vecAB_6d=segment_1[1]-segment_1[0]
-        qnv.printqnv("vecAB_6d",vecAB_6d)    # for test
-        vecAB=prj.projection3(vecAB_6d)            # AB
+        vecAB_nd=segment_1[1]-segment_1[0]
+        qnv.printqnv("vecAB_nd",vecAB_nd)    # for test
+        vecAB=prj.projection3(vecAB_nd)            # AB
         #
         tmp=segment_2[1]-segment_2[0]
         vecCD=prj.projection3(tmp)                 # CD
@@ -211,7 +211,7 @@ def intersection_two_segment(segment_1: qna.QnNdarray, segment_2: qna.QnNdarray)
             #s=div(bunshi,bunbo)
             #
             # OP = OA + s*AB
-            tmp=qnm.mul(vecAB_6d,s) # vec tunes scale
+            tmp=qnm.mul(vecAB_nd,s) # vec tunes scale
             return segment_1[0]+tmp
             
     else: # no intersection
@@ -235,7 +235,7 @@ def intersection_segment_surface(segment: qna.QnNdarray, surface: qna.QnNdarray)
     
     """
     # check whether the line segment and the surface are intersecting or not by numerical calc.
-    if check_intersection_segment_surface_numerical_6d_tau(segment,surface): # intersecting
+    if check_intersection_segment_surface_numerical_nd_tau(segment,surface): # intersecting
         
         """
         # calc in TAU-style
@@ -465,7 +465,7 @@ def intersection_two_obj_1(obj1: qnv.Qnvec,obj2: qnv.Qnvec,select=None,verbose: 
                         pass
                     else:
                         #print(i)
-                        #v=obj_volume_6d(tmp4)
+                        #v=obj_volume_nd(tmp4)
                         #print('.    common vol:',v,numeric_value(v))
                         if counter1==0:
                             tmp_common4=tmp4
@@ -483,11 +483,11 @@ def intersection_two_obj_1(obj1: qnv.Qnvec,obj2: qnv.Qnvec,select=None,verbose: 
                 
             if counter1!=0:
                 #print('tmp_common4',tmp_common4)
-                #vol2=obj_area_6d(tmp_common4)
+                #vol2=obj_area_nd(tmp_common4)
                 #print('vol2',vol2,numeric_value(vol2))
                 if select=='simple':
-                    vol1=triangle_area_6d(triangle1)
-                    vol2=obj_area_6d(tmp_common4)
+                    vol1=triangle_area_nd(triangle1)
+                    vol2=obj_area_nd(tmp_common4)
                     if np.all(vol1==vol2):
                         if counter0==0:
                             common4=triangle1.reshape(1,3,6,3)
@@ -634,7 +634,7 @@ def intersection_two_obj_convex(obj1: qnv.Qnvec, obj2: qnv.Qnvec, verbose: int=0
         counter=0
         for tr1 in obj1_surf:
             for ed2 in obj2_edge:
-                if check_intersection_segment_surface_numerical_6d_tau(ed2,tr1): # intersection
+                if check_intersection_segment_surface_numerical_nd_tau(ed2,tr1): # intersection
                     tmp=intersection_segment_surface(ed2,tr1)
                     if counter==0:
                         p=tmp
@@ -645,7 +645,7 @@ def intersection_two_obj_convex(obj1: qnv.Qnvec, obj2: qnv.Qnvec, verbose: int=0
                     pass
         for tr2 in obj2_surf:
             for ed1 in obj1_edge:
-                if check_intersection_segment_surface_numerical_6d_tau(ed1,tr2): # intersection
+                if check_intersection_segment_surface_numerical_nd_tau(ed1,tr2): # intersection
                     tmp=intersection_segment_surface(ed1,tr2)
                     if counter==0:
                         p=tmp
@@ -771,8 +771,8 @@ def triangle_not_obj_1(triangle: qnv.Qnvec, obj: qnv.Qnvec, verbose: int=0) -> q
     surface_common=common
     #vertx_common=remove_doubling_in_perp_space(surface_common)
     
-    vol0=obj_volume_6d(triangle)
-    vol1=obj_volume_6d(common)
+    vol0=obj_volume_nd(triangle)
+    vol1=obj_volume_nd(common)
     vol2=sub(vol0,vol1)
     if verbose>0:
         print('        triangle volume:',vol0,numeric_value(vol0))
@@ -888,7 +888,7 @@ def triangle_not_obj_1(triangle: qnv.Qnvec, obj: qnv.Qnvec, verbose: int=0) -> q
                 tmp=np.vstack([tmp,tet])
             counter3+=1
         #print('tmp.shape',tmp.shape)
-        vol=obj_volume_6d(tmp)
+        vol=obj_volume_nd(tmp)
         if verbose>1:
             print('    obtained volume:',vol,numeric_value(vol))
         if np.all(vol==vol2):
@@ -912,7 +912,7 @@ def triangle_not_obj_1(triangle: qnv.Qnvec, obj: qnv.Qnvec, verbose: int=0) -> q
                 for comb in list(itertools.combinations(lst,num)):
                     #print(comb)
                     for i1 in range(num):
-                        v=tetrahedron_volume_6d(tmp[comb[i1]])
+                        v=tetrahedron_volume_nd(tmp[comb[i1]])
                         #print('    ',v)
                         vol=add(vol,v)
                     if np.all(vol==vol2):
@@ -931,7 +931,7 @@ def triangle_not_obj_1(triangle: qnv.Qnvec, obj: qnv.Qnvec, verbose: int=0) -> q
                     pass
             if flag==1:
                 out=tmp1
-                vol=obj_volume_6d(out)
+                vol=obj_volume_nd(out)
                 if verbose>1:
                     print('    obtained volume:',vol,numeric_value(vol))
                 if verbose>0:
@@ -976,7 +976,7 @@ def triangle_not_obj_1(triangle: qnv.Qnvec, obj: qnv.Qnvec, verbose: int=0) -> q
                 if counter!=0:
                     beak
             tet1=np.vstack([vrtx1_out,edge_common])
-            vola=obj_volume_6d(tet1)
+            vola=obj_volume_nd(tet1)
             combination=[\
             [1,0],\
             [0,1]]
@@ -984,7 +984,7 @@ def triangle_not_obj_1(triangle: qnv.Qnvec, obj: qnv.Qnvec, verbose: int=0) -> q
                 tet2=np.vstack([vrtx1_out[c1[0]],tr1])
                 tet3=np.vstack([vrtx1_out[c1[1]],tr2])
                 tet_tot=np.vstack([tet1,tet2,tet3])
-                vol_tot=obj_volume_6d(tet_tot)
+                vol_tot=obj_volume_nd(tet_tot)
                 if np.all(vol_tot==vol2):
                     out=tet_tot
                     break
@@ -1062,13 +1062,13 @@ def tetrahedron_not_obj_2(tetrahedron: qnv.Qnvec, obj: qnv.Qnvec) -> qnv.Qnvec:
     
     """
     
-    vol0=obj_volume_6d(tetrahedron)
+    vol0=obj_volume_nd(tetrahedron)
     print('tetrahedron volume:',vol0,numeric_value(vol0))
     
     # 1. tetrahedronとobjの共通部分Aを求める。
     # intersection between tetrahedron and obj
     common=intersection_two_obj_1(tetrahedron,obj,kind='standard')
-    vol1=obj_volume_6d(common)
+    vol1=obj_volume_nd(common)
     print('common volume:',vol1,numeric_value(vol1))
     
     # 2. A表面の三角形T1を求める

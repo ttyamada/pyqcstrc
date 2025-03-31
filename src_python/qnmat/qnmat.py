@@ -173,7 +173,7 @@ def isub(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
 def mul(ma1: Qnmat, ma2: Qnmat, dtype=qnn.Qnnum) -> Qnmat: 
     ndm1=ma1.ndim
     ndm2=ma2.ndim
-    print("ndm1=",ndm1,"ndm2=",ndm2)  # for test
+    #print("ndm1=",ndm1,"ndm2=",ndm2)  # for test
     if ndm1==1 and ndm2==1:  # dot product
         if ma1.shape[0]==ma2.shape[0]:
             ma3=qnn.zero()
