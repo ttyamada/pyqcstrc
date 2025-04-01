@@ -62,6 +62,13 @@ src/pyqcstrc/dode2/*.bak
 src/pyqcstrc/qnclass/*.bak
 .gitignore
 tests/dode2/tests/test1/od_1_asym.xyz
+tests/ico2/examples/example1/common_od.xyz
+tests/ico2/examples/example3/common_od_asym.xyz
+tests/ico2/examples/example3/rtod1_asym.xyz
+tests/ico2/examples/example6/rtod1_asym.xyz
 
-
-
+tests/ico2/*.lst
+tests/octa2/*.lst
+tests/deca2/*.lst
+tests/dode2/*.lst
+tests/ico2/tests/*.lst
