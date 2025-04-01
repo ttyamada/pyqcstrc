@@ -17,9 +17,10 @@ from octa2.numericalc import coplanar_check_numeric_tau
 #from cython.cimports.cython.view import array as cvarray
 #from cython.cimports.cython import cython
 
-
-#DTYPE_int = cython.long
-DTYPE_int = long
+if cython.compiled:
+    DTYPE_int = cython.long
+else:
+    DTYPE_int = np.int64  #long
 
 SQRT2=np.sqrt(2)
 
@@ -27,9 +28,9 @@ SQRT2=np.sqrt(2)
 def qnreduce(x:cython.long[:]) -> cython.long[:]:
     g: cython.long
     g=np.gcd.reduce(x)
-    x[0]=(long)(x[0]/g)
-    x[1]=(long)(x[1]/g)
-    x[2]=(long)(x[2]/g)
+    x[0]=(DTYPE_int)(x[0]/g)
+    x[1]=(DTYPE_int)(x[1]/g)
+    x[2]=(DTYPE_int)(x[2]/g)
     if x[2]<0:
         x[0]=-x[0]; x[1]=-x[1]; x[2]=-x[2]
     return x

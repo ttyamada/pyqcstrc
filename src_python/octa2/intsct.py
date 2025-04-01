@@ -59,7 +59,11 @@ from octa2.utils import (
 
 TAU=np.sqrt(2)
 EPS=1e-6
-DTYPE_int = cython.long
+if cython.compiled:
+  DTYPE_int = cython.long
+else:
+  DTYPE_int = np.int64
+#DTYPE_int = cython.long
 #DTYPE_int = np.int64
 
 def ball_radius_obj(obj: NDArray[DTYPE_int], centroid: NDArray[DTYPE_int]) -> float:

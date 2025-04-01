@@ -4,7 +4,7 @@ import time # in object_subtraction_dev1, tetrahedron_not_obj
 import itertools
 import cython
 
-import crsys
+import crsys as crs
 import intsct as isct
 import qnnum as qnn
 import qnvec as qnv
@@ -61,7 +61,7 @@ def generate_random_triangle():
 #[[ 0,  0,  1],[ 0,  0,  1],[-1,  0,  2],[ 1,  0,  2],[ 0,  0,  1],[ 0,  0,  1]]]) # edge2
 
 isys=4  # for octabonal
-crsys.crsys_init(isys)
+crx.crsys_init(isys)
 qnn.qnnum_init()
 qnv.qnvec_init()
 qnm.qnmat_init()

@@ -21,8 +21,10 @@ import octa2.projection as prj
 
 
 TAU=np.sqrt(2)
-DTYPE_int = cython.long
-#DTYPE_int = np.int64
+if cython.compiled:
+    DTYPE_int = cython.long
+else:
+    DTYPE_int = np.int64
 
 def volume(obj:NDArray[DTYPE_int]):
     return utils.obj_area_6d(obj)

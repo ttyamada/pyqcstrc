@@ -8,18 +8,30 @@ import timeit
 import os
 import sys
 import numpy as np
+from numpy.typing import NDArray
+
 import ico2.occupation_domain as od
 import ico2.two_occupation_domains as ods
-import qnnum.qnnum as qnn
-import qnvec.qnvec as qnv
-import qnmat.qnmat as qnm
+import crsys as crs
+import qnnum as qnn
+import qnvec as qnv
+import qnmat as qnm
+import qnmath as qmt
 
-M0=qnn.Qnnum([0,0,1],N) # 0
-M1=qnn.Qnnum([1,0,2],N) # 1/2
-M2=qnn.Qnnum([-1,0,2],N) # -1/2
-M3=qnn.Qnnum([1,0,1],N)
-M4=qnn.Qnnum([1,0,4],N)
-M5=qnn.Qnnum([-1,0,4],N)
+isys=2  # for icosahedral
+crs.crsys__init(isys)
+qnn.qnnum_init()
+qnv.qnvec_init()
+qnm.qnmat__init()
+qmt.qnmath__init()
+
+
+M0=qnn.Qnnum([0,0,1]) # 0
+M1=qnn.Qnnum([1,0,2]) # 1/2
+M2=qnn.Qnnum([-1,0,2]) # -1/2
+M3=qnn.Qnnum([1,0,1])
+M4=qnn.Qnnum([1,0,4])
+M5=qnn.Qnnum([-1,0,4])
 V0 = np.array([M0,M0,M0,M0,M0,M0])
 BC = np.array([M1,M1,M1,M1,M1,M1])
 EC = np.array([M1,M0,M0,M0,M0,M0])

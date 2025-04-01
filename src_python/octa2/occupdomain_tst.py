@@ -5,14 +5,18 @@ import sys
 import numpy as np
 import cython
 from numpy.typing import NDArray
-import occupation_domain as od
-import utils as utl
+import octa2.occupation_domain as od
+import octa2.vesta as vst
+import octa2.utils as utl
+
 #from occupation_domain import (
 #    symmetric,read_xyz,write)
 
 import symmetry as symmetry
-DTYPE_int = cython.long
-#DTYPE_int = np.int64
+if cython.compiled:
+    DTYPE_int = cython.long
+else:
+    DTYPE_int = np.int64
 
 test_dir='../../tests/octa/test'
 xyz_dir='../../xyz/octa'
@@ -25,8 +29,8 @@ pos0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 
 pos=cython.declare(cython.long[:,:],pos0)
 od_sym = od.symmetric(obj=od_asym, centre=pos)
 
-od.write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
-od.write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
+vst.write_vesta(obj=od_sym, path=test_dir, basename = 'od_sym', color = 'k')
+vst.write_vesta(obj=od_sym, path=test_dir, basename = 'od_sym', color = 'k')
 
 # move STRT OD to a position 1 1 1 0 -1 0.
 #pos_b1=np.array([[ 1, 0, 1],[ 1, 0, 1],[ 1, 0, 1],[ 0, 0, 1],[-1, 0, 1],[ 0, 0, 1]]) # b_1

@@ -8,21 +8,32 @@ import timeit
 import os
 import sys
 import numpy as np
+from numpy.typing import NDArray
+
 import ico2.utils as utils
 import ico2.occupation_domain as od
 import ico2.two_occupation_domains as ods
-import qnnum.qnnum as qnn
-import qnvec.qnvec as qnv
-import qnmat.qnmat as qnm
+import crsys as crs
+import qnnum as qnn
+import qnvec as qnv
+import qnmat as qnm
+import qnmath as qmt
 
+
+isys=2  # for icosahedral
+crs.crsys__init(isys)
+qnn.qnnum_init()
+qnv.qnvec_init()
+qnm.qnmat__init()
+qmt.qnmath__init()
 
 # Vertices of tetrahedron, v0,v1,v2,v3, which
 # defines the asymmetric part.
 
-M0=qnn.Qnnum([0,0,1],N) # 0
-M1=qnn.Qnnum([1,0,2],N) # 1/2
-M2=qnn.Qnnum([-1,0,2],N) # -1/2
-M3=qnn.Qnnum([1,0,1],N)
+M0=qnn.Qnnum([0,0,1]) # 0
+M1=qnn.Qnnum([1,0,2]) # 1/2
+M2=qnn.Qnnum([-1,0,2]) # -1/2
+M3=qnn.Qnnum([1,0,1])
 v0=np.array([M0,M0,M0,M0,M0,M0])
 v1=np.array([M1,M2,M2,M2,M2,M2])
 v2=np.array([M1,M2,M2,M1,M2,M2])
