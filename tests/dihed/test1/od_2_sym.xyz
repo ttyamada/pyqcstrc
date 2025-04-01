@@ -1,0 +1,67 @@
+48
+od_2_sym
+Xx 0.414214 1.000000 0.000000 #   0-the triangle 0-th vertex # 1 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.828427 1.000000 0.000000 #   0-the triangle 1-th vertex # 2 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.621320 1.500000 0.000000 #   0-the triangle 2-th vertex # 3 0 2 1 0 1 0 0 1 1 0 2 0 0 1 0 0 1
+Xx 0.414214 1.000000 0.000000 #   1-the triangle 0-th vertex # 1 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -0.585786 0.000000 0.000000 #   1-the triangle 1-th vertex # 1 0 1 1 0 1 0 0 1 -1 0 1 0 0 1 0 0 1
+Xx -0.085786 -0.207107 0.000000 #   1-the triangle 2-th vertex # 1 0 1 1 0 1 1 0 2 -1 0 2 0 0 1 0 0 1
+Xx 0.414214 1.000000 0.000000 #   2-the triangle 0-th vertex # 1 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.414214 2.414214 0.000000 #   2-the triangle 1-th vertex # 1 0 1 1 0 1 -1 0 1 0 0 1 0 0 1 0 0 1
+Xx -0.085786 2.207107 0.000000 #   2-the triangle 2-th vertex # 1 0 1 3 0 2 -1 0 2 0 0 1 0 0 1 0 0 1
+Xx 0.414214 1.000000 0.000000 #   3-the triangle 0-th vertex # 1 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.414214 0.000000 0.000000 #   3-the triangle 1-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.621320 0.500000 0.000000 #   3-the triangle 2-th vertex # 3 0 2 1 0 2 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.414214 1.000000 0.000000 #   4-the triangle 0-th vertex # 1 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 1.000000 0.000000 #   4-the triangle 1-th vertex # 0 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -0.792893 0.500000 0.000000 #   4-the triangle 2-th vertex # 1 0 2 1 0 1 0 0 1 -1 0 2 0 0 1 0 0 1
+Xx 0.414214 1.000000 0.000000 #   5-the triangle 0-th vertex # 1 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.414214 2.000000 0.000000 #   5-the triangle 1-th vertex # 1 0 1 1 0 1 0 0 1 1 0 1 0 0 1 0 0 1
+Xx 0.914214 2.207107 0.000000 #   5-the triangle 2-th vertex # 1 0 1 1 0 1 -1 0 2 1 0 2 0 0 1 0 0 1
+Xx 0.414214 1.000000 0.000000 #   6-the triangle 0-th vertex # 1 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.414214 -0.414214 0.000000 #   6-the triangle 1-th vertex # 1 0 1 1 0 1 1 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.914214 -0.207107 0.000000 #   6-the triangle 2-th vertex # 1 0 1 1 0 2 1 0 2 0 0 1 0 0 1 0 0 1
+Xx 0.414214 1.000000 0.000000 #   7-the triangle 0-th vertex # 1 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -0.585786 2.000000 0.000000 #   7-the triangle 1-th vertex # 1 0 1 2 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -0.792893 1.500000 0.000000 #   7-the triangle 2-th vertex # 1 0 2 3 0 2 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.414214 1.000000 0.000000 #   8-the triangle 0-th vertex # 1 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.414214 2.000000 0.000000 #   8-the triangle 1-th vertex # 1 0 1 1 0 1 0 0 1 1 0 1 0 0 1 0 0 1
+Xx 1.621320 1.500000 0.000000 #   8-the triangle 2-th vertex # 3 0 2 1 0 1 0 0 1 1 0 2 0 0 1 0 0 1
+Xx 0.414214 1.000000 0.000000 #   9-the triangle 0-th vertex # 1 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 1.000000 0.000000 #   9-the triangle 1-th vertex # 0 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -0.792893 1.500000 0.000000 #   9-the triangle 2-th vertex # 1 0 2 3 0 2 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.414214 1.000000 0.000000 #  10-the triangle 0-th vertex # 1 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.414214 0.000000 0.000000 #  10-the triangle 1-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.914214 -0.207107 0.000000 #  10-the triangle 2-th vertex # 1 0 1 1 0 2 1 0 2 0 0 1 0 0 1 0 0 1
+Xx 0.414214 1.000000 0.000000 #  11-the triangle 0-th vertex # 1 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.414214 2.414214 0.000000 #  11-the triangle 1-th vertex # 1 0 1 1 0 1 -1 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.914214 2.207107 0.000000 #  11-the triangle 2-th vertex # 1 0 1 1 0 1 -1 0 2 1 0 2 0 0 1 0 0 1
+Xx 0.414214 1.000000 0.000000 #  12-the triangle 0-th vertex # 1 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -0.585786 0.000000 0.000000 #  12-the triangle 1-th vertex # 1 0 1 1 0 1 0 0 1 -1 0 1 0 0 1 0 0 1
+Xx -0.792893 0.500000 0.000000 #  12-the triangle 2-th vertex # 1 0 2 1 0 1 0 0 1 -1 0 2 0 0 1 0 0 1
+Xx 0.414214 1.000000 0.000000 #  13-the triangle 0-th vertex # 1 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.828427 1.000000 0.000000 #  13-the triangle 1-th vertex # 2 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.621320 0.500000 0.000000 #  13-the triangle 2-th vertex # 3 0 2 1 0 2 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.414214 1.000000 0.000000 #  14-the triangle 0-th vertex # 1 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -0.585786 2.000000 0.000000 #  14-the triangle 1-th vertex # 1 0 1 2 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -0.085786 2.207107 0.000000 #  14-the triangle 2-th vertex # 1 0 1 3 0 2 -1 0 2 0 0 1 0 0 1 0 0 1
+Xx 0.414214 1.000000 0.000000 #  15-the triangle 0-th vertex # 1 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 0.414214 -0.414214 0.000000 #  15-the triangle 1-th vertex # 1 0 1 1 0 1 1 0 1 0 0 1 0 0 1 0 0 1
+Xx -0.085786 -0.207107 0.000000 #  15-the triangle 2-th vertex # 1 0 1 1 0 1 1 0 2 -1 0 2 0 0 1 0 0 1
+volume = 0 4 1 (5.656854)
+  0-the triangle, 0 1 4 (0.353553)
+  1-the triangle, 0 1 4 (0.353553)
+  2-the triangle, 0 1 4 (0.353553)
+  3-the triangle, 0 1 4 (0.353553)
+  4-the triangle, 0 1 4 (0.353553)
+  5-the triangle, 0 1 4 (0.353553)
+  6-the triangle, 0 1 4 (0.353553)
+  7-the triangle, 0 1 4 (0.353553)
+  8-the triangle, 0 1 4 (0.353553)
+  9-the triangle, 0 1 4 (0.353553)
+ 10-the triangle, 0 1 4 (0.353553)
+ 11-the triangle, 0 1 4 (0.353553)
+ 12-the triangle, 0 1 4 (0.353553)
+ 13-the triangle, 0 1 4 (0.353553)
+ 14-the triangle, 0 1 4 (0.353553)
+ 15-the triangle, 0 1 4 (0.353553)

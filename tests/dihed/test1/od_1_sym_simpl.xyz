@@ -1,0 +1,27 @@
+18
+od_1_sym_simpl
+Xx -1.000000 -1.000000 0.000000 #   0-the triangle 0-th vertex # 0 0 1 0 0 1 0 0 1 -1 0 1 0 0 1 0 0 1
+Xx 1.000000 1.000000 0.000000 #   0-the triangle 1-th vertex # 0 0 1 0 0 1 0 0 1 1 0 1 0 0 1 0 0 1
+Xx -1.414214 0.000000 0.000000 #   0-the triangle 2-th vertex # -1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.000000 1.000000 0.000000 #   1-the triangle 0-th vertex # 0 0 1 0 0 1 0 0 1 1 0 1 0 0 1 0 0 1
+Xx 1.000000 -1.000000 0.000000 #   1-the triangle 1-th vertex # 0 0 1 -1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.414214 0.000000 0.000000 #   1-the triangle 2-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.000000 1.000000 0.000000 #   2-the triangle 0-th vertex # 0 0 1 0 0 1 0 0 1 1 0 1 0 0 1 0 0 1
+Xx -1.000000 1.000000 0.000000 #   2-the triangle 1-th vertex # 0 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.414214 0.000000 0.000000 #   2-the triangle 2-th vertex # -1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.000000 1.000000 0.000000 #   3-the triangle 0-th vertex # 0 0 1 0 0 1 0 0 1 1 0 1 0 0 1 0 0 1
+Xx -1.000000 -1.000000 0.000000 #   3-the triangle 1-th vertex # 0 0 1 0 0 1 0 0 1 -1 0 1 0 0 1 0 0 1
+Xx 0.000000 -1.414214 0.000000 #   3-the triangle 2-th vertex # 0 0 1 0 0 1 1 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.000000 -1.000000 0.000000 #   4-the triangle 0-th vertex # 0 0 1 -1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.000000 1.000000 0.000000 #   4-the triangle 1-th vertex # 0 0 1 0 0 1 0 0 1 1 0 1 0 0 1 0 0 1
+Xx 0.000000 -1.414214 0.000000 #   4-the triangle 2-th vertex # 0 0 1 0 0 1 1 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 1.000000 0.000000 #   5-the triangle 0-th vertex # 0 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.000000 1.000000 0.000000 #   5-the triangle 1-th vertex # 0 0 1 0 0 1 0 0 1 1 0 1 0 0 1 0 0 1
+Xx 0.000000 1.414214 0.000000 #   5-the triangle 2-th vertex # 0 0 1 0 0 1 -1 0 1 0 0 1 0 0 1 0 0 1
+volume = 0 4 1 (5.656854)
+  0-the triangle, 0 1 1 (1.414214)
+  1-the triangle, -1 1 1 (0.414214)
+  2-the triangle, 1 0 1 (1.000000)
+  3-the triangle, 0 1 1 (1.414214)
+  4-the triangle, 1 0 1 (1.000000)
+  5-the triangle, -1 1 1 (0.414214)

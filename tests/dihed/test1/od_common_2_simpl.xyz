@@ -1,0 +1,19 @@
+12
+od_common_2_simpl
+Xx -0.585786 0.000000 0.000000 #   0-the triangle 0-th vertex # 1 0 1 1 0 1 0 0 1 -1 0 1 0 0 1 0 0 1
+Xx 0.000000 1.414214 0.000000 #   0-the triangle 1-th vertex # 0 0 1 0 0 1 -1 0 1 0 0 1 0 0 1 0 0 1
+Xx -1.000000 1.000000 0.000000 #   0-the triangle 2-th vertex # 0 0 1 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.000000 1.000000 0.000000 #   1-the triangle 0-th vertex # 0 0 1 0 0 1 0 0 1 1 0 1 0 0 1 0 0 1
+Xx 0.414214 -0.414214 0.000000 #   1-the triangle 1-th vertex # 1 0 1 1 0 1 1 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.414214 0.000000 0.000000 #   1-the triangle 2-th vertex # 1 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1
+Xx 1.000000 1.000000 0.000000 #   2-the triangle 0-th vertex # 0 0 1 0 0 1 0 0 1 1 0 1 0 0 1 0 0 1
+Xx -0.585786 0.000000 0.000000 #   2-the triangle 1-th vertex # 1 0 1 1 0 1 0 0 1 -1 0 1 0 0 1 0 0 1
+Xx 0.414214 -0.414214 0.000000 #   2-the triangle 2-th vertex # 1 0 1 1 0 1 1 0 1 0 0 1 0 0 1 0 0 1
+Xx -0.585786 0.000000 0.000000 #   3-the triangle 0-th vertex # 1 0 1 1 0 1 0 0 1 -1 0 1 0 0 1 0 0 1
+Xx 1.000000 1.000000 0.000000 #   3-the triangle 1-th vertex # 0 0 1 0 0 1 0 0 1 1 0 1 0 0 1 0 0 1
+Xx 0.000000 1.414214 0.000000 #   3-the triangle 2-th vertex # 0 0 1 0 0 1 -1 0 1 0 0 1 0 0 1 0 0 1
+volume = 0 2 1 (2.828427)
+  0-the triangle, 2 -1 1 (0.585786)
+  1-the triangle, 2 -1 1 (0.585786)
+  2-the triangle, -2 2 1 (0.828427)
+  3-the triangle, -2 2 1 (0.828427)
