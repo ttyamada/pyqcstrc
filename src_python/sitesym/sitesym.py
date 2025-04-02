@@ -5,7 +5,7 @@ import sys
 import numpy as np
 import cython
 
-import crsys
+import crsys as crs
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
@@ -16,8 +16,8 @@ import qnsym as qns
 import lattice as lt
 
 def sitesym_init():
-    n=crsys.n
-    N=crsys.N
+    n=crs.n
+    N=crs.N
 
 def site_symmetry(x: qnv.Qnvec, qns: qns.Qnsym, brv: str) -> np.ndarray: # return irs
     global nr,mpltbl,r
@@ -37,11 +37,11 @@ def site_symmetry(x: qnv.Qnvec, qns: qns.Qnsym, brv: str) -> np.ndarray: # retur
 
     #n=len(x)
     #N=x.N
-    if crsys.isys==2:
+    if crs.isys==2:
         n_i=3
     else:
         n_i=2
-    n=crsys.n
+    n=crs.n
     nr=qns.nr
     #print("n",n,"n_i",n_i) # for test
     qnr=qns.qnr  # symmetry operator for Q coordinates
@@ -190,7 +190,8 @@ def generator_obj_symmetric_obj(obj:qnv.Qnvec, centre:qnv.Qnvec):
     """
     """
     ndim=len(obj.shape)  #obj.shape[0]
-    n=obj.shape[ndim-1]
+    #n=obj.shape[ndim-1]
+    n=crs.n
     V0=qnv.zerov(n)  # origin
     if ndim==3 or ndim==4:
         if centre==V0:  #np.all(centre==V0):

@@ -47,15 +47,18 @@ def symmetric(obj: qnv.Qnvec, centre:qnv.Qnvec):
             The shape is (num,3,6,3), where num=numbre_of_tetrahedron.
         centre (numpy.ndarray):
             nd coordinate of the symmetric centre.
-            The shape is (6,3)
+            The shape is (n)
         pg (string):
             point group, '12/mmm', '-12m2', '-12', '12'
     Returns:
-        Symmetric occupation domains (numpy.ndarray):
+        Symmetric occupation domains (qnndarray):
             The shape is (num,3,6,3), where num=numbre_of_tetrahedron.
     
     """
-    print("obj.ndim",obj.ndim) # for test
+    print("obj.ndim",obj.ndim,"obj.shape",obj.shape) # for test
+    # shape[0] : number of triangles or tetrahedra
+    # shape[1] : numbder of points 3 for triangle 4 for tetrahedra 
+    # shape[2] : space dimension 5 for dihed 6 for icos
     if obj.ndim==3 or obj.ndim==4:
         #return symmetry.generator_obj_symmetric_tetrahedron(obj,centre)
         return ssm.generator_obj_symmetric_triangle(obj,centre)

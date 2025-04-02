@@ -1,10 +1,13 @@
+# qnnumber version of vesta
+# qnnumber should be transformed to float by qnn.qn2frt 
+
 import timeit
 import os
 import sys
 import numpy as np
 import cython
 
-import crsys
+import crsys as crs
 import qnnum as qnn
 import qnvec as qnv
 import qnmath as qmt
@@ -24,8 +27,10 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
     Export occupation domains in VESTA format.
     
     Args:
-        obj (numpy.ndarray): the occupation domain
-            The shape is (num,3,6,3), where num=numbre_of_triangles.
+        # obj (qnndarray): the occupation domain
+        #    The shape is (num,3,5), with num=numbre_of_triangles for dihedral QCs
+        #              or (num,4,6) with num=number_of_tetrahedra for icosahedral QCs
+        obj (qna.qnndarray): the occupation domain
         path (str): Path of the output XYZ file
         basename (str): Basename of the output XYZ file
         color (str)
@@ -72,6 +77,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             a = [127,127,127]
         return a
     
+    print("obj.shape in write_vesta",obj.shape)  # for test
     file_name='%s/%s.vesta'%(path,basename)
     f=open('%s'%(file_name),'w')
     
@@ -301,81 +307,87 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             return 0
         
     elif select=='normal':
-        if np.all(obj==None):
-            print('no volume obj')
-            return 0
-        else:
-            print('#VESTA_FORMAT_VERSION 3.5.0\n', file=f)
-            for i1,obj1 in enumerate(obj):
-                print('MOLECULE\
-                \nTITLE',file=f)
-                print('%s/%s_%d\n'%(path,basename,i1), file=f)
-                print('GROUP\
-                \n1 1 Custom\
-                \nSYMOP\
-                \n 0.000000  0.000000  0.000000  1  0  0    0  1  0    0  0  1    1\
-                \n -1.0 -1.0 -1.0  0 0 0  0 0 0  0 0 0\
-                \nTRANM 0\
-                \n 0.000000  0.000000  0.000000  1  0  0    0  1  0    0  0  1\
-                \nLTRANSL\
-                \n -1\
-                \n 0.000000  0.000000  0.000000  0.000000  0.000000  0.000000\
-                \nLORIENT\
-                \n -1    0    0    0    0\
-                \n 1.000000  0.000000  0.000000  1.000000  0.000000  0.000000\
-                \n 0.000000  0.000000  1.000000  0.000000  0.000000  1.000000\
-                \nLMATRIX\
-                \n 1.000000  0.000000  0.000000  0.000000\
-                \n 0.000000  1.000000  0.000000  0.000000\
-                \n 0.000000  0.000000  1.000000  0.000000\
-                \n 0.000000  0.000000  0.000000  1.000000\
-                \n 0.000000  0.000000  0.000000\
-                \nCELLP\
-                \n  1.000000    1.000000    1.000000  90.000000  90.000000  90.000000\
-                \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
-                \nSTRUC', file=f)
-                for i2,vertx in enumerate(obj1):
-                    xyz=prj.projection3(vertx)
-                    xyz=num.numerical_vector(xyz)
+        #if np.all(obj!=None):
+        #    print('no volume obj')
+        #    return 0
+        #else:
+        isys=crs.isys
+        print('#VESTA_FORMAT_VERSION 3.5.0\n', file=f)
+        for i1,obj1 in enumerate(obj):
+            print('MOLECULE\
+            \nTITLE',file=f)
+            print('%s/%s_%d\n'%(path,basename,i1), file=f)
+            print('GROUP\
+            \n1 1 Custom\
+            \nSYMOP\
+            \n 0.000000  0.000000  0.000000  1  0  0    0  1  0    0  0  1    1\
+            \n -1.0 -1.0 -1.0  0 0 0  0 0 0  0 0 0\
+            \nTRANM 0\
+            \n 0.000000  0.000000  0.000000  1  0  0    0  1  0    0  0  1\
+            \nLTRANSL\
+            \n -1\
+            \n 0.000000  0.000000  0.000000  0.000000  0.000000  0.000000\
+            \nLORIENT\
+            \n -1    0    0    0    0\
+            \n 1.000000  0.000000  0.000000  1.000000  0.000000  0.000000\
+            \n 0.000000  0.000000  1.000000  0.000000  0.000000  1.000000\
+            \nLMATRIX\
+            \n 1.000000  0.000000  0.000000  0.000000\
+            \n 0.000000  1.000000  0.000000  0.000000\
+            \n 0.000000  0.000000  1.000000  0.000000\
+            \n 0.000000  0.000000  0.000000  1.000000\
+            \n 0.000000  0.000000  0.000000\
+            \nCELLP\
+            \n  1.000000    1.000000    1.000000  90.000000  90.000000  90.000000\
+            \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
+            \nSTRUC', file=f)
+            for i2,vertx in enumerate(obj1):
+                xyz=prj.projection3(vertx)
+                xyz=num.numerical_vector(xyz)
+                if isys==2:
                     print('%4d Xx        Xx%d  1.0000    %8.6f %8.6f %8.6f        1'%\
                     (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
-                    print('                             0.000000    0.000000    0.000000  0.00', file=f)
-                print('  0 0 0 0 0 0 0\
-                \nTHERI 0', file=f)
-                for i2,_ in enumerate(obj1):
-                    print('  %d        Xx%d  1.000000'%(i2+1,i2+1), file=f)
-                print('  0 0 0\
-                \nSHAPE\
-                \n  0         0         0         0    0.000000  0    192    192    192    192\
-                \nBOUND\
-                \n         0          1        0          1        0          1\
-                \n  0    0    0    0  0\
-                \nSBOND', file=f)
-                clr=colors(color)
-                print('  1     Xx     Xx     0.00000     %3.2f  0  1  1  0  2  0.250  2.000 %3d %3d %3d'%(dmax,clr[0],clr[1],clr[2]), file=f)
-                print('  0 0 0 0\
-                \nSITET', file=f)
-                for i2,_ in enumerate(obj1):
-                    print('    %d        Xx%d  0.0100  76  76  76  76  76  76 204  0'%(i2+1,i2+1), file=f)
-                print('  0 0 0 0 0 0\
-                \nVECTR\
-                \n 0 0 0 0 0\
-                \nVECTT\
-                \n 0 0 0 0 0\
-                \nSPLAN\
-                \n  0    0    0    0\
-                \nLBLAT\
-                \n -1\
-                \nLBLSP\
-                \n -1\
-                \nDLATM\
-                \n -1\
-                \nDLBND\
-                \n -1\
-                \nDLPLY\
-                \n -1\
-                \nPLN2D\
-                \n  0    0    0    0', file=f)
+                else:
+                    print('%4d Xx        Xx%d  1.0000    %8.6f %8.6f %8.6f        1'%\
+                    (i2+1,i2+1,xyz[0],xyz[1],0.0), file=f)
+                print('                             0.000000    0.000000    0.000000  0.00', file=f)
+            print('  0 0 0 0 0 0 0\
+            \nTHERI 0', file=f)
+            for i2,_ in enumerate(obj1):
+                print('  %d        Xx%d  1.000000'%(i2+1,i2+1), file=f)
+            print('  0 0 0\
+            \nSHAPE\
+            \n  0         0         0         0    0.000000  0    192    192    192    192\
+            \nBOUND\
+            \n         0          1        0          1        0          1\
+            \n  0    0    0    0  0\
+            \nSBOND', file=f)
+            clr=colors(color)
+            print('  1     Xx     Xx     0.00000     %3.2f  0  1  1  0  2  0.250  2.000 %3d %3d %3d'%(dmax,clr[0],clr[1],clr[2]), file=f)
+            print('  0 0 0 0\
+            \nSITET', file=f)
+            for i2,_ in enumerate(obj1):
+                print('    %d        Xx%d  0.0100  76  76  76  76  76  76 204  0'%(i2+1,i2+1), file=f)
+            print('  0 0 0 0 0 0\
+            \nVECTR\
+            \n 0 0 0 0 0\
+            \nVECTT\
+            \n 0 0 0 0 0\
+            \nSPLAN\
+            \n  0    0    0    0\
+            \nLBLAT\
+            \n -1\
+            \nLBLSP\
+            \n -1\
+            \nDLATM\
+            \n -1\
+            \nDLBND\
+            \n -1\
+            \nDLPLY\
+            \n -1\
+            \nPLN2D\
+            \n  0    0    0    0', file=f)
+            #endif
             print('ATOMT\
             \n  1        Xx  0.0100  76  76  76  76  76  76 204\
             \n  0 0 0 0 0 0\
@@ -730,8 +742,10 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
     Export occupation domains in XYZ format.
     
     Args:
-        obj (numpy.ndarray): the occupation domain
-            The shape is (num,3,6,3), where num=numbre_of_triangles.
+        #obj (numpy.ndarray): the occupation domain
+        #    The shape is (num,3,6,3), where num=numbre_of_triangles.
+        obj (qna.qnndarray): the occupation domain
+            The shape is (num,3,n), where num=numbre_of_triangles n=5 or 6 for dihed or icos.
         path (str): Path of the output XYZ file
         basename (str): Basename of the output XYZ file
         select (str)
@@ -749,8 +763,10 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         Generate object (set of triangles) object in XYZ format.
     
         Args:
-            obj (numpy.ndarray): the occupation domain
-                The shape is (num,3,6,3), where num=numbre_of_triangle.
+            #obj (numpy.ndarray): the occupation domain
+            #    The shape is (num,3,6,3), where num=numbre_of_triangle.
+            obj (qna.qnndarray): the occupation domain
+                The shape is (num,3,n), where num=numbre_of_triangle, n=5 or 5 for dihed or icos.
             filename (str): filename of the output XYZ file
         
         Returns:
@@ -761,20 +777,23 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f.write('%d\n'%(len(obj)*3))
         f.write('%s\n'%(filename))
         i1=0
+        n=crs.n
         for i1,triangle in enumerate(obj):
             for i2,vt in enumerate(triangle):
                 v=prj.projection3(vt)
-                f.write('Xx %8.6f %8.6f %8.6f # %3d-the triangle %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-                (num.numeric_value(v[0]),\
-                num.numeric_value(v[1]),\
-                num.numeric_value(v[2]),\
-                i1,i2,\
-                vt[0][0],vt[0][1],vt[0][2],\
-                vt[1][0],vt[1][1],vt[1][2],\
-                vt[2][0],vt[2][1],vt[2][2],\
-                vt[3][0],vt[3][1],vt[3][2],\
-                vt[4][0],vt[4][1],vt[4][2],\
-                vt[5][0],vt[5][1],vt[5][2]))
+                f.write('Xx %8.6f %8.6f %8.6f',num.numeric_value(v[0]),num.numeric_value(v[1]),\
+                num.numeric_value(v[2]))
+                f.write(i1,i2)
+                for i in range(n-1):
+                    f.write(vt[i].n[0],vt[i].n[1],vt[i].n[2])
+                f.write(vt[n-1][0],vt[n-1][1],vt[n-1][2],'\n')
+                
+                #vt[0][0],vt[0][1],vt[0][2],\ 
+                #vt[1][0],vt[1][1],vt[1][2],\
+                #vt[2][0],vt[2][1],vt[2][2],\
+                #vt[3][0],vt[3][1],vt[3][2],\
+                #vt[4][0],vt[4][1],vt[4][2],\
+                #vt[5][0],vt[5][1],vt[5][2]))
         v=utl.obj_area_nd(obj)
         f.write('volume = %d %d %d (%8.6f)\n'%(v[0],v[1],v[2],num.numeric_value(v)))
         for i1,triangle in enumerate(obj):
@@ -800,20 +819,23 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f=open('%s/%s.xyz'%(path,filename),'w', encoding="utf-8", errors="ignore")
         f.write('%d\n'%(len(obj)*2))
         f.write('%s\n'%(filename))
+        n=crs.n
         for i1,edge in enumerate(obj):
             for i2,vt in enumerate(edge):
                 v=prj.projection3(vt)
-                f.write('Xx %8.6f %8.6f %8.6f # %3d-the edge %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-                (num.numeric_value(v[0]),\
-                num.numeric_value(v[1]),\
-                num.numeric_value(v[2]),\
-                i1,i2,\
-                vt[0][0],vt[0][1],vt[0][2],\
-                vt[1][0],vt[1][1],vt[1][2],\
-                vt[2][0],vt[2][1],vt[2][2],\
-                vt[3][0],vt[3][1],vt[3][2],\
-                vt[4][0],vt[4][1],vt[4][2],\
-                vt[5][0],vt[5][1],vt[5][2]))
+                f.write('Xx %8.6f %8.6f %8.6f',num.numeric_value(v[0]),num.numeric_value(v[1]),\
+                num.numeric_value(v[2]))
+                f.write(i1,i2)
+                for i in range(n-1):
+                    f.write(vt[0].n[0],vt[0].n[1],vt[0].n[2])
+                f.write(vt[n-1][0],vt[n-1][1],vt[n-1][2],'\n')
+                
+                #vt[0][0],vt[0][1],vt[0][2],\
+                #vt[1][0],vt[1][1],vt[1][2],\
+                #vt[2][0],vt[2][1],vt[2][2],\
+                #vt[3][0],vt[3][1],vt[3][2],\
+                #vt[4][0],vt[4][1],vt[4][2],\
+                #vt[5][0],vt[5][1],vt[5][2]))
         f.closed
         return 0
     
@@ -822,7 +844,8 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         Generate object (set of vertexs) object in XYZ format.
     
         Args:
-            obj (numpy.ndarray): the occupation domain
+            #obj (numpy.ndarray): the occupation domain
+            obj (qna.qnndarray): the occupation domain
                 The shape is (num,3,6,3), where num=numbre_of_tetrahedron.
             filename (str): filename of the output XYZ file
         
@@ -834,20 +857,22 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f.write('%d\n'%(len(obj)))
         f.write('%s\n'%(filename))
         counter=0
+        n=crs.n
         for tri in range(len(obj)):
             for point in enumerate(tri):
                 v=prj.projection3(point)
-                f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # # # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-                (num.numeric_value(v[0]),\
-                num.numeric_value(v[1]),\
-                num.numeric_value(v[2]),\
-                counter,\
-                point[0][0],point[0][1],point[0][2],\
-                point[1][0],point[1][1],point[1][2],\
-                point[2][0],point[2][1],point[2][2],\
-                point[3][0],point[3][1],point[3][2],\
-                point[4][0],point[4][1],point[4][2],\
-                point[5][0],point[5][1],point[5][2]))
+                f.write('Xx %8.6f %8.6f %8.6f',num.numeric_value(v[0]),num.numeric_value(v[1]),\
+                num.numeric_value(v[2]))
+                f.write(counter)
+                for i in range(n-1):
+                    f.write(point[i].n[0],point[i].n[1],point[i].n[2])
+                f.write(point[n-1][0],point[n-1][1],point[n-1][2],'\n')
+                #point[0][0],point[0][1],point[0][2],\
+                #point[1][0],point[1][1],point[1][2],\
+                #point[2][0],point[2][1],point[2][2],\
+                #point[3][0],point[3][1],point[3][2],\
+                #point[4][0],point[4][1],point[4][2],\
+                #point[5][0],point[5][1],point[5][2]))
                 counter+=1
         f.closed
         return 0
@@ -857,7 +882,8 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         Generate object (set of vertexs) object in XYZ format.
     
         Args:
-            obj (numpy.ndarray): the occupation domain
+            #obj (numpy.ndarray): the occupation domain
+            obj (qna.qnndarray)): the occupation domain
                 The shape is (num,6,3), where num=numbre_of_vertices.
             filename (str): filename of the output XYZ file
         
@@ -868,26 +894,30 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f=open('%s/%s.xyz'%(path,filename),'w', encoding="utf-8", errors="ignore")
         f.write('%d\n'%(len(obj)))
         f.write('%s\n'%(filename))
+        n=crs.n
         for i1,point in enumerate(obj):
             v=prj.projection3(point)
-            f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # # # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
-            (num.numeric_value(v[0]),\
-            num.numeric_value(v[1]),\
-            num.numeric_value(v[2]),\
-            i1,\
-            point[0][0],point[0][1],point[0][2],\
-            point[1][0],point[1][1],point[1][2],\
-            point[2][0],point[2][1],point[2][2],\
-            point[3][0],point[3][1],point[3][2],\
-            point[4][0],point[4][1],point[4][2],\
-            point[5][0],point[5][1],point[5][2]))
+            f.write('Xx %8.6f %8.6f %8.6f',num.numeric_value(v[0]),num.numeric_value(v[1]),\
+            num.numeric_value(v[2]))
+            f.write(i1)
+            for i in range(n-1):
+                f.write(point[i].n[0],point[i][1],point[i].n[2])
+            f.write(point[n-1][0],point[n-1][1],point[n-1][2],'\n')
+ 
+            #point[0][0],point[0][1],point[0][2],\
+            #point[1][0],point[1][1],point[1][2],\
+            #point[2][0],point[2][1],point[2][2],\
+            #point[3][0],point[3][1],point[3][2],\
+            #point[4][0],point[4][1],point[4][2],\
+            #point[5][0],point[5][1],point[5][2]))
         f.closed
         return 0
         
-    if np.all(obj==None):
-        print('empty obj')
-        return 
-    elif obj.ndim<3 or obj.ndim>4:
+    #if np.all(obj==None):
+    #    print('empty obj')
+    #    return 
+    #elif obj.ndim<3 or obj.ndim>4:
+    if obj.ndim<2 or obj.ndim>4:
         print('object has an incorrect shape!')
         return 
     elif obj.ndim==3:
@@ -959,13 +989,14 @@ def read_xyz(path,basename,select='triangle',verbose=0):
     f0=f1[0].split()  # first line
     num=int(f0[0]) # number of lines in the first line
     print("num",num)  # for test
-    qnvs=qna.zeros((num,6))
+    n=crs.n
+    qnvs=qna.zeros((num,n))
     nv=np.zeros((3),dtype=np.int64)
     for i in range(num):  #for i in range(2,num+2):
         fi=f1[i+2]  #fi=f1[i]  # skip first 2 lines
         fj=fi.split() #fi=fi.split()
         #print("fj",fj)  # for test
-        for j in range(6):
+        for j in range(n):
             nv[0]=int(fj[10+j*3])
             nv[1]=int(fj[11+j*3])
             nv[2]=int(fj[12+j*3])
@@ -1007,8 +1038,8 @@ def read_xyz(path,basename,select='triangle',verbose=0):
     
     print("select",select)  # for test
     if select == 'triangle':
-        return qnvs.reshape(int(num/3),3,6)
-        #return tmp.reshape(int(num/3),3,6,3)
+        return qnvs.reshape(int(num/3),3,n)
+        #return tmp.reshape(int(num/3),3,n,3)
     elif select == 'vertex':
         return qnvs
         #return tmp.reshape(int(num),6,3)
@@ -1018,8 +1049,10 @@ def simplification(obj,verbose=0):
     Simplification of occupation domains.
     
     Args:
-        obj (numpy.ndarray): the occupation domain
-            The shape is (num,3,6,3), where num=numbre_of_trianges.
+        #obj (numpy.ndarray): the occupation domain
+        #   The shape is (num,3,6,3), where num=numbre_of_trianges.
+        obj (qna.qnndarray): the occupation domain
+            The shape is (num,3,n), where num=numbre_of_trianges n=5 or 6 for dihed or icos.
         num_cycle (int): numbre of cycles
         verbose (int)
             verbose = 0 (silent, default)
@@ -1056,9 +1089,11 @@ def generate_border_edges(obj):
     Generate border edges of the occupation domain.
     
     Args:
-        obj (numpy.ndarray):
+        #obj (numpy.ndarray):
+        "   The shape is (num,3,6,3), where num=numbre_of_tetrahedron.
+        obj (nda.qnndarray):
             The occupation domain
-            The shape is (num,3,6,3), where num=numbre_of_tetrahedron.
+            The shape is (num,3,n), where num=numbre_of_tetrahedron n=5 or 6 for dihed or icos.
     
     Returns:
         Border edges of the occupation domains (numpy.ndarray):
@@ -1073,7 +1108,8 @@ def outline(obj):
     Generate outline of the occupation domain.
     
     Args:
-        obj (numpy.ndarray): the shape is (num,3,6,3), where num=numbre_of_triangle.
+        #obj (numpy.ndarray): the shape is (num,3,6,3), where num=numbre_of_triangle.
+        obj (numpy.ndarray): the shape is (num,3,n), where num=numbre_of_triangle, n=5 or 6 for dihed or icos.
     
     Returns:
         Outline of the occupation domain (numpy.ndarray):

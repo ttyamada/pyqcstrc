@@ -8,7 +8,7 @@ import cython
 from numpy.typing import NDArray
 import random
 
-import crsys
+import crsys as crs
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
@@ -23,8 +23,8 @@ import qnndarray as qna
 
 def numeric_init():
     global n,N
-    n=crsys.n
-    N=crsys.N
+    n=crs.n
+    N=crs.N
 
 def coplanar_check_numeric_tau(pts: qnv.Qnvec, num_iteration: int=5) -> bool:
     """check the points (pts) are in coplanar or not
@@ -183,7 +183,8 @@ def numeric_value(t: qnn.Qnnum) -> float:
     float
     """
     #return (t[0]+t[1]*TAU)/t[2]
-    #return (t[0]+t[1]*SQRT3)/t[2] # float???
+    #return (t[0]+t[1]*SQRT3)/t[2]
+    return (t.n[0]+t[1]*np.sqrt(crs.N))/t.n[2]  # float value
 
 # qnnum version => qnnum.qnn2flt
 # equivalent to qnv2flt

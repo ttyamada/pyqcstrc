@@ -236,7 +236,7 @@ def qnv2npa(a:Qnvec):
     return b
     
 def qnv2flt(a:Qnvec):
-    la=a.shape
+    la=a.shape[0]
     b=np.zeros(la, dtype=np.float64)
     #print("b",b)
     #N=a[0].N
@@ -289,7 +289,8 @@ def printqnvs(str:str,qnv1:Qnvec):
     #n_=shape[0]
     n_=len(qnv1)
     for j in range(n_):
-        print(str+"["+format(j)+"]",end=" ")
+        print(str)
+        #print("["+format(j)+"]",end=" ")
         printqnv("",qnv1[j])
      
 def eq(qnv1:Qnvec, qnv2:Qnvec):

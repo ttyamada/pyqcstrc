@@ -4,7 +4,7 @@ from numpy.typing import NDArray
 import time # in object_subtraction_dev1, tetrahedron_not_obj
 import itertools
 
-import crsys
+import crsys as crs
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
@@ -20,7 +20,7 @@ def ball_radius_obj(obj: qnv.Qnvec, centroid: qnv.Qnvec) -> qnn.Qnnum: #float:
     obj: array (ndim=4)
         in TAU-style
     centroid: array, (ndim=2)
-        a 6-dimensional coordinates in TAU-style
+        a n-dimensional coordinates in TAU-style
     
     Returns
     -------
@@ -161,7 +161,7 @@ def intersection_two_segment(segment_1: qna.QnNdarray, segment_2: qna.QnNdarray)
     Parameters
     ----------
     line_segment_1 line_segment_2: array
-        6-dimensional coordinates of line segment,(xyzuvw1, xyzuvw2) and (xyzuvw3, xyzuvw4), in TAU-style
+        n-dimensional coordinates of line segment,(xyzuvw1, xyzuvw2) and (xyzuvw3, xyzuvw4), in TAU-style
    
     Returns
     -------
@@ -227,9 +227,9 @@ def intersection_segment_surface(segment: qna.QnNdarray, surface: qna.QnNdarray)
     Parameters
     ----------
     line_segment: array
-        6-dimensional coordinates of line segment,xyzuvw1, xyzuvw2, in TAU-style
+        n-dimensional coordinates of line segment,xyzuvw1, xyzuvw2, in TAU-style
     triangle: array
-        containing 6-dimensional coordinates of tree vertecies of a triangle, xyzuvw1, xyzuvw2, xyzuvw3, xyzuvw4 in TAU-style
+        containing n-dimensional coordinates of tree vertecies of a triangle, xyzuvw1, xyzuvw2, xyzuvw3, xyzuvw4 in TAU-style
     
     Returns
     -------
@@ -263,14 +263,16 @@ def intersection_segment_surface(segment: qna.QnNdarray, surface: qna.QnNdarray)
         # intersecting point: OA + t*AB
         tmp=mul_vector(vec6AB,t) # t*AB
         #print('   t=',numeric_value(t))
-        return add_vectors(segment[0],tmp).reshape(1,6,3)
+        n=crs.n
+        return add_vectors(segment[0],tmp).reshape(1,n,3)
         """
         #  edge: 0-1,0-2,1-2
         comb=[[0,1],[0,2],[1,2]]
         counter=0
+        n=crs.n
         for j in comb:
-            segment1=np.vstack([surface[j[0]],surface[j[1]]]) #????
-            tmp1=intersection_two_segment(segment,segment1.reshape(2,6,3))
+            segment1=np.vstack([surface[j[0]],surface[j[1]]])
+            tmp1=intersection_two_segment(segment,segment1.reshape(2,n,3))
             if np.all(tmp1==None):
                 pass
             else:
@@ -354,21 +356,24 @@ def intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdar
             else:
                 tmp=np.vstack([tmp,vtx]) # intersecting points
             counter+=1
-    tmp=tmp.reshape(int(len(tmp)/6),6,3)
+    n=crs.n
+    tmp=tmp.reshape(int(len(tmp)/n),n,3)
     
     # get vertces of triangle_1 that are inside triangle_2
+    n=crs.n
     for vtx in triangle_1:
         if inside_outside_triangle_tau(vtx,triangle_2): # inside
             if counter==0:
-                tmp=vtx.reshape(1,6,3)
+                tmp=vtx.reshape(1,n,3)
             else:
                 tmp=np.vstack([tmp,[vtx]])
             counter+=1
     # get vertces of triangle_2 that are inside triangle_1
+    n=crs.n
     for vtx in triangle_2:
         if inside_outside_triangle_tau(vtx,triangle_1): # inside
             if counter==0:
-                tmp=vtx.reshape(1,6,3)
+                tmp=vtx.reshape(1,n,3)
             else:
                 tmp=np.vstack([tmp,[vtx]])
             counter+=1
@@ -376,6 +381,7 @@ def intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdar
             pass
     
     if counter>=3:
+        n=crs.n
         tmp=remove_doubling_in_perp_space(tmp)
         if len(tmp)>3:
             tmp4=triangulation_points(tmp)
@@ -384,7 +390,7 @@ def intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdar
             else:
                 return tmp4
         elif len(tmp)==3:
-            return tmp.reshape(1,3,6,3)
+            return tmp.reshape(1,3,n,3)
         else:
             return 
     else:
@@ -427,6 +433,7 @@ def intersection_two_obj_1(obj1: qnv.Qnvec,obj2: qnv.Qnvec,select=None,verbose: 
         print("         dd2:%6.4f"%(dd2))
     
     counter0=0
+    n=crs.n
     for i1,triangle1 in enumerate(obj1):
         if verbose>0:
             print("         %d-th triangle in obj1"%(i1))
@@ -442,7 +449,7 @@ def intersection_two_obj_1(obj1: qnv.Qnvec,obj2: qnv.Qnvec,select=None,verbose: 
                 # tetrahedron_1 is fully inside triangle2
                 if flag==1:
                     if counter0==0:
-                        common4=triangle1.reshape(1,3,6,3)
+                        common4=triangle1.reshape(1,3,n,3)
                         counter0+=1
                     else:
                         common4=np.vstack([common4,[triangle1]])
@@ -451,7 +458,7 @@ def intersection_two_obj_1(obj1: qnv.Qnvec,obj2: qnv.Qnvec,select=None,verbose: 
                 # tetrahedron_2 is fully inside triangle1
                 elif flag==2:
                     if counter1==0:
-                        tmp_common4=triangle2.reshape(1,3,6,3)
+                        tmp_common4=triangle2.reshape(1,3,n,3)
                         counter1+=1
                     else:
                         tmp_common4=np.vstack([tmp_common4,[triangle2]])
@@ -491,7 +498,7 @@ def intersection_two_obj_1(obj1: qnv.Qnvec,obj2: qnv.Qnvec,select=None,verbose: 
                     vol2=obj_area_nd(tmp_common4)
                     if np.all(vol1==vol2):
                         if counter0==0:
-                            common4=triangle1.reshape(1,3,6,3)
+                            common4=triangle1.reshape(1,3,n,3)
                             #print('common4.shape',common4.shape)
                             counter0+=1
                         else:
@@ -577,6 +584,7 @@ def intersection_two_obj_convex(obj1: qnv.Qnvec, obj2: qnv.Qnvec, verbose: int=0
     counter1a=0
     #counter2a=0
     vertices1=remove_doubling_in_perp_space(obj1_edge) # generating vertces of 1st OD
+    n=crs.n
     for vrtx in vertices1:
         counter2a=0
         for triangle2 in obj2:
@@ -587,13 +595,13 @@ def intersection_two_obj_convex(obj1: qnv.Qnvec, obj2: qnv.Qnvec, verbose: int=0
                 pass
         if counter2a>0:
             if counter1a==0:
-                point_a1=vrtx.reshape(1,6,3)
+                point_a1=vrtx.reshape(1,n,3)
             else:
                 point_a1=np.vstack([point_a1,[vrtx]])
             counter1a+=1
         #else:
         #    if counter2==0:
-        #        point_b2=vrtx.reshape(1,6,3)
+        #        point_b2=vrtx.reshape(1,n,3)
         #    else:
         #        point_b2=np.vstack([point_b2,[vrtx]])
         #    counter2+=1
@@ -604,6 +612,7 @@ def intersection_two_obj_convex(obj1: qnv.Qnvec, obj2: qnv.Qnvec, verbose: int=0
     counter1b=0
     #counter2b=0
     vertices2=remove_doubling_in_perp_space(obj2_edge) # generating vertces of 2nd OD
+    n=crs.n
     for vrtx in vertices2:
         counter2b=0
         for triangle1 in obj1:
@@ -614,13 +623,13 @@ def intersection_two_obj_convex(obj1: qnv.Qnvec, obj2: qnv.Qnvec, verbose: int=0
                 pass
         if counter2b>0:
             if counter1b==0:
-                point_b1=vrtx.reshape(1,6,3)
+                point_b1=vrtx.reshape(1,n,3)
             else:
                 point_b1=np.vstack([point_b1,[vrtx]])
             counter1b+=1
         #else:
         #    if counter2==0:
-        #        point_a2=vrtx.reshape(1,6,3)
+        #        point_a2=vrtx.reshape(1,n,3)
         #    else:
         #        point_a2=np.vstack([point_a2,[vrtx]])
         #    counter2+=1
@@ -658,7 +667,8 @@ def intersection_two_obj_convex(obj1: qnv.Qnvec, obj2: qnv.Qnvec, verbose: int=0
         if counter==0:
             return 
         else:
-            point1=remove_doubling_in_perp_space(p.reshape(int(len(p)/6),6,3))
+            n=crs.n
+            point1=remove_doubling_in_perp_space(p.reshape(int(len(p)/n),n,3))
             #
             # (3) Sum point A, point B and Intersections --->>> common part
             #
@@ -683,15 +693,16 @@ def subtraction_two_obj(obj1: qnv.Qnvec, obj2: qnv.Qnvec, verbose: int=0) -> qnv
 
     Parameters
     ----------
-    obj1: array,(number of triangles, 3, 6, 3)
+    n=crs.n
+    obj1: array,(number of triangles, 3, n, 3)
         Object A to be subtracted.
-    obj2: array, (number of triangles, 3, 6, 3)
+    obj2: array, (number of triangles, 3, n, 3)
         Object B that subtracts the triangle.
     verbose: int
     
     Returns
     -------
-    obj: array, (number of triangles, 3, 6, 3)
+    obj: array, (number of triangles, 3, n, 3)
     
     """
     
@@ -714,10 +725,11 @@ def subtraction_two_obj(obj1: qnv.Qnvec, obj2: qnv.Qnvec, verbose: int=0) -> qnv
     flag=0
     out=None
     counter1=0
+    n=crs.n
     for triangle in obj1:
         if verbose>0:
             print('       %d-th triangle in obj1'%(counter1))
-        a=triangle_not_obj_1(triangle.reshape(1,3,6,3),obj2,verbose)
+        a=triangle_not_obj_1(triangle.reshape(1,3,n,3),obj2,verbose)
         if np.all(a==None):
             out=None
             flag=1
@@ -741,17 +753,18 @@ def triangle_not_obj_1(triangle: qnv.Qnvec, obj: qnv.Qnvec, verbose: int=0) -> q
     
     Parameters
     ----------
-    triangle: array, (1, 4, 6, 3)
+    n=crs.n
+    triangle: array, (1, 4, n, 3)
         Triangle to be subtracted.
-    obj: array, (number of triangles, 3, 6, 3)
+    obj: array, (number of triangles, 3, n, 3)
         Object that subtracts the triangle.
-    surface_obj: array, (number of triangles, 3, 6, 3)
+    surface_obj: array, (number of triangles, 3, n, 3)
         Surface trianges of the object.
     verbose: int
     
     Returns
     -------
-    obj: array, (number of triangles, 3, 6, 3)
+    obj: array, (number of triangles, 3, n, 3)
     
     Note
     ----
@@ -793,6 +806,7 @@ def triangle_not_obj_1(triangle: qnv.Qnvec, obj: qnv.Qnvec, verbose: int=0) -> q
     # 余計なもまで作ってしまう。
     ################################################
     counter2=0
+    n=crs.n
     for triangle2 in surface_common:
         counter1=0
         for vrtx2 in triangle2:
@@ -804,7 +818,7 @@ def triangle_not_obj_1(triangle: qnv.Qnvec, obj: qnv.Qnvec, verbose: int=0) -> q
                     pass
         if counter1==3:
             if counter2==0:
-                tmp=triangle2.reshape(1,3,6,3)
+                tmp=triangle2.reshape(1,3,n,3)
             else:
                 tmp=np.vstack([tmp,[triangle2]])
             counter2+=1
@@ -815,7 +829,8 @@ def triangle_not_obj_1(triangle: qnv.Qnvec, obj: qnv.Qnvec, verbose: int=0) -> q
     
     # get vertices of tetrahedron which are NOT inside obj
     counter2=0
-    tetrahedron=tetrahedron.reshape(4,6,3)
+    n=crs.n
+    tetrahedron=tetrahedron.reshape(4,n,3)
     for vrtx1 in tetrahedron:
         counter1=0
         for tet3 in obj:
@@ -828,7 +843,7 @@ def triangle_not_obj_1(triangle: qnv.Qnvec, obj: qnv.Qnvec, verbose: int=0) -> q
                 pass
         if counter1==0:
             if counter2==0:
-                tmp=vrtx1.reshape(1,6,3)
+                tmp=vrtx1.reshape(1,n,3)
             else:
                 tmp=np.vstack([tmp1a,[vrtx1]])
             counter2+=1
@@ -857,6 +872,7 @@ def triangle_not_obj_1(triangle: qnv.Qnvec, obj: qnv.Qnvec, verbose: int=0) -> q
         num=len(triangle_common)
         #print('len(triangle_common)',num)
         dd=np.zeros(num,dtype=np.float_)
+        n=crs.n
         i1=0
         for triangle in triangle_common:
             vt=centroid(triangle)
@@ -865,7 +881,7 @@ def triangle_not_obj_1(triangle: qnv.Qnvec, obj: qnv.Qnvec, verbose: int=0) -> q
             vn=get_internal_component_numerical(vt)
             #print('vrtx1_out.shape',vrtx1_out.shape)
             #print('vrtx1_out',vrtx1_out)
-            vn_out=get_internal_component_numerical(vrtx1_out.reshape(6,3))
+            vn_out=get_internal_component_numerical(vrtx1_out.reshape(n,3))
             vn=vn-vn_out
             #print('vn',vn)
             dd[i1]=np.sqrt(vn[0]**2+vn[1]**2+vn[2]**2)
@@ -873,7 +889,7 @@ def triangle_not_obj_1(triangle: qnv.Qnvec, obj: qnv.Qnvec, verbose: int=0) -> q
         #print('dd',dd)
         indx_dd=np.argsort(dd)
         #print('indx_dd',indx_dd)
-        tmp=np.zeros((num,3,6,3),dtype=np.int64)
+        tmp=np.zeros((num,3,n,3),dtype=np.int64)
         for i1 in range(len(indx_dd)):
             tmp[i1]=triangle_common[indx_dd[i1]]
         triangle_common=tmp
@@ -881,7 +897,7 @@ def triangle_not_obj_1(triangle: qnv.Qnvec, obj: qnv.Qnvec, verbose: int=0) -> q
         #print('triangle_common.shape',triangle_common.shape)
         for triangle in triangle_common:
             #print('triangle.shape',triangle.shape)
-            tet=np.vstack([vrtx1_out,triangle]).reshape(1,4,6,3)
+            tet=np.vstack([vrtx1_out,triangle]).reshape(1,4,n,3)
             #print('tet.shape',tet.shape)
             if counter3==0:
                 tmp=tet
@@ -924,7 +940,7 @@ def triangle_not_obj_1(triangle: qnv.Qnvec, obj: qnv.Qnvec, verbose: int=0) -> q
                 if flag==1:
                     for i1 in range(num):
                         if i1==0:
-                            tmp1=tmp[comb[i1]].reshape(1,4,6,3)
+                            tmp1=tmp[comb[i1]].reshape(1,4,n,3)
                         else:
                             tmp1=np.vstack([tmp1,[tmp[comb[i1]]]])
                     break
@@ -1048,14 +1064,15 @@ def tetrahedron_not_obj_2(tetrahedron: qnv.Qnvec, obj: qnv.Qnvec) -> qnv.Qnvec:
     
     Parameters
     ----------
-    tetrahedron: array, (1, 4, 6, 3)
+    n=crs.n
+    tetrahedron: array, (1, 4, n, 3)
         Tetrahedron to be subtracted.
-    obj: array, (number of tetrahedra, 4, 6, 3)
+    obj: array, (number of tetrahedra, 4, n, 3)
         Object that subtracts the tetrahedron.
     
     Returns
     -------
-    obj: array, (number of tetrahedra, 4, 6, 3)
+    obj: array, (number of tetrahedra, 4, n, 3)
     
     Note
     ----
