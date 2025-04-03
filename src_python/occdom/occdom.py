@@ -107,11 +107,11 @@ def generator_obj_symmetric_obj(obj:qnv.Qnvec, centre:qnv.Qnvec):
         nss=len(irs) # number of site symmetry operators
         mop=qna.QnNdarray((nss,n,n)) # rotation operator matrices
         #tmp=octasymop_array()
-        for i in irs:
-            mop[i]=qns.qnr[i]
-        shape=tuple([nss])
+        #for i in irs:
+        #    mop[i]=qns.qnr[i]
+        #shape=tuple([nss])
 
-        a=np.zeros(shape+obj.shape,dtype=np.int64)
+        #a=np.zeros(shape+obj.shape,dtype=np.int64)
         for i,op in enumerate(mop):
             a[i]=symmetric(obj,centre)  #  rotated obj (rotated triangle vertices)
         
@@ -131,20 +131,42 @@ def generator_obj_symmetric_obj(obj:qnv.Qnvec, centre:qnv.Qnvec):
 #    """
 #    return generator_obj_symmetric_obj(obj,centre)
 
+def symmetric_i(i1,obj)
+    shape=obj.shape  # (num,3,n) or (num,4,n) assumed
+    qnr=qns.qnr[i1]
+    a=qna.Qnndarray(shape)
+    for i in range(shape[0]):
+        for j in range(shape[1]):
+            a[i][j]=qnr@obj[i][j]
+    return a
+
+def symmetric(obj,irs):
+    nsy=len(irs)
+    sp0=obj.shape # (num,3,5) or (num,4,6) assumed
+    shape=(nsy,sp0[0],sp0[1,sp0[2]])  # (nsy,num,3,n) or (nsy,num,4,6)
+    qnr=qns.qnr
+    a=qna.Qnndarray(shape)
+    for i in range(shape[0]):
+        for j in range(shape[1]):
+            for k in range(shape[2])
+                a[i][j][k]=qnr[irs[i]]@obj[j][k]
+    return a
+
 #def generator_obj_symmetric_vector_specific_symop(obj:qnv.Qnvec,centre:qnv.Qnvec,irs:np.int64,pg:str):
 def generator_obj_symmetric_vector_specific_symop(obj:qnv.Qnvec,centre:qnv.Qnvec,irs:np.int64):
     """
     vector: triangles
     (6,3)
-    """
+    """       
+    nss=len(irs)
+    shape=tuple(nss,n,n)
     # using specific symmetry operations
     if obj.ndim==2:
-        mop=qna.qnndarray()
-        shape=tuple([len(irs)])
-        a=np.zeros(shape+obj.shape,dtype=np.int64)
+        a=qna.QnNdarray(shape) # rotation operator matrices
+        #a=np.zeros(shape+obj.shape,dtype=np.int64)
         j=0
         for i1 in irs:
-            a[j]=symmetric_i(i1,obj,centre)  # return rotated obj by i1-th symmetry operator
+            a[j]=symmetric_i(obj,i1)  # return rotated obj by i1-th symmetry operator
             j+=1
         return a
     else:

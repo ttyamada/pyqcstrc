@@ -42,6 +42,7 @@ except FileExistsError:
     
 isys=4  # octagonal
 crs.crsys_init(isys)
+brv='p'
 qnn.qnnum_init()
 qna.qnndarray_init()
 qnv.qnvec_init()
@@ -50,7 +51,8 @@ qmt.qnmath_init()
 prj.prjop_init()
 num.numeric_init()
 qns.qnsym_init()
-lt.lattice_init()
+qns.Qnsym()  # set symmetry operator
+lt.lattice_init(brv)
 
 
 M0=qnn.any([0,0,1])
