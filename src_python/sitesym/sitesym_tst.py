@@ -21,13 +21,14 @@ from sitesym import (sitesym_init,\
 #if __name__ == '__main__':
 isys=3  # decagonal
 crsys.crsys_init(isys)
+brv='p'
 qnn.qnnum_init()
 qnv.qnvec_init()
 qna.qnndarray_init()
 qnm.qnmat_init()
 prj.prjop_init()
 qns.qnsym_init()
-lt.lattice_init()
+lt.lattice_init(brv)
 
 brv='p'
 N=crsys.N
@@ -40,7 +41,7 @@ qnv.printqnv("x0",x0)
 #qnr=qns.qnr # symmetry operators
 qns=qns.Qnsym()
 nr=qns.nr
-brv="p"
+brv=lt.brv
 irs0=site_symmetry(x0,qns,brv)
 r=qns.r # symmetry operators
 #print("irs0",irs0) # for test

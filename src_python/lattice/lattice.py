@@ -7,12 +7,13 @@ import qnnum as qnn
 import qnvec as qnv
 import qnndarray as qna
 
-def lattice_init():
-    global n,N
+def lattice_init(brv_: str):
+    global n,N,brv
     n=crsys.n
     N=crsys.N
+    brv=brv_
 
-def get_tr(brv) -> qnv.Qnvec:
+def get_tr() -> qnv.Qnvec:
     global ntr
     #print("n in get_tr",n)  # for test
     qn0=qnn.Qnnum([0,0,1]) # 0

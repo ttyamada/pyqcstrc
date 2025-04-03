@@ -19,7 +19,7 @@ def sitesym_init():
     n=crs.n
     N=crs.N
 
-def site_symmetry(x: qnv.Qnvec, qns: qns.Qnsym, brv: str) -> np.ndarray: # return irs
+def site_symmetry(x: qnv.Qnvec) -> np.ndarray: # return irs
     global nr,mpltbl,r
     """symmetry operator insixwa irs in the site symmetry group G.
     
@@ -42,12 +42,13 @@ def site_symmetry(x: qnv.Qnvec, qns: qns.Qnsym, brv: str) -> np.ndarray: # retur
     else:
         n_i=2
     n=crs.n
+    brv=lt.brv
     nr=qns.nr
     #print("n",n,"n_i",n_i) # for test
     qnr=qns.qnr  # symmetry operator for Q coordinates
     qnr_i=qns.qnr_i  # symmetry operator for Q coordinates
     mpltbl=qns.mpltbl
-    r=qns.r
+    r=qns.qnr
     a_i=qnv.zerovs((nr,n_i))
     qnx_i=prj.prjvec_i(x) # internal space component os nD vector x
     #a=np.zeros((nr,n),dtype=qnn.Qnnum)
@@ -57,7 +58,7 @@ def site_symmetry(x: qnv.Qnvec, qns: qns.Qnsym, brv: str) -> np.ndarray: # retur
 
     irs=np.zeros(0,dtype=np.int64)
     #tr=lt.get_tr(brv)
-    trop=lt.get_tr(brv)  # centering translation vectors including zero vector
+    trop=lt.get_tr()  # centering translation vectors including zero vector
     #print("type(trop[0])",type(trop[0]))  # for test
     for i in range(nr):
         #qnm.printqnm("qnr_i",qnr_i[i]) # for test
@@ -134,7 +135,7 @@ def coset(irs) -> np.array: # return coset representativ indices in symop
     print("isk",isk) # for test
     return isk
 
-def equivalent_positions(x:qnv.Qnvec,brv: str,isk:np.ndarray, r0: qnm.Qnmat) -> qnv.Qnvec:
+def equivalent_positions(x: qnv.Qnvec, brv: str, isk: np.ndarray, r0: qnm.Qnmat) -> qnv.Qnvec:
     """
     siteに対して点群の対称性を施したサイトのうち、並進操作のみで結ばれない位置を求める。
         適切な名前を決める必要がある！！！
@@ -185,82 +186,6 @@ def symop_vec(symop:qnm.Qnmat,vt:qnv.Qnvec,centre:qnv.Qnvec):
     vt=qnm.mul(symop,vt)
     return qnv.add(vt,centre)
 
-#def generator_obj_symmetric_obj(obj:qnv.Qnvec, centre:qnv.Qnvec, pg:str):
-def generator_obj_symmetric_obj(obj:qnv.Qnvec, centre:qnv.Qnvec):
-    """
-    """
-    ndim=len(obj.shape)  #obj.shape[0]
-    #n=obj.shape[ndim-1]
-    n=crs.n
-    V0=qnv.zerov(n)  # origin
-    if ndim==3 or ndim==4:
-        if centre==V0:  #np.all(centre==V0):
-            mop=octasymop_array()
-        else:
-            lst_site_symmetry=site_symmetry(centre)
-            mop=[]
-            tmp=octasymop_array()
-            for i in lst_site_symmetry:
-                mop.append(tmp[i])
-        num=len(mop)
-        shape=tuple([num])
-        a=np.zeros(shape+obj.shape,dtype=np.int64)
-        for i,op in enumerate(mop):
-            a[i]=symop_obj(op,obj,centre)  # generate equivalent obj
-        if obj.ndim==4:
-            n1,n2,_,_=obj.shape
-            #a=a.reshape(num*n1,n2,6,3)
-            a=a.reshape(num*n1,n2,6)
-        return a
-    else:
-        print('object has an incorrect shape in generator_obj_symmetric_obj!')
-        return
-
-#def generator_obj_symmetric_triangle(obj:qnv.Qnvec, centre:qnv.Qnvec, pg:str):
-def generator_obj_symmetric_triangle(obj:qnv.Qnvec, centre:qnv.Qnvec):
-    """
-    """
-    return generator_obj_symmetric_obj(obj,centre)
-
-#def generator_obj_symmetric_vector_specific_symop(obj:qnv.Qnvec,centre:qnv.Qnvec,index_of_symmetry_operation:qnm.Qnmat,pg:str):
-def generator_obj_symmetric_vector_specific_symop(obj:qnv.Qnvec,centre:qnv.Qnvec,index_of_symmetry_operation:qnm.Qnmat):
-    """
-    vector: triangles
-    (6,3)
-    """
-    # using specific symmetry operations
-    if obj.ndim==2:
-        mop=octasymop_array()
-        shape=tuple([len(index_of_symmetry_operation)])
-        a=np.zeros(shape+obj.shape,dtype=np.int64)
-        j=0
-        for i1 in index_of_symmetry_operation:
-            a[j]=symop_obj(mop[i1],obj,centre)
-            j+=1
-        return a
-    else:
-        print('object has an incorrect shape!')
-        return
-
-#def generator_obj_symmetric_triangle_specific_symop(obj:qnv.Qnvec,centre:qnv.Qnvec,indx_sym:np.int64,pg=None):
-def generator_obj_symmetric_triangle_specific_symop(obj:qnv.Qnvec,centre:qnv.Qnvec,indx_sym:np.int64):
-    """
-    triangle: triangles
-    (3,6,3)
-    """
-    # using specific symmetry operations
-    if obj.ndim==3:
-        mop=octasymop_array()
-        shape=tuple([len(indx_sym)])
-        a=np.zeros(shape+obj.shape,dtype=np.int64)
-        j=0
-        for i1 in indx_sym:
-            a[j]=symop_obj(mop[i1],obj,centre)
-            j+=1
-        return a
-    else:
-        print('object has an incorrect shape!')
-        return
 
 
     #symmetry operators in the site symmetry group G and its left coset decomposition.

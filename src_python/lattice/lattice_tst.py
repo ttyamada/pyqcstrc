@@ -9,11 +9,12 @@ from lattice import (lattice_init,get_tr)
 # for test
 #if __name__ == '__main__':
 isys=3  # for decagonal
+brv='p'
 crs.crsys_init(isys)
 qnn.qnnum_init()
 qna.qnndarray_init()
 qnv.qnvec_init()
-lattice_init()
+lattice_init(brv)
 
 tr=get_tr('p')
 for i in range(tr.shape[0]):
