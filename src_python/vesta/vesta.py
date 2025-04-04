@@ -796,13 +796,16 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         n=crs.n
         for i1,triangle in enumerate(obj):
             for i2,vt in enumerate(triangle):
-                v=prj.projection3(vt)
-                f.write('Xx %8.6f %8.6f %8.6f',num.numeric_value(v[0]),num.numeric_value(v[1]),\
-                num.numeric_value(v[2]))
-                f.write(i1,i2)
+                v=prj.projection3(vt)  # projection into internal space
+                if n==5:
+                    f.write('Xx %8.6f %8.6f %8.6f'%(qnn.qn2flt(v[0]),qnn.qn2flt(v[1]),0.0))
+                else:
+                    f.write('Xx %8.6f %8.6f %8.6f'%(qnn.qn2flt(v[0]),qnn.qn2flt(v[1]),\
+                    qnn.qn2flt([2])))
+                f.write('%i %i'%(i1,i2))
                 for i in range(n-1):
-                    f.write(vt[i].n[0],vt[i].n[1],vt[i].n[2])
-                f.write(vt[n-1][0],vt[n-1][1],vt[n-1][2],'\n')
+                    f.write('%d %d %d'%(vt[i].n[0],vt[i].n[1],vt[i].n[2]))
+                f.write('%d %d %d\n'%(vt[n-1].n[0],vt[n-1].n[1],vt[n-1].n[2]))
                 
                 #vt[0][0],vt[0][1],vt[0][2],\ 
                 #vt[1][0],vt[1][1],vt[1][2],\
@@ -811,11 +814,11 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
                 #vt[4][0],vt[4][1],vt[4][2],\
                 #vt[5][0],vt[5][1],vt[5][2]))
         v=utl.obj_area_nd(obj)
-        f.write('volume = %d %d %d (%8.6f)\n'%(v[0],v[1],v[2],num.numeric_value(v)))
+        f.write('volume = %d %d %d (%8.6f)\n'%(v.n[0],v.n[1],v.n[2],qnn.qn2flt(v)))
         for i1,triangle in enumerate(obj):
             v=utl.triangle_area_nd(triangle)
             f.write('%3d-the triangle, %d %d %d (%8.6f)\n'\
-                    %(i1,v[0],v[1],v[2],num.numeric_value(v)))
+                    %(i1,v.n[0],v.n[1],v.n[2],qnn.qn2flt(v)))
         f.closed
         return 0
     
@@ -912,6 +915,8 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f.write('%s\n'%(filename))
         n=crs.n
         for i1,point in enumerate(obj):
+            print("i1",i1)  # for test
+            qnv.printqnv("point",point) # for test
             v=prj.projection3(point)
             f.write('Xx %8.6f %8.6f %8.6f',num.numeric_value(v[0]),num.numeric_value(v[1]),\
             num.numeric_value(v[2]))

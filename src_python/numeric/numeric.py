@@ -170,7 +170,7 @@ def on_out_surface(point: qnv.Qnvec, triangle: qnv.Qnvec) -> bool:
 # qnnum version => qnnum.qnn2flt
 # equivalent to qnn2flt
 def numeric_value(t: qnn.Qnnum) -> float:
-    return qnn.qnn2flt(t)
+    return qnn.qn2flt(t)
     """Numeric value of a TAU-style value, a.
 
     Parameters

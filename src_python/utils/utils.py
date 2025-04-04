@@ -15,6 +15,7 @@ import time
 
 import crsys as crs
 import qnnum as qnn
+import qnndarray as qna
 import qnvec as qnv
 import qnmat as qnm
 import qnmath as qmt
@@ -55,22 +56,24 @@ def obj_area_nd(obj: qnv.Qnvec) -> qnn.Qnnum:
     area: array
         area in TAU-style.
     """
-    N=obj.N
-    qn0=qnn.Qnnum([0,0,1],N)
-    ndim=obj.ndim # ndim qn vector
+    #N=crs.N
+    qn0=qnn.Qnnum([0,0,1])
+    shape=obj.shape
+    ndim=len(shape) # ndim qnndvector
+    print("shape",shape,"ndim",ndim)  # for test
     w=qn0
-    if ndim==4:
+    if ndim==3:
         for tri in obj:
             v=triangle_area_nd(tri)
-            w=w+v
+            w+=v
         return w
-    elif ndim==5:
-        for tset in obj:
-            for tri in tset:
-                v=triangle_area_nd(tri)
-                w=w+v
-        return w
-    elif ndim==3:
+    #elif ndim==4:
+    #    for tset in obj:
+    #        for tri in tset:
+    #            v=triangle_area_nd(tri)
+    #            w=w+v
+    #    return w
+    elif ndim==2:
         return triangle_area_nd(obj)
     else:
         print('object has an incorrect shape!')
@@ -127,15 +130,19 @@ def triangle_area_nd(tri: qnv.Qnvec) -> qnn.Qnnum:
     area: array
         Area in TAU-style.
     """
-    N=tri[0].vt[0].N
-    ndim=tri.ndim
-    qn0=qnn.Qnnum([0,0,1],N)
-    if ndim==3:
-        #print('triangle',triangle)
-        vts=qnv.zerovs((ndim))  #[qn0]*(3,3)
-        for i,vt in enumerate(tri):
-            vts[i]=prj.projection3(vt)
-        return triangle_area(vts)
+    #N=tri[0].vt[0].N
+    #ndim=tri.ndim
+    shape=tri.shape
+    ndim=len(shape)
+    print("shape",shape,"ndim",ndim)  # for test
+    qn0=qnn.Qnnum([0,0,1])
+    if ndim==2:
+        #print('tri',tri)
+        #vts=qnv.zerovs((ndim))  #[qn0]*(3,3)
+        #for i,vt in enumerate(tri):
+        #    vts[i]=prj.projection3(vt)
+        #return triangle_area(vts)
+        return triangle_area(tri)
     else:
         print('object has an incorrect shape!')
         return 
@@ -144,7 +151,7 @@ def triangle_area_nd(tri: qnv.Qnvec) -> qnn.Qnnum:
 ###  To be checked  ###
 #######################
 # this can be replaced by triangle_sqarea_3d
-def triangle_area(vts: qnv.Qnvec) -> qnn.Qnnum:
+def triangle_area(vts: qna) -> qnn.Qnnum:
     """Calculate area of a triangle in TAU style.
     
     Parameters
@@ -161,8 +168,8 @@ def triangle_area(vts: qnv.Qnvec) -> qnn.Qnnum:
     v2=vts[2]-vts[0]
     v=qnv.cros(v1,v2)
     det=qnv.dot(v,v)
-    N=vts[0].N
-    qn0=qnn.Qnnum([0,0,1],N)    
+    #N=vts[0].N
+    qn0=qnn.Qnnum([0,0,1])    
     if det < qn0:  #a1+a2*TAU<0.0: # to avoid negative volume...
         return -det/4 #mul(v[2],np.array([-1,0,2]))
     else:
