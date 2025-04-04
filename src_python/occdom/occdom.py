@@ -37,8 +37,8 @@ def occdom_init():
 def volume(obj:qnv.Qnvec):
     return utl.obj_area_nd(obj)
 
-#def symmetric(obj: qnv.Qnvec, centre:qnv.Qnvec, png:str):
-def symmetric(obj: qnv.Qnvec, centre:qnv.Qnvec):
+#def symmetric(obj: qna.QnNdarray, centre:qnv.Qnvec, png:str):
+def symmetric(obj: qna.QnNdarray, irs:np.int64):
     """
     Generate symmterical occupation domain by site-symmetry elements of OD center
     
@@ -46,11 +46,12 @@ def symmetric(obj: qnv.Qnvec, centre:qnv.Qnvec):
         obj (numpy.ndarray):
             Asymmetric unit of the occupation domain
             The shape is (num,3,5) or (num,4,6), where num=numbre_of_triangles or tetrahedra
-        centre (numpy.ndarray):
-            nd coordinate of the symmetric centre.
-            The shape is (n)
-        pg (string):
-            point group, '12/mmm', '-12m2', '-12', '12'
+        inr : indices of site-symmetry operators
+        #centre (numpy.ndarray):
+        #    nd coordinate of the symmetric centre.
+        #    The shape is (n)
+        #pg (string):
+        #    point group, '12/mmm', '-12m2', '-12', '12'
     Returns:
         Symmetric occupation domains (qnndarray):
             The shape is (num,3,6,3), where num=numbre_of_tetrahedron.
@@ -60,50 +61,37 @@ def symmetric(obj: qnv.Qnvec, centre:qnv.Qnvec):
     # shape[0] : number of triangles or tetrahedra
     # shape[1] : numbder of points 3 for triangle 4 for tetrahedra 
     # shape[2] : space dimension 5 for dihed 6 for icos
+    
+    print("irs",irs)  # for test
+    shape=obj.shape
+    ndim=len(shape)
+    print("shape",shape,"len(shape) in symmetric",len(shape))  # for test
     if obj.ndim==3 or obj.ndim==4:
         #return symmetry.generator_obj_symmetric_tetrahedron(obj,centre)
-        return generator_obj_symmetric_obj(obj,centre)
+        return generator_obj_symmetric_obj(obj,irs)
     else:
         print('object has an incorrect shape in symmetric!')
         return 
-
-# dummy
-def symmetric_0(obj: qnv.Qnvec,centre: qnv.Qnvec , irs: np.int64,pg : qnv.Qnvec):
-    """
-    Generate symmtericic occupation domain by applying symmetric elements on the asymmetric unit.
     
-    Args:
-        obj (numpy.ndarray):
-            Asymmetric unit of the occupation domain
-            The shape is (num,3,6,3), where num=numbre_of_triangles.
-        centre (numpy.ndarray):
-            nd coordinate of the symmetric centre.
-            The shape is (6,3)
-    
-    Returns:
-        Symmetric occupation domains (numpy.ndarray):
-            The shape is (num,3,6,3), where num=numbre_of_tetrahedron.
-    
-    """
-    
-#def generator_obj_symmetric_obj(obj:qnv.Qnvec, centre:qnv.Qnvec, pg:str):
-def generator_obj_symmetric_obj(obj:qnv.Qnvec, centre:qnv.Qnvec):
+#def generator_obj_symmetric_obj(obj:qna.QnNdarray, centre:qnv.Qnvec, pg:str):
+def generator_obj_symmetric_obj(obj:qna.QnNdarray, irs:np.int64):
     """
     arrguments
     obj : vertices of asymmetric od (shape=(num,3,5) or (num,4,6) for num triangles or tetrahedra)
-    center : od center (origin)
+    irs : indices of site symmetry operators 
 
     calculate site-symmetry of od using symmetry operators
     """
     shape=obj.shape  # (num,3,5) or (num,4,6) expected for dihed or icos
     ndim=len(shape)  #dimension of obj 3 expected
+    print("shape",shape,"ndim in generateor_obj_symmetric",len)
     n=crs.n
     V0=qnv.zerov(n)  # origin
     if ndim==3 or ndim==4:
         #if centre==V0:  #np.all(centre==V0):
         #    mop=qns.qnr # all symmetry operator
         #else:
-        irs=ssm.site_symmetry(centre) # calculate site-symmetry operators
+        #irs=ssm.site_symmetry(centre) # calculate site-symmetry operators
         nss=len(irs) # number of site symmetry operators
         mop=qna.QnNdarray((nss,n,n)) # rotation operator matrices
         #tmp=octasymop_array()
@@ -122,7 +110,7 @@ def generator_obj_symmetric_obj(obj:qnv.Qnvec, centre:qnv.Qnvec):
             a=a.reshape(nss*n1,n2,n)
         return a
     else:
-        print('object has an incorrect shape in generator_obj_symmetric_obj!')
+        print('shape in generator_obj_symmetric_obj should be 3 or 4!')
         return
 
 ##def generator_obj_symmetric_triangle(obj:qnv.Qnvec, centre:qnv.Qnvec, pg:str):
@@ -131,7 +119,7 @@ def generator_obj_symmetric_obj(obj:qnv.Qnvec, centre:qnv.Qnvec):
 #    """
 #    return generator_obj_symmetric_obj(obj,centre)
 
-def symmetric_i(i1,obj)
+def symmetric_i(i1,obj):
     shape=obj.shape  # (num,3,n) or (num,4,n) assumed
     qnr=qns.qnr[i1]
     a=qna.Qnndarray(shape)
@@ -143,12 +131,12 @@ def symmetric_i(i1,obj)
 def symmetric(obj,irs):
     nsy=len(irs)
     sp0=obj.shape # (num,3,5) or (num,4,6) assumed
-    shape=(nsy,sp0[0],sp0[1,sp0[2]])  # (nsy,num,3,n) or (nsy,num,4,6)
+    shape=(nsy,sp0[0],sp0[1],sp0[2])  # (nsy,num,3,n) or (nsy,num,4,6)
     qnr=qns.qnr
-    a=qna.Qnndarray(shape)
+    a=qna.QnNdarray(shape)
     for i in range(shape[0]):
         for j in range(shape[1]):
-            for k in range(shape[2])
+            for k in range(shape[2]):
                 a[i][j][k]=qnr[irs[i]]@obj[j][k]
     return a
 

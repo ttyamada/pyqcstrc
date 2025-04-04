@@ -23,6 +23,7 @@ import twoods as ods
 import prjop as prj
 import numeric as num
 import qnsym as qns
+import sitesym as ssy
 import lattice as lt
 
 #import od.occupation_domain as od # use original code
@@ -42,16 +43,22 @@ except FileExistsError:
     
 isys=4  # octagonal
 crs.crsys_init(isys)
-brv='p'
+
 qnn.qnnum_init()
 qna.qnndarray_init()
 qnv.qnvec_init()
 qnm.qnmat_init()
 qmt.qnmath_init()
 prj.prjop_init()
+brv='p'
+lt.lattice_init(brv)
 num.numeric_init()
 qns.qnsym_init()
 qns.Qnsym()  # set symmetry operator
+od.occdom_init()
+#isc.intsct__init()
+
+brv='p'
 lt.lattice_init(brv)
 
 
@@ -59,8 +66,8 @@ M0=qnn.any([0,0,1])
 M1=qnn.any([1,0,1])
 M2=qnn.any([1,0,2])
 v0=np.array([M0,M0,M0,M0,M0],dtype=qnn.Qnnum)
-v1=np.array([M1,M0,M0,M0,M0],dtype=qnn.Qnnum) # (1,0,0,0)
-v2=np.array([M2,M0,M0,M2,M0],dtype=qnn.Qnnum) # (1,0,0,1)/2
+v1=np.array([M1,M0,M0,M0,M0],dtype=qnn.Qnnum) # (1,0,0,0,0)
+v2=np.array([M2,M0,M0,M2,M0],dtype=qnn.Qnnum) # (1,0,0,1,0)/2
 qnv0=qnv.anyv(v0)
 qnv1=qnv.anyv(v1)
 qnv2=qnv.anyv(v2)
@@ -74,31 +81,41 @@ qnv.printqnvs("od_asym",od_asym)
 
 # Three nD vectors which define the asymmetric part of the occupation domain of Ammann–Beenker octagonal tiling.
 # Note that 5-th and 6-th components of each 6D vectors are dummy, and they correspond to Z coordinate in Epar and Eperp, respectively.
-#v0: DTYPE_int=np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]],dtype=DTYPE_int)
-#v1: DTYPE_int=np.array([[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]],dtype=DTYPE_int) # (1,0,0,0)
-#v2: DTYPE_int=np.array([[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1],[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1]],dtype=DTYPE_int) # (1,0,0,1)/2
+#v0=np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]],dtype=qnn.Qnnum)
+#v1=np.array([[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]],dtype=qnn.Qnnum) # (1,0,0,0)
+#v2=np.array([[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1],[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1]],dtype=qnn.Qnnum) # (1,0,0,1)/2
 #od_asym=np.vstack([v0,v1,v2]).reshape(1,3,6,3)
 
 # Output 
-vst.write_vesta(od_asym, path=opath, basename='od_1_asym', color='r',select='normal')
-vst.write_xyz(od_asym, path=opath, basename='od_1_asym')
+vst.write_vesta(od_asym, opath, 'od_1_asym', 'r', 'normal')
+vst.write_xyz(od_asym, opath, 'od_1_asym')
 
 # Read XYZ file
-od_asym=vst.read_xyz(path=opath,basename='od_1_asym',select='triangle')
+od_asym=vst.read_xyz(opath,'od_1_asym','triangle')
 
 #============================================
 # OBJ_1 at (0,0,0,0)
 #============================================
 time1=time.time()
 print("start time",time1)
+
 # make symmetric OD
-pos0=np.array([M0,M0,M0,M0,M0]) # 0,0,0,0,0
-pos=qnv.anyv(pos0)  # origin of the asymmetric (independent) OD
-qnv.printqnv("pos",pos)  # for test
+M0=qnn.Qnnum([0,0,1])
+M1=qnn.Qnnum([1,0,2])
+x0=qna.anya([M0,M0,M0,M0,M0],(5,))
+x1=qna.anya([M1,M0,M0,M0,M0],(5,))
+#x=qnv.anyv(x0)
+x=qnv.anyv(x1)
+qnv.printqnv("x",x)  # for test
 # calculate symmetric OD from od_asym by true or fictitious site symmetry operators
-od_sym_1=od.symmetric(obj=od_asym, centre=pos)
-vst.write_vesta(obj=od_sym_1, path=opath, basename='od_1_sym', color='r',select='normal')
-vst.write_xyz(obj=od_sym_1, path=opath, basename='od_1_sym')
+irs=ssy.site_symmetry(x)
+print("irs before od.symmetric",irs) # for test
+
+od_sym_1=od.symmetric(od_asym,irs) # symmetric OD
+
+vst.write_vesta(od_sym_1, opath, 'od_1_sym', 'r', 'normal')
+vst.write_xyz(od_sym_1, opath, 'od_1_sym')
+
 # Outline of OBJ_1
 od_sym_1_1=od.outline(od_sym_1)
 vst.write_vesta(obj=od_sym_1_1,path=opath,basename='od_1_sym_outline',color='r',select='egdes')

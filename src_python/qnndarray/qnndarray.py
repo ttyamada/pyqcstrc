@@ -16,11 +16,10 @@ import qnnum as qnn
 #add,sub,iadd,isub should be implemented in subclass
 
 class QnNdarray(NDArray):
-    
     def __new__(cls,shape):
         return super().__new__(cls,shape,dtype=qnn.Qnnum)
 
-    def __init__(self, shape):
+    def __init__(self,shape):
         self.shape=shape
 
     # def __add__(self,b):
@@ -59,11 +58,14 @@ def zeros(shape) -> QnNdarray:
     
 # any kind of 3D array assumed
 def anya(vec:NDArray[qnn.Qnnum],shape)->QnNdarray:
+    print("shape",shape) # for test
+    print("len(shape)",len(shape))  # for test
     qnva=QnNdarray(shape)
-    ndim=vec.ndim
+    ndim=len(shape)
+    print("ndim",ndim) # for test
     if ndim==1:
         for i in range(shape[0]):
-            qnva[i][j]=vec[i][j]
+            qnva[i]=vec[i]
     elif ndim==2:
         for i in range(shape[0]):
             for j in range(shape[1]):

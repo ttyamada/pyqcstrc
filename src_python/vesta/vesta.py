@@ -77,7 +77,17 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             a = [127,127,127]
         return a
     
-    print("obj.shape in write_vesta",obj.shape)  # for test
+    shape=obj.shape
+    print("shape in write_vesta",shape)  # for test
+    ndim=len(shape)
+    if len(obj.shape)==4:
+        shape=(shape[0]*shape[1],shape[2],shape[3])
+        objt=obj.reshape(shape)
+        ndim=3
+        print("shape after reshape",shape,"ndim",ndim)  # for test
+    else:
+        objt=obj
+    
     file_name='%s/%s.vesta'%(path,basename)
     f=open('%s'%(file_name),'w')
     
@@ -85,15 +95,15 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
     dmax=10.0
     
     if select=='simple' or select=='egdes':
-        if np.all(obj==None):
-            print('no volume obj')
+        if np.all(objt==None):
+            print('no volume objt')
             return 0
         else:
             # get independent edges
             if select=='simple':
-                edges = utl.generator_obj_edge(obj,verbose)
+                edges = utl.generator_obj_edge(objt,verbose)
             else:
-                edges = obj
+                edges = objt
             # get independent vertices of the edges
             vertices = utl.remove_doubling_in_perp_space(edges)
                 
@@ -307,13 +317,15 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             return 0
         
     elif select=='normal':
-        #if np.all(obj!=None):
-        #    print('no volume obj')
+        #if np.all(objt!=None):
+        #    print('no volume objt')
         #    return 0
         #else:
         isys=crs.isys
         print('#VESTA_FORMAT_VERSION 3.5.0\n', file=f)
-        for i1,obj1 in enumerate(obj):
+        for i1,obj1 in enumerate(objt):
+            print("i1",i1)  # for test
+            qnv.printqnv("obj1",obj1) # for test
             print('MOLECULE\
             \nTITLE',file=f)
             print('%s/%s_%d\n'%(path,basename,i1), file=f)
@@ -342,8 +354,12 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
             \nSTRUC', file=f)
             for i2,vertx in enumerate(obj1):
-                xyz=prj.projection3(vertx)
-                xyz=num.numerical_vector(xyz)
+                print("i2",i2)  # for test
+                qnv.printqnv("vertx",vertx) # for test
+                qni=prj.projection3(vertx)
+                qnv.printqnv("qni",qni)  # for test
+                xyz=num.numerical_vector(qni)
+                print("xyz",xyz)  # for test
                 if isys==2:
                     print('%4d Xx        Xx%d  1.0000    %8.6f %8.6f %8.6f        1'%\
                     (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
@@ -506,13 +522,13 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             return 0
     
     elif select == 'podatm':
-        if np.all(obj==None):
-            print('no volume obj')
+        if np.all(objt==None):
+            print('no volume objt')
             return 0
         else:
             # get independent edges
-            #edges = utl.generator_obj_edge(obj, verbose)
-            edges = utl.generator_unique_edges(obj)
+            #edges = utl.generator_obj_edge(objt, verbose)
+            edges = utl.generator_unique_edges(objt)
             #print(len(edges))
             # get independent vertices of the edges
             vertices = utl.remove_doubling_in_perp_space(edges)
@@ -729,7 +745,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \n 128.000',file = f)
         
             f.close()
-            #write_vesta_separate(obj, path, basename, color, dmax)
+            #write_vesta_separate(objt, path, basename, color, dmax)
             if verbose>0:
                 print('    written in %s'%(file_name))
             return vertices
@@ -912,15 +928,26 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
             #point[5][0],point[5][1],point[5][2]))
         f.closed
         return 0
-        
-    #if np.all(obj==None):
-    #    print('empty obj')
+    
+    shape=obj.shape
+    print("shape in write_xyz",shape)  # for test
+    ndim=len(shape)
+    if len(shape)==4:
+        shape=(shape[0]*shape[1],shape[2],shape[3])
+        objt=obj.reshape(shape)
+        ndim=3
+        print("shape after reshape",shape,"ndim",ndim)  # for test
+    else:
+        objt=obj
+
+    #if np.all(objt==None):
+    #    print('empty objt')
     #    return 
-    #elif obj.ndim<3 or obj.ndim>4:
-    if obj.ndim<2 or obj.ndim>4:
+    #elif ndim<3 or ndim>4:
+    if ndim<1 or ndim>4:  # ndim=1, 2 or 3 for vertex, triangle/tetrahedron (edge) or triangles/tetrahedra 
         print('object has an incorrect shape!')
         return 
-    elif obj.ndim==3:
+    elif ndim==1:
         if select=='vertex':
             generator_xyz_dim3_vertex(obj,path,basename)
             if verbose>0:

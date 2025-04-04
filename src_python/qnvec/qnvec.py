@@ -254,7 +254,8 @@ def intv2qnv(a:np.ndarray):
     return b
 
 def printqnv(str:str,qnv:Qnvec):
-    ndim=qnv.ndim
+    shape=qnv.shape
+    ndim=len(shape)
     if ndim==1 :
         print(str,"[",end=" ")
         for i in range(qnv.shape[0]):
@@ -267,8 +268,17 @@ def printqnv(str:str,qnv:Qnvec):
                 print(qnn.qn2npa(qnv[i][j]),end=" ")
             print("]")
         print("")
+    elif ndim==3:
+        for i in range(qnv.shape[0]):
+            print("[",end=" ")
+            for j in range(qnv.shape[1]):
+                for k in range(qnv.shape[0]):
+                    print(qnn.qn2npa(qnv[i][j][k]),end=" ")
+                print("]")
+            print("")
+        print("")
     else:
-        print("qnv.shape[0] shoul be 1 or 2 but",qnv.shape[0])
+        print("ndim should be 1 2 or 3 but",ndim)
         exit()
 
 def printqnv2(str:str,qnv1:Qnvec,qnv2:Qnvec):

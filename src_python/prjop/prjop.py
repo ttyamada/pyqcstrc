@@ -2,7 +2,7 @@ import sys
 import numpy as np
 import cython
 
-import crsys
+import crsys as crs
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
@@ -30,6 +30,8 @@ import qnndarray as qna
 
 class Qnprj_Octa(qnm.Qnmat):
     def __new__(cls) : 
+        global n
+        n=crs.n
         #print("n in __new__",n) # for test
         shape=(n,n)
         return super().__new__(cls,shape)
@@ -66,6 +68,8 @@ class Qnprj_Octa(qnm.Qnmat):
 #class Qnprj_Deca(qna.QnNdarray):
 class Qnprj_Deca(qnm.Qnmat):
     def __new__(cls):
+        global n
+        n=crs.n
         shape=(n,n)
         return super().__new__(cls,shape)
  
@@ -108,6 +112,8 @@ class Qnprj_Deca(qnm.Qnmat):
 #class Qnprj_Dode(qna.QnNdarray):
 class Qnprj_Dode(qnm.Qnmat):
     def __new__(cls):
+        global n
+        n=crs.n
         shape=(n,n)
         return super().__new__(cls,shape)
 
@@ -148,6 +154,8 @@ class Qnprj_Dode(qnm.Qnmat):
 #class Qnprj_Icos(qna.QnNdarray):
 class Qnprj_Icos(qnm.Qnmat):
     def __new__(cls):
+        global n
+        n=crs.n
         shape=(n,n)
         return super().__new__(cls,shape)
     
@@ -183,9 +191,9 @@ class Qnprj_Icos(qnm.Qnmat):
         
 def prjop_init():
     global isys,n,N
-    isys=crsys.isys
-    n=crsys.n
-    N=crsys.N
+    isys=crs.isys
+    n=crs.n
+    N=crs.N
     prj=Prjop()
     
 def Prjop():
@@ -234,17 +242,18 @@ def prjvec_e(v:qnv.Qnvec) -> qnv.Qnvec:
     vei=v@prj0  #@v # vt assumed to be qnvec
     ve=qnv.zerov(3)
     if isys>2: # dihedral
-        ve[0:3]=vei[0:3]
+        ve[0:2]=vei[0:2]
+        ve[2]=vei[4]
     elif isys==2: # icosahedral
         ve[0:3]=vei[0:3]
     return ve
 
 # projection into internal space for class cls
 def prjvec_i(v: qnv.Qnvec) -> qnv.Qnvec:
-    vei=v@prj0  #@v
+    vei=v@prj0
     if isys>2: # dihedral
         vi=qnv.zerov(2)
-        vi[0:2]=vei[3:5]
+        vi[0:2]=vei[2:4]
     elif isys==2: # icosahedral
         vi=qnv.zerov(3)
         vi[0:3]=vei[3:6]
