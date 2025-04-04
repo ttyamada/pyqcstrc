@@ -585,7 +585,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             for vrtx in vertices:
                 xyz = prj.projection3(vrtx)
                 print('%4d A        A%d  1.0000    %8.6f %8.6f %8.6f        1'%\
-                (i2+1,i2+1,num.numeric_value(xyz[0]),num.numeric_value(xyz[1]),num.numeric_value(xyz[2])), file=f)
+                (i2+1,i2+1,qnn.qn2flt(xyz[0]),qnn.qn2flt(xyz[1]),qnn.qn2flt(xyz[2])), file=f)
                 i2+=1
                 print('                             0.000000    0.000000    0.000000  0.00', file=f)
             print('  0 0 0 0 0 0 0\
@@ -802,17 +802,12 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
                 else:
                     f.write('Xx %8.6f %8.6f %8.6f'%(qnn.qn2flt(v[0]),qnn.qn2flt(v[1]),\
                     qnn.qn2flt([2])))
-                f.write('%i %i'%(i1,i2))
+                f.write(' # %d th triangle %d th vertex '%(i1,i2))
+                f.write(' #')
                 for i in range(n-1):
-                    f.write('%d %d %d'%(vt[i].n[0],vt[i].n[1],vt[i].n[2]))
-                f.write('%d %d %d\n'%(vt[n-1].n[0],vt[n-1].n[1],vt[n-1].n[2]))
-                
-                #vt[0][0],vt[0][1],vt[0][2],\ 
-                #vt[1][0],vt[1][1],vt[1][2],\
-                #vt[2][0],vt[2][1],vt[2][2],\
-                #vt[3][0],vt[3][1],vt[3][2],\
-                #vt[4][0],vt[4][1],vt[4][2],\
-                #vt[5][0],vt[5][1],vt[5][2]))
+                    f.write('  %d %d %d'%(vt[i].n[0],vt[i].n[1],vt[i].n[2]))
+                f.write('  %d %d %d\n'%(vt[n-1].n[0],vt[n-1].n[1],vt[n-1].n[2]))
+ 
         v=utl.obj_area_nd(obj)
         f.write('volume = %d %d %d (%8.6f)\n'%(v.n[0],v.n[1],v.n[2],qnn.qn2flt(v)))
         for i1,triangle in enumerate(obj):
@@ -842,19 +837,13 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         for i1,edge in enumerate(obj):
             for i2,vt in enumerate(edge):
                 v=prj.projection3(vt)
-                f.write('Xx %8.6f %8.6f %8.6f',num.numeric_value(v[0]),num.numeric_value(v[1]),\
-                num.numeric_value(v[2]))
-                f.write(i1,i2)
+                f.write('Xx %8.6f %8.6f %8.6f',qnn.qn2flt(v[0]),qnn.qn2flt(v[1]),\
+                qnn.qn2flt(v[2]))
+                f.write(' # %d th triang %d th vertex '%(i1,i2))
                 for i in range(n-1):
-                    f.write(vt[0].n[0],vt[0].n[1],vt[0].n[2])
-                f.write(vt[n-1][0],vt[n-1][1],vt[n-1][2],'\n')
+                    f.write(' %d %d %d'%(vt[0].n[0],vt[0].n[1],vt[0].n[2]))
+                f.write(' %d %d %d \n'%(vt[n-1][0],vt[n-1][1],vt[n-1][2]))
                 
-                #vt[0][0],vt[0][1],vt[0][2],\
-                #vt[1][0],vt[1][1],vt[1][2],\
-                #vt[2][0],vt[2][1],vt[2][2],\
-                #vt[3][0],vt[3][1],vt[3][2],\
-                #vt[4][0],vt[4][1],vt[4][2],\
-                #vt[5][0],vt[5][1],vt[5][2]))
         f.closed
         return 0
     
@@ -880,18 +869,13 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         for tri in range(len(obj)):
             for point in enumerate(tri):
                 v=prj.projection3(point)
-                f.write('Xx %8.6f %8.6f %8.6f',num.numeric_value(v[0]),num.numeric_value(v[1]),\
-                num.numeric_value(v[2]))
+                f.write('Xx %8.6f %8.6f %8.6f',qnn.qn2flt(v[0]),qnn.qn2flt(v[1]),\
+                qnn.qn2flt(v[2]))
                 f.write(counter)
+                f.write(' #')
                 for i in range(n-1):
-                    f.write(point[i].n[0],point[i].n[1],point[i].n[2])
-                f.write(point[n-1][0],point[n-1][1],point[n-1][2],'\n')
-                #point[0][0],point[0][1],point[0][2],\
-                #point[1][0],point[1][1],point[1][2],\
-                #point[2][0],point[2][1],point[2][2],\
-                #point[3][0],point[3][1],point[3][2],\
-                #point[4][0],point[4][1],point[4][2],\
-                #point[5][0],point[5][1],point[5][2]))
+                    f.write(' %d %d %d'%(point[i].n[0],point[i].n[1],point[i].n[2]))
+                f.write(' %d %d %d \n'%(point[n-1][0],point[n-1][1],point[n-1][2]))
                 counter+=1
         f.closed
         return 0
@@ -918,26 +902,20 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
             print("i1",i1)  # for test
             qnv.printqnv("point",point) # for test
             v=prj.projection3(point)
-            f.write('Xx %8.6f %8.6f %8.6f',num.numeric_value(v[0]),num.numeric_value(v[1]),\
-            num.numeric_value(v[2]))
+            f.write('Xx %8.6f %8.6f %8.6f',qnn.qn2flt(v[0]),qnn.qn2flt(v[1]),\
+            qnn.qn2flt(v[2]))
             f.write(i1)
             for i in range(n-1):
-                f.write(point[i].n[0],point[i][1],point[i].n[2])
-            f.write(point[n-1][0],point[n-1][1],point[n-1][2],'\n')
- 
-            #point[0][0],point[0][1],point[0][2],\
-            #point[1][0],point[1][1],point[1][2],\
-            #point[2][0],point[2][1],point[2][2],\
-            #point[3][0],point[3][1],point[3][2],\
-            #point[4][0],point[4][1],point[4][2],\
-            #point[5][0],point[5][1],point[5][2]))
+                f.write(' # %d %d %d '%(point[i].n[0],point[i][1],point[i].n[2]))
+            f.write(' # %d %d %d \n'%(point[n-1][0],point[n-1][1],point[n-1][2]))
+
         f.closed
         return 0
     
     shape=obj.shape
     print("shape in write_xyz",shape)  # for test
     ndim=len(shape)
-    if len(shape)==4:
+    if ndim==4:
         shape=(shape[0]*shape[1],shape[2],shape[3])
         objt=obj.reshape(shape)
         ndim=3

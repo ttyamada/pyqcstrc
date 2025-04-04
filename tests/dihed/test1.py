@@ -63,8 +63,8 @@ lt.lattice_init(brv)
 
 
 M0=qnn.any([0,0,1])
-M1=qnn.any([1,0,1])
-M2=qnn.any([1,0,2])
+M1=qnn.any([0,1,1])
+M2=qnn.any([0,1,2])
 v0=np.array([M0,M0,M0,M0,M0],dtype=qnn.Qnnum)
 v1=np.array([M1,M0,M0,M0,M0],dtype=qnn.Qnnum) # (1,0,0,0,0)
 v2=np.array([M2,M0,M0,M2,M0],dtype=qnn.Qnnum) # (1,0,0,1,0)/2
@@ -101,7 +101,7 @@ print("start time",time1)
 
 # make symmetric OD
 M0=qnn.Qnnum([0,0,1])
-M1=qnn.Qnnum([1,0,2])
+M1=qnn.Qnnum([1,1,2])
 x0=qna.anya([M0,M0,M0,M0,M0],(5,))
 x1=qna.anya([M1,M0,M0,M0,M0],(5,))
 #x=qnv.anyv(x0)
