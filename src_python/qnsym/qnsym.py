@@ -23,18 +23,19 @@ class Qnsym_Octa(qna.QnNdarray):
         rg=np.zeros((ng,n,n),dtype=np.int64)
         for i in range(ng):
             rg[i]= np.zeros((n, n),dtype=np.int64)
-        gorf=(8,2,2)
+        gord=(8,2,2)
 
         rg[0][0][1]=1; rg[0][1][2]=1; rg[0][2][3]=1; rg[0][3][0]=-1; rg[0][4][4]=1 # R8 
         rg[1][1][2]=1; rg[1][2][1]=1; rg[1][0][3]=1; rg[1][3][0]=1;rg[1][4][4]=1 # M
         rg[2][0][0]=-1;rg[2][1][1]=-1;rg[2][2][2]=-1;rg[2][3][3]=-1;rg[2][4][4]=-1 # I
-        #print_r(rg)  # for test
+        print_r(rg)  # for test
         
         #print("shape in __init__",shape) # for test
         r=np.zeros(shape,dtype=np.int64) # nD int array
         #print("r.shape",r.shape) # fpr test
-        set_r(rg,gorf,r) # set all integer symmetry operators r
-        #print_r(r)  # for test
+        set_r(rg,gord,r) # set all integer symmetry operators r
+        print_r(r)  # for test
+
         self.r=r
         self.qnr=qna.copy(rtoqnr(r))
         self.qnr_e=qna.copy(rtoqnr_e(r))
@@ -58,20 +59,21 @@ class Qnsym_Deca(qna.QnNdarray):
     def __init__(self):
         ng=3         # three generating elements
         rg=np.zeros((ng,n,n),dtype=np.int64)
-        gorf=(10,2,2)
+        gord=(10,2,2)
         
         rg[0][0][3]=-1;
         rg[0][1][0]=1;rg[0][1][1]=1;rg[0][1][2]=1;rg[0][1][3]=1  # R8
         rg[0][2][0]=-1;rg[0][3][1]=-1;rg[0][4][4]=1 
         rg[1][0][3]=1; rg[1][3][0]=1; rg[1][1][2]=1; rg[1][2][1]=1;rg[1][4][4]=1 # M
         rg[2][0][0]=-1;rg[2][1][1]=-1;rg[2][2][2]=-1;rg[2][3][3]=-1;rg[2][4][4]=-1 # I
-        #print_r(rg)  # for test
+        print_r(rg)  # for test
         
         #r=np.zeros((nr, n, n))
         print("shape",shape) # for test
         r=np.zeros(shape,dtype=np.int64)
-        set_r(rg,gorf,r)  # set all integer rotation matrices
-        #print_r(r)  # for test
+        set_r(rg,gord,r)  # set all integer rotation matrices
+        print_r(r)  # for test
+
         self.r=r
         self.qnr=qnm.copyms(rtoqnr(r))
         self.qnr_e=qnm.copyms(rtoqnr_e(r))
@@ -95,16 +97,16 @@ class Qnsym_Dode(qna.QnNdarray):
     def __init__(self):
         ng=3         # three generating elements
         rg= np.zeros((ng,n,n),dtype=np.int64)
-        gorf=(12,2,2)
+        gord=(12,2,2)
 
         rg[0][0][1]=1; rg[0][1][2]=1; rg[0][2][3]=1; rg[0][3][0]=-1; rg[0][3][2]=1;rg[0][4][4]=1 # R12 
         rg[1][0][3]=1; rg[1][1][2]=1; rg[1][2][1]=1; rg[1][3][0]=1;rg[1][4][4]=1 # M
         rg[2][0][0]=-1;rg[2][1][1]=-1;rg[2][2][2]=-1;rg[2][3][3]=-1;rg[2][4][4]=-1 # I
-        #print_r(rg)  # for test
+        print_r(rg)  # for test
         
         r=np.zeros(shape,dtype=np.int64)
-        set_r(rg,gorf,r)  # set all integer rotation matrices
-        #print_r(r)  # for test
+        set_r(rg,gord,r)  # set all integer rotation matrices
+        print_r(r)  # for test
         self.r=r
         self.qnr=qna.copy(rtoqnr(r))
         self.qnr_e=qna.copy(rtoqnr_e(r))
@@ -128,7 +130,7 @@ class Qnsym_Icos(qna.QnNdarray):
     def __init__(self):
         ng=5 # five generators R5 R3 R2_x R2_y I
         rg= np.zeros((ng,n,n),dtype=np.int64)
-        gorf=(5,2,2,3,2)
+        gord=(5,2,2,3,2)
         # following data not correct
         rg[0][0][0]=1; rg[0][1][2]=1; rg[0][2][3]=1; rg[0][3][4]=1; rg[0][4][5]=1;rg[0][5][1]=1 # R5 
         rg[1][0][0]=-1;rg[1][1][1]=-1; rg[1][2][5]=-1;rg[1][3][4]=-1;rg[1][4][3]=-1; rg[1][5][2]=-1# 2
@@ -136,11 +138,11 @@ class Qnsym_Icos(qna.QnNdarray):
         rg[3][0][1]=1;rg[3][1][2]=1; rg[3][2][0]=1; rg[3][3][5]=1;rg[3][4][3]=-1; rg[3][5][4]=-1# 3
         rg[4][0][0]=-1;rg[4][1][1]=-1; rg[4][2][2]=-1; rg[4][3][3]=-1;rg[4][4][4]=-1; rg[4][5][5]=-1# I
         #shape=(nr,n,n) # for nr nxn -rotation matrices
-        #print_r(rg)  # for test
+        print_r(rg)  # for test
         
         r=np.zeros(shape,dtype=np.int64)
-        set_r(rg,gorf,r)  # set all integer rotation matrices
-        #print_r(r)  # for test
+        set_r(rg,gord,r)  # set all integer rotation matrices
+        print_r(r)  # for test
         self.r=r
         self.qnr=qna.copy(rtoqnr(r))
         self.qnr_e=qna.copy(rtoqnr_e(r))
@@ -316,9 +318,10 @@ def print_r(r):
     for i in range(nr):
         print("#",i+1)
         for j in range(n):
-            print("[ ",end=" ")
+            print("[",end="")
             for k in range(n):
-                print(r[i][j][k],end=" ")
+                print("{:3d}".format(r[i][j][k]),end="")
+                #print(r[i][j][k],end=" ")
             print("]")
         print(" ")
 
