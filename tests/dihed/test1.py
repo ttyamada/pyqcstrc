@@ -55,7 +55,6 @@ brv='p'
 lt.lattice_init(brv)
 num.numeric_init()
 qns.qnsym_init()
-qns.Qnsym()  # set symmetry operator
 od.occdom_init()
 #isc.intsct__init()
 

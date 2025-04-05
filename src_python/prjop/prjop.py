@@ -61,6 +61,7 @@ class Qnprj_Octa(qnm.Qnmat):
         self.n=n
         self.N=N
         self.shape=(n,n)
+        self.scl=1.0
         #prj=self
 
 # for decagonal QCs
@@ -103,6 +104,7 @@ class Qnprj_Deca(qnm.Qnmat):
         self.n=n
         self.N=N
         self.shape=(n,n)
+        self.scl=2.0/np.sqrt(5.0)
         #prj=self
         #print("self.ndim",self.ndim) # fpr test
         #print("self.shape",self.shape) # fpr test
@@ -145,6 +147,7 @@ class Qnprj_Dode(qnm.Qnmat):
         self.n=n
         self.N=N
         self.shape=(n,n)
+        self.scl=2.0/np.sqrt(6.0)
         #prj=self
         #print("self.ndim",self.ndim) # fpr test
         #print("self.shape",self.shape) # fpr test
@@ -186,6 +189,8 @@ class Qnprj_Icos(qnm.Qnmat):
         self.n=n
         self.N=N
         self.shape=(n,n)
+        tau=(1.0+np.sqrt(5.0))/2.0
+        self.scl=1.0/np.sqrt(2.0+tau)
         #print("self.ndim",self.ndim) # fpr test
         #print("self.shape",self.shape) # fpr test
         
@@ -195,9 +200,10 @@ def prjop_init():
     n=crs.n
     N=crs.N
     prj=Prjop()
+
     
 def Prjop():
-    global prj0,prji,prj0t,prjit
+    global prj0,prji,prj0t,prjit,scl
     print("isys in Prjop",isys)
     if(isys==2): # projection operator for icosahedral
         prj=Qnprj_Icos()
@@ -209,8 +215,9 @@ def Prjop():
         prj=Qnprj_Dode()
     prj0=prj.prj0
     prji=prj.prji
-    prj0t=qmt.matrixtr(prj0)  # transposed prj matrix
+    prj0t=qmt.matrixtr(prj0) # transposed prj matrix
     prjit=qmt.matrixtr(prji) # transposed prji matrix 
+    scl=prj.scl
     return prj
 
 def tstwt_prjop():
@@ -218,6 +225,9 @@ def tstwt_prjop():
     qnm.printqnm("prji",prji)
     qnm.printqnm("prj0t",prj0t)
     qnm.printqnm("prjit",prjit)
+    unitm=qnm.zerom((n,n))
+    unitm=prji@prj0
+    qnm.printqnm("unitm",unitm)
     
 def copy(qna1: qnm.Qnmat):
     #return np.copy(qna1,dtype=qnn.Qnnum)
@@ -234,12 +244,13 @@ def copy(qna1: qnm.Qnmat):
 def prjvec(v: qnv.Qnvec) -> qnv.Qnvec:
     #qnm.printqnm("prj",prj0)
     #qnv.printqnv("v",v)
-    vei=v@prj0  #@v # vt assumed to be qnvec
+    vei[0:3]=prjvec_e(v)
+    vei[3:5]=prjvec_i(v)
     return vei
 
 # projection into external space for class cls
 def prjvec_e(v:qnv.Qnvec) -> qnv.Qnvec:
-    vei=v@prj0  #@v # vt assumed to be qnvec
+    vei=v@prji  #@v # vt assumed to be qnvec
     ve=qnv.zerov(3)
     if isys>2: # dihedral
         ve[0:2]=vei[0:2]
@@ -250,10 +261,10 @@ def prjvec_e(v:qnv.Qnvec) -> qnv.Qnvec:
 
 # projection into internal space for class cls
 def prjvec_i(v: qnv.Qnvec) -> qnv.Qnvec:
-    vei=v@prj0
+    vei=v@prji
     if isys>2: # dihedral
         vi=qnv.zerov(2)
-        vi=vei[2:4]
+        vi=vei[2:4]*scl
     elif isys==2: # icosahedral
         vi=qnv.zerov(3)
         vi=vei[3:6]
@@ -302,7 +313,7 @@ def check_ltv(n,N):
                     #VT=np.array([v1,v2,v3,V4,V0])
                     vt=qnv.anyv(n,N,[V1,V2,V3,V4,V0])
                     qnn.printqnv("ndv",vt) #print qnvector expression
-                    qnv=vt@prj0  #@ndv #external enternal components
+                    qnv=prj0@vt  #qnv=vt@prj0  #@ndv #external enternal components
                     qnn.printqnv("qnv",qnv) #print qnvector expression
                     n+=1
                     
@@ -335,7 +346,7 @@ def qnm2flnm(prj:qnm.Qnmat):
         for j in range(n):
             a=prj[i][j]
             #print("a",a.n[0],a.n[1],a.n[2])  # for test
-            prj0f[i][j]=qnn.qn2flt(a)
+            prj0f[i][j]=qnn.qn2flt(a)*scl
             #print("f",prj0f[i][j])  # for test
     return prj0f
 

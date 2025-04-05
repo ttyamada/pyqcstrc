@@ -156,11 +156,12 @@ class Qnsym_Icos(qna.QnNdarray):
         self.mpltbl=mpltbl
  
 def qnsym_init():
-    global n,N,isys
+    global n,N,isys,qns
     isys=crsys.isys
     n=crsys.n
     N=crsys.N
     print("qnsym_init isys",isys,"n",n,"N",N)  # for test
+    qns=Qnsym()  # set symmetry operator
 
 def Qnsym():
     global qnr,qnr_e,qnr_i,mpltbl

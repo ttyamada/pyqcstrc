@@ -27,7 +27,7 @@ def prj_tst(isys: np.int64):
     prj0=prj.prj0
     prji=prj.prji
     unitm=prji@prj0
-    qnm.printqnm("untm",unitm)
+    qnm.printqnm("unitm",unitm)
     
     prj0f=qnm2flnm(prj0)
     if isys==2:
@@ -35,9 +35,7 @@ def prj_tst(isys: np.int64):
     else:
         n=5
     printfm("prj0f",prj0f,n)
-    #prjif=qnm2flnm(prji)
     prjif=qmt.matinv_f(prj0f,n)
-    #prji3f=np.linalg.inv(prj3f)
     printfm("prjif",prjif,n)
     unitmf=prjif@prj0f
     printfm("unitmf",unitmf,n)

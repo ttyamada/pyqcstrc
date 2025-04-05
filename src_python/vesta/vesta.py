@@ -78,8 +78,9 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
         return a
     
     shape=obj.shape
-    print("shape in write_vesta",shape)  # for test
     ndim=len(shape)
+    print("shape in write_vesta",shape,"ndim",ndim)  # for test
+   
     if ndim==4:
         shape=(shape[0]*shape[1],shape[2],shape[3])
         objt=obj.reshape(shape)
@@ -88,6 +89,8 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
     else:
         objt=obj
     
+    shape=objt.shape
+    print("objt.shape",objt.shape)  # for test
     file_name='%s/%s.vesta'%(path,basename)
     f=open('%s'%(file_name),'w')
     
@@ -356,7 +359,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             for i2,vertx in enumerate(obj1):
                 print("i2",i2)  # for test
                 qnv.printqnv("vertx",vertx) # for test
-                qni=prj.projection3(vertx)
+                qni=prj.prjvec_i(vertx)
                 qnv.printqnv("qni",qni)  # for test
                 xyz=num.numerical_vector(qni)
                 print("xyz",xyz)  # for test
