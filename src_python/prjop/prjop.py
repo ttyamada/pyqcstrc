@@ -245,7 +245,7 @@ def prjvec_e(v:qnv.Qnvec) -> qnv.Qnvec:
         ve[0:2]=vei[0:2]
         ve[2]=vei[4]
     elif isys==2: # icosahedral
-        ve[0:3]=vei[0:3]
+        ve=vei[0:3]
     return ve
 
 # projection into internal space for class cls
@@ -253,10 +253,10 @@ def prjvec_i(v: qnv.Qnvec) -> qnv.Qnvec:
     vei=v@prj0
     if isys>2: # dihedral
         vi=qnv.zerov(2)
-        vi[0:2]=vei[2:4]
+        vi=vei[2:4]
     elif isys==2: # icosahedral
         vi=qnv.zerov(3)
-        vi[0:3]=vei[3:6]
+        vi=vei[3:6]
     return vi
 
 # alias for prjop_i

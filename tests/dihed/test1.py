@@ -104,7 +104,8 @@ qnv.printqnv("x",x)  # for test
 # calculate symmetric OD from od_asym by true or fictitious site symmetry operators
 irs=ssy.site_symmetry(x)  # true site symmetry operator indices
 print("irs before od.symmetric",irs) # for test
-
+for i in range(3):
+    qnv.printqnv("od_asym",od_asym[0][i])
 od_sym_1=od.symmetric_od(irs,od_asym) # symmetric OD at the origin
 
 vst.write_vesta(od_sym_1, opath, 'od_1_sym', 'r', 'normal')

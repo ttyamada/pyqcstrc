@@ -80,11 +80,11 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
     shape=obj.shape
     print("shape in write_vesta",shape)  # for test
     ndim=len(shape)
-    if len(obj.shape)==4:
+    if ndim==4:
         shape=(shape[0]*shape[1],shape[2],shape[3])
         objt=obj.reshape(shape)
         ndim=3
-        print("shape after reshape",shape,"ndim",ndim)  # for test
+        #print("shape after reshape",shape,"ndim",ndim)  # for test
     else:
         objt=obj
     
@@ -794,15 +794,18 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f.write('%s\n'%(filename))
         i1=0
         n=crs.n
-        for i1,triangle in enumerate(obj):
-            for i2,vt in enumerate(triangle):
-                v=prj.projection3(vt)  # projection into internal space
+        for i1,triangle in enumerate(obj):  # i1-th triangle
+            for i2,vt in enumerate(triangle): # i2-th vertex
+                #qnv.printqnv("vt",vt)  # for test
+                vi=prj.projection3(vt)  # projection into internal space
+                #qnv.printqnv("vi",vi)  # for test
+                vif=qnv.qnv2flt(vi)
+
                 if n==5:
-                    f.write('Xx %8.6f %8.6f %8.6f'%(qnn.qn2flt(v[0]),qnn.qn2flt(v[1]),0.0))
+                    f.write('Xx %8.6f %8.6f %8.6f'%(vif[0],vif[1],0.0))
                 else:
-                    f.write('Xx %8.6f %8.6f %8.6f'%(qnn.qn2flt(v[0]),qnn.qn2flt(v[1]),\
-                    qnn.qn2flt([2])))
-                f.write(' # %d th triangle %d th vertex '%(i1,i2))
+                    f.write('Xx %8.6f %8.6f %8.6f'%(vif[0],vif[1],vif[2]))
+                f.write(' # %s-th triangle %s-th vertex '%(i1,i2))
                 f.write(' #')
                 for i in range(n-1):
                     f.write('  %d %d %d'%(vt[i].n[0],vt[i].n[1],vt[i].n[2]))
@@ -837,12 +840,12 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         for i1,edge in enumerate(obj):
             for i2,vt in enumerate(edge):
                 v=prj.projection3(vt)
-                f.write('Xx %8.6f %8.6f %8.6f',qnn.qn2flt(v[0]),qnn.qn2flt(v[1]),\
-                qnn.qn2flt(v[2]))
-                f.write(' # %d th triang %d th vertex '%(i1,i2))
+                vf=qnv.qnv2flt(v)
+                f.write('Xx %8.6f %8.6f %8.6f'%(vf[0],vf[1],vf[2]))
+                f.write(' # %s-th triang %s-th vertex '%(i1,i2))
                 for i in range(n-1):
                     f.write(' %d %d %d'%(vt[0].n[0],vt[0].n[1],vt[0].n[2]))
-                f.write(' %d %d %d \n'%(vt[n-1][0],vt[n-1][1],vt[n-1][2]))
+                f.write(' %d %d %d \n'%(vt[n-1].n[0],vt[n-1].n[1],vt[n-1].n[2]))
                 
         f.closed
         return 0
@@ -869,13 +872,13 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         for tri in range(len(obj)):
             for point in enumerate(tri):
                 v=prj.projection3(point)
-                f.write('Xx %8.6f %8.6f %8.6f',qnn.qn2flt(v[0]),qnn.qn2flt(v[1]),\
-                qnn.qn2flt(v[2]))
+                vf=qnv.qnv2flt(v)
+                f.write('Xx %8.6f %8.6f %8.6f'%(vf[0],vf[1],vf[2]))
                 f.write(counter)
                 f.write(' #')
                 for i in range(n-1):
                     f.write(' %d %d %d'%(point[i].n[0],point[i].n[1],point[i].n[2]))
-                f.write(' %d %d %d \n'%(point[n-1][0],point[n-1][1],point[n-1][2]))
+                f.write(' %d %d %d \n'%(point[n-1].n[0],point[n-1].n[1],point[n-1].n[2]))
                 counter+=1
         f.closed
         return 0
@@ -902,24 +905,24 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
             print("i1",i1)  # for test
             qnv.printqnv("point",point) # for test
             v=prj.projection3(point)
-            f.write('Xx %8.6f %8.6f %8.6f',qnn.qn2flt(v[0]),qnn.qn2flt(v[1]),\
-            qnn.qn2flt(v[2]))
+            vf=qnv.qnv2flt(v)
+            f.write('Xx %8.6f %8.6f %8.6f'%(vt[0],vt[1],vt[2]))
             f.write(i1)
             for i in range(n-1):
                 f.write(' # %d %d %d '%(point[i].n[0],point[i][1],point[i].n[2]))
-            f.write(' # %d %d %d \n'%(point[n-1][0],point[n-1][1],point[n-1][2]))
+            f.write(' # %d %d %d \n'%(point[n-1].n[0],point[n-1].n[1],point[n-1].n[2]))
 
         f.closed
         return 0
     
     shape=obj.shape
-    print("shape in write_xyz",shape)  # for test
+    #print("shape in write_xyz",shape)  # for test
     ndim=len(shape)
     if ndim==4:
         shape=(shape[0]*shape[1],shape[2],shape[3])
         objt=obj.reshape(shape)
         ndim=3
-        print("shape after reshape",shape,"ndim",ndim)  # for test
+        #print("shape after reshape",shape,"ndim",ndim)  # for test
     else:
         objt=obj
 

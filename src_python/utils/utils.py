@@ -60,7 +60,7 @@ def obj_area_nd(obj: qnv.Qnvec) -> qnn.Qnnum:
     qn0=qnn.Qnnum([0,0,1])
     shape=obj.shape
     ndim=len(shape) # ndim qnndvector
-    print("shape",shape,"ndim",ndim)  # for test
+    #print("shape",shape,"ndim",ndim)  # for test
     w=qn0
     if ndim==3:
         for tri in obj:

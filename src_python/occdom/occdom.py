@@ -87,30 +87,13 @@ def generator_obj_symmetric_obj(irs: NDArray[np.int64], obj:qna.QnNdarray):
     ndim=len(shape)  #dimension of obj 3 expected
     print("shape",shape,"ndim in generateor_obj_symmetric_obj",ndim)
     n=crs.n
-    #V0=qnv.zerov(n)  # origin
     if ndim==3 or ndim==4:
-        #if centre==V0:  #np.all(centre==V0):
-        #    mop=qns.qnr # all symmetry operator
-        #else:
-        #irs=ssm.site_symmetry(centre) # calculate site-symmetry operators
-        nss=len(irs) # number of site symmetry operators
-        mop=qna.QnNdarray((nss,n,n)) # rotation operator matrices
-        #tmp=octasymop_array()
-        #for i in irs:
-        #    mop[i]=qns.qnr[i]
-        #shape=tuple([nss])
-
-        #a=np.zeros(shape+obj.shape,dtype=np.int64)
-        #for i,op in enumerate(mop):
-        #for i in range(len(irs)):
-        #    ir=irs[i]
-        a=symmetric(irs,obj)  #  rotated obj (rotated triangle vertices)
-        
         # generate equivalent symmetric od vertices 
-        if obj.ndim==4:
-            n1,n2,_,_=obj.shape
-            #a=a.reshape(nss*n1,n2,n,3)
-            a=a.reshape(nss*n1,n2,n)
+        nss=len(irs)
+        a=symmetric(irs,obj)  #  rotated obj (rotated triangle vertices)
+        #if obj.ndim==4:
+        #    n1,n2,_,_=obj.shape
+        #    a=a.reshape(nss*n1,n2,n)
         return a
     else:
         print('shape in generator_obj_symmetric_obj should be 3 or 4!')
@@ -134,13 +117,21 @@ def symmetric_i(i1,obj):
 def symmetric(irs:NDArray[np.int64],obj:qna.QnNdarray):
     nsy=len(irs)
     sp0=obj.shape # (num,3,5) or (num,4,6) assumed
-    shape=(nsy,sp0[0],sp0[1],sp0[2])  # (nsy,num,3,n) or (nsy,num,4,6)
+    print("sp0",sp0)
+    shape=(nsy*sp0[0],sp0[1],sp0[2])  # (nsy,num,3,n) or (nsy,num,4,6)
+    print("shape in symmetric",shape)
     qnr=qns.qnr
     a=qna.QnNdarray(shape)
-    for i in range(shape[0]):
-        for j in range(shape[1]):
-            for k in range(shape[2]):
-                a[i][j][k]=qnr[irs[i]]@obj[j][k]
+    ni=0
+    for n in range(nsy):
+        for i in range(sp0[0]):
+            for j in range(sp0[1]):
+                #print("i",i,"j",j)  # for test
+                #qnv.printqnv("obj",obj[i][j])  # for test 
+                a[ni][j]=qnr[irs[n]]@obj[i][j]
+                print("%s-th triangle %s-th vertex"%(ni,j),end="")
+                qnv.printqnv(" ",a[ni][j])  # for test
+            ni+=1
     return a
 
 #def generator_obj_symmetric_vector_specific_symop(obj:qnv.Qnvec,centre:qnv.Qnvec,irs:np.int64,pg:str):

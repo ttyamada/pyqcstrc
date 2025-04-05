@@ -236,11 +236,10 @@ def qnv2npa(a:Qnvec):
     return b
     
 def qnv2flt(a:Qnvec):
-    la=a.shape[0]
-    b=np.zeros(la, dtype=np.float64)
-    #print("b",b)
-    #N=a[0].N
-    for i in range(la):
+    n=a.shape[0]
+    b=np.zeros(n, dtype=np.float64)
+    #printqnv("a in qnv2flt",a)  # for test
+    for i in range(n):
         ai=a[i]
         b[i]=(ai.n[0]+ai.n[1]*np.sqrt(N))/ai.n[2]
     return b
