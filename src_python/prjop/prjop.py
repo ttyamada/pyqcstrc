@@ -110,7 +110,8 @@ class Qnprj_Deca(qnm.Qnmat):
         self.N=crs.N
         self.shape=(n,n)
         self.scl=2.0/np.sqrt(5.0)
-        self.scly=2.0*np.sin(np.pi/5)
+        self.scly=2.0*np.sin(np.pi/5) #2s1
+        self.scly2=4*(M3-M5**2)       #2(1-c1^2)
         #prj=self
         #print("self.ndim",self.ndim) # fpr test
         #print("self.shape",self.shape) # fpr test
@@ -273,7 +274,7 @@ def prjvec(v: qnv.Qnvec) -> qnv.Qnvec:
 def prjvec_e(v:qnv.Qnvec) -> qnv.Qnvec:
     #n=crs.n
     #vei=qnv.zerov(n)
-    vei=prji@v  # v assumed to be qnvec
+    vei=v@prj0  # v assumed to be qnvec
     ve=qnv.zerov(3)
     if isys>2: # dihedral
         ve[0:2]=vei[0:2]
@@ -287,7 +288,7 @@ def prjvec_e(v:qnv.Qnvec) -> qnv.Qnvec:
 def prjvec_i(v: qnv.Qnvec) -> qnv.Qnvec:
     #n=crs.n
     #vei=qnv.zerov(n)
-    vei=prji@v
+    vei=v@prj0
     if isys>2: # dihedral
         vi=qnv.zerov(2)
         vi[0:2]=vei[2:4]

@@ -9,9 +9,10 @@ import qnmat as qnm
 import qnndarray as qna
 
 def qnmath_init():
-    global n,N
+    global n,N,isys
     n=crs.n
     N=crs.N
+    isys=crs.isys
 
 def abs(a:qnn.Qnnum):
     #N=a.N

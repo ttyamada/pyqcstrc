@@ -155,7 +155,7 @@ def mul(a:Qnnum, b:Qnnum):
     else:
         return Qnnum(np.array([c1,c2,c3]))
     
-def mul_i(a:Qnnum, b:Qnnum): # b should be int
+def mul_i(a:Qnnum, b:np.int64): # b should be int
     c1=a.n[0]*b
     c2=a.n[1]*b
     c3=a.n[2]
@@ -173,7 +173,7 @@ def div(a:Qnnum, b:Qnnum):
     c=Qnnum(np.array([c1,c2,c3]))
     return mul(a,c)
 
-def div_i(a:Qnnum, b:Qnnum): # b should be int
+def div_i(a:Qnnum, b:np.int64): # b should be int
     c1=a.n[0]
     c2=a.n[1]
     c3=a.n[2]*b

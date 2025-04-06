@@ -134,7 +134,7 @@ def triangle_area_nd(tri: qnv.Qnvec) -> qnn.Qnnum:
     #ndim=tri.ndim
     shape=tri.shape
     ndim=len(shape)
-    print("shape",shape,"ndim",ndim)  # for test
+    #print("shape",shape,"ndim",ndim)  # for test
     qn0=qnn.Qnnum([0,0,1])
     if ndim==2:
         #print('tri',tri)

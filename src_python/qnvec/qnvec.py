@@ -3,7 +3,7 @@ import numpy as np
 from numpy.typing import NDArray
 from typing import Self
 
-import crsys
+import crsys as crs
 import qnnum as qnn
 import qnndarray as qna
 
@@ -57,9 +57,9 @@ class Qnvec(qna.QnNdarray):
     
 def qnvec_init():
     global n,N,isys,n_e,n_i
-    isys=crsys.isys
-    n=crsys.n
-    N=crsys.N
+    isys=crs.isys
+    n=crs.n
+    N=crs.N
     if isys==2:
         n_e=3; n_i=3
     else:

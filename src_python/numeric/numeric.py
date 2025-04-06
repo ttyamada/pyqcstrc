@@ -22,9 +22,10 @@ import qnndarray as qna
 #EPS=1e-6 # tolerance
 
 def numeric_init():
-    global n,N
+    global n,N,isys
     n=crs.n
     N=crs.N
+    isys=crs.isys
 
 def coplanar_check_numeric_tau(pts: qnv.Qnvec, num_iteration: int=5) -> bool:
     """check the points (pts) are in coplanar or not
@@ -96,6 +97,18 @@ def coplanar_check_numeric_tau(pts: qnv.Qnvec, num_iteration: int=5) -> bool:
 #            return 
 #    else:
 #        return True
+
+def dot(v1:qnv.Qnvec, v2:qnv.Qnvec) -> qnn.Qnnum:
+    n=v1.shape[0]
+    v=qnn.zero() # qnnum zero
+    if isys==3:  # decagonal
+        s2=prj.scly2 # qnnumber
+        v=v1[0]*v2[0]+v1[1]*v2[1]*s2+v1[2]*v2[2]\
+        +v1[3]*v2[3]*s2+v1[2]*v2[4]
+    else:
+        for i in range(n):
+            v=v+v1[i]*v2[i]
+        return v
 
 def point_on_segment(point: qnv.Qnvec, line_segment: qnv.Qnvec) -> bool:
     #judge whether a point is on a line segment, A-B, or not.
@@ -444,8 +457,9 @@ def check_intersection_two_segment_numerical(ln1:qnv.Qnvec, ln2:qnv.Qnvec) -> bo
     # for ndim==3
     # if dot(cros(vecAB,vecAC),vecCD)==0
     # two segments are in a same plane then return True otherwise False
-    vol=qnv.dot(vecCD,qnv.cros(vecAB,vecAC))
-    if vol==0:
+    # true OD volume is scaled by scly (scly/=1 for decagonal)
+    vol=dot(vecCD,qnv.cros(vecAB,vecAC))
+    if vol2==0:
         return True
     else:
         return False

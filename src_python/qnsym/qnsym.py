@@ -37,6 +37,7 @@ class Qnsym_Octa(qna.QnNdarray):
         print_r(r)  # for test
 
         self.r=r
+        self.qnr0=get_qnr0(r,nr)
         self.qnr=qna.copy(rtoqnr(r))
         self.qnr_e=qna.copy(rtoqnr_e(r))
         self.qnr_i=qna.copy(rtoqnr_i(r))
@@ -75,6 +76,7 @@ class Qnsym_Deca(qna.QnNdarray):
         print_r(r)  # for test
 
         self.r=r
+        self.qnr0=get_qnr0(r,nr)
         self.qnr=qnm.copyms(rtoqnr(r))
         self.qnr_e=qnm.copyms(rtoqnr_e(r))
         self.qnr_i=qnm.copyms(rtoqnr_i(r))
@@ -108,6 +110,7 @@ class Qnsym_Dode(qna.QnNdarray):
         set_r(rg,gord,r)  # set all integer rotation matrices
         print_r(r)  # for test
         self.r=r
+        self.qnr0=get_qnr0(r,nr) 
         self.qnr=qna.copy(rtoqnr(r))
         self.qnr_e=qna.copy(rtoqnr_e(r))
         self.qnr_i=qna.copy(rtoqnr_i(r))
@@ -144,6 +147,7 @@ class Qnsym_Icos(qna.QnNdarray):
         set_r(rg,gord,r)  # set all integer rotation matrices
         print_r(r)  # for test
         self.r=r
+        self.qnr0=get_qnr0(r,nr)
         self.qnr=qna.copy(rtoqnr(r))
         self.qnr_e=qna.copy(rtoqnr_e(r))
         self.qnr_i=qna.copy(rtoqnr_i(r))
@@ -156,7 +160,7 @@ class Qnsym_Icos(qna.QnNdarray):
         self.mpltbl=mpltbl
  
 def qnsym_init():
-    global n,N,isys,qns
+    global n,N,isys,qnrs
     isys=crsys.isys
     n=crsys.n
     N=crsys.N
@@ -164,7 +168,7 @@ def qnsym_init():
     qns=Qnsym()  # set symmetry operator
 
 def Qnsym():
-    global qnr,qnr_e,qnr_i,mpltbl
+    global qnr0,qnr,qnr_e,qnr_i,mpltbl
     if isys==2:
         qns=Qnsym_Icos() #Pn35
     elif isys==3:
@@ -177,6 +181,7 @@ def Qnsym():
         print("isys should be 2,3,4 or 5 but",isys)
         exit()
     
+    qnr0=qns.qnr0
     qnr=qns.qnr
     qnr_e=qns.qnr_e
     qnr_i=qns.qnr_i
