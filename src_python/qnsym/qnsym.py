@@ -21,12 +21,12 @@ class Qnsym_Octa(qna.QnNdarray):
     def __init__(self):
         ng=3         # three generating elements
         rg=np.zeros((ng,n,n),dtype=np.int64)
-        for i in range(ng):
-            rg[i]= np.zeros((n, n),dtype=np.int64)
+        #for i in range(ng):
+        #    rg[i]= np.zeros((n, n),dtype=np.int64)
         gord=(8,2,2)
 
         rg[0][0][1]=1; rg[0][1][2]=1; rg[0][2][3]=1; rg[0][3][0]=-1; rg[0][4][4]=1 # R8 
-        rg[1][1][2]=1; rg[1][2][1]=1; rg[1][0][3]=1; rg[1][3][0]=1;rg[1][4][4]=1 # M
+        rg[1][1][2]=1; rg[1][2][1]=1; rg[1][0][3]=1; rg[1][3][0]=1;rg[1][4][4]=1   # M
         rg[2][0][0]=-1;rg[2][1][1]=-1;rg[2][2][2]=-1;rg[2][3][3]=-1;rg[2][4][4]=-1 # I
         print_r(rg)  # for test
         

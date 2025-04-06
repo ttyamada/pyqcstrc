@@ -40,8 +40,8 @@ class Qnprj_Octa(qnm.Qnmat):
         M0=qnn.any([ 0, 0, 1]) #  0
         M1=qnn.any([ 1, 0, 1]) #  1
         M2=qnn.any([-1, 0, 1]) # -1
-        M3=qnn.any([ 0, 1, 2]) #  sqrt(2)/2
-        M4=qnn.any([ 0,-1, 2]) # -sqrt(2)/2
+        M3=qnn.any([ 0, 1, 2]) #  sqrt(2)/2 t1
+        M4=qnn.any([ 0,-1, 2]) # -sqrt(2)/2 t2=-t1
         #self=qnm.Qnmat(n,N)
         #mt=[\
         prj0=np.array([\
