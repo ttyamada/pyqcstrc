@@ -749,49 +749,33 @@ def matrixpow(ma: NDArray[np.int64], n: int) -> NDArray[np.int64]:
         print('matrix has not regular shape')
         return 
 
-def det_matrix(mtx: NDArray[np.int64]) -> NDArray[np.int64]:
-    """Determinant of 3x3 matrix, mtx, in TAU style
+# determinant of a matrix
+def det_matrix(m: qnm.Qnmat) -> qnn.Qnnum:
+    """Determinant of nxn matrix
     
     Parameters
     ----------
-    mtx: array
+    m: matrix
         3x3 matrix in SQRT3-style
-
     Returns
     -------
     nd vectors projected onto Eperp in SQRT3-style.
     """
+    shape=mtx.shape
+    n=shape[0]
+    if n==1:  # 1x1 matrix
+        return m[0][0]
+    elif n==2: # 2x2 matrix
+        det=m[0][0]*m[1][1]-m[0][1]*m[1][0]
+        return det
+    elif n==3: # 3x3 matrix
+        det=m[0][0]*m[1][1]*m[2][2]+m[0][1]*m[1][2]*m[2][0]+m[0][2]*m[1][0]*m[2][1]\
+           -m[0][2]*m[1][1]*m[2][1]-m[0][1]*m[2][0]*m[2][2]-m[0][0]*m[1][2]*[2][1]
+        return det
+    else:
+        print("matrix size should be 1,2 or 3 but",n)
+        exit()
     
-    t3=mtx[0][0]*mtx[1][1]  #mul(mtx[0][0],mtx[1][1])
-    t1=t3*mtx[2][2]         #mul(t3,mtx[2][2])
-    #
-    t3=mtx[0][2]*mtx[1][0]  #mul(mtx[0][2],mtx[1][0])
-    t2=t3*c[1]              #mul(t3,c[1])
-    #
-    t1=t1+t2                #add(t1,t2)
-    
-    t3=mtx[0][1]*mtx[1][2]  #mul(mtx[0][1],mtx[1][2])
-    t3=t3*mtx[2][0]         #mul(t3,mtx[2][0])
-    #
-    t1=t1+t3                #add(t1,t3)
-    
-    t3=mtx[0][2]*mtx[1][1]  #mul(mtx[0][2],mtx[1][1])
-    t2=t3*mtx[2][0]         #mul(t3,mtx[2][0])
-    #
-    t1=t1-t2                #sub(t1,t2)
-    
-    t3=mtx[0][1]*mtx[1][0]  #mul(mtx[0][1],mtx[1][0])
-    t2=t3*mtx[2][2]         #mul(t3,mtx[2][2])
-    #
-    t1=t1-t2                #sub(t1,t2)
-    
-    t3=mtx[0][0]*mtx[1][2]  #mul(mtx[0][0],mtx[1][2])
-    t2=t3*mtx[2][1]         #mul(t3,mtx[2][1])
-    #
-    t1=t1-t2                #sub(t1,t2)
-    #
-    return t1
-
 if __name__ == '__main__':
     
     # test

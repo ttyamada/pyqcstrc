@@ -9,14 +9,14 @@ import cython
 
 import crsys as crs
 import qnnum as qnn
+import qnndarray as qna
 import qnvec as qnv
 import qnmath as qmt
-import qnndarray as qna
 import utils as utl
 import numeric as num
 import intsct as ints
 import prjop as prj
-import math1
+import math1 as mth
 
 #import pyqcstrc.qnsym.qnsym as qnsym
 #import pyqcstrc.dode2.intsct as intsct
@@ -356,10 +356,12 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \n  1.000000    1.000000    1.000000  90.000000  90.000000  90.000000\
             \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
             \nSTRUC', file=f)
+            qnv.printqnvs("obj1",obj1)  # for test
             for i2,vertx in enumerate(obj1):
                 print("i2",i2)  # for test
                 qnv.printqnv("vertx",vertx) # for test
                 qni=prj.prjvec_i(vertx)
+                print("qni.shape",qni.shape)  # for test
                 qnv.printqnv("qni",qni)  # for test
                 xyz=num.numerical_vector(qni)
                 print("xyz",xyz)  # for test
@@ -1340,7 +1342,7 @@ def write_podatm(obj, position, vlist=[0], path='.', basename='tmp', shift=[0., 
                 #(b[3][0]+b[3][1]*TAU)/(b[3][2])-(a[3][0]+a[3][1]*TAU)/(a[3][2]),\
                 #(b[4][0]+b[4][1]*TAU)/(b[4][2])-(a[4][0]+a[4][1]*TAU)/(a[4][2]),\
                 #(b[5][0]+b[5][1]*TAU)/(b[5][2])-(a[5][0]+a[5][1]*TAU)/(a[5][2])))
-                b=math1.sub_vectors(b,a)
+                b=mth.sub_vectors(b,a)
                 b=num.numerical_vector(b)
                 """ 5次元ベクトルから7次元ベクトルへの変換　一意に決まらない!?
                 

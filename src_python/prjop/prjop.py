@@ -244,30 +244,42 @@ def copy(qna1: qnm.Qnmat):
 def prjvec(v: qnv.Qnvec) -> qnv.Qnvec:
     #qnm.printqnm("prj",prj0)
     #qnv.printqnv("v",v)
+    n=crs.n
+    vei=qnv.zerov(n)
     vei[0:3]=prjvec_e(v)
-    vei[3:5]=prjvec_i(v)
+    if isys>2:
+        vei[3:5]=prjvec_i(v)
+    else:
+        vei[3:6]=prjvec_i(v)
+    #qnv.printqnv("vei",vei)  # for test
     return vei
 
 # projection into external space for class cls
 def prjvec_e(v:qnv.Qnvec) -> qnv.Qnvec:
-    vei=v@prji  #@v # vt assumed to be qnvec
+    #n=crs.n
+    #vei=qnv.zerov(n)
+    vei=prji@v  # v assumed to be qnvec
     ve=qnv.zerov(3)
     if isys>2: # dihedral
         ve[0:2]=vei[0:2]
         ve[2]=vei[4]
     elif isys==2: # icosahedral
-        ve=vei[0:3]
+        ve[0:3]=vei[0:3]
+    #qnv.printqnv("ve",ve)  # for test
     return ve
 
 # projection into internal space for class cls
 def prjvec_i(v: qnv.Qnvec) -> qnv.Qnvec:
-    vei=v@prji
+    #n=crs.n
+    #vei=qnv.zerov(n)
+    vei=prji@v
     if isys>2: # dihedral
         vi=qnv.zerov(2)
-        vi=vei[2:4]*scl
+        vi[0:2]=vei[2:4]
     elif isys==2: # icosahedral
         vi=qnv.zerov(3)
-        vi=vei[3:6]
+        vi[0:3]=vei[3:6]
+    #qnv.printqnv("vi",vi)  # for test
     return vi
 
 # alias for prjop_i

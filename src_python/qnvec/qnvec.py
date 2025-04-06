@@ -245,33 +245,33 @@ def qnv2flt(a:Qnvec):
     return b
 
 def intv2qnv(a:np.ndarray):
-    #n=a.shape[0]
-    qn0=qnn.Qnnum([0,0,1],N) # qnnum zero
+    n=a.shape[0]
+    qn0=qnn.Qnnum([0,0,1]) # qnnum zero
     b=Qnvec(np.full(n,qn0)) #qnnum zero vector
     for i in range(n):
         b[i]=qnn.int2qnn(a[i])
     return b
 
-def printqnv(str:str,qnv:Qnvec):
+def printqnv(str:str,qnv:qna.QnNdarray):
     shape=qnv.shape
     ndim=len(shape)
-    if ndim==1 :
+    if ndim==1 :  # for qnvector
         print(str,"[",end=" ")
-        for i in range(qnv.shape[0]):
+        for i in range(shape[0]):
             print(qnn.qn2npa(qnv[i]),end=" ")
         print("]")
-    elif ndim==2:
-        for i in range(qnv.shape[0]):
+    elif ndim==2: #  for triangle/tetrahedron or qnmatrix
+        for i in range(shape[0]):
             print("[",end=" ")
-            for j in range(qnv.shape[1]):
+            for j in range(shape[1]):
                 print(qnn.qn2npa(qnv[i][j]),end=" ")
             print("]")
         print("")
-    elif ndim==3:
-        for i in range(qnv.shape[0]):
+    elif ndim==3: # for triangles/tetrahedra
+        for i in range(shape[0]):
             print("[",end=" ")
-            for j in range(qnv.shape[1]):
-                for k in range(qnv.shape[0]):
+            for j in range(shape[1]):
+                for k in range(shape[0]):
                     print(qnn.qn2npa(qnv[i][j][k]),end=" ")
                 print("]")
             print("")
@@ -293,13 +293,12 @@ def printqnv2(str:str,qnv1:Qnvec,qnv2:Qnvec):
         print(qnn.qn2npa(j),end="]")
         
 def printqnvs(str:str,qnv1:Qnvec):
-    #shape=qnv1.shape
-    #print("shape",shape)
-    #n_=shape[0]
-    n_=len(qnv1)
-    for j in range(n_):
-        print(str)
-        #print("["+format(j)+"]",end=" ")
+    shape=qnv1.shape
+    ndim=len(shape)
+    print("shape",shape,"ndim",ndim)  # for test
+    n=shape[0]
+    print(str)
+    for j in range(n):
         printqnv("",qnv1[j])
      
 def eq(qnv1:Qnvec, qnv2:Qnvec):
