@@ -4,10 +4,11 @@ import cython
 from typing import Self
 from numpy.typing import NDArray
 
-import crsys
+import crsys as crs
 import qnnum as qnn
 import qnvec as qnv
 import qnndarray as qna
+from numpy.typing import(NDArray)
 
 # this includes nD Qnvec as a special case (shape=(n))
 #class Qnmat(np.ndarray):
@@ -58,9 +59,14 @@ class Qnmat(qna.QnNdarray):
         return copy(a)
     
 def qnmat_init():
-    global n,N
-    n=crsys.n
-    N=crsys.N
+    global n,N,scly,isys
+    n=crs.n
+    N=crs.N
+    isys=crs.isys
+    if isys==3:
+        scly=2.0*np.sin(np.pi/5)
+    else:
+        scly=1.0
 
 def zerom(shape:np.int64) -> Qnmat:
     qnm=Qnmat(shape)
@@ -300,3 +306,39 @@ def printqnm(str:str,qnm:qna.QnNdarray):
     else:
         print("ord in printqnm should be 1 2 or 3 but",ord); exit()
 
+
+def printfm(str:str,fm:NDArray[np.float64]):
+    #ndim=2  # 
+    ndim=fm.ndim
+    shape=fm.shape
+    #if shape[1]==0:
+    #    ndim=1
+    #elif shape[2]==0:
+    #    ndim=2
+    #else:
+    #    ndim=3
+
+    print(str)
+    if ndim==1:
+        for i in range(fm.shape[0]):
+            print("[",end=" ")
+            print(fm[i],end=" ")
+        print("]")
+    elif ndim==2:
+        for i in range(fm.shape[0]):
+            print("[",end=" ")
+            for j in range(fm.shape[1]):
+                print(fm[i][j],end=" ")
+            print("]")
+        print("")
+    elif ndim==3: # for several matrices
+        for i in range(fm.shape[0]):
+            print("")
+            for j in range(fm.shape[1]):
+                print("[",end=" ")
+                for k in range(fm.shape[2]):
+                    print(fm[i][j][k],end=" ")
+                print("]")
+        print("")
+    else:
+        print("ord in printfm should be 1 2 or 3 but",ord); exit()

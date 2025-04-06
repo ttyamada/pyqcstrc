@@ -59,10 +59,13 @@ class Qnprj_Octa(qnm.Qnmat):
         self.prj0=prj0
         self.prji=qmt.qnmatinv(prj0,n) # get inversion matrix of prj
         self.n=n
-        self.N=N
+        self.N=crs.N
         self.shape=(n,n)
         self.scl=1.0
+        self.scly=1.0
         #prj=self
+        prj0f=qnm.qnm2flt(prj0)
+        qnm.printfm("prj0f",prj0f)  # for test
 
 # for decagonal QCs
 #class Qnprj_Deca(np.ndarray):
@@ -76,23 +79,25 @@ class Qnprj_Deca(qnm.Qnmat):
  
     # note that this use orthorhombic coordinate system
     def __init__(self):
-        qn2=qnn.any([2,0,1])   #  2
-        M0=qnn.any([ 0, 0, 1]) #  0
-        M1=qnn.any([ 1, 0, 1]) #  1
-        M2=qnn.any([-1, 0, 1]) # -1
-        M3=qnn.any([1,1,2])    # tau
-        M4=qnn.any([-1,1,2])   # tau^-1
-        M5=M4*M4 # tau^-2
-        M6=M4-qn2
-        M7=-M3-qn2
+        M0=qnn.any([ 0,0,1]  ) #  0
+        M1=qnn.any([1,1,2])    # tau
+        M2=qnn.any([-1,1,2])   # tau^-1
+        M3=qnn.any([1,0,1])    # 1
+        M5=M2/2     #    tau^-1/2=c1
+        M6=M1/(-2)  #   -tau/2=c2
+        M7=M2/2     #1   s2/(2sin(pi/5))
+        M8=M7*(-1)  #-1 -s2/(2sin(pi/5))
+        M9=M3/2     #    s1/(2sin(pi/5))
+        M10=M9*(-1) #   -s1/(2sin(pi/5))
+        # y axis in external and internal spaces should be scaled by 2sin(pi/5)        
 
         #mt=[\
         prj0=np.array([\
-           [M6,M4,M7,M5,M0],\
-           [M7,M5,M6,-M4,M0],\
-           [M7,-M5,M6,M4,M0],\
-           [M6,-M4,M7,-M5,M0],\
-           [M0,M0,M0,M0,M1]\
+           [M5,M9,M6,M7,M0],\
+           [M6,M7,M5,M10,M0],\
+           [M6,M8,M5,M9,M0],\
+           [M5,M10,M6,M8,M0],\
+           [M0,M0,M0,M0,M3]\
         ],dtype=qnn.Qnnum)
         #]
         #for i in range(n):
@@ -102,12 +107,15 @@ class Qnprj_Deca(qnm.Qnmat):
         self.prj0=prj0
         self.prji=qmt.qnmatinv(prj0,n) # get inversion matrix of prj
         self.n=n
-        self.N=N
+        self.N=crs.N
         self.shape=(n,n)
         self.scl=2.0/np.sqrt(5.0)
+        self.scly=2.0*np.sin(np.pi/5)
         #prj=self
         #print("self.ndim",self.ndim) # fpr test
         #print("self.shape",self.shape) # fpr test
+        prj0f=qnm.qnm2flt(prj0)
+        qnm.printfm("prj0f",prj0f)  # for test
 
 # for dodecagonal QCs
 #class Qnprj_Dode(np.ndarray):
@@ -130,10 +138,10 @@ class Qnprj_Dode(qnm.Qnmat):
 
         #mt=[\
         prj0=np.array([\
-           [M5,M4,M6,M4,M0],\
            [M1,M0,M1,M0,M0],\
+           [M5,M3,M2,M3,M0],\
+           [M3,M5,M3,M6,M0],\
            [M0,M1,M0,M1,M0],\
-           [M4,M5,M4,M6,M0],\
            [M0,M0,M0,M0,M1]\
         ],dtype=qnn.Qnnum)
         #]
@@ -145,12 +153,15 @@ class Qnprj_Dode(qnm.Qnmat):
         self.prj0=prj0
         self.prji=qmt.qnmatinv(prj0,n) # get inversion matrix of prj
         self.n=n
-        self.N=N
+        self.N=crs.N
         self.shape=(n,n)
         self.scl=2.0/np.sqrt(6.0)
+        self.scly=1.0
         #prj=self
         #print("self.ndim",self.ndim) # fpr test
         #print("self.shape",self.shape) # fpr test
+        prj0f=qnm.qnm2flt(prj0)
+        qnm.printfm("prj0f",prj0f)  # for test
 
 # for icosahedral QCs
 #class Qnprj_Icos(npndarray):
@@ -187,12 +198,15 @@ class Qnprj_Icos(qnm.Qnmat):
         self.prj0=prj0
         self.prji=qmt.qnmatinv(prj0,n) # get inversion matrix of prj
         self.n=n
-        self.N=N
+        self.N=crs.N
         self.shape=(n,n)
         tau=(1.0+np.sqrt(5.0))/2.0
         self.scl=1.0/np.sqrt(2.0+tau)
+        self.scly=1.0
         #print("self.ndim",self.ndim) # fpr test
         #print("self.shape",self.shape) # fpr test
+        prj0f=qnm.qnm2flt(prj0)
+        qnm.printfm("prj0f",prj0f)  # for test
         
 def prjop_init():
     global isys,n,N
@@ -203,7 +217,7 @@ def prjop_init():
 
     
 def Prjop():
-    global prj0,prji,prj0t,prjit,scl
+    global prj0,prji,prj0t,prjit,scl,scly
     print("isys in Prjop",isys)
     if(isys==2): # projection operator for icosahedral
         prj=Qnprj_Icos()
@@ -218,6 +232,7 @@ def Prjop():
     prj0t=qmt.matrixtr(prj0) # transposed prj matrix
     prjit=qmt.matrixtr(prji) # transposed prji matrix 
     scl=prj.scl
+    scly=prj.scly
     return prj
 
 def tstwt_prjop():
