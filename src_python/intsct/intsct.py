@@ -135,7 +135,7 @@ def check_intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.
             # 1 surfaces of triangle_2
             segment=np.stack([triangle_1[c[0]],triangle_1[c[1]]])
             surface=triangle_2
-            if check_intersection_segment_surface_numerical_nd_tau(segment,surface): # intersectiing
+            if check_intersection_segment_surface_numerical_nd_tau(segment,surface): # intersecting
                 counter1+=1
                 break
             else:
@@ -145,7 +145,7 @@ def check_intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.
             # 1 surfaces of triangle_1
             segment=np.stack([triangle_2[c[0]],triangle_2[c[1]]])
             surface=triangle_1
-            if check_intersection_segment_surface_numerical_nd_tau(segment,surface): # intersectiing
+            if check_intersection_segment_surface_numerical_nd_tau(segment,surface): # intersecting
                 counter1+=1
                 break
             else:
@@ -170,7 +170,7 @@ def intersection_two_segment(segment_1: qna.QnNdarray, segment_2: qna.QnNdarray)
     # check whether two line segments are intersecting or not by numerical calc.
     if num.check_intersection_two_segment_numerical_nd_tau(segment_1,segment_2): # intersecting
         # calc in TAU-style
-        vecAB_nd=segment_1[1]-segment_1[0]
+        vecAB_nd=segment_1[1]-segment_1[0]   # line segment
         qnv.printqnv("vecAB_nd",vecAB_nd)    # for test
         vecAB=prj.projection3(vecAB_nd)            # AB
         #
@@ -209,10 +209,12 @@ def intersection_two_segment(segment_1: qna.QnNdarray, segment_2: qna.QnNdarray)
         if bunbo==qnn.zero():
             return
         s=bunshi/bunbo
+        qnn.printqnn("s",s)  # for test
         #s=div(bunshi,bunbo)
         #
         # OP = OA + s*AB
-        tmp=qnm.mul(vecAB_nd,s) # vec tunes scale
+        tmp=qnm.mul_scl(vecAB_nd,s) # vec tunes scale
+        qnv.printqnv("tmp",tmp)
         return segment_1[0]+tmp
             
     else: # no intersection

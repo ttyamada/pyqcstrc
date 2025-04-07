@@ -137,8 +137,8 @@ def qnm2qnv(qnm: Qnmat) -> qnv.Qnvec:
 def add(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
     #a=np.empty(mat1.shape, dtype=qnn.Qnnum)
     shape=ma1.shape
-    n1=ma1.ndim
-    n2=ma2.ndim
+    n1=len(ma1.shape)
+    n2=len(ma2.shape)
     a=Qnmat(shape)
     if(n1==1 and n2==1): # vectors
         for i in range(shape[0]):
@@ -153,8 +153,8 @@ def add(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
 def sub(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
     #a=np.empty(mat1.shape, dtype=qnn.Qnnum)
     shape=ma1.shape
-    n1=ma1.ndim
-    n2=ma2.ndim
+    n1=len(ma1.shape)
+    n2=len(ma2.shape)
     #N=ma1[0][0].N
     a=Qnmat(shape)
     if(n1==1 and n2==1): # vectors
@@ -174,11 +174,23 @@ def iadd(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
 def isub(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
     ma1=sub(ma1,ma2)
     return ma1
+
+def mul_scl(ma1: Qnmat, scl: qnn.Qnnum, dtype=qnn.Qnnum) -> Qnmat:
+    ndim=len(ma1.shape)
+    if ndim==1:
+        for i in range(ma1.shape[0]):
+            ma1[i]=ma1[i]*scl
+    if ndim==2:
+        for i in range(ma1.shape[0]):
+            for j in range(ma1.shape[1]):
+                ma1[i][j]=ma1[i][j]*scl
+    return ma1
+
     
 # for ma1@ma2 (ma1 and ma2 should be qnvec or qnmat)
 def mul(ma1: Qnmat, ma2: Qnmat, dtype=qnn.Qnnum) -> Qnmat: 
-    ndm1=ma1.ndim
-    ndm2=ma2.ndim
+    ndm1=len(ma1.shape)
+    ndm2=len(ma2.shape)
     #print("ndm1=",ndm1,"ndm2=",ndm2)  # for test
     if ndm1==1 and ndm2==1:  # dot product
         if ma1.shape[0]==ma2.shape[0]:
@@ -272,7 +284,7 @@ def intm2qnm(a:np.array,n_:np.int64) -> Qnmat:
 #def printqnm(str:str,qna:QnNdarray):
 def printqnm(str:str,qnm:qna.QnNdarray):
     #ndim=2  # 
-    ndim=qnm.ndim
+    ndim=len(qnm.shape)
     shape=qnm.shape
     #if shape[1]==0:
     #    ndim=1
@@ -309,7 +321,7 @@ def printqnm(str:str,qnm:qna.QnNdarray):
 
 def printfm(str:str,fm:NDArray[np.float64]):
     #ndim=2  # 
-    ndim=fm.ndim
+    ndim=len(fm.shape)
     shape=fm.shape
     #if shape[1]==0:
     #    ndim=1

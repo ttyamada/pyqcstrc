@@ -61,7 +61,7 @@ def generate_random_triangle():
 #[[ 0,  0,  1],[ 0,  0,  1],[-1,  0,  2],[ 1,  0,  2],[ 0,  0,  1],[ 0,  0,  1]]]) # edge2
 
 isys=4  # for octabonal
-crx.crsys_init(isys)
+crs.crsys_init(isys)
 qnn.qnnum_init()
 qnv.qnvec_init()
 qnm.qnmat_init()
@@ -76,12 +76,12 @@ M3=qnn.Qnnum([1,0,2])
 M4=qnn.Qnnum([-1,0,2])
 
 seg_1=np.array([
-           [M1,M1,M0,M0,M0],
-           [M2,M3,M0,M0,M0]
+        [M1,M1,M0,M0,M0],
+        [M2,M3,M0,M0,M0]
         ],dtype=qnn.Qnnum)
 seg_2=np.array([\
-           [M0,M0,M0,M1,M0],
-           [M0,M0,M4,M3,M0]
+        [M0,M0,M0,M1,M0],
+        [M0,M0,M4,M3,M0]
         ],dtype=qnn.Qnnum)
 
 segment_1=qna.anya(seg_1,(2,5))
@@ -97,12 +97,12 @@ a=isct.intersection_two_segment(segment_1, segment_2)
 print('TEST1')
 
 seg_1=np.array([\
-           [M1,M1,M0,M0,M0],\
-           [M3,M2,M0,M0,M0]
+        [M1,M1,M0,M0,M0],\
+        [M3,M2,M0,M0,M0]
         ],dtype=qnn.Qnnum)
 seg_2=np.array([\
-           [M0,M1,M0,M0,M0],\
-           [M0,M3,M4,M0,M0]
+        [M0,M1,M0,M0,M0],\
+        [M0,M3,M4,M0,M0]
         ],dtype=qnn.Qnnum)
 
 segment_1=qna.anya(seg_1,(2,5))
@@ -122,7 +122,7 @@ qna.printqndm("segment_2",segment_2)
 #print(a)
 
 a=isct.intersection_two_segment(segment_1, segment_2) 
-print(a)
+qnv.printqnv("a",a)
 
 """
 s: [ 2 -1  1] 0.5857864376269049
