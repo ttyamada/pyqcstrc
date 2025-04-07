@@ -79,6 +79,7 @@ qnv.printqnv("qnv2",qnv2)
 od_asym=np.vstack([qnv0,qnv1,qnv2]).reshape(1,3,5)
 qnv.printqnvs("od_asym",od_asym)
 # Output 
+print("od_asym",od_asym)  # for test
 vst.write_vesta(od_asym, opath, 'od_1_asym', 'r', 'normal')
 vst.write_xyz(od_asym, opath, 'od_1_asym')
 

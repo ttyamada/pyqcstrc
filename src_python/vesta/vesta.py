@@ -22,7 +22,7 @@ import math1 as mth
 #import pyqcstrc.dode2.intsct as intsct
 #import pyqcstrc.dode2.projection12 as proj
     
-def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0):
+def write_vesta(obj:qna.QnNdarray,path='.',basename='tmp',color='k',select='normal',verbose=0):
     """
     Export occupation domains in VESTA format.
     
@@ -81,32 +81,24 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
     ndim=len(shape)
     print("shape in write_vesta",shape,"ndim",ndim)  # for test
    
-    if ndim==4:
-        shape=(shape[0]*shape[1],shape[2],shape[3])
-        objt=obj.reshape(shape)
-        ndim=3
-        #print("shape after reshape",shape,"ndim",ndim)  # for test
-    else:
-        objt=obj
-    
-    shape=objt.shape
-    print("objt.shape",objt.shape)  # for test
     file_name='%s/%s.vesta'%(path,basename)
-    f=open('%s'%(file_name),'w')
+    print("file_name",file_name)  # for test
+    f=open(file_name,'w')
     
     #dmax=5.0
     dmax=10.0
     
     if select=='simple' or select=='egdes':
-        if np.all(objt==None):
-            print('no volume objt')
+        #if np.all(obj==None):
+        if ndim<3:
+            print('no volume obj')
             return 0
         else:
             # get independent edges
             if select=='simple':
-                edges = utl.generator_obj_edge(objt,verbose)
+                edges = utl.generator_obj_edge(obj,verbose)
             else:
-                edges = objt
+                edges = obj
             # get independent vertices of the edges
             vertices = utl.remove_doubling_in_perp_space(edges)
                 
@@ -320,95 +312,96 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             return 0
         
     elif select=='normal':
-        #if np.all(objt!=None):
-        #    print('no volume objt')
-        #    return 0
-        #else:
-        isys=crs.isys
-        print('#VESTA_FORMAT_VERSION 3.5.0\n', file=f)
-        for i1,obj1 in enumerate(objt):
-            print("i1",i1)  # for test
-            qnv.printqnv("obj1",obj1) # for test
-            print('MOLECULE\
-            \nTITLE',file=f)
-            print('%s/%s_%d\n'%(path,basename,i1), file=f)
-            print('GROUP\
-            \n1 1 Custom\
-            \nSYMOP\
-            \n 0.000000  0.000000  0.000000  1  0  0    0  1  0    0  0  1    1\
-            \n -1.0 -1.0 -1.0  0 0 0  0 0 0  0 0 0\
-            \nTRANM 0\
-            \n 0.000000  0.000000  0.000000  1  0  0    0  1  0    0  0  1\
-            \nLTRANSL\
-            \n -1\
-            \n 0.000000  0.000000  0.000000  0.000000  0.000000  0.000000\
-            \nLORIENT\
-            \n -1    0    0    0    0\
-            \n 1.000000  0.000000  0.000000  1.000000  0.000000  0.000000\
-            \n 0.000000  0.000000  1.000000  0.000000  0.000000  1.000000\
-            \nLMATRIX\
-            \n 1.000000  0.000000  0.000000  0.000000\
-            \n 0.000000  1.000000  0.000000  0.000000\
-            \n 0.000000  0.000000  1.000000  0.000000\
-            \n 0.000000  0.000000  0.000000  1.000000\
-            \n 0.000000  0.000000  0.000000\
-            \nCELLP\
-            \n  1.000000    1.000000    1.000000  90.000000  90.000000  90.000000\
-            \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
-            \nSTRUC', file=f)
-            qnv.printqnvs("obj1",obj1)  # for test
-            for i2,vertx in enumerate(obj1):
-                print("i2",i2)  # for test
-                qnv.printqnv("vertx",vertx) # for test
-                qni=prj.prjvec_i(vertx)
-                print("qni.shape",qni.shape)  # for test
-                qnv.printqnv("qni",qni)  # for test
-                xyz=num.numerical_vector(qni)
-                print("xyz",xyz)  # for test
-                if isys==2:
-                    print('%4d Xx        Xx%d  1.0000    %8.6f %8.6f %8.6f        1'%\
-                    (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
-                else:
-                    print('%4d Xx        Xx%d  1.0000    %8.6f %8.6f %8.6f        1'%\
-                    (i2+1,i2+1,xyz[0],xyz[1],0.0), file=f)
-                print('                             0.000000    0.000000    0.000000  0.00', file=f)
-            print('  0 0 0 0 0 0 0\
-            \nTHERI 0', file=f)
-            for i2,_ in enumerate(obj1):
-                print('  %d        Xx%d  1.000000'%(i2+1,i2+1), file=f)
-            print('  0 0 0\
-            \nSHAPE\
-            \n  0         0         0         0    0.000000  0    192    192    192    192\
-            \nBOUND\
-            \n         0          1        0          1        0          1\
-            \n  0    0    0    0  0\
-            \nSBOND', file=f)
-            clr=colors(color)
-            print('  1     Xx     Xx     0.00000     %3.2f  0  1  1  0  2  0.250  2.000 %3d %3d %3d'%(dmax,clr[0],clr[1],clr[2]), file=f)
-            print('  0 0 0 0\
-            \nSITET', file=f)
-            for i2,_ in enumerate(obj1):
-                print('    %d        Xx%d  0.0100  76  76  76  76  76  76 204  0'%(i2+1,i2+1), file=f)
-            print('  0 0 0 0 0 0\
-            \nVECTR\
-            \n 0 0 0 0 0\
-            \nVECTT\
-            \n 0 0 0 0 0\
-            \nSPLAN\
-            \n  0    0    0    0\
-            \nLBLAT\
-            \n -1\
-            \nLBLSP\
-            \n -1\
-            \nDLATM\
-            \n -1\
-            \nDLBND\
-            \n -1\
-            \nDLPLY\
-            \n -1\
-            \nPLN2D\
-            \n  0    0    0    0', file=f)
-            #endif
+        print("select==normal")  # for test
+        #if np.all(obj==None):
+        if ndim<3:
+            print('no volume obj')
+            return 0
+        else:
+            isys=crs.isys
+            print('#VESTA_FORMAT_VERSION 3.5.0\n', file=f)
+            for i1,obj1 in enumerate(obj):
+                print("i1",i1)  # for test
+                qnv.printqnv("obj1",obj1) # for test
+                print('MOLECULE\
+                \nTITLE',file=f)
+                print('%s/%s_%d\n'%(path,basename,i1), file=f)
+                print('GROUP\
+                \n1 1 Custom\
+                \nSYMOP\
+                \n 0.000000  0.000000  0.000000  1  0  0    0  1  0    0  0  1    1\
+                \n -1.0 -1.0 -1.0  0 0 0  0 0 0  0 0 0\
+                \nTRANM 0\
+                \n 0.000000  0.000000  0.000000  1  0  0    0  1  0    0  0  1\
+                \nLTRANSL\
+                \n -1\
+                \n 0.000000  0.000000  0.000000  0.000000  0.000000  0.000000\
+                \nLORIENT\
+                \n -1    0    0    0    0\
+                \n 1.000000  0.000000  0.000000  1.000000  0.000000  0.000000\
+                \n 0.000000  0.000000  1.000000  0.000000  0.000000  1.000000\
+                \nLMATRIX\
+                \n 1.000000  0.000000  0.000000  0.000000\
+                \n 0.000000  1.000000  0.000000  0.000000\
+                \n 0.000000  0.000000  1.000000  0.000000\
+                \n 0.000000  0.000000  0.000000  1.000000\
+                \n 0.000000  0.000000  0.000000\
+                \nCELLP\
+                \n  1.000000    1.000000    1.000000  90.000000  90.000000  90.000000\
+                \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
+                \nSTRUC', file=f)
+                qnv.printqnvs("obj1",obj1)  # for test
+                for i2,vertx in enumerate(obj1):
+                    print("i2",i2)  # for test
+                    qnv.printqnv("vertx",vertx) # for test
+                    qni=prj.prjvec_i(vertx)
+                    print("qni.shape",qni.shape)  # for test
+                    qnv.printqnv("qni",qni)  # for test
+                    xyz=num.numerical_vector(qni)
+                    print("xyz",xyz)  # for test
+                    if isys==2:
+                        print('%4d Xx        Xx%d  1.0000    %8.6f %8.6f %8.6f        1'%\
+                        (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
+                    else:
+                        print('%4d Xx        Xx%d  1.0000    %8.6f %8.6f %8.6f        1'%\
+                        (i2+1,i2+1,xyz[0],xyz[1],0.0), file=f)
+                    print('                             0.000000    0.000000    0.000000  0.00', file=f)
+                print('  0 0 0 0 0 0 0\
+                \nTHERI 0', file=f)
+                for i2,_ in enumerate(obj1):
+                    print('  %d        Xx%d  1.000000'%(i2+1,i2+1), file=f)
+                print('  0 0 0\
+                \nSHAPE\
+                \n  0         0         0         0    0.000000  0    192    192    192    192\
+                \nBOUND\
+                \n         0          1        0          1        0          1\
+                \n  0    0    0    0  0\
+                \nSBOND', file=f)
+                clr=colors(color)
+                print('  1     Xx     Xx     0.00000     %3.2f  0  1  1  0  2  0.250  2.000 %3d %3d %3d'%(dmax,clr[0],clr[1],clr[2]), file=f)
+                print('  0 0 0 0\
+                \nSITET', file=f)
+                for i2,_ in enumerate(obj1):
+                    print('    %d        Xx%d  0.0100  76  76  76  76  76  76 204  0'%(i2+1,i2+1), file=f)
+                print('  0 0 0 0 0 0\
+                \nVECTR\
+                \n 0 0 0 0 0\
+                \nVECTT\
+                \n 0 0 0 0 0\
+                \nSPLAN\
+                \n  0    0    0    0\
+                \nLBLAT\
+                \n -1\
+                \nLBLSP\
+                \n -1\
+                \nDLATM\
+                \n -1\
+                \nDLBND\
+                \n -1\
+                \nDLPLY\
+                \n -1\
+                \nPLN2D\
+                \n  0    0    0    0', file=f)
             print('ATOMT\
             \n  1        Xx  0.0100  76  76  76  76  76  76 204\
             \n  0 0 0 0 0 0\
@@ -527,13 +520,14 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             return 0
     
     elif select == 'podatm':
-        if np.all(objt==None):
-            print('no volume objt')
+        #if np.all(obj==None):
+        if ndim<3:
+            print('no volume obj')
             return 0
         else:
             # get independent edges
-            #edges = utl.generator_obj_edge(objt, verbose)
-            edges = utl.generator_unique_edges(objt)
+            #edges = utl.generator_obj_edge(obj, verbose)
+            edges = utl.generator_unique_edges(obj)
             #print(len(edges))
             # get independent vertices of the edges
             vertices = utl.remove_doubling_in_perp_space(edges)
@@ -750,7 +744,7 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \n 128.000',file = f)
         
             f.close()
-            #write_vesta_separate(objt, path, basename, color, dmax)
+            #write_vesta_separate(obj, path, basename, color, dmax)
             if verbose>0:
                 print('    written in %s'%(file_name))
             return vertices
@@ -875,7 +869,7 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         counter=0
         n=crs.n
         for tri in range(len(obj)):
-            for point in enumerate(tri):
+            for point in tri:
                 v=prj.projection3(point)
                 vf=qnv.qnv2flt(v)
                 f.write('Xx %8.6f %8.6f %8.6f'%(vf[0],vf[1],vf[2]))
@@ -923,14 +917,7 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
     shape=obj.shape
     #print("shape in write_xyz",shape)  # for test
     ndim=len(shape)
-    if ndim==4:
-        shape=(shape[0]*shape[1],shape[2],shape[3])
-        objt=obj.reshape(shape)
-        ndim=3
-        #print("shape after reshape",shape,"ndim",ndim)  # for test
-    else:
-        objt=obj
-
+ 
     #if np.all(objt==None):
     #    print('empty objt')
     #    return 

@@ -129,7 +129,7 @@ def symmetric(irs:NDArray[np.int64],obj:qna.QnNdarray):
                 #print("i",i,"j",j)  # for test
                 #qnv.printqnv("obj",obj[i][j])  # for test 
                 a[ni][j]=qnr0[irs[n]]@obj[i][j]
-                print("%s-th triangle %s-th vertex"%(ni,j),end="")
+                print("%s-th triangle %s-th vertex"%(ni,j),end="") # for test
                 qnv.printqnv(" ",a[ni][j])  # for test
             ni+=1
     return a
