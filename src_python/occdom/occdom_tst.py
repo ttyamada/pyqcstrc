@@ -1,4 +1,4 @@
-#if __name__ == "__main__":
+
 import timeit
 import os
 import sys
@@ -12,7 +12,7 @@ import cython
 #import dode2.symmetry as symmetry
 #import dode2.intsct as intsct
 #import dode2.projection12 as proj
-import crsys
+import crsys as crs
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
@@ -20,6 +20,7 @@ import numeric as num
 import utils as utl
 import vesta as vst
 import qnsym as qns
+import lattice as lt
 import sitesym as ssm
 import intsct as isct
 import prjop as prj
@@ -27,11 +28,14 @@ import qnndarray as qna
 from occdom import (occdom_init,symmetric,write)
 
 isys=4 # for octagonal
-crsys.crsys_init(isys)
+crs.crsys_init(isys)
 qnn.qnnum_init()
+qna.qnndarray_init()
 qnv.qnvec_init()
 qnm.qnmat_init()
+prj.prjop_init()
 qns.qnsym_init()
+lt.lattice_init('p')
 ssm.sitesym_init()
 
 occdom_init()
@@ -42,8 +46,8 @@ xyz_dir='../../xyz/octa'
 od_asym = vst.read_xyz(path=xyz_dir,basename='od_1_asym')
 shape=od_asym.shape
 ndim=len(shape)
-print("type(od_asym)",type(od_asym),"od_saym.shape",od_asym.shape)  # for test
-print("len(od_asym.shape)",len(od_asym.shape))
+
+print("type(od_asym)",type(od_asym),"od_saym.shape",shape,"ndim",ndim)  # for test
 if ndim==2: # vertex
     for i in range(shape[0]):
         qnv.printqnv("od_asym[i]",od_asym[i])
@@ -53,10 +57,11 @@ elif ndim==3: # triangle
             qnv.printqnv("od_asym[i][j]",od_asym[i][j])
 
 pos0 = qnv.zerov(5)
-png = "p12m"
-od_sym = symmetric(obj = od_asym, centre = pos0)
-write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
-write(obj=od_sym, path=test_dir, basename = 'od_sym', format='vesta', color = 'k')
+irs=ssm.site_symmetry(pos0)
+qnv.printqnv("pos0",pos0)
+od_sym = symmetric(irs,od_asym)
+vst.write_vesta(od_sym, test_dir, 'od_sym', 'k', 'normal')
+vst.write_xyz(od_sym, test_dir, 'od_sym')
 
 # move STRT OD to a position 1 1 1 0 -1 0.
 #pos_b1=np.array([[ 1, 0, 1],[ 1, 0, 1],[ 1, 0, 1],[ 0, 0, 1],[-1, 0, 1],[ 0, 0, 1]]) # b_1

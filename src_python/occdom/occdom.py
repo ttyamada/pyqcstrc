@@ -21,6 +21,7 @@ import utils as utl
 import qnsym as qns
 import intsct as isct
 import prjop as prj
+import lattice as lt
 import sitesym as ssm
 from vesta import (write_vesta,write_xyz)
 from numpy.typing import (NDArray)

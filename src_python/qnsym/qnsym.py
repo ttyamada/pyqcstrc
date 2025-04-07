@@ -2,13 +2,13 @@ import sys
 import numpy as np
 import cython
 
-import crsys
+import crsys as crs
 import qnnum as qnn
+import qnndarray as qna
 import qnvec as qnv
 import qnmat as qnm
-import prjop
+import prjop as prj
 import qnmath as qmt
-import qnndarray as qna
 
 class Qnsym_Octa(qna.QnNdarray):
     def __new__(cls):
@@ -28,13 +28,13 @@ class Qnsym_Octa(qna.QnNdarray):
         rg[0][0][1]=1; rg[0][1][2]=1; rg[0][2][3]=1; rg[0][3][0]=-1; rg[0][4][4]=1 # R8 
         rg[1][1][2]=1; rg[1][2][1]=1; rg[1][0][3]=1; rg[1][3][0]=1;rg[1][4][4]=1   # M
         rg[2][0][0]=-1;rg[2][1][1]=-1;rg[2][2][2]=-1;rg[2][3][3]=-1;rg[2][4][4]=-1 # I
-        print_r(rg)  # for test
+        #print_r(rg)  # for test
         
         #print("shape in __init__",shape) # for test
         r=np.zeros(shape,dtype=np.int64) # nD int array
         #print("r.shape",r.shape) # fpr test
         set_r(rg,gord,r) # set all integer symmetry operators r
-        print_r(r)  # for test
+        #print_r(r)  # for test
 
         self.r=r
         self.qnr0=get_qnr0(r,nr)
@@ -161,9 +161,9 @@ class Qnsym_Icos(qna.QnNdarray):
  
 def qnsym_init():
     global n,N,isys,qnrs
-    isys=crsys.isys
-    n=crsys.n
-    N=crsys.N
+    isys=crs.isys
+    n=crs.n
+    N=crs.N
     print("qnsym_init isys",isys,"n",n,"N",N)  # for test
     qns=Qnsym()  # set symmetry operator
 
@@ -191,9 +191,9 @@ def Qnsym():
 def rtoqnr(r):
     shape=r.shape # (nr,n,n)
     nr=shape[0]
-    prj=prjop.Prjop()
-    prj0t=prjop.prj0t
-    prjit=prjop.prjit
+    #prj=prj.Prjop()
+    prj0t=prj.prj0t
+    prjit=prj.prjit
     return get_qnr(prj0t,prjit,r,nr)
 
 def rtoqnr_e(r):
