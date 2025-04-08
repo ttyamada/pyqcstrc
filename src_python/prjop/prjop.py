@@ -292,10 +292,10 @@ def prjvec_i(v: qnv.Qnvec) -> qnv.Qnvec:
     vei=v@prj0
     if isys>2: # dihedral
         vi=qnv.zerov(2)
-        vi[0:2]=vei[2:4]
+        vi=vei[2:4]
     elif isys==2: # icosahedral
         vi=qnv.zerov(3)
-        vi[0:3]=vei[3:6]
+        vi=vei[3:6]
     #qnv.printqnv("vi",vi)  # for test
     return vi
 
@@ -307,14 +307,14 @@ def projection3(v: qnv.Qnvec) -> qnv.Qnvec:
 def projection_numerical(vn: qnv.Qnvec) -> qnv.Qnvec:
     return prjvec(vn)
 
-def projection_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
+def projection3_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
     #Parameters
     #vsn: array
     #    set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
     num=len(vns)
-    m=qnv.zeros((1),dtype=qnv.Qnvec)
+    m=qnv.zerovs(vns.shape)
     for i in range(num):
-        m[i]=projection_numerical(vns[i])
+        m[i]=projection3(vns[i])
     return m
 
 # alias for prjop_e

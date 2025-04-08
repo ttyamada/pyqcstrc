@@ -238,7 +238,7 @@ def intersection_segment_surface(segment: qna.QnNdarray, surface: qna.QnNdarray)
     
     """
     # check whether the line segment and the surface are intersecting or not by numerical calc.
-    if check_intersection_segment_surface_numerical_nd_tau(segment,surface): # intersecting
+    if num.check_intersection_segment_surface_numerical_nd_tau(segment,surface): # intersecting
         
         """
         # calc in TAU-style
@@ -266,15 +266,17 @@ def intersection_segment_surface(segment: qna.QnNdarray, surface: qna.QnNdarray)
         tmp=mul_vector(vec6AB,t) # t*AB
         #print('   t=',numeric_value(t))
         n=crs.n
-        return add_vectors(segment[0],tmp).reshape(1,n,3)
+        return add_vectors(segment[0],tmp).reshape(1,n)
         """
         #  edge: 0-1,0-2,1-2
         comb=[[0,1],[0,2],[1,2]]
         counter=0
         n=crs.n
         for j in comb:
-            segment1=np.vstack([surface[j[0]],surface[j[1]]])
-            tmp1=intersection_two_segment(segment,segment1.reshape(2,n,3))
+            segment1=np.stack([surface[j[0]],surface[j[1]]])
+            print("segment.shape",segment.shape,"segment1.shape",segment1.shape) # for test
+            tmp1=intersection_two_segment(segment,segment1)
+            print("tmp1.shape",tmp1.shape)  # for test
             if np.all(tmp1==None):
                 pass
             else:
@@ -284,6 +286,7 @@ def intersection_segment_surface(segment: qna.QnNdarray, surface: qna.QnNdarray)
                     p=np.vstack([p,tmp1])
                 counter+=1
         if counter>0: # intersection
+            print("p.shape",p.shape)  # for test
             return p
         else: # no intersection
             return 
@@ -295,11 +298,11 @@ def intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdar
     # -----------------
     # triangle_1
     # -----------------
-    # vertex 1: triangle_1[0],  consist of (a1+b1*TAU)/c1, ... (a6+b6*TAU)/c6    a_i,b_i,c_i = tetrahedron_1[0][i:0~5][0],tetrahedron_1[0][i:0~5][1],tetrahedron_1[0][i:0~5][2]
+    # vertex 1: triangle_1[0],  with nD TAU stile coordinates
     # vertex 2: triangle_1[1]
     # vertex 3: triangle_1[2]
     #
-    # 1 triangle of triangle_1
+    # 2 surface of triangle_1
     # surface 1: v1,v2,v3
     #
     # 3 edges of triangle_1
@@ -314,7 +317,7 @@ def intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdar
     # vertex 2: triangle_2[1]
     # vertex 3: triangle_2[2]
     #
-    # 1 surfaces of triangle_2
+    # 2 surfaces of triangle_2
     # surface 1: w1,w2,w3
     #
     # 3 edges of triangle_2
@@ -331,12 +334,13 @@ def intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdar
     [0,1,0,1,2],\
     [0,2,0,1,2],\
     [1,2,0,1,2]]
-    
+    print("trinagle_1.shape",triangle_1.shape,"triangle_2.shape",triangle_2.shape)  # for test
     counter=0
     for c in comb:
         # case 1: intersection between (edge of triangle_1) and (surface of triangle_2)
-        segment=np.stack([triangle_1[c[0]],triangle_1[c[1]]]) # ???
+        segment=np.stack([triangle_1[c[0]],triangle_1[c[1]]])
         surface=np.stack([triangle_2[c[2]],triangle_2[c[3]],triangle_2[c[4]]])
+        print("segment.shape",segment.shape,"surface.shape",surface.shape)  # for test
         vtx=intersection_segment_surface(segment,surface)
         if np.all(vtx==None):
             pass

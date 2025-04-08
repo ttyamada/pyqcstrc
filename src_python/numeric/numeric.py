@@ -284,8 +284,8 @@ def check_intersection_segment_surface_numerical_nd_tau(line_segment: qnv.Qnvec,
     -------
     
     """
-    #ln=get_internal_component_sets_numerical(line_segment)
-    #tr=get_internal_component_sets_numerical(triangle)
+    ln=get_internal_component_sets_numerical(line_segment)
+    tr=get_internal_component_sets_numerical(triangle)
     return check_intersection_segment_surface_numerical(ln,tr)
     
 
@@ -813,7 +813,7 @@ def get_internal_component_sets_numerical(vts: qnv.Qnvec) -> qnv.Qnvec:
     """
     #vns=numerical_vectors(vts)
     #return projection3_sets_numerical(vns)
-    return projection3_sets_numerical(vts)
+    return prj.projection3_sets_numerical(vts)
 
 #########
 #  WIP  #
