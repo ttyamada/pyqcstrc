@@ -111,7 +111,8 @@ class Qnprj_Deca(qnm.Qnmat):
         self.shape=(n,n)
         self.scl=2.0/np.sqrt(5.0)
         self.scly=2.0*np.sin(np.pi/5) #2s1
-        self.scly2=4*(M3-M5**2)       #2(1-c1^2)
+        self.scly2=(M3-M5**2)*4       #4(1-c1^2)
+        #self.scly2=4*(M3-M5**2)       #4(1-c1^2)
         #prj=self
         #print("self.ndim",self.ndim) # fpr test
         #print("self.shape",self.shape) # fpr test

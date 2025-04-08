@@ -68,7 +68,6 @@ qnm.qnmat_init()
 prj.prjop_init()
 qna.qnndarray_init()
 
-N=2 # for octagonal
 M0=qnn.Qnnum([0,0,1])
 M1=qnn.Qnnum([1,0,1])
 M2=qnn.Qnnum([3,0,2])

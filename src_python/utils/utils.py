@@ -22,17 +22,15 @@ import qnmath as qmt
 import numeric as num
 import prjop as prj
 
-def shift_object(obj: qnv.Qnvec, shift: qnv.Qnvec) -> qnv.Qnvec:
+def shift_object(obj: qna.QnNdarray, shift: qnv.Qnvec) -> qnv.Qnvec:
     """shift an object
     """
-    N=obj.N
-    qn0=qnn.Qnnum([0,0,1],N)
-    if obj.ndim==4:
-        obj_new=np.array(obj.shape,dtype=qnv.Qnvec)  #[qn0]*obj.shape
-        i1=0
-        for tri in obj:
-            i2=0
-            for vertex in tri:
+    shape=obj.shape
+    print("obj.shape",obj.shape)  # for test
+    if obj.ndim==3:
+        obj_new=qna.zeros(shape) 
+        for i1,tri in enumerate(obj):
+            for i2,vertex in enumerate(tri):
                 obj_new[i1][i2]=vertex+shift
                 i2+=1
             i1+=1
@@ -82,8 +80,8 @@ def obj_area_nd(obj: qnv.Qnvec) -> qnn.Qnnum:
 def triangle_area_2d(tri: qnv.Qnvec) -> qnn.Qnnum:
     shape=tri.shape
     n=2
-    N=tri[0].N
-    qnmt=qnm.zerom(2,n,N)
+    #N=tri[0].N
+    qnmt=qnm.zerom(2,n)
     for i in range(2):
         qnmt[i][0]=tri[i+1][0]-tri[0][0]
         qnmt[i][1]=tri[i+1][1]-tri[1][0]
@@ -91,7 +89,7 @@ def triangle_area_2d(tri: qnv.Qnvec) -> qnn.Qnnum:
     return qnn.abs(det)/2
     
 def triangle_sqarea_3d(tri: qnv.Qnvec) -> qnn.Qnnum:
-    N=tri[0].N
+    #N=tri[0].N
     qnvt=qnv.zerovs(3)
     qnvt[0]=tri[1]-tri[0]
     qnvt[1]=tri[2]-tri[0]
@@ -107,9 +105,9 @@ def tetrahedron_volume(tet: NDArray[np.float64]) -> qnn.Qnnum:
     tet: array
         vertex coordinates of the tetrahedron, xyz0,xyz1,xyz2,xyz3
     """
-    N=tet[0].N
+    #N=tet[0].N
     n=3
-    qnmt=qnm.zeros((n,N))
+    qnmt=qnm.zeros((n))
     for i in range(n):
         qnmt[i][0]=tet[i+1][0]-tet[0][0]
         qnmt[i][1]=tet[i+1][1]-tet[0][1]
@@ -300,8 +298,8 @@ def generator_unique_edges(obj: qnv.Qnvec) -> qnv.Qnvec:
     # (2) 重複のないユニークな辺を得る。
     #print('number of edges:',len(edges))
     num_edges=len(edges)
-    N=obj[0][0].vt[0].N
-    qn0=qnn.Qnnum([0,0,1],N)
+    #N=obj[0][0].vt[0].N
+    qn0=qnn.Qnnum([0,0,1])
     #a=np.zeros((num_edges,3),dtype=np.float64)
     a=np.array((num_edges),dtype=qnv.Qnvec) #[qn0]*(num,edges)
     for i1 in range(num_edges):
@@ -431,8 +429,8 @@ def surface_cleaner(surface: qnv.Qnvec) -> qnv.Qnvec:
             flag=0
     #print('edges_new.shape',edges_new.shape)
     n1=len(lst)
-    N=surface[0].N
-    qn0=qnn.Qnvec([0,0,1],N)
+    #N=surface[0].N
+    qn0=qnn.Qnvec([0,0,1])
     #out=np.zeros((n1,2,6,3),dtype=np.int64)
     out=np.array((n1,2),dtype=qnv.Qnvec)  #[qn0]*(n1,2,6,3)
     for i1 in range(n1):
@@ -594,9 +592,9 @@ def sort_vctors(vts: qnv.Qnvec) -> qnv.Qnvec:
     n1,n2,_=vts.shape
     #out=np.zeros(vts.shape,dtype=np.int64)
     #ln=len(vts)
-    N=vts[0].vt[0].N
-    qn0=qnn.Qnnum([0,0,1],N)
-    #qnv1=qnv.Qnvec(ln,N)
+    #N=vts[0].vt[0].N
+    qn0=qnn.Qnnum([0,0,1])
+    #qnv1=qnv.Qnvec(ln)
     #out=[qnv1]*ln
     vns=num.get_internal_component_sets_numerical(vts)
     
@@ -657,8 +655,8 @@ def decomposition(tmp2v: qnv.Qnvec):
 
 def triangulation_points(points: qnv.Qnvec):
     #tmp=np.zeros((len(points),2),dtype=np.float64)
-    N=points[0].vt[0].N
-    qn0=qnn.Qnnum([0,0,1],N)
+    #N=points[0].vt[0].N
+    qn0=qnn.Qnnum([0,0,1])
     tmp=qnv.zeros(len(points)) #[qm0]*(len(points),2) 2D vector
     for i1,p in enumerate(points):
         v=prj.projection3(p)  # internal space components of p
@@ -713,8 +711,8 @@ def remove_vectors(vts1: qnv.Qnvec, vts2: qnv.Qnvec) -> qnv.Qnvec:
             lst.append(i1)
     num=len(lst)
     if num!=0:
-        N=vts1[0].N
-        qn0=qnn.Qnnum([0,0,1],N)
+        #N=vts1[0].N
+        qn0=qnn.Qnnum([0,0,1])
         #out=np.zeros((len(lst),6,3),dtype=np.int64)
         out=qnv.zerovs(num)  #[qn0]*(len(lst),6)
         for i1 in range(len(lst)):
@@ -737,8 +735,8 @@ def remove_vector(vts: qnv.Qnvec, vt: qnv.Qnvec) -> qnv.Qnvec:
     num=len(lst)
     if num!=0:
         #out=np.zeros((len(lst),6,3),dtype=np.int64)
-        N=vts[0].N
-        #qn0=qnn.Qnvec([0,0,1],N)
+        #N=vts[0].N
+        #qn0=qnn.Qnvec([0,0,1])
         out=qnv.zerovs((num))  #[qn0]*(len(lst),6)
         for i1 in range(len(lst)):
             out[i1]=vts[lst[i1]]
@@ -873,7 +871,7 @@ def middle_position(pos1: qnv.Qnvec,pos2 :qnv.Qnvec) -> qnv.Qnvec:
 #    for i1 in range(6):
 #        v=pos1[i1]+pos2[i1]
 #        #v=mul(v,np.array([1,0,2]))
-#        v=v*qnn.Qnnum([1,0,2].N) # middle points
+#        v=v*qnn.Qnnum([1,0,2]) # middle points
 #        if i1!=0:
 #            out=np.vstack([out,v])
 #        else:
