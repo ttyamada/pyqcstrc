@@ -363,7 +363,7 @@ def test_wt_qnr_e(str:str,qns:qna.QnNdarray):
     print("nr",nr)
     print(str)
     for i in range(nr):
-        str="qnr["+format(i)+"]"
+        str="qnr_e["+format(i)+"]"
         qnm.printqnm(str,qns.qnr_e[i])   
 
 def test_wt_qnr_i(str:str,qns:qna.QnNdarray):
@@ -371,6 +371,6 @@ def test_wt_qnr_i(str:str,qns:qna.QnNdarray):
     print("nr",nr)
     print(str)
     for i in range(nr):
-        str="qnr["+format(i)+"]"
+        str="qnr_i["+format(i)+"]"
         qnm.printqnm(str,qns.qnr_i[i])   
         

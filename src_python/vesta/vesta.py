@@ -354,7 +354,8 @@ def write_vesta(obj:qna.QnNdarray,path='.',basename='tmp',color='k',select='norm
                 for i2,vertx in enumerate(obj1):
                     print("i2",i2)  # for test
                     qnv.printqnv("vertx",vertx) # for test
-                    qni=prj.prjvec_i(vertx)
+                    #qni=prj.prjvec_i(vertx)
+                    qni=vertx
                     print("qni.shape",qni.shape)  # for test
                     qnv.printqnv("qni",qni)  # for test
                     xyz=num.numerical_vector(qni)
@@ -793,10 +794,16 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f.write('%s\n'%(filename))
         i1=0
         n=crs.n
+        isys=crs.isys
+        if isys>2:
+            ni=2
+        else:
+            ni=3
         for i1,triangle in enumerate(obj):  # i1-th triangle
             for i2,vt in enumerate(triangle): # i2-th vertex
                 #qnv.printqnv("vt",vt)  # for test
-                vi=prj.projection3(vt)  # projection into internal space
+                #vi=prj.projection3(vt)  # projection into internal space
+                vi=vt
                 #qnv.printqnv("vi",vi)  # for test
                 vif=qnv.qnv2flt(vi)
 
@@ -806,9 +813,9 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
                     f.write('Xx %8.6f %8.6f %8.6f'%(vif[0],vif[1],vif[2]))
                 f.write(' # %s-th triangle %s-th vertex '%(i1,i2))
                 f.write(' #')
-                for i in range(n-1):
+                for i in range(ni-1):
                     f.write('  %d %d %d'%(vt[i].n[0],vt[i].n[1],vt[i].n[2]))
-                f.write('  %d %d %d\n'%(vt[n-1].n[0],vt[n-1].n[1],vt[n-1].n[2]))
+                f.write('  %d %d %d\n'%(vt[ni-1].n[0],vt[ni-1].n[1],vt[ni-1].n[2]))
  
         v=utl.obj_area_nd(obj)
         f.write('volume = %d %d %d (%8.6f)\n'%(v.n[0],v.n[1],v.n[2],qnn.qn2flt(v)))

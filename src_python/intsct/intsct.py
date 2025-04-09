@@ -123,6 +123,7 @@ def check_intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.
         #[0,1,0,1,2],\
         #[0,2,0,1,2],\
         #[1,2,0,1,2]]
+
         comb=[\
         [0,1],\
         [0,2],\
@@ -182,7 +183,10 @@ def intersection_two_segment(segment_1: qna.QnNdarray, segment_2: qna.QnNdarray)
         #
         tmp=segment_2[0]-segment_1[0]
         vecAC=prj.projection3(tmp)                 # AC
-        
+
+        qnv.printqnv("vecAB",vecAB)  # for test
+        qnv.printqnv("vecCD",vecCD)  # for test
+        qnv.printqnv("vecAC",vecAC)  # for test
         bunbo=qnv.dot(vecAB,vecCD)*qnv.dot(vecCD,vecAB)-qnv.dot(vecAB,vecAB)*qnv.dot(vecCD,vecCD)
         #tmp1=qnv.qnv.dot(vecAB,vecCD)
         #tmp2=qnv.qnv.dot(vecCD,vecAB)
@@ -293,6 +297,7 @@ def intersection_segment_surface(segment: qna.QnNdarray, surface: qna.QnNdarray)
     else: # no intersection
         return 
     
+# calculating intersection of triangle_1 and triangle_2
 def intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdarray) -> qna.QnNdarray:
     #
     # -----------------
@@ -350,6 +355,7 @@ def intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdar
             else:
                 tmp=np.vstack([tmp,vtx]) # intersecting points
             counter+=1
+        
         # case 2: intersection between (edge of triangle_2) and (surface of triangle_1)
         segment=np.stack([triangle_2[c[0]],triangle_2[c[1]]])
         surface=np.stack([triangle_1[c[2]],triangle_1[c[3]],triangle_1[c[4]]])

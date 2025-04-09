@@ -51,8 +51,15 @@ oc_asym0=np.array([\
     [M1,M2,M0,M1,M0],\
     [M1,M2,M2,M1,M0],\
     ],dtype=qnn.Qnnum)
-od_asym=qna.anya(oc_asym0,(3,5))
-od_asym=od_asym.reshape((1,3,5))
+od_asym_nd=qna.anya(oc_asym0,(3,5))
+od_asym_nd=od_asym_nd.reshape((1,3,5))
+# if od_asym is represented by internal space compoenet of triangles/tetrahedra
+# its symmetric version is obtained by the symmetry operator in the internal space
+# this simplifies later calculations
+
+# transform od_asym nD vertex coordinates to its internal space components
+od_asym=prj.projection3_sets_numerical(od_asym_nd)
+
 # import asymmetric part of OD(occupation domain) located at origin,0,0,0,0,0,0.
 #od_asym = vst.read_xyz(path=xyz_dir,basename='od_1_asym')
 shape=od_asym.shape
@@ -72,9 +79,10 @@ elif ndim==3: #triangles
 pos0 = qnv.zerov(5)
 irs=ssm.site_symmetry(pos0)
 qnv.printqnv("pos0",pos0)
+
 od_sym = symmetric(irs,od_asym)
 vst.write_vesta(od_sym, '.', 'od_sym', 'r', 'normal')
-vst.write_xyz(od_sym, '.', 'od_sym')
+vst.write_xyz(od_sym,'.', 'od_sym')
 
 # move od_sym to a position 1 0 0 0 0
 M3=qnn.any([1,0,1])

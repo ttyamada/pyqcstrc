@@ -33,25 +33,29 @@ def qnsym_tst_init(isys):
 isys=3 # for decagonal
 qnsym_tst_init(isys)
 qns3=Qnsym()
-test_wt_qnr("Deca qnr",qns3)
+#test_wt_qnr("Deca qnr",qns3)
+test_wt_qnr_e("Deca qnr_e",qns3)
 test_wt_qnr_i("Deca qnr_i",qns3)
 
 isys=4 # for octabonal
 qnsym_tst_init(isys)
 qns4=Qnsym()
-test_wt_qnr("Octa qnr",qns4)
+#test_wt_qnr("Octa qnr",qns4)
+test_wt_qnr_e("Octa qnr_e",qns4)
 test_wt_qnr_i("Octa qnr_i",qns4)
 
 isys=5 # for dodecagonal
 qnsym_tst_init(isys)
 qns5=Qnsym()
-test_wt_qnr("Dode qnr",qns5)
+#test_wt_qnr("Dode qnr",qns5)
+test_wt_qnr_e("Dode qnr_e",qns5)
 test_wt_qnr_i("Dode qnr_i",qns5)
 
 isys=2 # for icosahedral
 qnsym_tst_init(isys)
 qns2=Qnsym() #qns2=qnsym_init(isys)
-test_wt_qnr("Icos qnr",qns2)
+#test_wt_qnr("Icos qnr",qns2)
+test_wt_qnr_e("Icos qnr_e",qns2)
 test_wt_qnr_i("Icos qnr_i",qns2)
     
 

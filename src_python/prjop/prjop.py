@@ -289,14 +289,23 @@ def prjvec_e(v:qnv.Qnvec) -> qnv.Qnvec:
 def prjvec_i(v: qnv.Qnvec) -> qnv.Qnvec:
     #n=crs.n
     #vei=qnv.zerov(n)
+    print("v.shape",v.shape)
+    qnm.printqnm("prj0",prj0)
     vei=v@prj0
+    qnv.printqnv("v",v)  # for test
+    qnv.printqnv("vei",vei)  # for test
+    isys=crs.isys
+    print("isys in prjvec_i",isys)
     if isys>2: # dihedral
-        vi=qnv.zerov(2)
+        ni=2
+        vi=qnv.zerov(ni)
         vi=vei[2:4]
     elif isys==2: # icosahedral
-        vi=qnv.zerov(3)
+        ni=3
+        vi=qnv.zerov(ni)
         vi=vei[3:6]
-    #qnv.printqnv("vi",vi)  # for test
+    print("vi.shape",vi.shape)
+    qnv.printqnv("vi",vi)  # for test
     return vi
 
 # alias for prjop_i
@@ -307,14 +316,31 @@ def projection3(v: qnv.Qnvec) -> qnv.Qnvec:
 def projection_numerical(vn: qnv.Qnvec) -> qnv.Qnvec:
     return prjvec(vn)
 
-def projection3_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
+def projection3_sets_numerical(vns: qna.QnNdarray) -> qna.QnNdarray:
     #Parameters
-    #vsn: array
-    #    set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
-    num=len(vns)
-    m=qnv.zerovs(vns.shape)
-    for i in range(num):
-        m[i]=projection3(vns[i])
+    #vsn: qnvector array
+    #    set of nD vectors shape (num,n) assumed or
+    #    (num,3,n) or (num,4,n) for triangles or tetrahedra 
+    shape=vns.shape
+    ndim=len(shape)
+    print("shape",shape,"ndim",ndim)
+    isys=crs.isys
+    if isys>2:
+        ni=2
+    else:
+        ni=3
+    if ndim==1:
+        m=qna.zeros((ni,))
+        m=projection3(vns)
+    elif ndim==2:
+        m=qna.zeros((shape[0],ni))
+        for i in range(shape[0]):
+            m[i]=projection3(vns[i])
+    elif ndim==3:
+        m=qna.zeros((shape[0],shape[1],ni))
+        for i in range(shape[0]):
+            for j in range(shape[1]):
+                m[i][j]=projection3(vns[i][j])
     return m
 
 # alias for prjop_e

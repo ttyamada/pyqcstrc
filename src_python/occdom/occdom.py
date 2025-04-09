@@ -121,7 +121,7 @@ def symmetric(irs:NDArray[np.int64],obj:qna.QnNdarray):
     print("sp0",sp0)
     shape=(nsy*sp0[0],sp0[1],sp0[2])  # (nsy,num,3,n) or (nsy,num,4,6)
     print("shape in symmetric",shape)
-    qnr0=qns.qnr0
+    qnr_i=qns.qnr_i
     a=qna.QnNdarray(shape)
     ni=0
     for n in range(nsy):
@@ -129,7 +129,7 @@ def symmetric(irs:NDArray[np.int64],obj:qna.QnNdarray):
             for j in range(sp0[1]):
                 #print("i",i,"j",j)  # for test
                 #qnv.printqnv("obj",obj[i][j])  # for test 
-                a[ni][j]=qnr0[irs[n]]@obj[i][j]
+                a[ni][j]=qnr_i[irs[n]]@obj[i][j]
                 print("%s-th triangle %s-th vertex"%(ni,j),end="") # for test
                 qnv.printqnv(" ",a[ni][j])  # for test
             ni+=1

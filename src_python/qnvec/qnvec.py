@@ -255,6 +255,7 @@ def intv2qnv(a:np.ndarray):
 def printqnv(str:str,qnv:qna.QnNdarray):
     shape=qnv.shape
     ndim=len(shape)
+
     if ndim==1 :  # for qnvector
         print(str,"[",end=" ")
         for i in range(shape[0]):
@@ -262,19 +263,19 @@ def printqnv(str:str,qnv:qna.QnNdarray):
         print("]")
     elif ndim==2: #  for triangle/tetrahedron or qnmatrix
         for i in range(shape[0]):
-            print("[",end=" ")
+            print(str,"[",end=" ")
             for j in range(shape[1]):
                 print(qnn.qn2npa(qnv[i][j]),end=" ")
             print("]")
-        print("")
+        #print("")
     elif ndim==3: # for triangles/tetrahedra
         for i in range(shape[0]):
-            print("[",end=" ")
+            print(str,"[",end=" ")
             for j in range(shape[1]):
                 for k in range(shape[0]):
                     print(qnn.qn2npa(qnv[i][j][k]),end=" ")
                 print("]")
-            print("")
+            #print("")
         print("")
     else:
         print("ndim should be 1 2 or 3 but",ndim)
