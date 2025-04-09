@@ -79,9 +79,8 @@ def obj_area_nd(obj: qnv.Qnvec) -> qnn.Qnnum:
 
 def triangle_area_2d(tri: qnv.Qnvec) -> qnn.Qnnum:
     shape=tri.shape
-    n=2
-    #N=tri[0].N
-    qnmt=qnm.zerom(2,n)
+    ni=2
+    qnmt=qnm.zerom(2,ni)
     for i in range(2):
         qnmt[i][0]=tri[i+1][0]-tri[0][0]
         qnmt[i][1]=tri[i+1][1]-tri[1][0]
@@ -89,7 +88,7 @@ def triangle_area_2d(tri: qnv.Qnvec) -> qnn.Qnnum:
     return qnn.abs(det)/2
     
 def triangle_sqarea_3d(tri: qnv.Qnvec) -> qnn.Qnnum:
-    #N=tri[0].N
+    ni=3
     qnvt=qnv.zerovs(3)
     qnvt[0]=tri[1]-tri[0]
     qnvt[1]=tri[2]-tri[0]
@@ -162,10 +161,14 @@ def triangle_area(vts: qna) -> qnn.Qnnum:
     volume: array
         Volume in TAU-style.
     """
+    isys=crs.isys
     v1=vts[1]-vts[0]
     v2=vts[2]-vts[0]
-    v=qnv.cros(v1,v2)
-    det=qnv.dot(v,v)
+    if isys>2:
+        det=
+    else:
+        v=qnv.cros(v1,v2)
+        det=qnv.dot(v,v)
     #N=vts[0].N
     qn0=qnn.Qnnum([0,0,1])    
     if det < qn0:  #a1+a2*TAU<0.0: # to avoid negative volume...
