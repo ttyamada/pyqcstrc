@@ -184,7 +184,7 @@ def generator_obj_symmetric_triangle_specific_symop(obj:qnv.Qnvec,centre:qnv.Qnv
         return 
     
 
-def shift(obj: qnv.Qnvec,shift : qnv.Qnvec):
+def shift(obj: qna.QnNdarray,shift : qnv.Qnvec) -> qna.QnNdarray:
     """
     Shift the occupation domain.
     

@@ -321,8 +321,8 @@ def write_vesta(obj:qna.QnNdarray,path='.',basename='tmp',color='k',select='norm
             isys=crs.isys
             print('#VESTA_FORMAT_VERSION 3.5.0\n', file=f)
             for i1,obj1 in enumerate(obj):
-                print("i1",i1)  # for test
-                qnv.printqnv("obj1",obj1) # for test
+                #print("i1",i1)  # for test
+                #qnv.printqnv("obj1",obj1) # for test
                 print('MOLECULE\
                 \nTITLE',file=f)
                 print('%s/%s_%d\n'%(path,basename,i1), file=f)

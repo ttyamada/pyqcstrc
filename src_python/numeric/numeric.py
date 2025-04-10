@@ -270,7 +270,7 @@ def length_numerical(vt: NDArray[np.int64]) -> float:
 
 
 
-def check_intersection_segment_surface_numerical_nd_tau(line_segment: qnv.Qnvec, triangle: qnv.Qnvec) -> bool:
+def check_intersection_segment_surface_numerical_nd_tau(line_segment: qna.QnNdarray, triangle: qna.QnNdarray) -> bool:
     """check intersection between a line segment and a triangle.
     
     Parameters
@@ -284,9 +284,10 @@ def check_intersection_segment_surface_numerical_nd_tau(line_segment: qnv.Qnvec,
     -------
     
     """
-    ln=get_internal_component_sets_numerical(line_segment)
-    tr=get_internal_component_sets_numerical(triangle)
-    return check_intersection_segment_surface_numerical(ln,tr)
+    #ln=get_internal_component_sets_numerical(line_segment)
+    #tr=get_internal_component_sets_numerical(triangle)
+    #return check_intersection_segment_surface_numerical(ln,tr)
+    return check_intersection_segment_surface_numerical(line_segment,triangle)
     
 
 def check_intersection_segment_surface_numerical(line_segment: qnv.Qnvec, triangle: qnv.Qnvec) -> bool:
@@ -437,19 +438,19 @@ def check_intersection_two_segment_numerical(ln1:qnv.Qnvec, ln2:qnv.Qnvec) -> bo
             out+=1
     return out
     """
-    qnv.printqnv("ln1[0]",ln1[0])
-    qnv.printqnv("ln1[1]",ln1[1])
-    qnv.printqnv("ln2[0]",ln2[0])
-    qnv.printqnv("ln2[1]",ln2[1])
+    #qnv.printqnv("ln1[0]",ln1[0])  # for test
+    #qnv.printqnv("ln1[1]",ln1[1])  # for test
+    #qnv.printqnv("ln2[0]",ln2[0])  # for test
+    #qnv.printqnv("ln2[1]",ln2[1])  # for test
     
     vecAB=ln1[1]-ln1[0] # edge vector 1
     vecAC=ln2[1]-ln2[0] # edge vector 2
     vecCD=ln2[1]-ln1[0] # edge vector 3
     
-    qnv.printqnv("vecAB",vecAB)
-    qnv.printqnv("vecAC",vecAC)
-    qnv.printqnv("vecCD",vecCD)
-    print("vecAB.ndim",vecAB.ndim)
+    #qnv.printqnv("vecAB",vecAB)  # for test
+    #qnv.printqnv("vecAC",vecAC)  # for test
+    #qnv.printqnv("vecCD",vecCD)  # for test
+    #print("vecAB.ndim",vecAB.ndim)  # for test
     
     if vecAB.ndim<=2:
         return True # two segments are on the same plane
@@ -583,8 +584,8 @@ def inside_outside_triangle_tau(point: qnv.Qnvec, triangle: qnv.Qnvec) -> bool:
     tetrahedron: array
         nd vertex coordinates of triangle in TAU-style.
     """
-    point=get_internal_component_numerical(point)
-    triangle=get_internal_component_sets_numerical(triangle)
+    #point=get_internal_component_numerical(point)
+    #triangle=get_internal_component_sets_numerical(triangle)
     return inside_outside_triangle(point,triangle)
 
 def inside_outside_triangle(point: qnv.Qnvec, triangle: qnv.Qnvec) -> bool:
@@ -751,7 +752,7 @@ def projection3_numerical(vn: qnv.Qnvec) -> float:
 #    #return np.array([v4,v5],dtype=np.float64)
 #    return np.array([v4,v5,v6],dtype=np.float64)
 
-def projection3_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
+def projection3_sets_numerical(vns: qna.QnNdarray) -> qna.QnNdarray:
     """perpendicular component of a nd lattice vector in direct space.
     
     Parameters
@@ -760,20 +761,11 @@ def projection3_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
         set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
     """
     shape=vns.shape
-    #n=vns[0].n
-    #N=vns[0].N
     nc=shape[0]
-    #print("N",N)
-    #if N==2:
-    #    prj0=prj.Qnprj_Octa()
-    #elif N==5:
-    #    prj0=prj.Qnprj_Deca()
-    #elif N==3:
-    #    prj0=prj.Qnprj_Dode()
-    
-    if n==5:  # dihedral
+    isys=crs.isys
+    if isys>2: # dihedral
         ni=2
-    elif n==6: # icosahedral
+    else: # icosahedral
         ni=3
     m=np.zeros((nc,ni),dtype=qnn.Qnnum)
     for i in range(nc):

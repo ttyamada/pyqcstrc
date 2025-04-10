@@ -289,13 +289,13 @@ def prjvec_e(v:qnv.Qnvec) -> qnv.Qnvec:
 def prjvec_i(v: qnv.Qnvec) -> qnv.Qnvec:
     #n=crs.n
     #vei=qnv.zerov(n)
-    print("v.shape",v.shape)
-    qnm.printqnm("prj0",prj0)
+    #print("v.shape",v.shape)  # for test
+    #qnm.printqnm("prj0",prj0)  # for test
     vei=v@prj0
-    qnv.printqnv("v",v)  # for test
-    qnv.printqnv("vei",vei)  # for test
+    #qnv.printqnv("v",v)  # for test
+    #qnv.printqnv("vei",vei)  # for test
     isys=crs.isys
-    print("isys in prjvec_i",isys)
+    #print("isys in prjvec_i",isys)  # for test
     if isys>2: # dihedral
         ni=2
         vi=qnv.zerov(ni)
@@ -304,8 +304,8 @@ def prjvec_i(v: qnv.Qnvec) -> qnv.Qnvec:
         ni=3
         vi=qnv.zerov(ni)
         vi=vei[3:6]
-    print("vi.shape",vi.shape)
-    qnv.printqnv("vi",vi)  # for test
+    #print("vi.shape",vi.shape)  # for test
+    #qnv.printqnv("vi",vi)  # for test
     return vi
 
 # alias for prjop_i

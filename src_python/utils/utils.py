@@ -27,6 +27,7 @@ def shift_object(obj: qna.QnNdarray, shift: qnv.Qnvec) -> qnv.Qnvec:
     """
     shape=obj.shape
     print("obj.shape",obj.shape)  # for test
+    print("shit.shape",shift.shape)  # for test
     if obj.ndim==3:
         obj_new=qna.zeros(shape) 
         for i1,tri in enumerate(obj):
@@ -127,18 +128,12 @@ def triangle_area_nd(tri: qnv.Qnvec) -> qnn.Qnnum:
     area: array
         Area in TAU-style.
     """
-    #N=tri[0].vt[0].N
-    #ndim=tri.ndim
+
     shape=tri.shape
     ndim=len(shape)
     #print("shape",shape,"ndim",ndim)  # for test
     qn0=qnn.Qnnum([0,0,1])
     if ndim==2:
-        #print('tri',tri)
-        #vts=qnv.zerovs((ndim))  #[qn0]*(3,3)
-        #for i,vt in enumerate(tri):
-        #    vts[i]=prj.projection3(vt)
-        #return triangle_area(vts)
         return triangle_area(tri)
     else:
         print('object has an incorrect shape!')
@@ -164,12 +159,19 @@ def triangle_area(vts: qna) -> qnn.Qnnum:
     isys=crs.isys
     v1=vts[1]-vts[0]
     v2=vts[2]-vts[0]
+
     if isys>2:
-        det=
+        m=np.stack((v1,v2))
+        #print("m.shape",m.shape)
+        det=qmt.det_matrix_2d(m)
     else:
-        v=qnv.cros(v1,v2)
-        det=qnv.dot(v,v)
-    #N=vts[0].N
+        v3=vts[3]-vts[0]
+        m=np.stack((v1,v2,v3))
+        #print("m.shape",m.shape)
+        det=qmt.det_matrix_3d(m)
+        #v=qnv.cros(v1,v2)
+        #det=qnv.dot(v,v)
+    #qnn.printqnn("det",det)  # for test
     qn0=qnn.Qnnum([0,0,1])    
     if det < qn0:  #a1+a2*TAU<0.0: # to avoid negative volume...
         return -det/4 #mul(v[2],np.array([-1,0,2]))

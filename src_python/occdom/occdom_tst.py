@@ -86,17 +86,22 @@ vst.write_xyz(od_sym,'.', 'od_sym')
 
 # move od_sym to a position 1 0 0 0 0
 M3=qnn.any([1,0,1])
-x=np.array([M3,M0,M0,M0,M0])
-pos_b1=qnv.anyv(x)
-sft_pos1=shift(od_sym, pos_b1)
-vst.write_xyz(sft_pos1, '.', 'obj_sft')
-vst.write_vesta(sft_pos1, '.', 'obj_sft', 'b')
+x0=np.array([M3,M0,M0,M0,M0])
+qnx0=qnv.anyv(x0)
+v0=prj.projection3(qnx0)
+qnv.printqnv("v0",v0)  # for test
+# calculate shifted od
+od_sym1=qnv.sub_vectors_qn(od_sym, v0)
+#od_sym1=shift(od_sym, pos_b1)
+
+vst.write_xyz(od_sym1, '.', 'obj_sym1')
+vst.write_vesta(od_sym1, '.', 'obj_sym1', 'b')
 
 # intersection of "asymmetric part of strt" and "strt at position pos_b1"
 #    flag = 0, with rough intersection chacking (faster)
 #    flag = 1, without rough intersection chacking
 #twoODs=TWO_ODs(pod1=strt_asym, pod2=strt_pos1, path='.',filename='common.xyz',flag=0,verbose=0)
-intersection=its.intersection_two_triangles(od_sym,sft_pos1)
+intersection=its.intersection_two_triangles(od_sym,od_sym1)
 #common_part=twoODs.intersection()
 
 # export common_part in VESTA formated file.

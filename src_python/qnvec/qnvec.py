@@ -111,8 +111,6 @@ def iadd(self:Qnvec, b:Qnvec):
     return self
 
 def sub(v1:Qnvec, v2:Qnvec)-> Qnvec:
-    #n=v1.shape[0]
-    #N=v1[0].N
     a=Qnvec(n)
     for i in range(n):
         a[i]=v1[i]-v2[i]
@@ -121,6 +119,19 @@ def sub(v1:Qnvec, v2:Qnvec)-> Qnvec:
 def isub(self:Qnvec, b:Qnvec):
     self=sub(self,b)
     return self
+
+def sub_vectors_qn(v:qna.QnNdarray, v0:Qnvec):
+    shape=v.shape
+    ndim=len(shape)
+    v1=qna.zeros(shape)
+    if ndim==2:
+        for i in range(shape[0]):
+            v1[i]=v[i]-v0
+    elif ndim==3:
+        for i in range(shape[0]):
+            for j in range(shape[1]):
+                v1[i][j]=v[i][j]-v0
+    return v1
 
 def mul_vector_i(v:Qnvec, coeff:int) -> Qnvec:
     if v.ndim==1:
@@ -136,8 +147,6 @@ def mul_vector_i(v:Qnvec, coeff:int) -> Qnvec:
 
 def mul_vector_qn(v:Qnvec, coeff:qnn.Qnnum) -> Qnvec:
     if v.ndim==1:
-        #n=v.shape
-        #N=v.N
         a=Qnvec(n)  #np.zeros(v.shape,dtype=np.int64)
         for i in range(n):
             a[i]=v[i]*coeff  #mul(v,coeff)
@@ -146,11 +155,11 @@ def mul_vector_qn(v:Qnvec, coeff:qnn.Qnnum) -> Qnvec:
         print('incorrect shape in mul_vector_qn')
         return
 
-def mul_vectors_i(vs:Qnvec, coeff:int) -> Qnvec:
+def mul_vectors_i(vs:qna.QnNdarray, coeff:int) -> qna.QnNdarray:
+    shape=vs.shape
+    ndim=len(shape)
     if vs.ndim==2:
-        #n=vs.shape[0]
-        #N=vs[0].N
-        a=[Qnvec(n)]*vs.shape
+        a=qna.zeros(shape)
         la=vs.shape
         for i in range(2):
             for j in range(n):
@@ -186,7 +195,11 @@ def div_vector_i(v:Qnvec, coeff: int) -> Qnvec:
         return
     
 # cros == outer_product (cross product) 
+# n should be 3
 def cros(v1:Qnvec, v2:Qnvec) -> Qnvec:
+    if n!=3:
+        print("dimention should be 3 for cross product")
+        exit()
     a=v1[1]*v2[2] #mul(v1[1],v2[2])
     b=v1[2]*v2[1] #mul(v1[2],v2[1])
     c1=a-b        #sub(a,b)
@@ -206,12 +219,15 @@ def cros(v1:Qnvec, v2:Qnvec) -> Qnvec:
 #    qnn.Qnnum([0,0,1],N) # zero qnnumber
 #    return   v1[0]*v2[0]+v1[1]*v2[1]-v1[1]*v2[0]-v1[0]*v2[1]
     
-# for octagonal and dodecagonal
+# for dihedral excluding decagonal
 def dot(v1:Qnvec, v2:Qnvec) -> qnn.Qnnum:
-    n=v1.shape[0]
+    print("v1.shape",v1.shape)
+    printqnv("v1",v1)  # for test
+    printqnv("v2",v2)  # for test
     v=qnn.zero() # qnnum zero
+    n=v1.shape[0]
     for i in range(n):
-        v=v+v1[i]*v2[i]
+        v+=(v1[i]*v2[i])
     return v
     
 # equivalent to cross
@@ -303,6 +319,8 @@ def printqnvs(str:str,qnv1:Qnvec):
         printqnv("",qnv1[j])
      
 def eq(qnv1:Qnvec, qnv2:Qnvec):
+    if len(qnv1.shape) != len(qnv2.shape):
+        return False
     n_=qnv1.n
     for i in range(n_):
         if qnv1[i]!=qnv2[i]:

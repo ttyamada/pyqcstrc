@@ -3,6 +3,7 @@ import cython
 from numpy.typing import NDArray
 import time # in object_subtraction_dev1, tetrahedron_not_obj
 import itertools
+#from extended_int import int_inf, ExtendedIntegral
 
 import crsys as crs
 import qnnum as qnn
@@ -168,25 +169,19 @@ def intersection_two_segment(segment_1: qna.QnNdarray, segment_2: qna.QnNdarray)
     -------
     
     """
+    n=crs.ni
     # check whether two line segments are intersecting or not by numerical calc.
     if num.check_intersection_two_segment_numerical_nd_tau(segment_1,segment_2): # intersecting
         # calc in TAU-style
-        vecAB_nd=segment_1[1]-segment_1[0]   # line segment
-        qnv.printqnv("vecAB_nd",vecAB_nd)    # for test
-        vecAB=prj.projection3(vecAB_nd)            # AB
-        #
-        tmp=segment_2[1]-segment_2[0]
-        vecCD=prj.projection3(tmp)                 # CD
-        #
-        #tmp=sub_vectors(segment_1[0],segment_2[0])
-        #vecCA=projection3(tmp)                    # CA
-        #
-        tmp=segment_2[0]-segment_1[0]
-        vecAC=prj.projection3(tmp)                 # AC
+        vecAB=segment_1[1]-segment_1[0]   # AB
+        vecCD=segment_2[1]-segment_2[0]   # CD
+        vecAC=segment_2[0]-segment_1[0]   # AC
+        print("vecAB.shape",vecAB.shape)
 
-        qnv.printqnv("vecAB",vecAB)  # for test
-        qnv.printqnv("vecCD",vecCD)  # for test
-        qnv.printqnv("vecAC",vecAC)  # for test
+        #qnv.printqnv("vecAB",vecAB)  # for test
+        #qnv.printqnv("vecCD",vecCD)  # for test
+        #qnv.printqnv("vecAC",vecAC)  # for test
+        
         bunbo=qnv.dot(vecAB,vecCD)*qnv.dot(vecCD,vecAB)-qnv.dot(vecAB,vecAB)*qnv.dot(vecCD,vecCD)
         #tmp1=qnv.qnv.dot(vecAB,vecCD)
         #tmp2=qnv.qnv.dot(vecCD,vecAB)
@@ -196,10 +191,9 @@ def intersection_two_segment(segment_1: qna.QnNdarray, segment_2: qna.QnNdarray)
         #tmp2=qnv.qnv.dot(vecCD,vecCD)
         #tmp4=tmp1*tmp2 #mul(tmp1,tmp2)
         #bunbo=tmp3-tmp4  #sub(tmp3,tmp4)
-        
-        ## ????
-        #if bunbo[0]==0 and bunbo[1]==bunbo:
-        #    return 
+        if bunbo==qnn.zero():
+            print("bunbo=0")
+            return qnv.zerov(n)
         #else:
         bunshi=qnv.dot(vecAC,vecCD)*qnv.dot(vecCD,vecAB)-qnv.dot(vecCD,vecCD)*qnv.dot(vecAC,vecAB)
         #tmp1=qnv.qnv.dot(vecAC,vecCD)
@@ -210,19 +204,18 @@ def intersection_two_segment(segment_1: qna.QnNdarray, segment_2: qna.QnNdarray)
         #tmp2=qnv.qnv.dot(vecAC,vecAB)
         #tmp4=tmp1*tmp2  #mul(tmp1,tmp2)
         #bunshi=tmp3-tmp4
-        if bunbo==qnn.zero():
-            return
+
         s=bunshi/bunbo
         qnn.printqnn("s",s)  # for test
         #s=div(bunshi,bunbo)
         #
         # OP = OA + s*AB
-        tmp=qnm.mul_scl(vecAB_nd,s) # vec tunes scale
+        tmp=qnm.mul_scl(vecAB,s) # vec tunes scale
         qnv.printqnv("tmp",tmp)
         return segment_1[0]+tmp
             
     else: # no intersection
-        return 
+        return qnv.zerov(n)
 
 def intersection_segment_surface(segment: qna.QnNdarray, surface: qna.QnNdarray) -> qna.QnNdarray:
     """check intersection between a line segment and a triangle.
@@ -241,6 +234,7 @@ def intersection_segment_surface(segment: qna.QnNdarray, surface: qna.QnNdarray)
     -------
     
     """
+
     # check whether the line segment and the surface are intersecting or not by numerical calc.
     if num.check_intersection_segment_surface_numerical_nd_tau(segment,surface): # intersecting
         
@@ -275,15 +269,16 @@ def intersection_segment_surface(segment: qna.QnNdarray, surface: qna.QnNdarray)
         #  edge: 0-1,0-2,1-2
         comb=[[0,1],[0,2],[1,2]]
         counter=0
-        n=crs.n
+        n=crs.ni
         for j in comb:
             segment1=np.stack([surface[j[0]],surface[j[1]]])
             print("segment.shape",segment.shape,"segment1.shape",segment1.shape) # for test
             tmp1=intersection_two_segment(segment,segment1)
-            print("tmp1.shape",tmp1.shape)  # for test
-            if np.all(tmp1==None):
+            #if np.all(tmp1==None):
+            if tmp1==qnv.zerov(n):
                 pass
             else:
+                qnv.printqnv("tmp1",tmp1)  # for test
                 if counter==0:
                     p=tmp1
                 else:
@@ -293,9 +288,10 @@ def intersection_segment_surface(segment: qna.QnNdarray, surface: qna.QnNdarray)
             print("p.shape",p.shape)  # for test
             return p
         else: # no intersection
-            return 
+            return qnv.zerov(n)
     else: # no intersection
-        return 
+        n=crs.ni
+        return qnv.zerov(n)
     
 # calculating intersection of triangle_1 and triangle_2
 def intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdarray) -> qna.QnNdarray:
@@ -341,13 +337,16 @@ def intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdar
     [1,2,0,1,2]]
     print("trinagle_1.shape",triangle_1.shape,"triangle_2.shape",triangle_2.shape)  # for test
     counter=0
+    n=crs.ni
     for c in comb:
         # case 1: intersection between (edge of triangle_1) and (surface of triangle_2)
-        segment=np.stack([triangle_1[c[0]],triangle_1[c[1]]])
-        surface=np.stack([triangle_2[c[2]],triangle_2[c[3]],triangle_2[c[4]]])
+        segment=np.vstack([triangle_1[c[0]],triangle_1[c[1]]])
+        surface=np.vstack([triangle_2[c[2]],triangle_2[c[3]],triangle_2[c[4]]])
         print("segment.shape",segment.shape,"surface.shape",surface.shape)  # for test
         vtx=intersection_segment_surface(segment,surface)
-        if np.all(vtx==None):
+        print("vtx",vtx)
+        #if np.all(vtx==None):
+        if vtx==qnv.zerov(n):
             pass
         else:
             if counter==0 :
@@ -357,10 +356,11 @@ def intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdar
             counter+=1
         
         # case 2: intersection between (edge of triangle_2) and (surface of triangle_1)
-        segment=np.stack([triangle_2[c[0]],triangle_2[c[1]]])
-        surface=np.stack([triangle_1[c[2]],triangle_1[c[3]],triangle_1[c[4]]])
+        segment=np.vstack([triangle_2[c[0]],triangle_2[c[1]]])
+        surface=np.vstack([triangle_1[c[2]],triangle_1[c[3]],triangle_1[c[4]]])
         vtx=intersection_segment_surface(segment,surface)
-        if np.all(vtx==None):
+        #if np.all(vtx==None):
+        if vtx==qnv.zerov(n):
             pass
         else:
             if counter==0:
@@ -368,20 +368,20 @@ def intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdar
             else:
                 tmp=np.vstack([tmp,vtx]) # intersecting points
             counter+=1
-    n=crs.n
-    tmp=tmp.reshape(int(len(tmp)/n),n,3)
+    n=crs.ni  #crs.n
+    #tmp=tmp.reshape(int(len(tmp)/n),n)
     
     # get vertces of triangle_1 that are inside triangle_2
-    n=crs.n
+    n=crs.ni  #crs.n
     for vtx in triangle_1:
-        if inside_outside_triangle_tau(vtx,triangle_2): # inside
+        if num.inside_outside_triangle_tau(vtx,triangle_2): # inside
             if counter==0:
                 tmp=vtx.reshape(1,n,3)
             else:
                 tmp=np.vstack([tmp,[vtx]])
             counter+=1
     # get vertces of triangle_2 that are inside triangle_1
-    n=crs.n
+    n=crs.ni
     for vtx in triangle_2:
         if inside_outside_triangle_tau(vtx,triangle_1): # inside
             if counter==0:
@@ -393,20 +393,20 @@ def intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdar
             pass
     
     if counter>=3:
-        n=crs.n
+        n=crs.ni
         tmp=remove_doubling_in_perp_space(tmp)
         if len(tmp)>3:
             tmp4=triangulation_points(tmp)
-            if np.all(tmp4==None):
-                return 
+            if np.all(tmp4==qnv.zerov):
+                return qnv.zerov()
             else:
                 return tmp4
         elif len(tmp)==3:
             return tmp.reshape(1,3,n,3)
         else:
-            return 
+            return qnv.zerov(n)
     else:
-        return 
+        return qnv.zerov(n)
 
 def intersection_two_obj_1(obj1: qnv.Qnvec,obj2: qnv.Qnvec,select=None,verbose: int=0) -> qnv.Qnvec:
     """
