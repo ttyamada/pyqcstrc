@@ -459,7 +459,9 @@ def check_intersection_two_segment_numerical(ln1:qnv.Qnvec, ln2:qnv.Qnvec) -> bo
     # if dot(cros(vecAB,vecAC),vecCD)==0
     # two segments are in a same plane then return True otherwise False
     # true OD volume is scaled by scly (scly/=1 for decagonal)
-    vol=dot(vecCD,qnv.cros(vecAB,vecAC))
+    #vol=dot(vecCD,qnv.cros(vecAB,vecAC))
+    m=np.concatenate(vecAB,vecAC)
+    vol=mth.det_matrix(m)
     if vol2==0:
         return True
     else:
@@ -517,31 +519,40 @@ def triangle_area(a: qnv.Qnvec) -> qnn.Qnnum:  #-> float:
     v1=a[1]-a[0]
     v2=a[2]-a[0]
     
-    v3=qnv.cros(v2,v1) # cross product of 3D qnvec
-    vol=qnv.dot(v3,v3) # squared norm
+    #v3=qnv.cros(v2,v1) # cross product of 3D qnvec
+    #vol=qnv.dot(v3,v3) # squared norm
+    m=np.concatenate(v1,v2)
+    vol=mth.det_matrix(m)
     #N=a.N
     qn2=qnn.any_i(2)     # 2 in qnnum
     return abs(vol)/qn2
     #return np.sqrt(np.sum(np.abs(v3**2)))/2.0
 
-def triangle_area_numerical(a: qnv.Qnvec) -> qnv.Qnvec:
+def triangle_area_numerical(a: qna.QnNdarray) -> qnn.Qnnum:
     """Numerial calcuration of area of given triangle, a.
     The coordinates of the tree vertecies of the triangle are given.
     
     Parameters
     ----------
-    a: array containing 3-dimensional coordinates of tree vertecies of a triangle (a)
+    a: array containing 2/3-dimensional coordinates of tree vertecies of a triangle (a)
     
     Returns
     -------
     area of given triangle: float
     """
 
-    v1=a[1]-a[0]
-    v2=a[2]-a[0]
-    v3=qnv.cros(v2,v1) # cross product (qnnum area)
+    v1=a[1]-a[0]  # edge vector
+    v2=a[2]-a[0]  # edge vector
+    print("v1.shape",v1.shape)  # for test
+    print("v2.shape",v2.shape)  # for test 
+    qnv.printqnv("v1",v1)
+    qnv.printqnv("v2",v2)
+    m=np.stack(v1,v2)
+    print("m.shape",m.shape)  # for test
+    vol=mth.det_matrix(m)
+    #v3=qnv.cros(v2,v1) # cross product (qnnum area)
     qn2=qnn.any_i(2) # 2
-    return abs(v3)/qn2
+    return abs(vol)/qn2
 
 def inside_outside_obj_tau(point: qnv.Qnvec, obj: qnv.Qnvec) -> bool:
     
@@ -574,7 +585,7 @@ def inside_outside_obj(point: qnv.Qnvec, obj: qnv.Qnvec) -> bool:
     else:
         return False # outside
 
-def inside_outside_triangle_tau(point: qnv.Qnvec, triangle: qnv.Qnvec) -> bool:
+def inside_outside_triangle_tau(point: qnv.Qnvec, triangle: qna.QnNdarray) -> bool:
     """this function judges whether the point is inside a triangle or not
         
     Parameters
@@ -588,7 +599,7 @@ def inside_outside_triangle_tau(point: qnv.Qnvec, triangle: qnv.Qnvec) -> bool:
     #triangle=get_internal_component_sets_numerical(triangle)
     return inside_outside_triangle(point,triangle)
 
-def inside_outside_triangle(point: qnv.Qnvec, triangle: qnv.Qnvec) -> bool:
+def inside_outside_triangle(point: qnv.Qnvec, triangle: qna.QnNdarray) -> bool:
     """this function judges whether the point is inside a tetrahedron or not
         
     Parameters
@@ -598,7 +609,12 @@ def inside_outside_triangle(point: qnv.Qnvec, triangle: qnv.Qnvec) -> bool:
     tetrahedron: array
         vertex coordinates of triangle, (xyz1, xyz2, xyz3)
     """
-    area0=triangle_area_numerical(triangle)
+    shape=triangle.shape
+    print("triangle.shape",shape)  # for test
+    area0=qnv.zerov(shape[0])
+    for tri in triangle:
+        print("tri.shape",tri.shape)  # for test
+        area0[i]=triangle_area_numerical(tri)
     
     def small_triangle(indx,p,triangle0):
         tri=np.zeros((4,3),dtype=np.float64)

@@ -2,7 +2,7 @@ import sys
 import numpy as np
 import cython
 
-from extended_int import int_inf, ExtendedIntegral
+#from extended_int import int_inf, ExtendedIntegral
 import crsys
 from numpy.typing import NDArray
 from typing import Self
@@ -209,9 +209,8 @@ def pow(a:Qnnum, b:np.int64):
         return c
         
 def eq(a:Qnnum, b:Qnnum):
-    if (a.n[0]==int_inf and b.n[0]==int_inf):
-        return Qnnum([0,0,1])
-    
+    #if (a.n[0]==int_inf and b.n[0]==int_inf):
+    #    return Qnnum([0,0,1])
     c=a-b
     if(c.n[0]==0 and c.n[1]==0):
         return True

@@ -344,7 +344,7 @@ def intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdar
         surface=np.vstack([triangle_2[c[2]],triangle_2[c[3]],triangle_2[c[4]]])
         print("segment.shape",segment.shape,"surface.shape",surface.shape)  # for test
         vtx=intersection_segment_surface(segment,surface)
-        print("vtx",vtx)
+        qnv.printqnv("vtx",vtx)
         #if np.all(vtx==None):
         if vtx==qnv.zerov(n):
             pass
