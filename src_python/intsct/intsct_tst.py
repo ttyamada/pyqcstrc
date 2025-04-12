@@ -12,6 +12,7 @@ import qnmat as qnm
 import numeric as num
 import qnndarray as qna
 import prjop as prj
+import vesta as vst
 
 #if __name__ == '__main__':
 
@@ -103,12 +104,17 @@ oc_asym1=np.array([\
 od_asym0_nd=qna.anya(oc_asym0,(3,5))
 od_asym1_nd=qna.anya(oc_asym1,(3,5))
 
-triang_1=prj.projection3_sets_numerical(od_asym0_nd)  #.reshape((1,3,2))
-triang_2=prj.projection3_sets_numerical(od_asym1_nd)  #.reshape((1,3,2))
-
+triang_1=prj.projection3_sets_numerical(od_asym0_nd).reshape((1,3,2))
+triang_2=prj.projection3_sets_numerical(od_asym1_nd).reshape((1,3,2))
+print("triang_1.shape",triang_1.shape)
+print("triang_2.shape",triang_2.shape)
+vst.write_vesta(triang_1, '.', 'triang_1', 'r', 'normal')
+vst.write_vesta(triang_2, '.', 'triang_2', 'b', 'normal')
+vst.write_xyz(triang_1,'.', 'triang_1')
+vst.write_xyz(triang_2,'.', 'triang_2')
 #a=num.check_intersection_two_segment_numerical_nd_tau(segment_1,segment_2)
 #print(a)
-x=isct.intersection_two_triangles(triang_1, triang_2) 
+x=isct.intersection_two_triangles(triang_1[0], triang_2[0]) 
 qnv.printqnvs("cross points of two triangles",x)
 
 print('TEST1')

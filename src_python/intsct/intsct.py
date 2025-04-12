@@ -322,26 +322,32 @@ def intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdar
     n=0
     for i,e1 in enumerate(edge_1):  # line segment e1
         for j,e2 in enumerate(edge_2):  # line segment e2
-            den=(e1[0][0]-e1[1][0])*(e2[0][1]-e2[0][1])\
+            den=(e1[0][0]-e1[1][0])*(e2[0][1]-e2[1][1])\
                -(e1[0][1]-e1[1][1])*(e2[0][0]-e2[1][0])
+            print("i,j",i,j,end=" ")  # for test
+            qnn.printqnn("den",den)  # for test
+            if den==qnn.zero():  # e1 // e2
+                continue
             de1=e1[1]-e1[0]
             de2=e2[1]-e2[0]
             if den==qnn.zero():  # no cross point (lines are parallel)
                 continue
-            nux=(e1[0][0]-e1[1][0])*(e2[0][1]-e2[1][1])\
-               -(e1[0][1]-e2[1][1])*(e2[1][0]-e2[1][0])
+            nux=(e1[0][0]-e2[0][0])*(e2[0][1]-e2[1][1])\
+               -(e1[0][1]-e2[0][1])*(e2[0][0]-e2[1][0])
             nuy=(e1[0][0]-e1[1][0])*(e1[0][1]-e2[0][1])\
-               -(e1[0][1]-e1[1][1])*(e2[0][0]-e2[1][0])
-            t[i][j][0]=nux/den
-            t[i][j][1]=nuy/den
-            qnv.printqnv("t[i][j]",t[i][j])  # for test
+               -(e1[0][1]-e1[1][1])*(e1[0][0]-e2[0][0])
+            t[i][j][0]=nux/den # t
+            t[i][j][1]=-nuy/den # u
+            #qnv.printqnv("t[i][j]",t[i][j])  # for test
             # if 0<=t[i][j][:]<=1 lines have intersection on i and j-th edges of triangles 1 and 2
             # then calculate cross point
             if t[i][j][0] >=qnn.zero() and t[i][j][0] <=qnn.one(): 
-                x[n]=e1[0]+de1*t[i][j]
+                qnn.printqnn("t[i][j][0]",t[i][j][0])  # for test
+                x[n]=e1[0]+de1*t[i][j][0]
                 n+=1
             if t[i][j][1] >=qnn.zero() and t[i][j][1] <=qnn.one():
-                x[n]=e2[0]+de2*t[i][j]
+                qnn.printqnn("t[i][j][1]",t[i][j][1])  # for test
+                x[n]=e2[0]+de2*t[i][j][1]
     return x[0:n]  # n cross point coordinates
 
 # calculating intersection of triangle_1 and triangle_2 (original version)
