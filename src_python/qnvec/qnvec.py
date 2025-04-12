@@ -317,7 +317,7 @@ def printqnv2(str:str,qnv1:Qnvec,qnv2:Qnvec):
 def printqnvs(str:str,qnv1:Qnvec):
     shape=qnv1.shape
     ndim=len(shape)
-    print("shape",shape,"ndim",ndim)  # for test
+    #print("shape",shape,"ndim",ndim)  # for test
     n=shape[0]
     print(str)
     for j in range(n):
