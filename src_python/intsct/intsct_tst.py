@@ -68,46 +68,64 @@ qnm.qnmat_init()
 prj.prjop_init()
 qna.qnndarray_init()
 
-M0=qnn.Qnnum([0,0,1])
-M1=qnn.Qnnum([1,0,1])
-M2=qnn.Qnnum([3,0,2])
-M3=qnn.Qnnum([1,0,2])
-M4=qnn.Qnnum([-1,0,2])
+# M0=qnn.Qnnum([0,0,1])
+# M1=qnn.Qnnum([1,0,1])
+# M2=qnn.Qnnum([3,0,2])
+# M3=qnn.Qnnum([1,0,2])
+# M4=qnn.Qnnum([-1,0,2])
 
-seg_1=np.array([
-        [M1,M1,M0,M0,M0],
-        [M2,M3,M0,M0,M0]
-        ],dtype=qnn.Qnnum)
-seg_2=np.array([\
-        [M0,M0,M0,M1,M0],
-        [M0,M0,M4,M3,M0]
-        ],dtype=qnn.Qnnum)
+# seg_1=np.array([
+#         [M1,M1,M0,M0,M0],
+#         [M2,M3,M0,M0,M0]
+#         ],dtype=qnn.Qnnum)
+# seg_2=np.array([\
+#         [M0,M0,M0,M1,M0],
+#         [M0,M0,M4,M3,M0]
+#         ],dtype=qnn.Qnnum)
 
-segment_1=qna.anya(seg_1,(2,5))
-segment_2=qna.anya(seg_2,(2,5))
-qna.printqndm("segment_1",segment_1)
-qna.printqndm("segment_2",segment_2)
+#test_dir='../../tests/octa2/tests'
+#xyz_dir='../../xyz/octa'
+M0=qnn.Qnnum([0,0,1])  # 0
+M1=qnn.Qnnum([1,0,2])  # 1/2
+M2=qnn.Qnnum([-1,0,2]) #-1/2
+oc_asym0=np.array([\
+    [M0,M0,M0,M0,M0],\
+    [M1,M2,M0,M1,M0],\
+    [M1,M2,M2,M1,M0],\
+    ],dtype=qnn.Qnnum)
+oc_asym1=np.array([\
+    [M0,M0,M0,M0,M0],\
+    [M2,M1,M0,M2,M0],\
+    [M2,M1,M2,M2,M0],\
+    ],dtype=qnn.Qnnum)
+
+
+od_asym0_nd=qna.anya(oc_asym0,(3,5))
+od_asym1_nd=qna.anya(oc_asym1,(3,5))
+
+triang_1=prj.projection3_sets_numerical(od_asym0_nd)  #.reshape((1,3,2))
+triang_2=prj.projection3_sets_numerical(od_asym1_nd)  #.reshape((1,3,2))
 
 #a=num.check_intersection_two_segment_numerical_nd_tau(segment_1,segment_2)
 #print(a)
-a=isct.intersection_two_segment(segment_1, segment_2) 
-#print(a)
+x=isct.intersection_two_triangles(triang_1, triang_2) 
+qnv.printqnvs("cross points of two triangles",x)
 
 print('TEST1')
 
-seg_1=np.array([\
-        [M1,M1,M0,M0,M0],\
-        [M3,M2,M0,M0,M0]
-        ],dtype=qnn.Qnnum)
-seg_2=np.array([\
-        [M0,M1,M0,M0,M0],\
-        [M0,M3,M4,M0,M0]
-        ],dtype=qnn.Qnnum)
+# seg_1=np.array([\
+#         [M1,M1,M0,M0,M0],\
+#         [M3,M2,M0,M0,M0]
+#         ],dtype=qnn.Qnnum)
+# seg_2=np.array([\
+#         [M0,M1,M0,M0,M0],\
+#         [M0,M3,M4,M0,M0]
+#         ],dtype=qnn.Qnnum)
 
-segment_1=qna.anya(seg_1,(2,5))
-segment_2=qna.anya(seg_2,(2,5))
-qna.printqndm("segment_1",segment_1)
-qna.printqndm("segment_2",segment_2)
+# segment_1=qna.anya(seg_1,(2,5))
+# segment_2=qna.anya(seg_2,(2,5))
+# qna.printqndm("segment_1",segment_1)
+# qna.printqndm("segment_2",segment_2)
 
 #segment_1=np.array(\
 #[[[1, 0, 1],[1, 0, 1],[0, 0, 1],[0, 0, 1],[0, 0, 1],[0, 0, 1]],\
@@ -119,9 +137,13 @@ qna.printqndm("segment_2",segment_2)
 
 #a=num.check_intersection_two_segment_numerical_nd_tau(segment_1,segment_2)
 #print(a)
+# qna.printqndm("segment_1",segment_1)
+# qna.printqndm("segment_2",segment_2)
+# qnseg_1=prj.projection3_sets_numerical(segment_1)
+# qnseg_2=prj.projection3_sets_numerical(segment_2)
 
-a=isct.intersection_two_segment(segment_1, segment_2) 
-qnv.printqnv("a",a)
+# a=isct.intersection_two_triangles(qnseg_1, qnseg_2) 
+# qnv.printqnv("a",a)
 
 """
 s: [ 2 -1  1] 0.5857864376269049

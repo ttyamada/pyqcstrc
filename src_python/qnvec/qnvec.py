@@ -219,16 +219,21 @@ def cros(v1:Qnvec, v2:Qnvec) -> Qnvec:
 #    qnn.Qnnum([0,0,1],N) # zero qnnumber
 #    return   v1[0]*v2[0]+v1[1]*v2[1]-v1[1]*v2[0]-v1[0]*v2[1]
     
-# for dihedral excluding decagonal
+# for dihedral and icosahedral excluding decagonal
 def dot(v1:Qnvec, v2:Qnvec) -> qnn.Qnnum:
-    print("v1.shape",v1.shape)
-    printqnv("v1",v1)  # for test
-    printqnv("v2",v2)  # for test
-    v=qnn.zero() # qnnum zero
-    n=v1.shape[0]
-    for i in range(n):
-        v+=(v1[i]*v2[i])
-    return v
+    #print("v1.shape",v1.shape)  # for test
+    #printqnv("v1",v1)  # for test
+    #printqnv("v2",v2)  # for test
+    isys=crs.isys
+    if isys==3:
+        s2=prj.scly2 # qnnumber
+        v=v1[0]*v2[0]+v1[1]*v2[1]*s2
+    else:
+        v=qnn.zero() # qnnum zero
+        n=v1.shape[0]
+        for i in range(n):
+            v+=(v1[i]*v2[i])
+        return v
     
 # equivalent to cross
 def outer_product(v1:Qnvec, v2:Qnvec)-> Qnvec:

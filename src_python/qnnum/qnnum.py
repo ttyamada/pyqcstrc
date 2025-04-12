@@ -78,13 +78,14 @@ def zero():
 def inf():
     return Qnnum([int_inf,0,1])
 
+# this is equivalent to qnv.zerov(n)
 def zeros(shape): # qnnum 1D darray
     n=shape[0]
     qnns = [zero() for i in range(n)]
     return qnns
     #return np.zeros(shape,dtype=Qnnum)
     
-def copy(a:Qnnum):
+def copy(a:Qnnum) -> Qnnum:
     self=Qnnum([0,0,1])
     self.n[0]=np.copy(a.n[0])
     self.n[1]=np.copy(a.n[1])
@@ -92,19 +93,19 @@ def copy(a:Qnnum):
     #self.N=N
     return self
 
-def zero():
+def zero() -> Qnnum:
     return Qnnum([0,0,1])
 
-def one():
+def one() -> Qnnum:
     return Qnnum([1,0,1])
 
-def any_i(n_: NDArray[np.int64]):
+def any_i(n_: NDArray[np.int64]) -> Qnnum:
     return Qnnum([n_,0,1])
 
-def any(n_:NDArray[np.int64]):
+def any(n_:NDArray[np.int64]) -> Qnnum:
     return Qnnum([n_[0],n_[1],n_[2]])
 
-def add(a:Qnnum, b:Qnnum):
+def add(a:Qnnum, b:Qnnum) -> Qnnum:
     #print("a1",a.n[0],"a2",a.n[1],"a3",a.n[2])
     #print("b1",b.n[0],"b2",b.n[1],"b3",b.n[2])
     c1=a.n[0]*b.n[2]+b.n[0]*a.n[2]
@@ -122,11 +123,11 @@ def add(a:Qnnum, b:Qnnum):
     else:
         return Qnnum(np.array([c1,c2,c3]))
 
-def iadd(self:Qnnum, b:Qnnum):
+def iadd(self:Qnnum, b:Qnnum) -> Qnnum:
     self=add(self,b)
     return self
 
-def sub(a:Qnnum, b:Qnnum):
+def sub(a:Qnnum, b:Qnnum) -> Qnnum:
     c1=a.n[0]*b.n[2]-b.n[0]*a.n[2]
     c2=a.n[1]*b.n[2]-b.n[1]*a.n[2]
     c3=a.n[2]*b.n[2]
@@ -141,11 +142,11 @@ def sub(a:Qnnum, b:Qnnum):
     else:
         return Qnnum(np.array([c1,c2,c3]))
 
-def isub(self:Qnnum, b:Qnnum):
+def isub(self:Qnnum, b:Qnnum) -> Qnnum:
     self=sub(self,b)
     return self
 
-def mul(a:Qnnum, b:Qnnum):
+def mul(a:Qnnum, b:Qnnum) -> Qnnum:
     #N =(int)(a.N)
     c1=a.n[0]*b.n[0]+a.n[1]*b.n[1]*N
     c2=a.n[0]*b.n[1]+a.n[1]*b.n[0]
@@ -161,20 +162,20 @@ def mul(a:Qnnum, b:Qnnum):
     else:
         return Qnnum(np.array([c1,c2,c3]))
     
-def mul_i(a:Qnnum, b:np.int64): # b should be int
+def mul_i(a:Qnnum, b:np.int64) -> Qnnum: # b should be int
     c1=a.n[0]*b
     c2=a.n[1]*b
     c3=a.n[2]
     return Qnnum(np.array([c1,c2,c3]))
 
-def i_mul(a:np.int64, b:Qnnum): # a should be int this does not work?
+def i_mul(a:np.int64, b:Qnnum) -> Qnnum: # a should be int this does not work?
     #s=Qnnum([a,a,1])
     c1=a*b.n[0]
     c2=a*b.n[1]
     c3=b.n[2]
     return Qnnum(np.array([c1,c2,c3]))
 
-def div(a:Qnnum, b:Qnnum):
+def div(a:Qnnum, b:Qnnum) -> Qnnum:
     #N = (int)(a.N)
     c1=b.n[0]*b.n[2]
     c2=-b.n[1]*b.n[2]
@@ -186,14 +187,14 @@ def div(a:Qnnum, b:Qnnum):
     c=Qnnum(np.array([c1,c2,c3]))
     return mul(a,c)
 
-def div_i(a:Qnnum, b:np.int64): # b should be int
+def div_i(a:Qnnum, b:np.int64) -> Qnnum: # b should be int
     c1=a.n[0]
     c2=a.n[1]
     c3=a.n[2]*b
     c=Qnnum(np.array([c1,c2,c3]))
     return c
 
-def pow(a:Qnnum, b:np.int64):
+def pow(a:Qnnum, b:np.int64) -> Qnnum:
     if b==0:
         return Qnnum([1,1,1])
     elif b>0:
@@ -208,7 +209,7 @@ def pow(a:Qnnum, b:np.int64):
             c=mul(c,ai)
         return c
         
-def eq(a:Qnnum, b:Qnnum):
+def eq(a:Qnnum, b:Qnnum) -> bool:
     #if (a.n[0]==int_inf and b.n[0]==int_inf):
     #    return Qnnum([0,0,1])
     c=a-b
@@ -217,14 +218,14 @@ def eq(a:Qnnum, b:Qnnum):
     else:
         return False
 
-def gt(a:Qnnum, b:Qnnum):
+def gt(a:Qnnum, b:Qnnum) -> bool:
     c=a-b
     if(np.sign(c.n[0])*c.n[0]**2+np.sign(c.n[1])*c.n[1]**2*N > 0):
         return True
     else:
         return False
     
-def geq(a:Qnnum, b:Qnnum):
+def geq(a:Qnnum, b:Qnnum) -> bool:
     c=a-b
     if(np.sign(c.n[0])*c.n[0]**2+np.sign(c.n[1])*c.n[1]**2*N >= 0):
         return True
@@ -232,27 +233,27 @@ def geq(a:Qnnum, b:Qnnum):
         return False
 
 
-def lt(a:Qnnum, b:Qnnum):
+def lt(a:Qnnum, b:Qnnum) -> bool:
     c=a-b
     if(np.sign(c.n[0])*c.n[0]**2+np.sign(c.n[1])*c.n[1]**2*N < 0):
         return True
     else:
         return False
     
-def leq(a:Qnnum, b:Qnnum):
+def leq(a:Qnnum, b:Qnnum) -> bool:
     c=a-b
     if(np.sign(c.n[0])*c.n[0]**2+np.sign(c.n[1])*c.n[1]**2*N <= 0):
         return True
     else:
         return False
     
-def neg(a:Qnnum):
+def neg(a:Qnnum) -> Qnnum:
     #print("a.n[0]",a.n[0],"a.n[1]",a.n[1],"a.n[2]",a.n[2],"N",N) # for test
     b=Qnnum([-a.n[0],-a.n[1],a.n[2]]) # -self
     #printqnn("b",b)  # for test
     return b
 
-def abs(a:Qnnum):
+def abs(a:Qnnum) -> Qnnum:
     if a<0:
         return neg(a)
     return a
@@ -264,10 +265,10 @@ def qn2npa(a:Qnnum) -> np.ndarray:
 def qn2flt(a:Qnnum) -> float:
     return (a.n[0]+a.n[1]*np.sqrt(N))/a.n[2]
 
-def int2qn(i:np.int64,N:np.int64):
-    #N=self.N
+def int2qn(i:np.int64,N:np.int64) -> Qnnum:
     return Qnnum([i,0,1])
 
+# float to Qnnum converter
 def flt2qn(qr:float) -> Qnnum:
     xm=np.abs(qr)
     isg=np.array([1,-1])

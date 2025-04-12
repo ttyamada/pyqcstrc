@@ -100,6 +100,21 @@ def unitm(n_:np.int64) -> Qnmat:
     for i in range(n_):
         qnm[i][i]=qn1
     return qnm
+
+def matrix_2d(v1:qnv.Qnvec, v2: qnv.Qnvec) -> Qnmat:
+    m=zerom((2,2))
+    for i in range(2):
+        m[0][i]=v1[i]
+        m[1][i]=v2[i]
+    return m
+
+def matrix_3d(v1:qnv.Qnvec, v2:qnv.Qnvec, v3:qnv.Qnvec) -> Qnmat:
+    m=zerom((3,3))
+    for i in range(3):
+        m[0][i]=v1[i]
+        m[1][i]=v2[i]
+        m[2][i]=v3[i]
+    return m
         
 def copy(m: Qnmat) -> Qnmat:
     shape=m.shape

@@ -12,6 +12,7 @@ import crsys as crs
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
+import qnmath as qmt
 import prjop as prj
 import qnndarray as qna
 
@@ -103,8 +104,9 @@ def dot(v1:qnv.Qnvec, v2:qnv.Qnvec) -> qnn.Qnnum:
     v=qnn.zero() # qnnum zero
     if isys==3:  # decagonal
         s2=prj.scly2 # qnnumber
-        v=v1[0]*v2[0]+v1[1]*v2[1]*s2+v1[2]*v2[2]\
-        +v1[3]*v2[3]*s2+v1[2]*v2[4]
+        v=v1[0]*v2[0]+v1[1]*v2[1]*s2
+        #+v1[2]*v2[2]
+        ##+v1[3]*v2[3]*s2+v1[2]*v2[4]
     else:
         for i in range(n):
             v=v+v1[i]*v2[i]
@@ -460,7 +462,8 @@ def check_intersection_two_segment_numerical(ln1:qnv.Qnvec, ln2:qnv.Qnvec) -> bo
     # two segments are in a same plane then return True otherwise False
     # true OD volume is scaled by scly (scly/=1 for decagonal)
     #vol=dot(vecCD,qnv.cros(vecAB,vecAC))
-    m=np.concatenate(vecAB,vecAC)
+    #m=np.concatenate(vecAB,vecAC)
+    m=qnm.matrix_2d(v1,v2)  #np.concatenate(v1,v2)
     vol=mth.det_matrix(m)
     if vol2==0:
         return True
@@ -505,27 +508,14 @@ def triangle_area(a: qnv.Qnvec) -> qnn.Qnnum:  #-> float:
     -------
     area of given triangle: qnnum  #float
     """
-    
-    #x1=a[1].v[0])-a[0].v[0]
-    #y1=a[1].v[1])-a[0].v[1]
-    #z1=a[1].v[2])-a[0].v[2]
-    
-    #x2=a[2].v[0]-a[0].v[0]
-    #y2=a[2].v[1]-a[0].v[1]
-    #z2=a[2].v[2]-a[0].v[2]
-    
-    #v1=np.array([x1,y1,z1])
-    #v2=np.array([x2,y2,z2])
+ 
     v1=a[1]-a[0]
     v2=a[2]-a[0]
-    
-    #v3=qnv.cros(v2,v1) # cross product of 3D qnvec
-    #vol=qnv.dot(v3,v3) # squared norm
-    m=np.concatenate(v1,v2)
+ 
+    m=qnm.matrix_2d(v1,v2)  # for using mth.det_matrix
     vol=mth.det_matrix(m)
-    #N=a.N
-    qn2=qnn.any_i(2)     # 2 in qnnum
-    return abs(vol)/qn2
+    #qn2=qnn.any_i(2)     # 2 in qnnum
+    return abs(vol)/2
     #return np.sqrt(np.sum(np.abs(v3**2)))/2.0
 
 def triangle_area_numerical(a: qna.QnNdarray) -> qnn.Qnnum:
@@ -540,19 +530,20 @@ def triangle_area_numerical(a: qna.QnNdarray) -> qnn.Qnnum:
     -------
     area of given triangle: float
     """
-
+    print("a.shape",a.shape)  # for test
     v1=a[1]-a[0]  # edge vector
     v2=a[2]-a[0]  # edge vector
-    print("v1.shape",v1.shape)  # for test
-    print("v2.shape",v2.shape)  # for test 
-    qnv.printqnv("v1",v1)
-    qnv.printqnv("v2",v2)
-    m=np.stack(v1,v2)
-    print("m.shape",m.shape)  # for test
-    vol=mth.det_matrix(m)
+    #print("v1.shape",v1.shape)  # for test
+    #print("v2.shape",v2.shape)  # for test 
+    #qnv.printqnv("v1",v1)  # for test
+    #qnv.printqnv("v2",v2)  # for test
+    m=qnm.matrix_2d(v1,v2)  #np.concatenate(v1,v2)
+    #print("m.shape",m.shape)  # for test
+    vol=qmt.det_matrix(m,2)
+    qnn.printqnn("vol",vol)
     #v3=qnv.cros(v2,v1) # cross product (qnnum area)
     qn2=qnn.any_i(2) # 2
-    return abs(vol)/qn2
+    return qmt.abs(vol)/qn2
 
 def inside_outside_obj_tau(point: qnv.Qnvec, obj: qnv.Qnvec) -> bool:
     
@@ -599,42 +590,55 @@ def inside_outside_triangle_tau(point: qnv.Qnvec, triangle: qna.QnNdarray) -> bo
     #triangle=get_internal_component_sets_numerical(triangle)
     return inside_outside_triangle(point,triangle)
 
-def inside_outside_triangle(point: qnv.Qnvec, triangle: qna.QnNdarray) -> bool:
-    """this function judges whether the point is inside a tetrahedron or not
+def small_triangle(indx: np.int64, point:qnv.Qnvec, triangle0:qna.QnNdarray):
+    shape=triangle0.shape
+    tri=qna.zeros(shape)
+    for i,vt in enumerate(triangle0):
+        if i==indx:
+            tri[i]=point
+        else:
+            tri[i]=vt
+    return tri
+
+# this replaces one of triangle vetices with the point
+# which is a vertex of another triangle
+def inside_outside_triangle(point: qnv.Qnvec, tri: qna.QnNdarray) -> bool:
+    """this function judges whether the point is inside a triangle or not
         
     Parameters
     ----------
-    point: array
-        coordinate of the point,xyz
-    tetrahedron: array
-        vertex coordinates of triangle, (xyz1, xyz2, xyz3)
+    point: qnvec
+        coordinates of the point,xyz
+    tetrahedron: qnndarray
+        vertex coordinates of a triangle, (xyz1, xyz2, xyz3)
     """
-    shape=triangle.shape
-    print("triangle.shape",shape)  # for test
-    area0=qnv.zerov(shape[0])
-    for tri in triangle:
-        print("tri.shape",tri.shape)  # for test
-        area0[i]=triangle_area_numerical(tri)
+
+    shape=tri.shape
+    print("tri.shape",shape)  # for test
+    print("point.shape",point.shape)  # for test
+    if len(shape)==3 and shape[0]>1:
+        print("tri in inside_outside_triangle should be one")
+        exit()
+    #area0=qnv.zerov(shape[0])
+    #for i,tri in enumerate(triangle):
+    #    print("tri.shape",tri.shape)  # for test
+    area0=triangle_area_numerical(tri)
     
-    def small_triangle(indx,p,triangle0):
-        tri=np.zeros((4,3),dtype=np.float64)
-        for i,vt in enumerate(triangle0):  #????
-            if i==indx:
-                tri[i]=p
-            else:
-                tri[i]=vt
-        return tri
+    tet1=small_triangle(0,point,tri)
+    area1=triangle_area_numerical(tet1)  # area of the first triangle
+ 
+    tet2=small_triangle(1,point,tri)
+    area1+=triangle_area_numerical(tet2) # area of the second triangle
     
-    tet1=small_triangle(0,point,triangle)
-    area1=triangle_area_numerical(tet1)
+    tet3=small_triangle(2,point,tria)
+    area1+=triangle_area_numerical(tet3) # area of the third triangle
     
-    tet2=small_triangle(1,point,triangle)
-    area1+=triangle_area_numerical(tet2)
-    
-    tet3=small_triangle(2,point,triangle)
-    area1+=triangle_area_numerical(tet3)
-    
-    if abs(area0-area1)<EPS:
+    #this uses if the area of three triangles
+    # formed by the point and two points in the triangle
+    # is equal to the area of the triangle the point
+    # is in the triangle 
+    #if abs(area0-area1)<EPS:
+    if area0==area1:
         return True # inside
     else:
         return False # outside
@@ -662,50 +666,9 @@ def triangle_volume_nd_numerical(triangle: qnv.Qnvec) -> qnn.Qnnum:  # float:
     tetrahedron: array
         6-dimensional vertex coordinates of the tetrahedron, xyzuvw0,xyzuvw1,xyzuvw2
     """
-    #a=get_internal_component_sets_numerical(triangle)
-    #return triangle_volume_numerical(a)
-    #return triangle_area_numerical(a)
     return triangle_area_numerical(triangle)
 
-#def obj_volume_numerical(obj: NDArray[np.float64]) -> float:
-#    """This function returns volume of an object (set of triangle).
-#        
-#    Parameters
-#    ----------
-#    object: array
-#        3-dimensional vertex coordinates of triangle.
-#    """
-#    vol=0
-#    for triangle in obj:
-#        vol+=triangle_area_numerical(triangle)
-#    return vol
-
-#def triangle_area_numerical(triangle: NDArray[np.float64]) -> float:
-#    """This function returns volume of a triangle
-#        
-#    Parameters
-#    ----------
-#    tetrahedron: array
-#        vertex coordinates of the triangle, xyz0,xyz1,xyz2
-#    """
-#    xy1=np.ones((3,3),dtype=np.float64)
-#    for i in range(3):
-#        for j in range(3):
-#            xy1[i][j]=triangle[i][j]
-#    detm = np.linalg.det(xyz)
-#    return abs(detm)/2
-
-
-#def get_internal_component_numerical(vt: NDArray[np.int64]) -> NDArray[np.float64]:
-    """
-    Parameters
-    ----------
-    vn: array
-        6-dimensional vector, xyzuvw.
-    """
-#    vn=numerical_vector(vt)
-#    return projection3_numerical(vn)
-
+# this is replaced by projection3_sets_numerical
 def get_internal_component_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
     """parallel and perpendicular components of a nd lattice vector in direct space.
     
@@ -714,8 +677,6 @@ def get_internal_component_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
     vsn: array
         set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
     """
-    #vns=numerical_vectors(vts)
-    #return projection3_sets_numerical(vns)
     return projection3_sets_numerical(vns)
 
 def projection_numerical(vn: qnv.Qnvec) -> qnv.Qnvec:
@@ -726,15 +687,9 @@ def projection_numerical(vn: qnv.Qnvec) -> qnv.Qnvec:
     vn: array
         6-dimensional vector, xyzuvw.
     """
-    #v1 =  TAU*vn[0]+vn[1]-0.5*vn[3] # x in Epar
-    #v2 = -0.5*vn[0]+vn[2]+TAU*vn[3] # y in Epar
-    #v3 = vn[4]                      # z in Epar
-    #v4 = -TAU*vn[0]+vn[1]-0.5*vn[3] # x in Eperp
-    #v5 = -0.5*vn[0]+vn[2]-TAU*vn[3] # y in Eperp
-    #v6 = vn[5]                      # z in Epperp, dummy
-    #return np.array([v1,v2,v3,v4,v5,v6],dtype=np.float64)
     return projop(vn)
 
+# this is calculated by prj.prjop_i
 def projection_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
     """parallel and perpendicular components of a nd lattice vector in direct space.
     
@@ -750,23 +705,9 @@ def projection_sets_numerical(vns: qnv.Qnvec) -> qnv.Qnvec:
         m[i]=prj.prjop_i(vns[i])
     return m
     
+# this is an alias of prj.prjvec_i
 def projection3_numerical(vn: qnv.Qnvec) -> float:
     return prj.prjvec_i(vn)
-#    """perpendicular component of a nd lattice vector in direct space.
-#    
-#    Parameters
-#    ----------
-#    vn: array
-#        6-dimensional vector, xyzuvw.
-#    """
-#    #v1 =  TAU*vn[0]+vn[1]-0.5*vn[3] # x in Epar
-#    #v2 = -0.5*vn[0]+vn[2]+TAU*vn[3] # y in Epar
-#    #v3 = vn[4]                      # z in Epar
-#    v4 = -TAU*vn[0]+vn[1]-0.5*vn[3]  # x in Eperp
-#    v5 = -0.5*vn[0]+vn[2]-TAU*vn[3]  # y in Eperp
-#    v6 = vn[5]                      # z in Epperp, dummy
-#    #return np.array([v4,v5],dtype=np.float64)
-#    return np.array([v4,v5,v6],dtype=np.float64)
 
 def projection3_sets_numerical(vns: qna.QnNdarray) -> qna.QnNdarray:
     """perpendicular component of a nd lattice vector in direct space.
@@ -826,9 +767,9 @@ def get_internal_component_sets_numerical(vts: qnv.Qnvec) -> qnv.Qnvec:
 #########
 #  WIP  #
 #########
-# equivalent to prjop_e
+# projection onto Eperp
 def projection_numerical_perp(vn: qnv.Qnvec) -> qnv.Qnvec:
-    return prjop_e(vn)
+    return prjvec_i(vn)
     """This returns nd vector which corresponds to a projection of vn onto Eperp.
     
     Parameters
@@ -845,9 +786,9 @@ def projection_numerical_perp(vn: qnv.Qnvec) -> qnv.Qnvec:
 #########
 #  WIP  #
 #########
-# equivalent to prjop 
+# projection onto Eaparallel
 def projection_numerical_par(vn: qnv.Qnvec) -> qnv.Qnvec:
-    return prjop(vn)
+    return prj.prjvec_e(vn)
     """This returns nd vector which corresponds to a projection of vn onto Epar.
     
     Parameters
@@ -859,21 +800,11 @@ def projection_numerical_par(vn: qnv.Qnvec) -> qnv.Qnvec:
     -------
     nd vectors projected onto Eperp.
     """
-    #m=np.array([\
-    #        [ 0.5,          0.577350269,  0.0,         -0.288675135,  0.0,  0.0],\
-    #        [ 0.288675135,  0.5,          0.288675135,  0.0,          0.0,  0.0],\
-    #        [ 0.0,          0.288675135,  0.5,          0.288675135,  0.0,  0.0],\
-    #        [-0.288675135,  0.0,          0.577350269,  0.5,          0.0,  0.0],\
-    #        [ 0.0,          0.0,          0.0,          0.0,          1.0,  0.0],\
-    #        [ 0.0,          0.0,          0.0,          0.0,          0.0,  0.0],\
-    #    ])
-    #return m@vn
+    return prj.prjop_e
 
 def inout_occupation_domain_numerical(obj: qnv.Qnvec,point: qnv.Qnvec):
     """
     """
-    #triangles=np.zeros((len(obj),3,3),dtype=np.float64)
-    #N=obj.N
     n_=3
     qv=qnv.Qnvec(n_,N)  # zero initialized qnvec
     triangles=[qv]*num # qnvec array

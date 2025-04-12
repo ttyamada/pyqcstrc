@@ -169,14 +169,12 @@ def intersection_two_segment(segment_1: qna.QnNdarray, segment_2: qna.QnNdarray)
     -------
     
     """
-    n=crs.ni
     # check whether two line segments are intersecting or not by numerical calc.
     if num.check_intersection_two_segment_numerical_nd_tau(segment_1,segment_2): # intersecting
         # calc in TAU-style
         vecAB=segment_1[1]-segment_1[0]   # AB
         vecCD=segment_2[1]-segment_2[0]   # CD
         vecAC=segment_2[0]-segment_1[0]   # AC
-        print("vecAB.shape",vecAB.shape)
 
         #qnv.printqnv("vecAB",vecAB)  # for test
         #qnv.printqnv("vecCD",vecCD)  # for test
@@ -193,7 +191,7 @@ def intersection_two_segment(segment_1: qna.QnNdarray, segment_2: qna.QnNdarray)
         #bunbo=tmp3-tmp4  #sub(tmp3,tmp4)
         if bunbo==qnn.zero():
             print("bunbo=0")
-            return qnv.zerov(n)
+            return qnn.inf()
         #else:
         bunshi=qnv.dot(vecAC,vecCD)*qnv.dot(vecCD,vecAB)-qnv.dot(vecCD,vecCD)*qnv.dot(vecAC,vecAB)
         #tmp1=qnv.qnv.dot(vecAC,vecCD)
@@ -215,7 +213,7 @@ def intersection_two_segment(segment_1: qna.QnNdarray, segment_2: qna.QnNdarray)
         return segment_1[0]+tmp
             
     else: # no intersection
-        return qnv.zerov(n)
+        return qnn.inf()
 
 def intersection_segment_surface(segment: qna.QnNdarray, surface: qna.QnNdarray) -> qna.QnNdarray:
     """check intersection between a line segment and a triangle.
@@ -278,7 +276,7 @@ def intersection_segment_surface(segment: qna.QnNdarray, surface: qna.QnNdarray)
             if tmp1==qnv.zerov(n):
                 pass
             else:
-                qnv.printqnv("tmp1",tmp1)  # for test
+                qnn.printqnn("tmp1",tmp1)  # for test
                 if counter==0:
                     p=tmp1
                 else:
@@ -293,8 +291,61 @@ def intersection_segment_surface(segment: qna.QnNdarray, surface: qna.QnNdarray)
         n=crs.ni
         return qnv.zerov(n)
     
-# calculating intersection of triangle_1 and triangle_2
+# edges in the triangle
+def get_edge(tri: qna.QnNdarray):
+    edge=qna.zeros((3,2,2))
+    print("triangle.shape in get_edge",tri.shape)
+    for i in range(3):
+        j=(i+1)%3
+        print("i,j",i,j)  # for test
+        for k in range(2):
+            edge[i][0][k]=tri[i][k] # a,b,c
+            edge[i][1][k]=tri[j][k] # b,c,a
+        qnv.printqnvs("edge[i]",edge[i])
+    return edge
+
+# new version
+# this version calculates all intersection points of two triangle edges
+# and return all cross points on the edges
 def intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdarray) -> qna.QnNdarray:
+    print("triangle_1.shape",triangle_1.shape)  # for test
+    print("triangle_2.shape",triangle_2.shape)  # for test
+    qnv.printqnvs("triangle_1",triangle_1)  # for test
+    qnv.printqnvs("triangle_2",triangle_2)  # for test
+    edge_1=get_edge(triangle_1)
+    edge_2=get_edge(triangle_2)
+    print("edge_1.shape",edge_1.shape)  # for test
+    print("edge_2.shape",edge_2.shape)  # for test
+    # cross points of edge_1 and edge_2
+    t=qna.zeros((3,3,2))
+    x=qna.zeros((9,2))   # cross points
+    n=0
+    for i,e1 in enumerate(edge_1):  # line segment e1
+        for j,e2 in enumerate(edge_2):  # line segment e2
+            den=(e1[0][0]-e1[1][0])*(e2[0][1]-e2[0][1])\
+               -(e1[0][1]-e1[1][1])*(e2[0][0]-e2[1][0])
+            de1=e1[1]-e1[0]
+            de2=e2[1]-e2[0]
+            if den==qnn.zero():  # no cross point (lines are parallel)
+                continue
+            nux=(e1[0][0]-e1[1][0])*(e2[0][1]-e2[1][1])\
+               -(e1[0][1]-e2[1][1])*(e2[1][0]-e2[1][0])
+            nuy=(e1[0][0]-e1[1][0])*(e1[0][1]-e2[0][1])\
+               -(e1[0][1]-e1[1][1])*(e2[0][0]-e2[1][0])
+            t[i][j][0]=nux/den
+            t[i][j][1]=nuy/den
+            qnv.printqnv("t[i][j]",t[i][j])  # for test
+            # if 0<=t[i][j][:]<=1 lines have intersection on i and j-th edges of triangles 1 and 2
+            # then calculate cross point
+            if t[i][j][0] >=qnn.zero() and t[i][j][0] <=qnn.one(): 
+                x[n]=e1[0]+de1*t[i][j]
+                n+=1
+            if t[i][j][1] >=qnn.zero() and t[i][j][1] <=qnn.one():
+                x[n]=e2[0]+de2*t[i][j]
+    return x[0:n]  # n cross point coordinates
+
+# calculating intersection of triangle_1 and triangle_2 (original version)
+def intersection_two_triangles0(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdarray) -> qna.QnNdarray:
     #
     # -----------------
     # triangle_1
@@ -337,16 +388,15 @@ def intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdar
     [1,2,0,1,2]]
     print("trinagle_1.shape",triangle_1.shape,"triangle_2.shape",triangle_2.shape)  # for test
     counter=0
-    n=crs.ni
     for c in comb:
         # case 1: intersection between (edge of triangle_1) and (surface of triangle_2)
         segment=np.vstack([triangle_1[c[0]],triangle_1[c[1]]])
         surface=np.vstack([triangle_2[c[2]],triangle_2[c[3]],triangle_2[c[4]]])
         print("segment.shape",segment.shape,"surface.shape",surface.shape)  # for test
         vtx=intersection_segment_surface(segment,surface)
-        qnv.printqnv("vtx",vtx)
+        print("vtx",vtx)
         #if np.all(vtx==None):
-        if vtx==qnv.zerov(n):
+        if vtx==qnn.zerov():
             pass
         else:
             if counter==0 :
@@ -356,11 +406,11 @@ def intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdar
             counter+=1
         
         # case 2: intersection between (edge of triangle_2) and (surface of triangle_1)
-        segment=np.vstack([triangle_2[c[0]],triangle_2[c[1]]])
-        surface=np.vstack([triangle_1[c[2]],triangle_1[c[3]],triangle_1[c[4]]])
+        segment=np.stack([triangle_2[c[0]],triangle_2[c[1]]])
+        surface=np.stack([triangle_1[c[2]],triangle_1[c[3]],triangle_1[c[4]]])
         vtx=intersection_segment_surface(segment,surface)
         #if np.all(vtx==None):
-        if vtx==qnv.zerov(n):
+        if vtx==qnn.zerov():
             pass
         else:
             if counter==0:
@@ -369,18 +419,18 @@ def intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdar
                 tmp=np.vstack([tmp,vtx]) # intersecting points
             counter+=1
     n=crs.ni  #crs.n
-    #tmp=tmp.reshape(int(len(tmp)/n),n)
+    tmp=tmp.reshape(int(len(tmp)/n),n,3)
     
-    # get vertces of triangle_1 that are inside triangle_2
+    # get vertces of triangle_1 inside triangle_2
     n=crs.ni  #crs.n
     for vtx in triangle_1:
-        if num.inside_outside_triangle_tau(vtx,triangle_2): # inside
+        if inside_outside_triangle_tau(vtx,triangle_2): # inside
             if counter==0:
                 tmp=vtx.reshape(1,n,3)
             else:
                 tmp=np.vstack([tmp,[vtx]])
             counter+=1
-    # get vertces of triangle_2 that are inside triangle_1
+    # get vertces of triangle_2 inside triangle_1
     n=crs.ni
     for vtx in triangle_2:
         if inside_outside_triangle_tau(vtx,triangle_1): # inside
@@ -404,9 +454,9 @@ def intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdar
         elif len(tmp)==3:
             return tmp.reshape(1,3,n,3)
         else:
-            return qnv.zerov(n)
+            return qnv.zerov()
     else:
-        return qnv.zerov(n)
+        return qnv.zerov()
 
 def intersection_two_obj_1(obj1: qnv.Qnvec,obj2: qnv.Qnvec,select=None,verbose: int=0) -> qnv.Qnvec:
     """
