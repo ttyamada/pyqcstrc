@@ -105,6 +105,7 @@ vst.write_vesta(od_sym1, '.', 'obj_sym1', 'b')
 print("od_sym.shape",od_sym.shape)  # for test
 print("od_sym1.shape",od_sym1.shape)  # for test
 
+nod=0
 for i,tri1 in enumerate(od_sym):
     for j,tri2 in enumerate(od_sym1): 
         nx,x=isct.intersection_two_triangles(od_sym[i],od_sym1[j])
@@ -116,8 +117,11 @@ for i,tri1 in enumerate(od_sym):
         n,z=isct.common_part(nx,x,ny,y)
         print("z.shape",z.shape)  # for test
         qnv.printqnvs("common part",z)  # for test
-        
+
         n,z=isct.rmv_overlapedx(z,n)
         print("number of vertices in common part",n)
         qnv.printqnvs("common part",z)  # for test
+        if n>=3:
+            nod+=1
+            print("nod",nod)
         #z=z.reshape((1,3,2))
