@@ -4,6 +4,9 @@ import cython
 from numpy.typing import NDArray
 from typing import Self
 
+import qnnum as qnn
+
+# some functions can be replaced by those in pyDelaunay_new.py
 
 #Basic Point class
 class Point(np.ndarray):

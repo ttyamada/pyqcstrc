@@ -106,6 +106,7 @@ print("od_sym.shape",od_sym.shape)  # for test
 print("od_sym1.shape",od_sym1.shape)  # for test
 
 nod=0
+ntr=0
 for i,tri1 in enumerate(od_sym):
     for j,tri2 in enumerate(od_sym1): 
         nx,x=isct.intersection_two_triangles(od_sym[i],od_sym1[j])
@@ -124,4 +125,17 @@ for i,tri1 in enumerate(od_sym):
         if n>=3:
             nod+=1
             print("nod",nod)
-        #z=z.reshape((1,3,2))
+        if n==3: # triangle
+            # stack triangle here
+            if ntr==0:
+                tria=z
+            else:
+                tria=np.vstack([tria,z])
+            ntr+=1
+print("ntr",ntr)
+tria=tria.reshape(ntr,3,2)
+print("tria.shape",tria.shape)
+
+for i in range(ntr):
+    qnv.printqnvs("tria[i]",tria[i])
+vst.write_vesta(tria, '.', 'tria', 'b', 'normal')

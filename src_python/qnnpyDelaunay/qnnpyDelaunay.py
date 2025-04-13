@@ -13,13 +13,13 @@ from typing import Self
 
 #Basic Point class
 class Point(qna.QnNdarray):
-    def __new__(cls, n:np.int64, N:np.int64):
+    def __new__(cls, n:np.int64):
         global shape
         shape=(n)
-        return super().__new__(cls,shape,N)
+        return super().__new__(cls,shape)
     
-    def __init__(self, n:np.int64, N:np.int64): # x and y coordinates of a point
-        qn0=qnn.Qnnum(n,N)
+    def __init__(self, n:np.int64): # x and y coordinates of a point
+        qn0=qnn.Qnnum(n)
         self[0] = qn0
         self[1] = qn0
     
@@ -36,8 +36,8 @@ class Point(qna.QnNdarray):
     def pointToStr(self):
         return str(self)
 
-    def anyp(n:np.int64, N:np.int64,vec:qnn.Qnnum)->qnv.Qnvec:
-        qnvt=qnv.Qnvec(n,N)
+    def anyp(n:np.int64, vec:qnv.Qnvec)->qnv.Qnvec:
+        qnvt=qnv.Qnvec(n)
         for i in range(n):
             qnvt[i]=vec[i]
             return qnvt
