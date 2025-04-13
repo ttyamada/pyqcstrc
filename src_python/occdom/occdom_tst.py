@@ -95,8 +95,8 @@ qnv.printqnv("v0",v0)  # for test
 od_sym1=qnv.sub_vectors_qn(od_sym, v0) # shift by v0
 #od_sym1=shift(od_sym, pos_b1)
 
-vst.write_xyz(od_sym1, '.', 'obj_sym1')
-vst.write_vesta(od_sym1, '.', 'obj_sym1', 'b')
+vst.write_xyz(od_sym1, '.', 'od_sym1')
+vst.write_vesta(od_sym1, '.', 'od_sym1', 'b')
 
 # intersection of "asymmetric part of strt" and "strt at position pos_b1"
 #    flag = 0, with rough intersection chacking (faster)

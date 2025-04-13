@@ -13,7 +13,7 @@ import qnmath as qmt
 class Qnsym_Octa(qna.QnNdarray):
     def __new__(cls):
         global nr,shape
-        nr=32
+        nr=16 #nr=32
         shape=(nr,n,n)
         #print("shape in __new__",shape) # for test
         return super().__new__(cls,shape)
@@ -23,11 +23,10 @@ class Qnsym_Octa(qna.QnNdarray):
         rg=np.zeros((ng,n,n),dtype=np.int64)
         #for i in range(ng):
         #    rg[i]= np.zeros((n, n),dtype=np.int64)
-        gord=(8,2,2)
-
+        gord=(8,2)   #gord=(8,2,2)
         rg[0][0][1]=1; rg[0][1][2]=1; rg[0][2][3]=1; rg[0][3][0]=-1; rg[0][4][4]=1 # R8 
         rg[1][1][2]=1; rg[1][2][1]=1; rg[1][0][3]=1; rg[1][3][0]=1;rg[1][4][4]=1   # M
-        rg[2][0][0]=-1;rg[2][1][1]=-1;rg[2][2][2]=-1;rg[2][3][3]=-1;rg[2][4][4]=-1 # I
+        #rg[2][0][0]=-1;rg[2][1][1]=-1;rg[2][2][2]=-1;rg[2][3][3]=-1;rg[2][4][4]=-1 # I
         #print_r(rg)  # for test
         
         #print("shape in __init__",shape) # for test
@@ -53,20 +52,20 @@ class Qnsym_Octa(qna.QnNdarray):
 class Qnsym_Deca(qna.QnNdarray):
     def __new__(cls):
         global nr,shape
-        nr=40
+        nr=20  #nr=40
         shape=(nr,n,n)
         return super().__new__(cls,shape)
         
     def __init__(self):
         ng=3         # three generating elements
         rg=np.zeros((ng,n,n),dtype=np.int64)
-        gord=(10,2,2)
+        gord=(10,2)  #gord=(10,2,2)
         
         rg[0][0][3]=-1;
         rg[0][1][0]=1;rg[0][1][1]=1;rg[0][1][2]=1;rg[0][1][3]=1  # R8
         rg[0][2][0]=-1;rg[0][3][1]=-1;rg[0][4][4]=1 
         rg[1][0][3]=1; rg[1][3][0]=1; rg[1][1][2]=1; rg[1][2][1]=1;rg[1][4][4]=1 # M
-        rg[2][0][0]=-1;rg[2][1][1]=-1;rg[2][2][2]=-1;rg[2][3][3]=-1;rg[2][4][4]=-1 # I
+        #rg[2][0][0]=-1;rg[2][1][1]=-1;rg[2][2][2]=-1;rg[2][3][3]=-1;rg[2][4][4]=-1 # I
         print_r(rg)  # for test
         
         #r=np.zeros((nr, n, n))
@@ -92,18 +91,18 @@ class Qnsym_Deca(qna.QnNdarray):
 class Qnsym_Dode(qna.QnNdarray):
     def __new__(cls):
         global nr,shape
-        nr=48
+        nr=24  #nr=48
         shape=(nr,n,n)
         return super().__new__(cls,shape)
     
     def __init__(self):
         ng=3         # three generating elements
         rg= np.zeros((ng,n,n),dtype=np.int64)
-        gord=(12,2,2)
+        gord=(12,2) #gord=(12,2,2)
 
         rg[0][0][1]=1; rg[0][1][2]=1; rg[0][2][3]=1; rg[0][3][0]=-1; rg[0][3][2]=1;rg[0][4][4]=1 # R12 
         rg[1][0][3]=1; rg[1][1][2]=1; rg[1][2][1]=1; rg[1][3][0]=1;rg[1][4][4]=1 # M
-        rg[2][0][0]=-1;rg[2][1][1]=-1;rg[2][2][2]=-1;rg[2][3][3]=-1;rg[2][4][4]=-1 # I
+        #rg[2][0][0]=-1;rg[2][1][1]=-1;rg[2][2][2]=-1;rg[2][3][3]=-1;rg[2][4][4]=-1 # I
         print_r(rg)  # for test
         
         r=np.zeros(shape,dtype=np.int64)
