@@ -111,7 +111,8 @@ for i,tri1 in enumerate(od_sym):
         qnv.printqnvs("cross points of two triangles",x)
         ny,y=isct.common_points(od_sym[i],od_sym1[j])
         qnv.printqnvs("common points in triangles",y)
-
+        if nx==0 and ny==0:
+            continue
         n,z=isct.common_part(nx,x,ny,y)
         print("z.shape",z.shape)  # for test
         qnv.printqnvs("common part",z)  # for test
