@@ -69,7 +69,7 @@ def zerovs(shape:np.int64) -> Qnvec:  # qnvec ndarray
     #print("shape in zerovs",shape)  # for test
     nv=shape[0]
     n=shape[1]
-    qnvs=qna.zeros((nv))
+    qnvs=qna.zeros(shape)
     #qnvs = [Qnvec(n) for i in range(nv)] # list
     #print("type(qnvs)",type(qnvs))  # for test
     #print("type(qnvs[0])",type(qnvs[0]))  # for test
