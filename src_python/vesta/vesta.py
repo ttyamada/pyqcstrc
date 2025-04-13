@@ -79,10 +79,10 @@ def write_vesta(obj:qna.QnNdarray,path='.',basename='tmp',color='k',select='norm
     
     shape=obj.shape
     ndim=len(shape)
-    print("shape in write_vesta",shape,"ndim",ndim)  # for test
+    #print("shape in write_vesta",shape,"ndim",ndim)  # for test
    
     file_name='%s/%s.vesta'%(path,basename)
-    print("file_name",file_name)  # for test
+    #print("file_name",file_name)  # for test
     f=open(file_name,'w')
     
     #dmax=5.0
@@ -312,7 +312,7 @@ def write_vesta(obj:qna.QnNdarray,path='.',basename='tmp',color='k',select='norm
             return 0
         
     elif select=='normal':
-        print("select==normal")  # for test
+        #print("select==normal")  # for test
         #if np.all(obj==None):
         if ndim<3:
             print('no volume obj')
@@ -350,16 +350,16 @@ def write_vesta(obj:qna.QnNdarray,path='.',basename='tmp',color='k',select='norm
                 \n  1.000000    1.000000    1.000000  90.000000  90.000000  90.000000\
                 \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
                 \nSTRUC', file=f)
-                qnv.printqnvs("obj1",obj1)  # for test
+                #qnv.printqnvs("obj1",obj1)  # for test
                 for i2,vertx in enumerate(obj1):
-                    print("i2",i2)  # for test
-                    qnv.printqnv("vertx",vertx) # for test
+                    #print("i2",i2)  # for test
+                    #qnv.printqnv("vertx",vertx) # for test
                     #qni=prj.prjvec_i(vertx)
                     qni=vertx
-                    print("qni.shape",qni.shape)  # for test
-                    qnv.printqnv("qni",qni)  # for test
+                    #print("qni.shape",qni.shape)  # for test
+                    #qnv.printqnv("qni",qni)  # for test
                     xyz=num.numerical_vector(qni)
-                    print("xyz",xyz)  # for test
+                    #print("xyz",xyz)  # for test
                     if isys==2:
                         print('%4d Xx        Xx%d  1.0000    %8.6f %8.6f %8.6f        1'%\
                         (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
@@ -908,8 +908,8 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         f.write('%s\n'%(filename))
         n=crs.n
         for i1,point in enumerate(obj):
-            print("i1",i1)  # for test
-            qnv.printqnv("point",point) # for test
+            #print("i1",i1)  # for test
+            #qnv.printqnv("point",point) # for test
             v=prj.projection3(point)
             vf=qnv.qnv2flt(v)
             f.write('Xx %8.6f %8.6f %8.6f'%(vt[0],vt[1],vt[2]))
@@ -1000,7 +1000,7 @@ def read_xyz(path,basename,select='triangle',verbose=0):
     f1=read_file(filename)  # read a file and return list of string
     f0=f1[0].split()  # first line
     num=int(f0[0]) # number of lines in the first line
-    print("num",num)  # for test
+    #print("num",num)  # for test
     n=crs.n
     qnvs=qna.zeros((num,n))
     nv=np.zeros((3),dtype=np.int64)
@@ -1048,7 +1048,7 @@ def read_xyz(path,basename,select='triangle',verbose=0):
     if verbose>0:
         print('    read %s/%s.xyz'%(path,basename))
     
-    print("select",select)  # for test
+    #print("select",select)  # for test
     if select == 'triangle':
         return qnvs.reshape(int(num/3),3,n)
         #return tmp.reshape(int(num/3),3,n,3)

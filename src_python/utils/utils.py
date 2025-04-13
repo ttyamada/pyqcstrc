@@ -26,15 +26,18 @@ def shift_object(obj: qna.QnNdarray, shift: qnv.Qnvec) -> qnv.Qnvec:
     """shift an object
     """
     shape=obj.shape
-    print("obj.shape",obj.shape)  # for test
-    print("shit.shape",shift.shape)  # for test
+    ndim=len(shape)
+    #print("obj.shape",obj.shape)  # for test
+    #print("shit.shape",shift.shape)  # for test
+    #qnv.printqnv("shift",shift)  # for test
     if obj.ndim==3:
-        obj_new=qna.zeros(shape) 
-        for i1,tri in enumerate(obj):
-            for i2,vertex in enumerate(tri):
-                obj_new[i1][i2]=vertex+shift
-                i2+=1
-            i1+=1
+        obj_new=qna.zeros(shape)
+        for i,tri in enumerate(obj):
+            for j,vertex in enumerate(tri):
+                #qnv.printqnv("vertex",vertex)  # for test
+                #qnv.printqnv("shift",shift)    # for test
+                obj_new[i][j]=vertex+shift
+                #qnv.printqnv("obj_new",obj_new[i][j])  # for test
         return obj_new
     else:
         print('object has an incorrect shape!')

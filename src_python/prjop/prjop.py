@@ -65,7 +65,7 @@ class Qnprj_Octa(qnm.Qnmat):
         self.scly=1.0
         #prj=self
         prj0f=qnm.qnm2flt(prj0)
-        qnm.printfm("prj0f",prj0f)  # for test
+        #qnm.printfm("prj0f",prj0f)  # for test
 
 # for decagonal QCs
 #class Qnprj_Deca(np.ndarray):
@@ -117,7 +117,7 @@ class Qnprj_Deca(qnm.Qnmat):
         #print("self.ndim",self.ndim) # fpr test
         #print("self.shape",self.shape) # fpr test
         prj0f=qnm.qnm2flt(prj0)
-        qnm.printfm("prj0f",prj0f)  # for test
+        #qnm.printfm("prj0f",prj0f)  # for test
 
 # for dodecagonal QCs
 #class Qnprj_Dode(np.ndarray):
@@ -163,7 +163,7 @@ class Qnprj_Dode(qnm.Qnmat):
         #print("self.ndim",self.ndim) # fpr test
         #print("self.shape",self.shape) # fpr test
         prj0f=qnm.qnm2flt(prj0)
-        qnm.printfm("prj0f",prj0f)  # for test
+        #qnm.printfm("prj0f",prj0f)  # for test
 
 # for icosahedral QCs
 #class Qnprj_Icos(npndarray):
@@ -208,7 +208,7 @@ class Qnprj_Icos(qnm.Qnmat):
         #print("self.ndim",self.ndim) # fpr test
         #print("self.shape",self.shape) # fpr test
         prj0f=qnm.qnm2flt(prj0)
-        qnm.printfm("prj0f",prj0f)  # for test
+        #qnm.printfm("prj0f",prj0f)  # for test
         
 def prjop_init():
     global isys,n,N
@@ -220,7 +220,7 @@ def prjop_init():
     
 def Prjop():
     global prj0,prji,prj0t,prjit,scl,scly
-    print("isys in Prjop",isys)
+    #print("isys in Prjop",isys)  # fpr test
     if(isys==2): # projection operator for icosahedral
         prj=Qnprj_Icos()
     elif(isys==3): # projection operator for decagonal
@@ -323,7 +323,7 @@ def projection3_sets_numerical(vns: qna.QnNdarray) -> qna.QnNdarray:
     #    (num,3,n) or (num,4,n) for triangles or tetrahedra 
     shape=vns.shape
     ndim=len(shape)
-    print("shape",shape,"ndim",ndim)
+    #print("shape",shape,"ndim",ndim)  # for test
     isys=crs.isys
     if isys>2:
         ni=2

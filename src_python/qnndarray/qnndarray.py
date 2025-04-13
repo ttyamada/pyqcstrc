@@ -58,11 +58,11 @@ def zeros(shape) -> QnNdarray:
     
 # any kind of 3D array assumed
 def anya(vec:NDArray[qnn.Qnnum],shape)->QnNdarray:
-    print("shape",shape) # for test
-    print("len(shape)",len(shape))  # for test
+    #print("shape",shape) # for test
+    #print("len(shape)",len(shape))  # for test
     qnva=QnNdarray(shape)
     ndim=len(shape)
-    print("ndim",ndim) # for test
+    #print("ndim",ndim) # for test
     if ndim==1:
         for i in range(shape[0]):
             qnva[i]=vec[i]
