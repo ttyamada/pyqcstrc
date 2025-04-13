@@ -130,15 +130,7 @@ qnv.printqnvs("cross points of two triangles",x)
 ny,y=isct.common_points(triang_1[0],triang_2[0])
 qnv.printqnvs("common points in triangles",y)
 
-print("nx",nx,"ny",ny)
-z=qnv.zerovs((nx+ny,2))
-n=0
-for i in range(nx):
-    z[n]=x[i]
-    n+=1
-for i in range(ny):
-    z[n]=y[i]
-    n+=1
+n,z=isct.common_part(nx,x,ny,y)
 print("z.shape",z.shape)  # for test
 qnv.printqnvs("common part",z)  # for test
 n,z=isct.rmv_overlapedx(z,n)

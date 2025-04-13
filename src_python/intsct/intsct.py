@@ -135,6 +135,18 @@ def intersection_two_triangles(triangle_1: qna.QnNdarray, triangle_2: qna.QnNdar
     n,x=rmv_overlapedx(x,n)
     return n,x[0:n]  # n cross point coordinates
 
+def common_part(nx:np.int64, x:qna.QnNdarray, ny:np.int64, y:qna.QnNdarray) -> qna.QnNdarray:
+    print("nx",nx,"ny",ny)
+    z=qnv.zerovs((nx+ny,2))
+    n=0
+    for i in range(nx):
+        z[n]=x[i]
+        n+=1
+    for i in range(ny):
+        z[n]=y[i]
+        n+=1
+    return n,z
+
 def ball_radius_obj(obj: qnv.Qnvec, centroid: qnv.Qnvec) -> qnn.Qnnum: #float:
     """estimate maximum distance between verices of given OBJ and its centroid.
     

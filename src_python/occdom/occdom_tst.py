@@ -25,7 +25,6 @@ import lattice as lt
 import sitesym as ssm
 import intsct as isct
 import prjop as prj
-import intsct as its
 from occdom import (occdom_init,symmetric,write,shift)
 
 isys=4 # for octagonal
@@ -81,17 +80,19 @@ irs=ssm.site_symmetry(pos0)
 qnv.printqnv("pos0",pos0)
 
 od_sym = symmetric(irs,od_asym)
+for i,tri in enumerate(od_sym):
+    od_sym[i]=isct.counter_clockwise(tri)
 vst.write_vesta(od_sym, '.', 'od_sym', 'r', 'normal')
 vst.write_xyz(od_sym,'.', 'od_sym')
 
 # move od_sym to a position 1 0 0 0 0
 M3=qnn.any([1,0,1])
-x0=np.array([M3,M0,M0,M0,M0])
+x0=np.array([M3,M0,M0,M0,M0]) # origin shift by (1,0,0,0,0)
 qnx0=qnv.anyv(x0)
 v0=prj.projection3(qnx0)
 qnv.printqnv("v0",v0)  # for test
 # calculate shifted od
-od_sym1=qnv.sub_vectors_qn(od_sym, v0)
+od_sym1=qnv.sub_vectors_qn(od_sym, v0) # shift by v0
 #od_sym1=shift(od_sym, pos_b1)
 
 vst.write_xyz(od_sym1, '.', 'obj_sym1')
@@ -101,8 +102,20 @@ vst.write_vesta(od_sym1, '.', 'obj_sym1', 'b')
 #    flag = 0, with rough intersection chacking (faster)
 #    flag = 1, without rough intersection chacking
 #twoODs=TWO_ODs(pod1=strt_asym, pod2=strt_pos1, path='.',filename='common.xyz',flag=0,verbose=0)
-intersection=its.intersection_two_triangles(od_sym,od_sym1)
-#common_part=twoODs.intersection()
+print("od_sym.shape",od_sym.shape)  # for test
+print("od_sym1.shape",od_sym1.shape)  # for test
 
-# export common_part in VESTA formated file.
-#write(obj=common_part, path='.', basename='common', format='vesta', color='r')
+for i,tri1 in enumerate(od_sym):
+    for j,tri2 in enumerate(od_sym1): 
+        nx,x=isct.intersection_two_triangles(od_sym[i],od_sym1[j])
+        qnv.printqnvs("cross points of two triangles",x)
+        ny,y=isct.common_points(od_sym[i],od_sym1[j])
+        qnv.printqnvs("common points in triangles",y)
+
+        n,z=isct.common_part(nx,x,ny,y)
+        print("z.shape",z.shape)  # for test
+        qnv.printqnvs("common part",z)  # for test
+        n,z=isct.rmv_overlapedx(z,n)
+        print("number of vertices in common part",n)
+        qnv.printqnvs("common part",z)  # for test
+        #z=z.reshape((1,3,2))
