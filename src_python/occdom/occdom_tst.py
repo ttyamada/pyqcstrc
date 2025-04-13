@@ -116,6 +116,7 @@ for i,tri1 in enumerate(od_sym):
         n,z=isct.common_part(nx,x,ny,y)
         print("z.shape",z.shape)  # for test
         qnv.printqnvs("common part",z)  # for test
+        
         n,z=isct.rmv_overlapedx(z,n)
         print("number of vertices in common part",n)
         qnv.printqnvs("common part",z)  # for test

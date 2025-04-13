@@ -71,6 +71,7 @@ def rmv_overlapedx(x,n0):
     n=0
     for i in range(n0):
         if i==0:
+            n+=1
             continue
         iskp=0
         for j in range(n):
