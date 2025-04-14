@@ -1,14 +1,14 @@
 import sys, os, math
 import numpy as np
 import cython
+from typing import Self
 
+import crsys as crs
 import qnnum as qnn   # for qnnumber
 import qnvec as qnv
+import qnmat as qnm
 import qnmath as qmt # for dot product
 import qnndarray as qna
-import cython
-
-from typing import Self
 
 
 #Basic Point class
