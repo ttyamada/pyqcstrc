@@ -65,7 +65,7 @@ def qnvec_init():
     else:
         n_e=2; n_i=2
    
-def zerovs(shape:np.int64) -> Qnvec:  # qnvec ndarray
+def zerovs(shape:np.int64) -> qna.QnNdarray:  # qnvec ndarray
     #print("shape in zerovs",shape)  # for test
     nv=shape[0]
     n=shape[1]
@@ -81,7 +81,7 @@ def zerov(n: np.int64)->Qnvec: # qnnumber zero vector
     qnv=Qnvec(n)
     return qnv
 
-def anyv(v:NDArray[qnn.Qnnum]):
+def anyv(v:NDArray[qnn.Qnnum]) -> qna.QnNdarray:
     shape=v.shape
     #print("shape in anyv",shape)  # for test
     n=shape[0]

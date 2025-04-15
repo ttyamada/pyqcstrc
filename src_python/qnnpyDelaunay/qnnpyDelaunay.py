@@ -12,16 +12,17 @@ import qnndarray as qna
 
 
 #Basic Point class
-class Point(qna.QnNdarray):
+class Point(qnv.Qnvec):
     def __new__(cls, n:np.int64):
         global shape
         shape=(n)
         return super().__new__(cls,shape)
     
     def __init__(self, n:np.int64): # x and y coordinates of a point
-        qn0=qnn.Qnnum(n)
+        qn0=qnn.Qnnum([0,0,1])
         self[0] = qn0
         self[1] = qn0
+        
     
     #Position of the point
     def pos(self):
@@ -36,8 +37,9 @@ class Point(qna.QnNdarray):
     def pointToStr(self):
         return str(self)
 
-    def anyp(n:np.int64, vec:qnv.Qnvec)->qnv.Qnvec:
-        qnvt=qnv.Qnvec(n)
+    def anyp(vec:qna.QnNdarray)->qna.QnNdarray:
+        qnvt=qna.QnNdarray(vec.shape)
+        n=vec.shape[0]
         for i in range(n):
             qnvt[i]=vec[i]
             return qnvt
@@ -143,17 +145,17 @@ class Graph():
     def __init__(self):
         
         #This will be a list of point objects as defined above
-        self._points = []
+        self._points = qnv.Qnvec(2)   #[]  # for qna.QnNdarray
         
         #This will be a list of triangle objects as defined above
-        self._triangles = []
+        self._triangles = qnv.Qnvec(2)  #[]  # for qna.QnNdarray
         
         #This is a list of edges as defined above
-        self._edges = []
+        self._edges = qnv.Qnvec(2)  #[]  # for qna.QnNdarray
         
         #Point boundaries for sorting purposes
-        self._point_min_x = 0
-        self._point_max_x = 0
+        self._point_min_x = qnn.zero()  #0
+        self._point_max_x = qnn.zero()  #0
         
     def addPoint(self, point:Point):
     
@@ -163,7 +165,7 @@ class Graph():
                 return False
         
         #If the point has an X value lower than any other point
-        if self._point_min_x > point[0] or self._point_min_x == 0:
+        if self._point_min_x > point[0] or self._point_min_x == qnn.zero():  # 0:
             self._points.insert(0,point)
             self._point_min_x = point[0]
             return True

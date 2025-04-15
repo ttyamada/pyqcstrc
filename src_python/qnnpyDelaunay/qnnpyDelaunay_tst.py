@@ -27,18 +27,20 @@ M4=qnn.Qnnum([-2,1,4])
 M5=qnn.Qnnum([0,-1,4])
 M6=qnn.Qnnum([-2,-1,4])
 
-ni=crs.ni
-p=qnv.zerovs(5,ni) # for pentagon
-p[0]=qnv.anyv([M0,M1])
-p[1]=qnv.anyv([M0,M2])
-p[2]=qnv.anyv([M3,M1])
-p[3]=qnv.anyv([M4,M5])
-p[4]=qnv.anyv({M4,M6})
-
+ni=crs.ni  # ni= 2 or 3 for dihedral or icosahedral QCs
+pv=qnv.zerovs((5,ni)) # for pentagon
+pv[0]=qnv.anyv(np.array([M0,M1]))
+pv[1]=qnv.anyv(np.array([M0,M2]))
+pv[2]=qnv.anyv(np.array([M3,M1]))
+pv[3]=qnv.anyv(np.array([M4,M5]))
+pv[4]=qnv.anyv(np.array([M4,M6]))
+print("pv.shape",pv.shape)  # for test
 # add points for qnnpyDelaunay
-grph=qnD1.Glaph()
+grph=qnDl.Graph()  # points -> qna.QnNdarray
+pnt=qnDl.Point(ni)
+p=pnt.anyp(pv)  # qnvec to point
 for i in range(5):
-    grph.add_point(p[i])
+    grph.addPoint(p[i]) # for pentagon
 
 grph.generateDelaunayMesh()
 # number of triangles in the pentagon
