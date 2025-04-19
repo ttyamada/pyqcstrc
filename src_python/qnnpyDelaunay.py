@@ -1,1 +1,0 @@
-qnnpyDelaunay/qnnpyDelaunay.py

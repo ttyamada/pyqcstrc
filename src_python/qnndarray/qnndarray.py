@@ -173,4 +173,12 @@ def printqndm(str:str, qnm:QnNdarray):
 #     else:
 #         print('incorrect shape in shift_vectors')
 #         return
-        
+
+# insert, append will be necessary for qnnpyDelaunay
+# insert a point in the ponts array 
+def insert(index,point):
+    return np.insert(index,point)
+
+def append(point):
+    return np.append(point)
+
