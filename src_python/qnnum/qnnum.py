@@ -36,9 +36,7 @@ class Qnnum:
             return mul(a,b)
         elif isinstance(b, int):
             return mul_i(a,b)
-        elif isinstance(a, int):
-            return i_mul(a,b)
-        
+
     def __pow__(a:Self, b:int ):
         return pow(a,b)
     
@@ -72,11 +70,11 @@ def qnnum_init():
     n=crsys.n
     N=crsys.N
     
-def zero():
-    return Qnnum([0,0,1])
+#def zero():
+#    return Qnnum([0,0,1])
 
-def inf():
-    return Qnnum([int_inf,0,1])
+#def inf():
+#    return Qnnum([int_inf,0,1])
 
 # this is equivalent to qnv.zerov(n)
 def zeros(shape): # qnnum 1D darray
@@ -166,13 +164,11 @@ def mul_i(a:Qnnum, b:np.int64) -> Qnnum: # b should be int
     c1=a.n[0]*b
     c2=a.n[1]*b
     c3=a.n[2]
-    return Qnnum(np.array([c1,c2,c3]))
-
-def i_mul(a:np.int64, b:Qnnum) -> Qnnum: # a should be int this does not work?
-    #s=Qnnum([a,a,1])
-    c1=a*b.n[0]
-    c2=a*b.n[1]
-    c3=b.n[2]
+    x=np.array([c1,c2,c3],dtype=np.int64)
+    g=np.gcd.reduce(x)
+    c1=int(c1/g)
+    c2=int(c2/g)
+    c3=int(c3/g)
     return Qnnum(np.array([c1,c2,c3]))
 
 def div(a:Qnnum, b:Qnnum) -> Qnnum:

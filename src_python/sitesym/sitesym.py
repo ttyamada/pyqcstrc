@@ -45,10 +45,10 @@ def site_symmetry(x: qnv.Qnvec) -> np.ndarray: # return irs
     brv=lt.brv
     nr=qns.nr
     #print("n",n,"n_i",n_i) # for test
-    qnr=qns.qnr  # symmetry operator for Q coordinates
-    qnr_i=qns.qnr_i  # symmetry operator for Q coordinates
+    r_qn=qns.r_qn  # symmetry operator for Q coordinates
+    r_qn_i=qns.r_qn_i  # symmetry operator for Q coordinates
     mpltbl=qns.mpltbl
-    r=qns.qnr
+    r=qns.r_qn
     a_i=qnv.zerovs((nr,n_i))
     qnx_i=prj.prjvec_i(x) # internal space component os nD vector x
     #a=np.zeros((nr,n),dtype=qnn.Qnnum)
@@ -61,11 +61,11 @@ def site_symmetry(x: qnv.Qnvec) -> np.ndarray: # return irs
     trop=lt.get_tr()  # centering translation vectors including zero vector
     #print("type(trop[0])",type(trop[0]))  # for test
     for i in range(nr):
-        #qnm.printqnm("qnr_i",qnr_i[i]) # for test
+        #qnm.printqnm("r_qn_i",r_qn_i[i]) # for test
         #qnv.printqnv("qnx_i",qnx_i) # for test
-        #a_i[i]=qnr_i[i]@qnx_i         # Q coordinates for 2D (3D) vector x_i
-        #qnm.printqnm("qnr",qnr[i]) # for test
-        a[i]=qnr[i]@qnx   # Q coordinates for 2D (3D) vector x_i
+        #a_i[i]=r_qn_i[i]@qnx_i         # Q coordinates for 2D (3D) vector x_i
+        #qnm.printqnm("r_qn",r_qn[i]) # for test
+        a[i]=r_qn[i]@qnx   # Q coordinates for 2D (3D) vector x_i
         #print("type(a[i])",type(a[i]))  # for test
         # **** a[i] is not Qnvec but Qnmat
         # Qnmat to Qnvec transformation necessary 
@@ -100,7 +100,7 @@ def newl(ics,ns0):
                 
 def coset(irs) -> np.array: # return coset representativ indices in symop
     """
-    irs: iste symmetry operator index in qnr
+    irs: iste symmetry operator index in r_qn
     isk: index for coset representatives
     """
     # number of site symmetry operators    
@@ -227,7 +227,7 @@ def symop_vec(symop:qnm.Qnmat,vt:qnv.Qnvec,centre:qnv.Qnvec):
          
 #def equivalent_positions(site,brv,pg,vervose=0):
     #pg : rotation matrix in lattice coordinate system 
-#    symop=qns.qnr
+#    symop=qns.r_qn
 #    eqpos=np.zeros((len(symop),6,3),dtype=np.int64)
 #    for i,op in enumerate(symop):
 #        eqpos[i]=symop_vec(op,site,centre=V0)

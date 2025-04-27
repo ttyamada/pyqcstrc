@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 from numpy.typing import NDArray
 import time # in object_subtraction_dev1, tetrahedron_not_obj
@@ -14,103 +15,95 @@ import qnndarray as qna
 import prjop as prj
 import vesta as vst
 import utils as utl
+import tr7to5 as tr5
+import tr6to5 as tr3
 
 #if __name__ == '__main__':
 
 # test
 
-import random
 
-def generate_random_value():
-    """ generate value in TAU-style
-    """
-    nmax=10
-    v=np.zeros((3),dtype=np.int64)
-    for i1 in range(2):
-        v[i1]=random.randrange(-nmax,nmax) # a and b in (a+b*TAU)/c.
-    v[2]=random.randrange(1,nmax) # c in (a+b*TAU)/c.
-    return v
-    
-def generate_random_vector(ndim=6):
-    """ generate ndim vector in TAU-style
-    ndim: dimension of vectors
-    """
-    nmax=10
-    v=np.zeros((ndim,3), dtype=np.int64)
-    for i1 in range(ndim):
-        v[i1]=generate_random_value()
-    return v
-    
-def generate_random_vectors(n,ndim=6):
-    """
-    num: number of generated vectors.
-    ndim: dimension of vectors
-    """
-    v=np.zeros((n,ndim,3), dtype=np.int64)
-    for i1 in range(n):
-        v[i1]=generate_random_vector(ndim)
-    return v
+if len(sys.argv) != 2:
+    print("Usage : python intsct_tst.py isys")
+    print(" isys : 3,4 or 5 for decag, octag or dodecag QCs")
+    exit()
+isys = int(sys.argv[1])
+print ("isys",isys)
 
-def generate_random_triangle():
-    return generate_random_vectors(3)
+#print ('argument list', sys.argv)
 
-#segment_1=np.array(\
-#[[[1, 0, 1],[1, 0, 1],[0, 0, 1],[0, 0, 1],[0, 0, 1],[0, 0, 1]],\
-#[[3, 0, 2],[1, 0, 2],[0, 0, 1],[0, 0, 1],[0, 0, 1],[0, 0, 1]]]) # edge1
-  
-#segment_2=np.array(\
-#[[[ 0,  0,  1],[ 0,  0,  1],[ 0,  0,  1],[ 1,  0,  1],[ 0,  0,  1],[ 0,  0,  1]],\
-#[[ 0,  0,  1],[ 0,  0,  1],[-1,  0,  2],[ 1,  0,  2],[ 0,  0,  1],[ 0,  0,  1]]]) # edge2
-
-isys=4  # for octabonal
+#isys=4  # for octabonal
 crs.crsys_init(isys)
 qnn.qnnum_init()
 qnv.qnvec_init()
 qnm.qnmat_init()
 prj.prjop_init()
 qna.qnndarray_init()
+if isys==4:  # octagonal
+    M0=qnn.Qnnum([0,0,1])  # 0
+    M1=qnn.Qnnum([1,0,2])  # 1/2
+    M2=qnn.Qnnum([-1,0,2]) #-1/2
+    od_asym0_=np.array([\
+        [M0,M0,M0,M0,M0],\
+        [M1,M2,M0,M1,M0],\
+        [M1,M2,M2,M1,M0]\
+        ],dtype=qnn.Qnnum)
+    od_asym1_=np.array([\
+        [M0,M0,M0,M0,M0],\
+        [M2,M1,M0,M2,M0],\
+        [M2,M1,M2,M2,M0]\
+        ],dtype=qnn.Qnnum)
+    od_asym0=qna.anya(od_asym0_,(3,5))
+    od_asym1=qna.anya(od_asym1_,(3,5))
+elif isys==3:  # decagonal
+    M0=qnn.Qnnum([0,0,1])  # 0
+    M1=qnn.Qnnum([1,0,1])  # 1
+    M2=qnn.Qnnum([-1,0,1]) #-1
+    M3=qnn.Qnnum([1,0,2])  # 1/2
+    od_asym0_=np.array([\
+        [M0,M0,M0,M0,M0,M0],\
+        [M1,M0,M0,M0,M0,M0],\
+        [M3,M0,M0,M3,M0,M0]\
+        ],dtype=qnn.Qnnum)
+    od_asym1_=np.array([\
+        [M0,M0,M0,M0,M0,M0],\
+        [M2,M0,M0,M0,M0,M0],\
+        [M3,M0,M0,M3,M0,M0]\
+        ],dtype=qnn.Qnnum)
+    od_asym0_nd=qna.anya(od_asym0_,(3,6))
+    od_asym1_nd=qna.anya(od_asym1_,(3,6))
+    od_asym0=tr5.tr6to5e(od_asym0_nd)
+    od_asym1=tr5.tr6to5e(od_asym1_nd)
+elif isys==5:  # dodecagonal
+    M0=qnn.Qnnum([0,0,1])  # 0
+    M1=qnn.Qnnum([1,0,1])  # 1
+    M2=qnn.Qnnum([-1,0,1]) #-1
+    M3=qnn.Qnnum([0,1,3])  # sqrt(3)/3=1/sqrt(3)
+    od_asym0_=np.array([\
+        [M0,M0,M0,M0,M0,M0,M0],\
+        [M1,M0,M0,M0,M0,M0,M0],\
+        [M3,M0,M0,M0,M0,M3,M0]\
+        ],dtype=qnn.Qnnum) # stampfli tiling
+    od_asym1_=np.array([\
+        [M0,M0,M0,M0,M0,M0,M0],\
+        [M2,M0,M0,M0,M0,M0,M0],\
+        [M3,M0,M0,M0,M0,M3,M0]\
+        ],dtype=qnn.Qnnum)   # stampfli tiling
+    od_asym0_nd=qna.anya(od_asym0_,(3,7))
+    od_asym1_nd=qna.anya(od_asym1_,(3,7))
+    od_asym0=tr5.tr7to5e(od_asym0_nd)
+    od_asym1=tr5.tr7to5e(od_asym1_nd)
+else:
+    print("not applicable to icosahedral QCs")
+    exit()
 
-# M0=qnn.Qnnum([0,0,1])
-# M1=qnn.Qnnum([1,0,1])
-# M2=qnn.Qnnum([3,0,2])
-# M3=qnn.Qnnum([1,0,2])
-# M4=qnn.Qnnum([-1,0,2])
-
-# seg_1=np.array([
-#         [M1,M1,M0,M0,M0],
-#         [M2,M3,M0,M0,M0]
-#         ],dtype=qnn.Qnnum)
-# seg_2=np.array([\
-#         [M0,M0,M0,M1,M0],
-#         [M0,M0,M4,M3,M0]
-#         ],dtype=qnn.Qnnum)
-
-#test_dir='../../tests/octa2/tests'
-#xyz_dir='../../xyz/octa'
-M0=qnn.Qnnum([0,0,1])  # 0
-M1=qnn.Qnnum([1,0,2])  # 1/2
-M2=qnn.Qnnum([-1,0,2]) #-1/2
-oc_asym0=np.array([\
-    [M0,M0,M0,M0,M0],\
-    [M1,M2,M0,M1,M0],\
-    [M1,M2,M2,M1,M0],\
-    ],dtype=qnn.Qnnum)
-oc_asym1=np.array([\
-    [M0,M0,M0,M0,M0],\
-    [M2,M1,M0,M2,M0],\
-    [M2,M1,M2,M2,M0],\
-    ],dtype=qnn.Qnnum)
-
-
-od_asym0_nd=qna.anya(oc_asym0,(3,5))
-od_asym1_nd=qna.anya(oc_asym1,(3,5))
-
-triang_1=prj.projection3_sets_numerical(od_asym0_nd) #.reshape((1,3,2))
-triang_2=prj.projection3_sets_numerical(od_asym1_nd) #.reshape((1,3,2))
+triang_1=prj.projection3_sets_numerical(od_asym0) #.reshape((1,3,2))
+triang_2=prj.projection3_sets_numerical(od_asym1) #.reshape((1,3,2))
 triang_1=isct.counter_clockwise(triang_1).reshape(1,3,2)
 triang_2=isct.counter_clockwise(triang_2).reshape(1,3,2)
 shft=qnv.zerov(2)
-shft[0]=qnn.one()
+
+shft[0]=qnn.one() # (1,0)
 #qnv.printqnv("shft",shft)  # for test
 triang_2=utl.shift_object(triang_2,shft)
 

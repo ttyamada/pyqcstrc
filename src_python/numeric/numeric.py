@@ -46,58 +46,6 @@ def coplanar_check_numeric_tau(pts: qnv.Qnvec, num_iteration: int=5) -> bool:
     p=get_internal_component_sets_numerical(pts)
     return coplanar_check_numeric(p,num_iteration)
 
-#def coplanar_check_numeric(pns: NDArray[np.float64],num_iteration: int=5) -> bool:
-#    """check the points (pns) are in coplanar or not
-#    メモ：xyz1とxyz2の選び方次第で、outer_product(v1,v2)が小さくなりcoplanarと間違って判定する場合がある。
-#    これを避けるために適切なxyz1とxyz2の選び方が必要。以下では、ランダムにxyz1とxyz2の選ぶ。
-#    
-#    Parameters
-#    ----------
-#    pns: array
-#        coordinate of the points in Eperp, xyz.
-#    num_iteration: int
-#        number of iterations.
-#    
-#    Returns
-#    -------
-#    bool
-#    """
-#    num=len(pns)
-#    if num>3:
-#        flag=0
-#        lst0=[i for i in range(num)]
-#        for _ in range(num_iteration):
-#            lst3=random.sample(lst0, 3)
-#            #
-#            xyz1=pns[lst3[1]]-pns[lst3[0]]
-#            xyz2=pns[lst3[2]]-pns[lst3[0]]
-#            vec=np.cross(xyz1,xyz2)
-#            flg=0
-#            if np.all(abs(vec)<EPS):
-#                pass
-#            else:
-#                flag=1
-#                break
-#        if flag==1:
-#            counter=0
-#            lst=list(filter(lambda x: x not in lst3, lst0))
-#            for i in lst:
-#            #for i in list(filter(lambda x: x not in lst3, lst0)):
-#                xyzi=pns[i]-pns[lst3[0]]
-#                if abs(np.dot(vec,xyzi))<1e-10:
-#                    pass
-#                else:
-#                    counter=1
-#                    break
-#            if counter==0:
-#                return True
-#            else:
-#                return False
-#        else:
-#            'error in coplanar_check_numeric. increase num_iteration.'
-#            return 
-#    else:
-#        return True
 
 def dot(v1:qnv.Qnvec, v2:qnv.Qnvec) -> qnn.Qnnum:
     n=v1.shape[0]
@@ -916,13 +864,4 @@ def strc(objs,positions,pmatrx,n1max,n5max,eshift,oshift,verbose):
                                     lst.append([v-w+shfte,i1,h1,h2,h3,h4,h5])
     return lst
 
-################
-# Unnecessary functions？？？
-################
-
-#def matrix_dot(m1,m2):
-#    return np.dot(m1,m2)
-
-#def inner_product_numerical(v1,v2):
-#    return np.dot(v1,v2)
 

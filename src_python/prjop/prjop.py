@@ -9,25 +9,6 @@ import qnmat as qnm
 import qnmath as qmt
 import qnndarray as qna
 
-#class Prjop(qnm.Qnmat):
-#    def __new__(cls):
-#        global shape
-#        shape=(n,n)
-#        #print("shape in __new__",shape) # for test
-#        return super().__new__(cls,shape)
-#        
-#    def __init__(self):
-#        print("isys in Prjop __init__",isys)
-#        if(isys==2): # projection operator for icosahedral
-#            self=Qnprj_Icos()
-#        elif(isys==3): # projection operator for decagonal
-#            self=Qnprj_Deca()
-#        elif(isys==4): # projection operator for octagonal
-#            self=Qnprj_Octa()
-#        elif(isys==5): # projection operator dodecagonal
-#            self=Qnprj_Dode()
-
-
 class Qnprj_Octa(qnm.Qnmat):
     def __new__(cls) : 
         global n
@@ -43,7 +24,7 @@ class Qnprj_Octa(qnm.Qnmat):
         M3=qnn.any([ 0, 1, 2]) #  sqrt(2)/2 t1
         M4=qnn.any([ 0,-1, 2]) # -sqrt(2)/2 t2=-t1
         #self=qnm.Qnmat(n,N)
-        #mt=[\
+        
         prj0=np.array([\
            [M1,M0,M1,M0,M0],\
            [M3,M3,M4,M3,M0],\
@@ -51,10 +32,7 @@ class Qnprj_Octa(qnm.Qnmat):
            [M4,M3,M3,M3,M0],\
            [M0,M0,M0,M0,M1]\
         ],dtype=qnn.Qnnum)
-        #]
-        #for i in range(n):
-        #    for j in range(n):
-        #        prj0[i][j]=mt[i][j]
+ 
         #qnm.printqnm("Qnprj_Octa prj",prj0) # for 
         self.prj0=prj0
         self.prji=qmt.qnmatinv(prj0,n) # get inversion matrix of prj
@@ -64,12 +42,10 @@ class Qnprj_Octa(qnm.Qnmat):
         self.scl=1.0
         self.scly=1.0
         #prj=self
-        prj0f=qnm.qnm2flt(prj0)
+        prj0f=qnm.qnm2flt(prj0)  # for float number
         #qnm.printfm("prj0f",prj0f)  # for test
 
-# for decagonal QCs
-#class Qnprj_Deca(np.ndarray):
-#class Qnprj_Deca(qna.QnNdarray):
+
 class Qnprj_Deca(qnm.Qnmat):
     def __new__(cls):
         global n
@@ -91,7 +67,7 @@ class Qnprj_Deca(qnm.Qnmat):
         M10=M9*(-1) #   -s1/(2sin(pi/5))
         # y axis in external and internal spaces should be scaled by 2sin(pi/5)        
 
-        #mt=[\
+        
         prj0=np.array([\
            [M5,M9,M6,M7,M0],\
            [M6,M7,M5,M10,M0],\
@@ -99,10 +75,7 @@ class Qnprj_Deca(qnm.Qnmat):
            [M5,M10,M6,M8,M0],\
            [M0,M0,M0,M0,M3]\
         ],dtype=qnn.Qnnum)
-        #]
-        #for i in range(n):
-        #    for j in range(n):
-        #        prj0[i][j]=mt[i][j]
+        
         #qnm.printqnm("Qnprj_Deca prj",prj0) # for test
         self.prj0=prj0
         self.prji=qmt.qnmatinv(prj0,n) # get inversion matrix of prj
@@ -114,14 +87,12 @@ class Qnprj_Deca(qnm.Qnmat):
         self.scly2=(M3-M5**2)*4       #4(1-c1^2)
         #self.scly2=4*(M3-M5**2)       #4(1-c1^2)
         #prj=self
-        #print("self.ndim",self.ndim) # fpr test
-        #print("self.shape",self.shape) # fpr test
+        #print("self.ndim",self.ndim) # for test
+        #print("self.shape",self.shape) # for test
         prj0f=qnm.qnm2flt(prj0)
         #qnm.printfm("prj0f",prj0f)  # for test
 
-# for dodecagonal QCs
-#class Qnprj_Dode(np.ndarray):
-#class Qnprj_Dode(qna.QnNdarray):
+
 class Qnprj_Dode(qnm.Qnmat):
     def __new__(cls):
         global n
@@ -138,7 +109,7 @@ class Qnprj_Dode(qnm.Qnmat):
         M5=qnn.any([ 0, 1, 2]) #  sqrt(3)/2
         M6=qnn.any([ 0,-1, 2]) # -sqrt(3)/2
 
-        #mt=[\
+        
         prj0=np.array([\
            [M1,M0,M1,M0,M0],\
            [M5,M3,M2,M3,M0],\
@@ -146,18 +117,14 @@ class Qnprj_Dode(qnm.Qnmat):
            [M0,M1,M0,M1,M0],\
            [M0,M0,M0,M0,M1]\
         ],dtype=qnn.Qnnum)
-        #]
-
-        #for i in range(n):
-        #    for j in range(n):
-        #        prj0[i][j]=mt[i][j]
+        
         #qnm.printqnm("Qnprj_Dode prj",prj0) # for test
         self.prj0=prj0
         self.prji=qmt.qnmatinv(prj0,n) # get inversion matrix of prj
         self.n=n
         self.N=crs.N
         self.shape=(n,n)
-        self.scl=2.0/np.sqrt(6.0)
+        self.scl=2.0/np.sqrt(6.0)  # for vesta or qnn2flt
         self.scly=1.0
         #prj=self
         #print("self.ndim",self.ndim) # fpr test
@@ -182,7 +149,7 @@ class Qnprj_Icos(qnm.Qnmat):
         M3=qnn.any([ 1, 1, 2]) #  tau=(1+sqrt(5))/2
         M4=qnn.any([-1,-1, 2]) # -tau
 
-        #mt=[\
+        
         prj0=np.array([\
            [M1,M3,M0,M3,M2,M0],\
            [M3,M0,M1,M2,M0,M3],\
@@ -191,7 +158,7 @@ class Qnprj_Icos(qnm.Qnmat):
            [M2,M3,M0,M4,M2,M0],\
            [M0,M1,M3,M0,M3,M2]\
         ],dtype=qnn.Qnnum)
-        #]
+        
         
         #for i in range(n):
         #    for j in range(n):

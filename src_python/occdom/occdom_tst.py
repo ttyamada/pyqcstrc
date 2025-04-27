@@ -5,13 +5,6 @@ import sys
 import numpy as np
 import cython
 
-#try:
-#import qnmath as qmt #math12
-#import dode2.math1 as math1
-#import utils.utils as utils
-#import dode2.symmetry as symmetry
-#import dode2.intsct as intsct
-#import dode2.projection12 as proj
 import crsys as crs
 import qnnum as qnn
 import qnndarray as qna
@@ -26,8 +19,18 @@ import sitesym as ssm
 import intsct as isct
 import prjop as prj
 from occdom import (occdom_init,symmetric,write,shift)
+import tr6to5 as tr5
+import tr7to5 as tr7
 
-isys=4 # for octagonal
+print ('argument list', sys.argv)
+if len(sys.argv) != 2:
+    print("Usage : python occdom_tst.py isys")
+    print(" isys : 3,4 or 5 for decag, octag or dodecag QCs")
+    exit()
+isys = int(sys.argv[1])
+print ("isys",isys)
+
+#isys=4 # for octagonal
 crs.crsys_init(isys)
 qnn.qnnum_init()
 qna.qnndarray_init()
@@ -42,22 +45,50 @@ occdom_init()
 
 #test_dir='../../tests/octa2/tests'
 #xyz_dir='../../xyz/octa'
-M0=qnn.Qnnum([0,0,1])  # 0
-M1=qnn.Qnnum([1,0,2])  # 1/2
-M2=qnn.Qnnum([-1,0,2]) #-1/2
-oc_asym0=np.array([\
-    [M0,M0,M0,M0,M0],\
-    [M1,M2,M0,M1,M0],\
-    [M1,M2,M2,M1,M0],\
-    ],dtype=qnn.Qnnum)
-od_asym_nd=qna.anya(oc_asym0,(3,5))
-od_asym_nd=od_asym_nd.reshape((1,3,5))
+if isys==4:  # octagonal
+    M0=qnn.Qnnum([0,0,1])  # 0
+    M1=qnn.Qnnum([1,0,2])  # 1/2
+    M2=qnn.Qnnum([-1,0,2]) #-1/2
+    oc_asym0_=np.array([\
+        [M0,M0,M0,M0,M0],\
+        [M1,M2,M0,M1,M0],\
+        [M1,M2,M2,M1,M0],\
+        ],dtype=qnn.Qnnum)
+    od_asym_nd=qna.anya(oc_asym0_,(3,5))
+    od_asym=od_asym_nd.reshape((1,3,5))
+elif isys==3:  # decagonal
+    M0=qnn.Qnnum([0,0,1])  # 0
+    M1=qnn.Qnnum([1,0,1])  # 1
+    M2=qnn.Qnnum([-1,0,1]) #-1
+    M3=qnn.Qnnum([1,0,2])  # 1/2
+    od_asym_=np.array([\
+        [M0,M0,M0,M0,M0,M0],\
+        [M1,M0,M0,M0,M0,M0],\
+        [M3,M0,M0,M3,M0,M0]\
+        ],dtype=qnn.Qnnum)
+    od_asym_nd=qna.anya(od_asym_,(3,6))
+    od_asym=tr5.tr6to5e(od_asym_nd).reshape(1,3,5)
+elif isys==5:  # dodecagonal
+    M0=qnn.Qnnum([0,0,1])  # 0
+    M1=qnn.Qnnum([1,0,1])  # 1
+    M2=qnn.Qnnum([-1,0,1]) #-1
+    M3=qnn.Qnnum([0,1,3])  # sqrt(3)/3=1/sqrt(3)
+    od_asym_=np.array([\
+        [M0,M0,M0,M0,M0,M0,M0],\
+        [M1,M0,M0,M0,M0,M0,M0],\
+        [M3,M0,M0,M0,M0,M3,M0]\
+        ],dtype=qnn.Qnnum) # stampfli tiling
+    od_asym_nd=qna.anya(od_asym_,(3,7))
+    od_asym=tr7.tr7to5e(od_asym_nd).reshape(1,3,5)
+else:
+    print("isys=2 (icosahedral) not implemented yet")
+    exit()
 # if od_asym is represented by internal space compoenet of triangles/tetrahedra
 # its symmetric version is obtained by the symmetry operator in the internal space
 # this simplifies later calculations
 
 # transform od_asym nD vertex coordinates to its internal space components
-od_asym=prj.projection3_sets_numerical(od_asym_nd)
+od_asym=prj.projection3_sets_numerical(od_asym)
 
 # import asymmetric part of OD(occupation domain) located at origin,0,0,0,0,0,0.
 #od_asym = vst.read_xyz(path=xyz_dir,basename='od_1_asym')
@@ -75,11 +106,11 @@ elif ndim==3: #triangles
         for j in range(shape[1]):
             qnv.printqnv("od_asym[i][j]",od_asym[i][j])
 
-pos0 = qnv.zerov(5)
-irs=ssm.site_symmetry(pos0)
+pos0 = qnv.zerov(5) # origin
+irs=ssm.site_symmetry(pos0)  # site symmetry operator indices
 qnv.printqnv("pos0",pos0)
 
-od_sym = symmetric(irs,od_asym)
+od_sym = symmetric(irs,od_asym) # id_asyn : internal space component of od corner vectors
 for i,tri in enumerate(od_sym):
     od_sym[i]=isct.counter_clockwise(tri)
 vst.write_vesta(od_sym, '.', 'od_sym', 'r', 'normal')

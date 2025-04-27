@@ -40,23 +40,18 @@ def volume(obj:qnv.Qnvec):
     return utl.obj_area_nd(obj)
 
 #def symmetric(obj: qna.QnNdarray, centre:qnv.Qnvec, png:str):
-def symmetric_od(irs: NDArray[np.int64], obj: qna.QnNdarray):
+def symmetric_od(irs: NDArray[np.int64], obj: qna.QnNdarray) -> qna.QnNdarray:
     """
     Generate symmterical occupation domain by site-symmetry elements of OD center
     
     Args:
-        obj (numpy.ndarray):
+        irs : indices of site-symmetry operators
+        obj : internal space coordinates of triangles or tetrahedra
             Asymmetric unit of the occupation domain
-            The shape is (num,3,5) or (num,4,6), where num=numbre_of_triangles or tetrahedra
-        inr : indices of site-symmetry operators
-        #centre (numpy.ndarray):
-        #    nd coordinate of the symmetric centre.
-        #    The shape is (n)
-        #pg (string):
-        #    point group, '12/mmm', '-12m2', '-12', '12'
+            The shape is (num,3,2) or (num,4,3), where num=numbre_of_triangles or tetrahedra
     Returns:
         Symmetric occupation domains (qnndarray):
-            The shape is (num,3,6,3), where num=numbre_of_tetrahedron.
+            The shape is (num,3,2) or (num,4,3), where num=numbre_of_tetrahedron.
     
     """
     #print("obj.ndim",obj.ndim,"obj.shape",obj.shape) # for test
@@ -79,10 +74,8 @@ def symmetric_od(irs: NDArray[np.int64], obj: qna.QnNdarray):
 def generator_obj_symmetric_obj(irs: NDArray[np.int64], obj:qna.QnNdarray):
     """
     arrguments
-    obj : vertices of asymmetric od (shape=(num,3,5) or (num,4,6) for num triangles or tetrahedra)
     irs : indices of site symmetry operators 
-
-    calculate site-symmetry of od using symmetry operators
+    obj : vertices of asymmetric od (shape=(num,3,5) or (num,4,6) for num triangles or tetrahedra)
     """
     shape=obj.shape  # (num,3,5) or (num,4,6) expected for dihed or icos
     ndim=len(shape)  #dimension of obj 3 expected
@@ -108,11 +101,11 @@ def generator_obj_symmetric_obj(irs: NDArray[np.int64], obj:qna.QnNdarray):
 
 def symmetric_i(i1,obj):
     shape=obj.shape  # (num,3,n) or (num,4,n) assumed
-    qnr0=qns.qnr0[i1]  # rotation matrix
+    r_qn0=qns.r_qn0[i1]  # rotation matrix
     a=qna.Qnndarray(shape)
     for i in range(shape[0]):
         for j in range(shape[1]):
-            a[i][j]=qnr0@obj[i][j]
+            a[i][j]=r_qn0@obj[i][j]
     return a
 
 def symmetric(irs:NDArray[np.int64],obj:qna.QnNdarray):
@@ -121,7 +114,7 @@ def symmetric(irs:NDArray[np.int64],obj:qna.QnNdarray):
     print("sp0",sp0)
     shape=(nsy*sp0[0],sp0[1],sp0[2])  # (nsy,num,3,n) or (nsy,num,4,6)
     print("shape in symmetric",shape)
-    qnr_i=qns.qnr_i
+    r_qn_i=qns.r_qn_i
     a=qna.QnNdarray(shape)
     ni=0
     for n in range(nsy):
@@ -129,7 +122,7 @@ def symmetric(irs:NDArray[np.int64],obj:qna.QnNdarray):
             for j in range(sp0[1]):
                 #print("i",i,"j",j)  # for test
                 #qnv.printqnv("obj",obj[i][j])  # for test 
-                a[ni][j]=qnr_i[irs[n]]@obj[i][j]
+                a[ni][j]=r_qn_i[irs[n]]@obj[i][j]
                 print("%s-th triangle %s-th vertex"%(ni,j),end="") # for test
                 qnv.printqnv(" ",a[ni][j])  # for test
             ni+=1

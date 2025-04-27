@@ -23,4 +23,7 @@ def crsys_init(isys_:np.int64):
         N=3 # for sqrt(3) in qnnum
         ne=3
         ni=2
+    else:
+        print("isys should be 2,3,4 or r")
+        exit()
         
