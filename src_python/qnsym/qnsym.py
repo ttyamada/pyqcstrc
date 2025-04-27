@@ -193,13 +193,12 @@ def Qnsym():
 def rtor_qn(r):
     shape=r.shape # (nr,n,n)
     nr=shape[0]
-    #prj=prj.Prjop()
-    #prj0=prj.prj0
-    #prji=prj.prji
-    #return get_r_qn(prj0,prji,r,nr)
-    prj0t=prj.prj0t
-    prjit=prj.prjit
-    return get_r_qn(prj0t,prjit,r,nr)
+    #prj0_=prj.prj0
+    #prji_=prj.prji
+    #return get_r_qn(prj0_,prji_,r,nr)
+    prj0t_=prj.prj0t
+    prjit_=prj.prjit
+    return get_r_qn(prj0t_,prjit_,r,nr)
 
 def rtor_qn_e(r):  # first 2x2 diaglnal block
     qr=rtor_qn(r)
@@ -247,13 +246,12 @@ def wt_mpltbl(mpltbl: np.ndarray):
             print("",mpltbl[i][j+n_],end="")
         print("")
     
-def get_r_qn(prj0t,prjit,r,nr):
+def get_r_qn(prj1,prj2,r,nr):
     shape=r.shape
     r_qn=np.zeros(shape,dtype=qnn.Qnnum)
     for i in range(nr):
-        rqn=qnm.intm2qnm(r[i],n)
-        #r_qn[i]=qnm.copy(prjt@rqn@prjit)  # qnmat x intmat nesessary
-        r_qn[i]=prj0t@rqn@prjit  # qnmat x intmat nesessary
+        rqn=qnm.intm2qnm(r[i],n) # int matrix to qn matrix
+        r_qn[i]=qnm.copy(prj1@rqn@prj2)
         #str="# "+format(i+1) # for test
         #qnm.printqnm(str,r_qn[i]) # for test
     return r_qn

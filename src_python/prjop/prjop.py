@@ -43,7 +43,10 @@ class Qnprj_Octa(qnm.Qnmat):
         self.scly=1.0
         #prj=self
         prj0f=qnm.qnm2flt(prj0)  # for float number
-        #qnm.printfm("prj0f",prj0f)  # for test
+        prjif=qmt.matinv_f(prj0f,n)
+        self.prj0f=prj0f
+        self.prjif=prjif
+        #qnm.printfm("prj0f",self.prj0f)  # for test
 
 
 class Qnprj_Deca(qnm.Qnmat):
@@ -89,8 +92,12 @@ class Qnprj_Deca(qnm.Qnmat):
         #prj=self
         #print("self.ndim",self.ndim) # for test
         #print("self.shape",self.shape) # for test
-        prj0f=qnm.qnm2flt(prj0)
-        #qnm.printfm("prj0f",prj0f)  # for test
+        #self.prj0f=qnm.qnm2flt(prj0)
+        #qnm.printfm("prj0f",self.prj0f)  # for test
+        prj0f=qnm.qnm2flt(prj0)  # for float number
+        prjif=qmt.matinv_f(prj0f,n)
+        self.prj0f=prj0f
+        self.prjif=prjif
 
 
 class Qnprj_Dode(qnm.Qnmat):
@@ -129,8 +136,12 @@ class Qnprj_Dode(qnm.Qnmat):
         #prj=self
         #print("self.ndim",self.ndim) # fpr test
         #print("self.shape",self.shape) # fpr test
-        prj0f=qnm.qnm2flt(prj0)
-        #qnm.printfm("prj0f",prj0f)  # for test
+        #self.prj0f=qnm.qnm2flt(prj0)
+        #qnm.printfm("prj0f"self.prj0f)  # for test
+        prj0f=qnm.qnm2flt(prj0)  # for float number
+        prjif=qmt.matinv_f(prj0f,n)
+        self.prj0f=prj0f
+        self.prjif=prjif
 
 # for icosahedral QCs
 #class Qnprj_Icos(npndarray):
@@ -174,8 +185,12 @@ class Qnprj_Icos(qnm.Qnmat):
         self.scly=1.0
         #print("self.ndim",self.ndim) # fpr test
         #print("self.shape",self.shape) # fpr test
-        prj0f=qnm.qnm2flt(prj0)
-        #qnm.printfm("prj0f",prj0f)  # for test
+        #self.prj0f=qnm.qnm2flt(prj0)
+        #qnm.printfm("prj0f",self.prj0f)  # for test
+        prj0f=qnm.qnm2flt(prj0)  # for float number
+        prjif=qmt.matinv_f(prj0f,n)
+        self.prj0f=prj0f
+        self.prjif=prjif
         
 def prjop_init():
     global isys,n,N
@@ -186,7 +201,8 @@ def prjop_init():
 
     
 def Prjop():
-    global prj0,prji,prj0t,prjit,scl,scly
+    global prj0,prji,prj0t,prjit
+    global prj0f,prjif,scl,scly
     #print("isys in Prjop",isys)  # fpr test
     if(isys==2): # projection operator for icosahedral
         prj=Qnprj_Icos()
@@ -198,6 +214,8 @@ def Prjop():
         prj=Qnprj_Dode()
     prj0=prj.prj0
     prji=prj.prji
+    prj0f=prj.prj0f
+    prjif=prj.prjif
     prj0t=qmt.matrixtr(prj0) # transposed prj matrix
     prjit=qmt.matrixtr(prji) # transposed prji matrix 
     scl=prj.scl
@@ -212,6 +230,11 @@ def tstwt_prjop():
     unitm=qnm.zerom((n,n))
     unitm=prji@prj0
     qnm.printqnm("unitm",unitm)
+    printfm("prj0f",prj0f,n)
+    prjif=qmt.matinv_f(prj0f,n)
+    printfm("prjif",prjif,n)
+    unitmf=prjif@prj0f
+    printfm("unitmf",unitmf,n)
     
 def copy(qna1: qnm.Qnmat):
     #return np.copy(qna1,dtype=qnn.Qnnum)

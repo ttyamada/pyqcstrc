@@ -41,11 +41,12 @@ def prj_tst(isys: np.int64):
         x=np.array([M1,M0,M0,M0,M0])
         qnx=qnv.anyv(x)
 
-    prj.printfm("prj0f",prj0f,n)
-    prjif=qmt.matinv_f(prj0f,n)
-    prj.printfm("prjif",prjif,n)
-    unitmf=prjif@prj0f
-    prj.printfm("unitmf",unitmf,n)
+    prj.tstwt_prjop()
+    #prj.printfm("prj0f",prj0f,n)
+    #prjif=qmt.matinv_f(prj0f,n)
+    #prj.printfm("prjif",prjif,n)
+    #unitmf=prjif@prj0f
+    #prj.printfm("unitmf",unitmf,n)
 
     qnv.printqnv("qnx",qnx)
     qnei=prj.prjvec(qnx)
@@ -55,7 +56,9 @@ def prj_tst(isys: np.int64):
     qnv.printqnv("qne",qne)
     qnv.printqnv("qni",qni)
 
-prj_tst(4)
-prj_tst(3)
-prj_tst(5)
-prj_tst(2)
+# main
+
+prj_tst(4) # for octagonal
+prj_tst(3) # for decagonal
+prj_tst(5) # for dodecagonal
+prj_tst(2) # for icosahedral

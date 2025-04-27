@@ -48,6 +48,10 @@ class Qnmat(qna.QnNdarray):
         
     def __matmul__(ma1:Self, ma2:Self):  #  for ma1@ma2
         return mul(ma1,ma2)
+        #if isinstance(ma2,qna.QnNdarray):
+        #    return mul(ma1,ma2)
+        #if isinstance(ma2,NDArray[np.int64]):
+        #    return mul_i(ma1,ma2)
     
     def set_mt(self:Self,mt:np.array): # QnNdarray*
         shape=self.shape
@@ -190,7 +194,7 @@ def isub(ma1:Qnmat, ma2:Qnmat) -> Qnmat:
     ma1=sub(ma1,ma2)
     return ma1
 
-def mul_scl(ma1: Qnmat, scl: qnn.Qnnum, dtype=qnn.Qnnum) -> Qnmat:
+def mul_scl(ma1: Qnmat, scl: qnn.Qnnum) -> Qnmat:
     ndim=len(ma1.shape)
     if ndim==1:
         for i in range(ma1.shape[0]):
@@ -203,7 +207,7 @@ def mul_scl(ma1: Qnmat, scl: qnn.Qnnum, dtype=qnn.Qnnum) -> Qnmat:
 
     
 # for ma1@ma2 (ma1 and ma2 should be qnvec or qnmat)
-def mul(ma1: Qnmat, ma2: Qnmat, dtype=qnn.Qnnum) -> Qnmat: 
+def mul(ma1: Qnmat, ma2: Qnmat) -> Qnmat: 
     ndm1=len(ma1.shape)
     ndm2=len(ma2.shape)
     #print("ndm1=",ndm1,"ndm2=",ndm2)  # for test
