@@ -59,7 +59,7 @@ class Delaunay2D:
                       [[[1, 1, 1, 0]]]])
 
         b = np.hstack((np.sum(pts * pts, axis=1), [1]))
-        x = np.linalg.solve(A, b)
+        x = np.linalg.solve(A, b) # A 4x4 b 4 
         bary_coords = x[:-1]
         center = np.dot(bary_coords, pts)
 
