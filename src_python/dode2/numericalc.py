@@ -5,6 +5,7 @@
 #
 import numpy as np
 from numpy.typing import NDArray
+import cython
 import random
 
 TAU=np.sqrt(3)/2.0

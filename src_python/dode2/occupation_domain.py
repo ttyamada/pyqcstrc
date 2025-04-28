@@ -8,6 +8,8 @@ import timeit
 import os
 import sys
 import numpy as np
+import cython
+from numpy.typing import (NDArray)
 try:
     import dode2.math1 as math1
     import dode2.utils as utils

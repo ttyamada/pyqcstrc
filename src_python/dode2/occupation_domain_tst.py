@@ -1,6 +1,8 @@
 #if __name__ == "__main__":
 import numpy as np
 import occupation_domain as od
+import cython
+
 #from occupation_domain import (
 #    read_xyz,symmetric,write,write_vesta)
 

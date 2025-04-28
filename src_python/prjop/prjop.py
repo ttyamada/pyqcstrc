@@ -69,8 +69,6 @@ class Qnprj_Deca(qnm.Qnmat):
         M9=M3/2     #    s1/(2sin(pi/5))
         M10=M9*(-1) #   -s1/(2sin(pi/5))
         # y axis in external and internal spaces should be scaled by 2sin(pi/5)        
-
-        
         prj0=np.array([\
            [M5,M9,M6,M7,M0],\
            [M6,M7,M5,M10,M0],\
@@ -81,6 +79,7 @@ class Qnprj_Deca(qnm.Qnmat):
         
         #qnm.printqnm("Qnprj_Deca prj",prj0) # for test
         self.prj0=prj0
+        #(D^q)^{-1}
         self.prji=qmt.qnmatinv(prj0,n) # get inversion matrix of prj
         self.n=n
         self.N=crs.N
@@ -119,7 +118,7 @@ class Qnprj_Dode(qnm.Qnmat):
         
         prj0=np.array([\
            [M1,M0,M1,M0,M0],\
-           [M5,M3,M2,M3,M0],\
+           [M5,M3,M6,M3,M0],\
            [M3,M5,M3,M6,M0],\
            [M0,M1,M0,M1,M0],\
            [M0,M0,M0,M0,M1]\

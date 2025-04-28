@@ -193,12 +193,12 @@ def Qnsym():
 def rtor_qn(r):
     shape=r.shape # (nr,n,n)
     nr=shape[0]
-    #prj0_=prj.prj0
-    #prji_=prj.prji
-    #return get_r_qn(prj0_,prji_,r,nr)
-    prj0t_=prj.prj0t
-    prjit_=prj.prjit
-    return get_r_qn(prj0t_,prjit_,r,nr)
+    prj0_=prj.prj0
+    prji_=prj.prji
+    return get_r_qn(prji_,prj0_,r,nr)
+    #prj0t_=prj.prj0t
+    #prjit_=prj.prjit
+    #return get_r_qn(prj0t_,prjit_,r,nr)
 
 def rtor_qn_e(r):  # first 2x2 diaglnal block
     qr=rtor_qn(r)

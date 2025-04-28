@@ -6,6 +6,7 @@
 import sys
 import numpy as np
 from numpy.typing import NDArray
+import cython
 #sys.path.append('.')
 #from numericalc import coplanar_check_numeric_tau
 from dode2.numericalc import coplanar_check_numeric_tau
