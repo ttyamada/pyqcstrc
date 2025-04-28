@@ -21,6 +21,7 @@ import prjop as prj
 from occdom import (occdom_init,symmetric,write,shift)
 import tr6to5 as tr5
 import tr7to5 as tr7
+from numpy.typing  import (NDArray)
 
 print ('argument list', sys.argv)
 if len(sys.argv) != 2:
@@ -63,8 +64,8 @@ elif isys==3:  # decagonal
     M3=qnn.Qnnum([1,0,2])  # 1/2
     od_asym_=np.array([\
         [M0,M0,M0,M0,M0,M0],\
-        [M1,M0,M0,M0,M0,M0],\
-        [M3,M0,M0,M3,M0,M0]\
+        [M0,M0,M0,M0,M1,M0],\
+        [M1,M0,M0,M0,M1,M0]\
         ],dtype=qnn.Qnnum)
     od_asym_nd=qna.anya(od_asym_,(3,6))
     od_asym=tr5.tr6to5e(od_asym_nd).reshape(1,3,5)
@@ -106,19 +107,33 @@ elif ndim==3: #triangles
         for j in range(shape[1]):
             qnv.printqnv("od_asym[i][j]",od_asym[i][j])
 
-pos0 = qnv.zerov(5) # origin
+if isys!=3:
+    pos0 = qnv.zerov(5) # origin
+    qnv.printqnv("pos0",pos0)  # for test
+else:
+    M0=qnn.Qnnum([0,0,1])  # 0
+    M1=qnn.Qnnum([1,0,5])  # 1/5
+    qnv_=np.array([M1,M1,M1,M1,M0])
+    #pos_=NDArray(qnv_,(5))
+    pos0=qnv.anyv(qnv_)
+    qnv.printqnv("pos0",pos0)  # for test
+
 irs=ssm.site_symmetry(pos0)  # site symmetry operator indices
 qnv.printqnv("pos0",pos0)
 
 od_sym = symmetric(irs,od_asym) # id_asyn : internal space component of od corner vectors
+
 for i,tri in enumerate(od_sym):
     od_sym[i]=isct.counter_clockwise(tri)
 vst.write_vesta(od_sym, '.', 'od_sym', 'r', 'normal')
 vst.write_xyz(od_sym,'.', 'od_sym')
 
 # move od_sym to a position 1 0 0 0 0
-M3=qnn.any([1,0,1])
-x0=np.array([M3,M0,M0,M0,M0]) # origin shift by (1,0,0,0,0)
+if isys != 3:
+    M3=qnn.any([1,0,1])
+    x0=np.array([M3,M0,M0,M0,M0]) # origin shift by (1,0,0,0,0)
+else:
+    x0=np.array([M1,M1,M1,M1,M0]) # origin shift by (1,1,1,1,0)/5
 qnx0=qnv.anyv(x0)
 v0=prj.projection3(qnx0)
 qnv.printqnv("v0",v0)  # for test
@@ -164,9 +179,9 @@ for i,tri1 in enumerate(od_sym):
                 tria=np.vstack([tria,z])
             ntr+=1
 print("ntr",ntr)
-tria=tria.reshape(ntr,3,2)
-print("tria.shape",tria.shape)
+intsct=tria.reshape(ntr,3,2)
+print("intsct.shape",intsct.shape)
 
 for i in range(ntr):
-    qnv.printqnvs("tria[i]",tria[i])
-vst.write_vesta(tria, '.', 'tria', 'b', 'normal')
+    qnv.printqnvs("intsct[i]",intsct[i])
+vst.write_vesta(intsct, '.', 'intsct', 'b', 'normal')

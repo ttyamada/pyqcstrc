@@ -20,23 +20,16 @@ def sitesym_init():
     N=crs.N
 
 def site_symmetry(x: qnv.Qnvec) -> np.ndarray: # return irs
-    global nr,mpltbl,r
+    global nr,mpltbl,r,rt
     """symmetry operator insixwa irs in the site symmetry group G.
     
     Args:
-        x (qnndarray):  -> (5D or 6D) qnnum coordinates
-            xyz coordinate of the site. -> coordinates in external and internal space
-            (note that this constrains possible shift in the external space)
-            The shape is (6,3). -> 5 (dihedral) or 6 (icosahedral) qnnum coordinates
-        
+        x (qnndarray):  -> (5D or 6D) qnnum lattice coordinates
+ 
     Returns:
         List of index of symmetry operators of the site symmetry group G (list):
             The symmetry operators leaves xyz identical.
     """
-    #a=np.zeros((len(symop),6,3),dtype=np.int64)
-
-    #n=len(x)
-    #N=x.N
     if crs.isys==2:
         n_i=3
     else:
@@ -48,13 +41,14 @@ def site_symmetry(x: qnv.Qnvec) -> np.ndarray: # return irs
     r_qn=qns.r_qn  # symmetry operator for Q coordinates
     r_qn_i=qns.r_qn_i  # symmetry operator for Q coordinates
     mpltbl=qns.mpltbl
-    r=qns.r_qn
-    a_i=qnv.zerovs((nr,n_i))
-    qnx_i=prj.prjvec_i(x) # internal space component os nD vector x
-    #a=np.zeros((nr,n),dtype=qnn.Qnnum)
-    a=qnv.zerovs((nr,n))
-    qnx=prj.prjvec(x)
-    b=qnv.zerov(n)
+    r=qns.r  # integer rotation matrix
+    rt=qns.rt # its transverse matrix
+    #a_i=qnv.zerovs((nr,n_i))
+    #qnx_i=prj.prjvec_i(x) # internal space component os nD vector x
+    a=np.zeros((nr,n),dtype=qnn.Qnnum)
+    #a=qnv.zerovs((nr,n))
+    #qnx=prj.prjvec(x)
+    #b=qnv.zerov(n)
 
     irs=np.zeros(0,dtype=np.int64)
     #tr=lt.get_tr(brv)
@@ -65,7 +59,8 @@ def site_symmetry(x: qnv.Qnvec) -> np.ndarray: # return irs
         #qnv.printqnv("qnx_i",qnx_i) # for test
         #a_i[i]=r_qn_i[i]@qnx_i         # Q coordinates for 2D (3D) vector x_i
         #qnm.printqnm("r_qn",r_qn[i]) # for test
-        a[i]=r_qn[i]@qnx   # Q coordinates for 2D (3D) vector x_i
+        #a[i]=r_qn[i]@qnx   # Q coordinates for 2D (3D) vector x_i
+        a[i]=x@rt[i]  #r_[i]@x   # r (int) x qnv -> x x rt (int)
         #print("type(a[i])",type(a[i]))  # for test
         # **** a[i] is not Qnvec but Qnmat
         # Qnmat to Qnvec transformation necessary 
@@ -81,7 +76,7 @@ def site_symmetry(x: qnv.Qnvec) -> np.ndarray: # return irs
             #print("type(bi)",type(bi)) # for test
             #b=qnm.qnm2qnv(b0)
             #print("type(b)",type(b),"type(qnx)",type(qnx)) # for test
-            if bi==qnx:
+            if bi==x:
                 irs=np.append(irs,i)
             else:
                 pass

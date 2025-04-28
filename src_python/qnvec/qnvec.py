@@ -133,10 +133,8 @@ def sub_vectors_qn(v:qna.QnNdarray, v0:Qnvec):
                 v1[i][j]=v[i][j]-v0
     return v1
 
-def mul_vector_i(v:Qnvec, coeff:int) -> Qnvec:
+def mul_vector_i(v:Qnvec, coeff) -> Qnvec:
     if v.ndim==1:
-        #n=v.shape
-        #N=v.N
         a=Qnvec(n)  #np.zeros(v.shape,dtype=np.int64)
         for i in range(n):
             a[i]=v[i]*coeff  #mul(v,coeff)
@@ -161,9 +159,9 @@ def mul_vectors_i(vs:qna.QnNdarray, coeff:int) -> qna.QnNdarray:
     if vs.ndim==2:
         a=qna.zeros(shape)
         la=vs.shape
-        for i in range(2):
+        for i in range(la[0]):
             for j in range(n):
-                a[i]=vs[i][j]*coeff #mul_vector(v,coeff)
+                a[i][j]=vs[i][j]*coeff #mul_vector(v,coeff)
         return a
     else:
         print('incorrect shape in mul_vectors_i')
@@ -175,9 +173,9 @@ def mul_vectors_qn(vs:Qnvec, coeff:qnn.Qnnum):
         #N=vs[0].N
         a=[Qnvec(n)]*vs.shape
         la=vs.shape
-        for i in range(2):
+        for i in range(la[0]):
             for j in range(n):
-                a[i]=vs[i][j]*coeff #mul_vector(v,coeff)
+                a[i][j]=vs[i][j]*coeff #mul_vector(v,coeff)
         return a
     else:
         print('incorrect shape mul_vectors_qn')
