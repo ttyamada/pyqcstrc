@@ -19,6 +19,7 @@ from sitesym import (sitesym_init,\
 
 # for test
 #if __name__ == '__main__':
+
 isys=3  # decagonal
 crs.crsys_init(isys)
 brv='p'
@@ -41,40 +42,26 @@ qns=qns.Qnsym()
 nr=qns.nr
 brv=lt.brv
 irs0=site_symmetry(x0) # use lattice coordinates
-rt=qns.rt # symmetry operators
-#print("irs0",irs0) # for test
 isk0=coset(irs0)
-
-xeq0=equivalent_positions(x0,brv,isk0,qns.rt)
+#xeq0=equivalent_positions(x0,brv,isk0,qns.rt)
 #qnv.printqnv("xeq0",xeq0)
 
 xeq1=equivalent_positions_reduced(x0,brv,isk0,qns.rt)
 #qnv.printqnv("xeq1",xeq1)
 
 n=crs.n
-x1=qnv.zerov(n)           #(0,0,0,0,0)
-x1[0]=qnn.any([1,0,2])  #(1/2,0,0,0,0)
-x1[1]=qnn.any([1,0,2])
+M1=qnn.any([1,0,2])  #(1/2,0,0,1/2,0)
+x10=np.array([M1,M0,M0,M1,M0],dtype=qnn.Qnnum)
+x1=qnv.anyv(x10)
+qnv.printqnv("x1",x1)
 irs1=site_symmetry(x1) 
 isk1=coset(irs1)
 xeq2=equivalent_positions(x1,brv,isk1,qns.rt)
 #qnv.printqnv("xeq2",xeq2)
 
-x2=qnv.zerov(n)           #(0,0,0,0,0)
-x2[0]=qnn.any([1,0,1])  #(1/2,0,0,0,0)
-x2[1]=qnn.any([1,0,2])
+x20=np.array([M0,M1,M1,M0,M0],dtype=qnn.Qnnum)
+x2=qnv.anyv(x20)
+qnv.printqnv("x2",x2)
 irs2=site_symmetry(x2) 
 isk2=coset(irs2)
-xeq3=equivalent_positions(x2,brv,isk2,qns.rt)
-#qnv.printqnv("xeq3",xeq3)
-
-x3=qnv.zerov(n)           #(0,0,0,0,0)
-x3[0]=qnn.any([1,0,1])  #(1/2,0,0,0,0)
-x3[1]=qnn.any([1,0,2])
-x3[4]=qnn.any([1,0,4])
-irs3=site_symmetry(x3) 
-isk3=coset(irs3)
-xeq4=equivalent_positions(x3,brv,isk3,qns.rt)
-#qnv.printqnv("xeq4",xeq4)
-    
-    
+#xeq3=equivalent_positions(x2,brv,isk2,qns.rt)

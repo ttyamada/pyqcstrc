@@ -149,11 +149,11 @@ def reduce_x(xs:qnv.Qnvec,brv:str):
     for i in range(nv):
         for j in range(n):
             for k in range(2):
-                if xs[i][j]<qn2:
+                if xs[i][j]<=qn2:
                     #qnn.printqnn("before",xs[i][j])
                     xs[i][j]+=qn3
                     #qnn.printqnn("after",xs[i][j])
-                elif xs[i][j]>=qn1:
+                elif xs[i][j]>qn1:
                     #qnn.printqnn("before",xs[i][j])
                     xs[i][j]+=qn4
                     #qnn.printqnn("after",xs[i][j])
