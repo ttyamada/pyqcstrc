@@ -13,7 +13,7 @@ import qnsym as qns
 from sitesym import (sitesym_init,\
                      site_symmetry,\
                      coset,\
-                     equivalent_positions_in_unit_cell,\
+                     equivalent_positions_reduced,\
                      equivalent_positions
                      )
 
@@ -34,23 +34,23 @@ brv='p'
 N=crsys.N
 n=crsys.n
 M0=qnn.zero()         # 0
-M1=qnn.Qnnum([1,0,2]) # 1/2
-x00=np.array([M1,M0,M0,M0,M0],dtype=qnn.Qnnum)
+M1=qnn.Qnnum([2,0,5]) # B at (2 2 2 2 0)/5 
+x00=np.array([M1,M1,M1,M1,M0],dtype=qnn.Qnnum)  # lattice coordinates for B
 x0=qnv.anyv(x00)
 qnv.printqnv("x0",x0)
 #qnr=qns.qnr # symmetry operators
 qns=qns.Qnsym()
 nr=qns.nr
 brv=lt.brv
-irs0=site_symmetry(x0,qns,brv)
+irs0=site_symmetry(x0) # use lattice coordinates
 r=qns.r # symmetry operators
 #print("irs0",irs0) # for test
 isk0=coset(irs0)
 
-xeq0=equivalent_positions(x0,brv,isk0,qns.qnr)
+xeq0=equivalent_positions(x0,brv,isk0,qns.r)
 #qnv.printqnv("xeq0",xeq0)
 
-xeq1=equivalent_positions_in_unit_cell(x0,brv,isk0,qns.qnr)
+xeq1=equivalent_positions_reduced(x0,brv,isk0,qns.rt)
 #qnv.printqnv("xeq1",xeq1)
 
 x1=qnv.zerov(n)           #(0,0,0,0,0)
@@ -58,7 +58,7 @@ x1[0]=qnn.any([1,0,2])  #(1/2,0,0,0,0)
 x1[1]=qnn.any([1,0,2])
 irs1=site_symmetry(x1,qns,brv) 
 isk1=coset(irs1)
-xeq2=equivalent_positions(x1,brv,isk1,qns.qnr)
+xeq2=equivalent_positions(x1,brv,isk1,qns.rt)
 #qnv.printqnv("xeq2",xeq2)
 
 x2=qnv.zerov(n)           #(0,0,0,0,0)

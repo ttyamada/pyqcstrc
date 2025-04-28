@@ -14,6 +14,7 @@ import qnmath as qmt
 import qnndarray as qna
 import qnsym as qns
 import lattice as lt
+from numpy.typing import(NDArray)
 
 def sitesym_init():
     n=crs.n
@@ -130,7 +131,7 @@ def coset(irs) -> np.array: # return coset representativ indices in symop
     print("isk",isk) # for test
     return isk
 
-def equivalent_positions(x: qnv.Qnvec, brv: str, isk: np.ndarray, r0: qnm.Qnmat) -> qnv.Qnvec:
+def equivalent_positions(x: qnv.Qnvec, brv: str, isk: np.ndarray, rt: NDArray[np.int64]) -> qnv.Qnvec:
     """
     siteに対して点群の対称性を施したサイトのうち、並進操作のみで結ばれない位置を求める。
         適切な名前を決める必要がある！！！
@@ -144,11 +145,11 @@ def equivalent_positions(x: qnv.Qnvec, brv: str, isk: np.ndarray, r0: qnm.Qnmat)
     xs=qnv.zerovs((neq,n))
     print("type(xs)",type(xs),"type(xs[0])",type(xs[0]))
     for i in range(neq):
-        xs[i]=r0[isk[i]]@x
+        xs[i]=x@rt[i]  #r0[isk[i]]@x
         qnv.printqnv("x",xs[i])
     return xs
 
-def equivalent_positions_in_unit_cell(x:qnv.Qnvec,brv:str,isk:np.ndarray,r0:qnm.Qnmat) -> qnv.Qnvec:
+def equivalent_positions_reduced(x:qnv.Qnvec,brv:str,isk:np.ndarray,r0:NDArray[np.int64]) -> qnv.Qnvec:
     """
          単位胞内にある等価なサイトを得る。
     """
@@ -158,12 +159,13 @@ def equivalent_positions_in_unit_cell(x:qnv.Qnvec,brv:str,isk:np.ndarray,r0:qnm.
     
 def reduce_x(xs:qnv.Qnvec,brv:str):
     print("type(xs)",type(xs),"type(xs[0])",type(xs[0]))  # for test
-    nv=len(xs)
-    n=xs[0].shape[0]
+    nv=len(xs) # number of points
+    n=xs[0].n
     qn1=qnn.any([1,0,2])  # 1/2
     qn2=qnn.any([-1,0,2]) # -/2
     qn3=qnn.any([1,0,1])  # 1
     qn4=qnn.any([-1,0,1]) # -1
+    # how to implement mod for qnnum
     for i in range(nv):
         for j in range(n):
             if xs[i][j]<qn2:
