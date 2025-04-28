@@ -1,7 +1,7 @@
 import cython
 import numpy as np
 
-import crsys
+import crsys as crs
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
@@ -20,7 +20,7 @@ from sitesym import (sitesym_init,\
 # for test
 #if __name__ == '__main__':
 isys=3  # decagonal
-crsys.crsys_init(isys)
+crs.crsys_init(isys)
 brv='p'
 qnn.qnnum_init()
 qnv.qnvec_init()
@@ -29,10 +29,8 @@ qnm.qnmat_init()
 prj.prjop_init()
 qns.qnsym_init()
 lt.lattice_init(brv)
+sitesym_init()
 
-brv='p'
-N=crsys.N
-n=crsys.n
 M0=qnn.zero()         # 0
 M1=qnn.Qnnum([2,0,5]) # B at (2 2 2 2 0)/5 
 x00=np.array([M1,M1,M1,M1,M0],dtype=qnn.Qnnum)  # lattice coordinates for B
@@ -43,20 +41,21 @@ qns=qns.Qnsym()
 nr=qns.nr
 brv=lt.brv
 irs0=site_symmetry(x0) # use lattice coordinates
-r=qns.r # symmetry operators
+rt=qns.rt # symmetry operators
 #print("irs0",irs0) # for test
 isk0=coset(irs0)
 
-xeq0=equivalent_positions(x0,brv,isk0,qns.r)
+xeq0=equivalent_positions(x0,brv,isk0,qns.rt)
 #qnv.printqnv("xeq0",xeq0)
 
 xeq1=equivalent_positions_reduced(x0,brv,isk0,qns.rt)
 #qnv.printqnv("xeq1",xeq1)
 
+n=crs.n
 x1=qnv.zerov(n)           #(0,0,0,0,0)
 x1[0]=qnn.any([1,0,2])  #(1/2,0,0,0,0)
 x1[1]=qnn.any([1,0,2])
-irs1=site_symmetry(x1,qns,brv) 
+irs1=site_symmetry(x1) 
 isk1=coset(irs1)
 xeq2=equivalent_positions(x1,brv,isk1,qns.rt)
 #qnv.printqnv("xeq2",xeq2)
@@ -64,18 +63,18 @@ xeq2=equivalent_positions(x1,brv,isk1,qns.rt)
 x2=qnv.zerov(n)           #(0,0,0,0,0)
 x2[0]=qnn.any([1,0,1])  #(1/2,0,0,0,0)
 x2[1]=qnn.any([1,0,2])
-irs2=site_symmetry(x2,qns,brv) 
+irs2=site_symmetry(x2) 
 isk2=coset(irs2)
-xeq3=equivalent_positions(x2,brv,isk2,qns.qnr)
+xeq3=equivalent_positions(x2,brv,isk2,qns.rt)
 #qnv.printqnv("xeq3",xeq3)
 
 x3=qnv.zerov(n)           #(0,0,0,0,0)
 x3[0]=qnn.any([1,0,1])  #(1/2,0,0,0,0)
 x3[1]=qnn.any([1,0,2])
 x3[4]=qnn.any([1,0,4])
-irs3=site_symmetry(x3,qns,brv) 
+irs3=site_symmetry(x3) 
 isk3=coset(irs3)
-xeq4=equivalent_positions(x3,brv,isk3,qns.qnr)
+xeq4=equivalent_positions(x3,brv,isk3,qns.rt)
 #qnv.printqnv("xeq4",xeq4)
     
     

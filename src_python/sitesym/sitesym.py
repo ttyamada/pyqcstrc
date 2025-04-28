@@ -17,6 +17,7 @@ import lattice as lt
 from numpy.typing import(NDArray)
 
 def sitesym_init():
+    global n,N
     n=crs.n
     N=crs.N
 
@@ -160,7 +161,7 @@ def equivalent_positions_reduced(x:qnv.Qnvec,brv:str,isk:np.ndarray,r0:NDArray[n
 def reduce_x(xs:qnv.Qnvec,brv:str):
     print("type(xs)",type(xs),"type(xs[0])",type(xs[0]))  # for test
     nv=len(xs) # number of points
-    n=xs[0].n
+    #n=xs[0].n
     qn1=qnn.any([1,0,2])  # 1/2
     qn2=qnn.any([-1,0,2]) # -/2
     qn3=qnn.any([1,0,1])  # 1
