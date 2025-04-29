@@ -64,8 +64,8 @@ elif isys==3:  # decagonal
     M3=qnn.Qnnum([1,0,2])  # 1/2
     od_asym_=np.array([\
         [M0,M0,M0,M0,M0,M0],\
-        [M0,M0,M0,M0,M1,M0],\
-        [M0,M0,M3,M0,M3,M0]\
+        [M1,M0,M0,M0,M0,M0],\
+        [M3,M0,M0,M3,M0,M0]\
         ],dtype=qnn.Qnnum)
     od_asym_nd=qna.anya(od_asym_,(3,6))
     od_asym=tr5.tr6to5e(od_asym_nd).reshape(1,3,5)

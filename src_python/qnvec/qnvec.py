@@ -265,6 +265,8 @@ def qnv2flt(a:Qnvec):
     isys=crs.isys
     if isys==3:
         b[1]=b[1]*scly
+        if n>3:
+            b[3]=b[3]*scly
     return b
 
 def intv2qnv(a:np.ndarray):
