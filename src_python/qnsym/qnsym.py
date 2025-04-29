@@ -9,6 +9,7 @@ import qnvec as qnv
 import qnmat as qnm
 import prjop as prj
 import qnmath as qmt
+from numpy.typing import(NDArray)
 
 class Qnsym_Octa(qna.QnNdarray):
     def __new__(cls):
@@ -60,12 +61,15 @@ class Qnsym_Deca(qna.QnNdarray):
         
     def __init__(self):
         ng=3         # three generating elements
-        rg=np.zeros((ng,n,n),dtype=np.int64)
-        gord=(10,2)  #gord=(10,2,2)
+        rg=np.zeros((ng,n,n),dtype=np.int64)  # integer nxn matrices
+        gord=(5,2,2)  #gord=(10,2,2)  # order of generators
         
-        rg[0][0][3]=-1;
-        rg[0][1][0]=1;rg[0][1][1]=1;rg[0][1][2]=1;rg[0][1][3]=1  # R10
-        rg[0][2][0]=-1;rg[0][3][1]=-1;rg[0][4][4]=1 
+        #rg[0][0][3]=-1;
+        #rg[0][1][0]=1;rg[0][1][1]=1;rg[0][1][2]=1;rg[0][1][3]=1  # R10
+        #rg[0][2][0]=-1;rg[0][3][1]=-1;rg[0][4][4]=1 
+        rg[0][0][1]=1;rg[0][1][2]=1;rg[0][2][3]=1;  #R5
+        rg[0][3][0]=-1;rg[0][3][1]=-1;rg[0][3][2]=-1;rg[0][3][3]=-1
+        rg[0][4][4]=1
         rg[1][0][3]=1; rg[1][3][0]=1; rg[1][1][2]=1; rg[1][2][1]=1;rg[1][4][4]=1 # M
         rg[2][0][0]=-1;rg[2][1][1]=-1;rg[2][2][2]=-1;rg[2][3][3]=-1;rg[2][4][4]=-1 # I
         #print_r(rg)  # for test
@@ -101,8 +105,8 @@ class Qnsym_Dode(qna.QnNdarray):
     
     def __init__(self):
         ng=3         # three generating elements
-        rg= np.zeros((ng,n,n),dtype=np.int64)
-        gord=(12,2) #gord=(12,2,2)
+        rg= np.zeros((ng,n,n),dtype=np.int64)  # integer nxn matrices
+        gord=(12,2) #gord=(12,2,2)  # order of generators
 
         rg[0][0][1]=1; rg[0][1][2]=1; rg[0][2][3]=1; rg[0][3][0]=-1; rg[0][3][2]=1;rg[0][4][4]=1 # R12 
         rg[1][0][3]=1; rg[1][1][2]=1; rg[1][2][1]=1; rg[1][3][0]=1;rg[1][4][4]=1 # M
@@ -137,8 +141,8 @@ class Qnsym_Icos(qna.QnNdarray):
     
     def __init__(self):
         ng=5 # five generators R5 R3 R2_x R2_y I
-        rg= np.zeros((ng,n,n),dtype=np.int64)
-        gord=(5,2,2,3,2)
+        rg= np.zeros((ng,n,n),dtype=np.int64)  # integer nxn matrices
+        gord=(5,2,2,3,2)  # order of generators
         # following data not correct
         rg[0][0][0]=1; rg[0][1][2]=1; rg[0][2][3]=1; rg[0][3][4]=1; rg[0][4][5]=1;rg[0][5][1]=1 # R5 
         rg[1][0][0]=-1;rg[1][1][1]=-1; rg[1][2][5]=-1;rg[1][3][4]=-1;rg[1][4][3]=-1; rg[1][5][2]=-1# 2
@@ -148,8 +152,8 @@ class Qnsym_Icos(qna.QnNdarray):
         #shape=(nr,n,n) # for nr nxn -rotation matrices
         print_r(rg)  # for test
         
-        r=np.zeros(shape,dtype=np.int64)
-        rt=np.zeros(shape,dtype=np.int64)
+        r=np.zeros(shape,dtype=np.int64)  # integer nxn matrices
+        rt=np.zeros(shape,dtype=np.int64) # integer nxn matrices
         set_r(rg,gord,r,rt)  # set all integer rotation matrices
         print_r(r)  # for test
         self.r=r
@@ -225,21 +229,22 @@ def rtor_qn_i(r): # second 2x2 giagonal block
     else:
         return qr[:,2:4,2:4] # 2x2 second diagonal block
     
-def is_equal(r1,r2):
+def is_equal(r1:NDArray[np.int64],r2:NDArray[np.int64]):
     for i in range(n):
         for j in range(n):
             if r1[i][j]!=r2[i][j]:
                 return False
     return True
         
-def set_mpltbl(mpltbl:np.ndarray,r:np.ndarray): # r: integer rotation matrices in nD lattice
+def set_mpltbl(mpltbl:NDArray[np.int64],r:NDArray[np.int64]): # r: integer rotation matrices in nD lattice
     rt_=np.zeros((n,n),dtype=np.int64)
     for i in range(nr):
         for j in range(nr):
+            rt_=r[i]@r[j] # integer matrix
             for k in range(nr):
-                rt_=r[i]@r[j]
-                if is_equal(rt_,r[k]):  # ???
+                if is_equal(rt_,r[k]):
                     mpltbl[i][j]=k
+                    break
     wt_mpltbl(mpltbl) # for test
 
 def wt_mpltbl(mpltbl: np.ndarray):

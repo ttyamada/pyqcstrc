@@ -224,7 +224,7 @@ def dot(v1:Qnvec, v2:Qnvec) -> qnn.Qnnum:
     #printqnv("v2",v2)  # for test
     isys=crs.isys
     if isys==3:
-        s2=prj.scly2 # qnnumber
+        s2=crs.scly2 # qnnumber
         v=v1[0]*v2[0]+v1[1]*v2[1]*s2
     else:
         v=qnn.zero() # qnnum zero
@@ -261,6 +261,10 @@ def qnv2flt(a:Qnvec):
     for i in range(n):
         ai=a[i]
         b[i]=(ai.n[0]+ai.n[1]*np.sqrt(N))/ai.n[2]
+    scly=crs.scly
+    isys=crs.isys
+    if isys==3:
+        b[1]=b[1]*scly
     return b
 
 def intv2qnv(a:np.ndarray):

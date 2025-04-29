@@ -49,7 +49,7 @@ occdom_init()
 if isys==4:  # octagonal
     M0=qnn.Qnnum([0,0,1])  # 0
     M1=qnn.Qnnum([1,0,2])  # 1/2
-    M2=qnn.Qnnum([-1,0,2]) #-1/2
+    M2=-M1                 #-1/2
     oc_asym0_=np.array([\
         [M0,M0,M0,M0,M0],\
         [M1,M2,M0,M1,M0],\
@@ -60,19 +60,19 @@ if isys==4:  # octagonal
 elif isys==3:  # decagonal
     M0=qnn.Qnnum([0,0,1])  # 0
     M1=qnn.Qnnum([1,0,1])  # 1
-    M2=qnn.Qnnum([-1,0,1]) #-1
+    M2=-M1                 #-1
     M3=qnn.Qnnum([1,0,2])  # 1/2
     od_asym_=np.array([\
         [M0,M0,M0,M0,M0,M0],\
         [M0,M0,M0,M0,M1,M0],\
-        [M1,M0,M0,M0,M1,M0]\
+        [M0,M0,M3,M0,M3,M0]\
         ],dtype=qnn.Qnnum)
     od_asym_nd=qna.anya(od_asym_,(3,6))
     od_asym=tr5.tr6to5e(od_asym_nd).reshape(1,3,5)
 elif isys==5:  # dodecagonal
     M0=qnn.Qnnum([0,0,1])  # 0
     M1=qnn.Qnnum([1,0,1])  # 1
-    M2=qnn.Qnnum([-1,0,1]) #-1
+    M2=-M1                 #-1
     M3=qnn.Qnnum([0,1,3])  # sqrt(3)/3=1/sqrt(3)
     od_asym_=np.array([\
         [M0,M0,M0,M0,M0,M0,M0],\
@@ -138,7 +138,12 @@ qnx0=qnv.anyv(x0)
 v0=prj.projection3(qnx0)
 qnv.printqnv("v0",v0)  # for test
 # calculate shifted od
-od_sym1=qnv.sub_vectors_qn(od_sym, v0) # shift by v0
+if isys!=3:
+    od_sym1=qnv.sub_vectors_qn(od_sym, v0) # shift by v0
+else:
+    tau=-qnn.Qnnum([1,1,2])
+    od_sym1_=od_sym*tau
+    od_sym1=qnv.sub_vectors_qn(od_sym1_, v0) # shift by v0
 #od_sym1=shift(od_sym, pos_b1)
 
 vst.write_xyz(od_sym1, '.', 'od_sym1')

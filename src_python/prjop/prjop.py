@@ -62,12 +62,13 @@ class Qnprj_Deca(qnm.Qnmat):
         M1=qnn.any([1,1,2])    # tau
         M2=qnn.any([-1,1,2])   # tau^-1
         M3=qnn.any([1,0,1])    # 1
-        M5=M2/2     #    tau^-1/2=c1
-        M6=M1/(-2)  #   -tau/2=c2
-        M7=M2/2     #1   s2/(2sin(pi/5))
-        M8=M7*(-1)  #-1 -s2/(2sin(pi/5))
-        M9=M3/2     #    s1/(2sin(pi/5))
-        M10=M9*(-1) #   -s1/(2sin(pi/5))
+        #c1=cos(2pi/5),c2=cos(4pi/5) s1=sin(2pi/5) s2=sim(4pi/5)
+        M5=M2/2     #    tau^{-1}/2=c1
+        M6=-M1/2    #   -tau/2=c2
+        M7=M2       #    s2/(s1)=tau^{-1}
+        M8=-M7      #   -s2/(s1)=-tau^{-1}
+        M9=M3       #    s1/(s1)=1
+        M10=-M9     #   -s1/(s1))=-1
         # y axis in external and internal spaces should be scaled by 2sin(pi/5)        
         prj0=np.array([\
            [M5,M9,M6,M7,M0],\
@@ -85,9 +86,9 @@ class Qnprj_Deca(qnm.Qnmat):
         self.N=crs.N
         self.shape=(n,n)
         self.scl=2.0/np.sqrt(5.0)
-        self.scly=2.0*np.sin(np.pi/5) #2s1
-        self.scly2=(M3-M5**2)*4       #4(1-c1^2)
-        #self.scly2=4*(M3-M5**2)       #4(1-c1^2)
+        self.scly=np.sin(2*np.pi/5)    #s1
+        self.scly2=(M3-M5**2)          #(1-c1^2)
+        #self.scly2=4*(M3-M5**2)       #(1-c1^2)
         #prj=self
         #print("self.ndim",self.ndim) # for test
         #print("self.shape",self.shape) # for test
@@ -109,11 +110,11 @@ class Qnprj_Dode(qnm.Qnmat):
     def __init__(self):
         M0=qnn.any([ 0, 0, 1]) #0
         M1=qnn.any([ 1, 0, 1]) # 1
-        M2=qnn.any([-1, 0, 1]) #-1
+        M2=-M1                 #-1
         M3=qnn.any([ 1, 0, 2]) # 1/2
-        M4=qnn.any([-1, 0, 2]) # 1/2
+        M4=-M3                 #-1/2
         M5=qnn.any([ 0, 1, 2]) #  sqrt(3)/2
-        M6=qnn.any([ 0,-1, 2]) # -sqrt(3)/2
+        M6=-M5                 # -sqrt(3)/2
 
         
         prj0=np.array([\
@@ -155,11 +156,10 @@ class Qnprj_Icos(qnm.Qnmat):
     def __init__(self):
         M0=qnn.any([ 0, 0, 1]) #  0 
         M1=qnn.any([ 1, 0, 1]) #  1
-        M2=qnn.any([-1, 0, 1]) # -1
+        M2=-M1                 # -1
         M3=qnn.any([ 1, 1, 2]) #  tau=(1+sqrt(5))/2
-        M4=qnn.any([-1,-1, 2]) # -tau
+        M4=-M4                 # -tau
 
-        
         prj0=np.array([\
            [M1,M3,M0,M3,M2,M0],\
            [M3,M0,M1,M2,M0,M3],\

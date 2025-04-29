@@ -148,9 +148,10 @@ def write_vesta(obj:qna.QnNdarray,path='.',basename='tmp',color='k',select='norm
             \nSTRUC', file=f)
             for i2,vrtx in enumerate(vertices):
                 xyz = prj.projection3(vrtx)
+                scly = crs.scly
                 xyz=num.numerical_vector(xyz)
                 print('%4d A        A%d  1.0000    %8.6f %8.6f %8.6f        1'%\
-                (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
+                (i2+1,i2+1,xyz[0],xyz[1]*scly,xyz[2]), file=f)
                 print('                             0.000000    0.000000    0.000000  0.00', file=f)
             print('  0 0 0 0 0 0 0\
             \nTHERI 0', file = f)
@@ -356,16 +357,17 @@ def write_vesta(obj:qna.QnNdarray,path='.',basename='tmp',color='k',select='norm
                     #qnv.printqnv("vertx",vertx) # for test
                     #qni=prj.prjvec_i(vertx)
                     qni=vertx
+                    scly=crs.scly
                     #print("qni.shape",qni.shape)  # for test
                     #qnv.printqnv("qni",qni)  # for test
                     xyz=num.numerical_vector(qni)
                     #print("xyz",xyz)  # for test
                     if isys==2:
                         print('%4d Xx        Xx%d  1.0000    %8.6f %8.6f %8.6f        1'%\
-                        (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
+                        (i2+1,i2+1,xyz[0],xyz[1]*scly,xyz[2]), file=f)
                     else:
                         print('%4d Xx        Xx%d  1.0000    %8.6f %8.6f %8.6f        1'%\
-                        (i2+1,i2+1,xyz[0],xyz[1],0.0), file=f)
+                        (i2+1,i2+1,xyz[0],xyz[1]*scly,0.0), file=f)
                     print('                             0.000000    0.000000    0.000000  0.00', file=f)
                 print('  0 0 0 0 0 0 0\
                 \nTHERI 0', file=f)
@@ -581,11 +583,12 @@ def write_vesta(obj:qna.QnNdarray,path='.',basename='tmp',color='k',select='norm
             \n  1.000000    1.000000    1.000000  90.000000  90.000000  90.000000\
             \n  0.000000    0.000000    0.000000    0.000000    0.000000    0.000000\
             \nSTRUC', file=f)
+            scly=crs.scly
             i2=0
             for vrtx in vertices:
                 xyz = prj.projection3(vrtx)
                 print('%4d A        A%d  1.0000    %8.6f %8.6f %8.6f        1'%\
-                (i2+1,i2+1,qnn.qn2flt(xyz[0]),qnn.qn2flt(xyz[1]),qnn.qn2flt(xyz[2])), file=f)
+                (i2+1,i2+1,qnn.qn2flt(xyz[0]),qnn.qn2flt(xyz[1])*scly,qnn.qn2flt(xyz[2])), file=f)
                 i2+=1
                 print('                             0.000000    0.000000    0.000000  0.00', file=f)
             print('  0 0 0 0 0 0 0\
@@ -799,6 +802,7 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
             ni=2
         else:
             ni=3
+        scly=crs.scly
         for i1,triangle in enumerate(obj):  # i1-th triangle
             for i2,vt in enumerate(triangle): # i2-th vertex
                 #qnv.printqnv("vt",vt)  # for test
@@ -986,7 +990,7 @@ def read_xyz(path,basename,select='triangle',verbose=0):
             f=open(file,'r')
         except IOError as e:
             print(e)
-            sys.exit(0)
+            crs.exit(0)
         line=[]
         while 1:
             a=f.readline()  # read one line from a file f
