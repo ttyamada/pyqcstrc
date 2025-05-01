@@ -7,8 +7,6 @@
 
 int N;
 
-//namespace qnnum {
-
 class Qnnum { 
 
     public:
@@ -72,7 +70,8 @@ class Qnnum {
         int c3 = b.n[0] * b.n[0] - b.n[1] * b.n[1] * N;
         if (c3 == 0) throw std::runtime_error("ERROR: division by zero");
         int d1[] = {c1, c2, c3};
-        return *this = *this * Qnnum(d1);
+        Qnnum qn = Qnnum(d1);
+        return *this * qn;
     }
 
     Qnnum operator/(int b) {
@@ -95,7 +94,7 @@ class Qnnum {
         return (std::signbit(c.n[0]) * c.n[0] * c.n[0] + std::signbit(c.n[1]) * c.n[1] * c.n[1] * N > 0);
     }
 
-    Qnnum operator~() {
+    Qnnum operator-() {
         int d1[] = {-n[0], -n[1], n[2]};
         return *this = Qnnum(d1);
     }
@@ -135,7 +134,3 @@ void printqnns(const std::string& str, std::vector<Qnnum>& a) {
 }
 
 };
-
-
-
-
