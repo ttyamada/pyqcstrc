@@ -12,7 +12,8 @@ using namespace qnnum;
 int main() {
     int isys = 4; // for octagonal
     crsys::crsys_init(isys);
-    init();
+    init(); // qnnum init
+    cout << "N " << N << endl;
 
     Qnnum qnn0 = zero();
     printqnn("qnn0", qnn0);

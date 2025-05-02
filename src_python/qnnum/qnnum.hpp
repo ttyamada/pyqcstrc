@@ -5,15 +5,27 @@
 #include <iostream>
 #include "crsys.hpp"
 
+using namespace std;
+
+namespace qnnum {
+
 int N;
 
 class Qnnum { 
 
     public:
-    //std::array<int, 3> n;
+    //array<int, 3> n;
     int n[3];
 
-    //Qnnum(std::array<int, 3>& n_) {
+    int signm(int a) {
+        if (a>=0) {
+            return 1;
+        } else {
+            return -1;
+        }
+    }
+
+    //Qnnum(array<int, 3>& n_) {
     Qnnum(int n_[]) {
         for (int i=0; i<3; ++i) {
             n[i] = n_[i];
@@ -21,86 +33,121 @@ class Qnnum {
     }
 
     Qnnum operator+(Qnnum& b) {
-        int c1 = n[0] * b.n[2] + b.n[0] * n[2];
-        int c2 = n[1] * b.n[2] + b.n[1] * n[2];
-        int c3 = n[2] * b.n[2];
-        int g = (int)std::gcd(c1, (int)std::gcd(c2, c3));
-        int d1[] = {c1 / g, c2 / g, c3 / g};
-        return Qnnum(d1);
+        Qnnum a=*this;
+        int c1 = a.n[0] * b.n[2] + b.n[0] * a.n[2];
+        int c2 = a.n[1] * b.n[2] + b.n[1] * a.n[2];
+        int c3 = a.n[2] * b.n[2];
+        //int g = (int)gcd(c1, (int)gcd(c2, c3));
+        int g = gcd(c1, gcd(c2, c3));
+        if (c3<0) {
+            int d1[] = {-c1 / g, -c2 / g, -c3 / g}; return Qnnum(d1);
+        } else {
+            int d1[] = {c1 / g, c2 / g, c3 / g}; return Qnnum(d1);
+        }
+        //int d1[] = {c1 / g, c2 / g, c3 / g};
+        //return Qnnum(d1);
     }
 
     Qnnum operator-(Qnnum& b) {
-        int c1 = n[0] * b.n[2] - b.n[0] * n[2];
-        int c2 = n[1] * b.n[2] - b.n[1] * n[2];
-        int c3 = n[2] * b.n[2];
-        int g = (int)std::gcd(c1, (int)std::gcd(c2, c3));
-        int d1[] = {c1 / g, c2 / g, c3 / g};
-        return *this = Qnnum(d1);
+        Qnnum a=*this;
+        int c1 = a.n[0] * b.n[2] - b.n[0] * a.n[2];
+        int c2 = a.n[1] * b.n[2] - b.n[1] * a.n[2];
+        int c3 = a.n[2] * b.n[2];
+        //int g = (int)gcd(c1, (int)gcd(c2, c3));
+        int g = gcd(c1, gcd(c2, c3));
+        if (c3<0) {
+            int d1[] = {-c1 / g, -c2 / g, -c3 / g}; return Qnnum(d1);
+        } else {
+            int d1[] = {c1 / g, c2 / g, c3 / g}; return Qnnum(d1);
+        }
+        //int d1[] = {c1 / g, c2 / g, c3 / g};
+        //return Qnnum(d1);
     }
 
     Qnnum operator+=(Qnnum& b) {
-        return *this = *this + b;
+        Qnnum a=*this;
+        return a + b;
     }
 
     Qnnum operator-=(Qnnum& b) {
-        return *this = *this - b;
+        Qnnum a=*this;
+        return a - b;
     }
 
     Qnnum operator*(Qnnum& b) {
-        int c1 = n[0] * b.n[0] + n[1] * b.n[1] * N;
-        int c2 = n[0] * b.n[1] + n[1] * b.n[0];
-        int c3 = n[2] * b.n[2];
-        int g = (int)std::gcd(c1, (int)std::gcd(c2, c3));
-        int d1[] = {c1 / g, c2 / g, c3 / g};
-        return *this = Qnnum(d1);
+        Qnnum a=*this;
+        //cout<<"N "<<N<<endl;  // for test
+        int c1 = a.n[0] * b.n[0] + a.n[1] * b.n[1] * N;
+        int c2 = a.n[0] * b.n[1] + a.n[1] * b.n[0];
+        int c3 = a.n[2] * b.n[2];
+        int g = gcd(c1, gcd(c2, c3));
+        if (c3<0) {
+            int d1[] = {-c1 / g, -c2 / g, -c3 / g}; return Qnnum(d1);
+        } else {
+            int d1[] = {c1 / g, c2 / g, c3 / g};  return Qnnum(d1);
+        }
     }
 
     Qnnum operator*(const int b) {
-        int c1 = n[0] * b;
-        int c2 = n[1] * b;
-        int c3 = n[2];
-        int g = (int)std::gcd(c1, (int)std::gcd(c2, c3));
-        int d1[] = {c1 / g, c2 / g, c3 / g};
-        return *this = Qnnum(d1);
+        Qnnum a=*this;
+        int c1 = a.n[0] * b;
+        int c2 = a.n[1] * b;
+        int c3 = a.n[2];
+        int g = gcd(c1, gcd(c2, c3));
+        if (c3<0) {
+            int d1[] = {-c1 / g, -c2 / g, -c3 / g}; return Qnnum(d1);
+        } else {
+            int d1[] = {c1 / g, c2 / g, c3 / g}; return Qnnum(d1);
+        }
+        
     }
 
     Qnnum operator/(Qnnum& b) {
+        Qnnum a=*this;
+        //cout<<"N "<<N<<endl; // for test
         int c1 = b.n[0] * b.n[2];
         int c2 = -b.n[1] * b.n[2];
         int c3 = b.n[0] * b.n[0] - b.n[1] * b.n[1] * N;
-        if (c3 == 0) throw std::runtime_error("ERROR: division by zero");
+        if (c3 == 0) throw runtime_error("ERROR: division by zero");
         int d1[] = {c1, c2, c3};
         Qnnum qn = Qnnum(d1);
-        return *this * qn;
+        return a * qn;
     }
 
     Qnnum operator/(int b) {
-        int d1[] = {n[0], n[1], n[2] * b};
-        return *this = Qnnum(d1);
+        Qnnum a=*this;
+        int d1[] = {a.n[0], a.n[1], a.n[2] * b};
+        return Qnnum(d1);
     }
 
     bool operator==(Qnnum& b) {
-        Qnnum c = *this - b;
+        Qnnum a=*this;
+        Qnnum c = a - b;
         return (c.n[0] == 0 && c.n[1] == 0);
     }
 
     bool operator<(Qnnum& b) {
-        Qnnum c = *this - b;
-        return (std::signbit(c.n[0]) * c.n[0] * c.n[0] + std::signbit(c.n[1]) * c.n[1] * c.n[1] * N < 0);
+        Qnnum a=*this;
+        //cout<<"N "<<N<<endl; // for test
+        Qnnum c = a - b;
+        return (signm(c.n[0]) * c.n[0] * c.n[0] + signm(c.n[1]) * c.n[1] * c.n[1] * N < 0);
     }
 
     bool operator>(Qnnum& b) {
-        Qnnum c = *this - b;
-        return (std::signbit(c.n[0]) * c.n[0] * c.n[0] + std::signbit(c.n[1]) * c.n[1] * c.n[1] * N > 0);
+        Qnnum a=*this;
+        //cout<<"N "<<N<<endl; // for test
+        Qnnum c = a - b;
+        return (signm(c.n[0]) * c.n[0] * c.n[0] + signm(c.n[1]) * c.n[1] * c.n[1] * N > 0);
     }
 
     Qnnum operator-() {
-        int d1[] = {-n[0], -n[1], n[2]};
-        return *this = Qnnum(d1);
+        Qnnum a=*this;
+        int d1[] = {-a.n[0], -a.n[1], a.n[2]};
+        return Qnnum(d1);
     }
 };
 
-namespace qnnum {
+//namespace qnnum {
 
 // Function implementations
 void init() {
@@ -123,13 +170,13 @@ Qnnum any(int  n_[]) {
 }
 
 // printqnn
-void printqnn(const std::string& str, Qnnum& a) {
-    std::cout << str << " [" << a.n[0] << ", " << a.n[1] << ", " << a.n[2] << "]" << std::endl;
+void printqnn(const string& str, Qnnum& a) {
+    cout << str << " [" << a.n[0] << " " << a.n[1] << " " << a.n[2] << "]" << endl;
 }
 
-void printqnns(const std::string& str, std::vector<Qnnum>& a) {
+void printqnns(const string& str, vector<Qnnum>& a) {
     for (size_t i = 0; i < a.size(); ++i) {
-        std::cout << str << " [" << a[i].n[0] << ", " << a[i].n[1] << ", " << a[i].n[2] << "]" << std::endl;
+        cout << str << " [" << a[i].n[0] << " " << a[i].n[1] << " " << a[i].n[2] << "]" << endl;
     }
 }
 
