@@ -3,8 +3,11 @@
 #include <vector>
 #include <array>
 #include <iostream>
+#include <chrono>
+
 #include "crsys.hpp"
 #include "qnnum.hpp"
+
 
 using namespace std;
 using namespace qnnum;
@@ -14,6 +17,7 @@ int main() {
     crsys::crsys_init(isys);
     init(); // qnnum init
     cout << "N " << N << endl;
+    chrono::steady_clock::time_point begin = chrono::steady_clock::now();
 
     Qnnum qnn0 = zero();
     printqnn("qnn0", qnn0);
@@ -62,5 +66,18 @@ int main() {
     printqnn("qnn5*2", qnn8);
     printqnn("qnn5/2", qnn9);
 
+    Qnnum qnt1=zero(); Qnnum qnt2=zero(); Qnnum qnt3=zero(); Qnnum qnt4=zero();
+    for (int i=0; i<1000000; ++i) {
+        qnt1 = qnn1+qnn2;
+        qnt2 = qnn1-qnn2;
+        qnt3 = qnn1*qnn3;
+        qnt4 = qnn1/qnn3;
+    }
+
+    chrono::steady_clock::time_point end = chrono::steady_clock::now();
+
+    cout << "elapsed time = " << chrono::duration_cast<chrono::milliseconds>(end - begin).count() << "[ms]" << endl;
+    cout << "elapsed time = " << chrono::duration_cast<chrono::microseconds>(end - begin).count() << "[µs]" << endl;
+    //cout << "elapsed time = " << chrono::duration_cast<chrono::nanoseconds> (end - begin).count() << "[ns]" << endl;
     return 0;
 }

@@ -169,6 +169,66 @@ Qnnum any(int  n_[]) {
     return Qnnum(d1);
 }
 
+/*
+Qnnum abs(Qnnum& a) {
+    if (a<0) {
+        return neg(a);
+    }
+    return a;
+}
+*/
+
+double qn2flt(Qnnum& a) {
+    return (a.n[0]+a.n[1]*sqrt((float)N))/a.n[2];
+}
+
+Qnnum int2qn(int i, int N) {
+    int d1[] = {i,0,1};
+    return Qnnum(d1);
+}
+
+// float to Qnnum converter
+Qnnum flt2qn(float qr) {
+    float xm=abs(qr);
+    int isg[]={1,-1};
+    float sqrtn=sqrt(float(N));
+    //print("N",N,"sqrtn",sqrtn) // for test
+    float eps=0.000001;
+    int n1m=200; int n2m=200; int n3m=200;
+    int d1[] = {0,0,1};
+    Qnnum xn=Qnnum(d1);
+    for (int k=0; k<n3m; ++k) {
+        int n3=k+1;
+        for (int i=0; i<n1m; ++i) {
+            for (int j=0; j<n2m; ++j) {
+                for (int ic=0; ic<2; ++ic) {
+                    int n1=isg[ic]*i; //+-i
+                    for (int jc=0; jc<2; ++jc) {
+                        int n2=isg[jc]*j; //+-j
+                        float xt=(n1+n2*sqrtn)/n3;
+                        //print("xt",xt,"qr",qr)
+                        float xd=(xt-qr);
+                        if(abs(xd) < xm) {
+                            float xm=abs(xd);
+                            xn.n[0]=n1;
+                            xn.n[1]=n2;
+                            xn.n[2]=n3;
+                        }
+                        if(abs(xd)<eps) {
+                            //print("xt,n1,n2,n3.sqrtnr",xt,n1,n2,n3,sqrtn)
+                            //printqnn("xn",xn)
+                            return xn;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    cout << "cannt convert float to qnnum" << endl;
+    return zero();
+}
+
+
 // printqnn
 void printqnn(const string& str, Qnnum& a) {
     cout << str << " [" << a.n[0] << " " << a.n[1] << " " << a.n[2] << "]" << endl;
