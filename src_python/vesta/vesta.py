@@ -22,15 +22,20 @@ import math1 as mth
 #import pyqcstrc.dode2.intsct as intsct
 #import pyqcstrc.dode2.projection12 as proj
     
+"""
+improvement
+edge information is gien by indices of independent vertices (points)
+in nD or 2D or 3D internal space
+"""
 def write_vesta(obj:qna.QnNdarray,path='.',basename='tmp',color='k',select='normal',verbose=0):
     """
     Export occupation domains in VESTA format.
     
     Args:
         # obj (qnndarray): the occupation domain
-        #    The shape is (num,3,5), with num=numbre_of_triangles for dihedral QCs
-        #              or (num,4,6) with num=number_of_tetrahedra for icosahedral QCs
-        obj (qna.qnndarray): the occupation domain
+        #    The shape is (num,3,2), with num=numbre_of_triangles for dihedral QCs
+        #              or (num,4,3) with num=number_of_tetrahedra for icosahedral QCs
+        obj (qna.qnndarray): array of triangles/tetrahedra in the occupation domain
         path (str): Path of the output XYZ file
         basename (str): Basename of the output XYZ file
         color (str)
@@ -77,7 +82,7 @@ def write_vesta(obj:qna.QnNdarray,path='.',basename='tmp',color='k',select='norm
             a = [127,127,127]
         return a
     
-    shape=obj.shape
+    shape=obj.shape #(num,3,2) or (num,4,3) assumed
     ndim=len(shape)
     #print("shape in write_vesta",shape,"ndim",ndim)  # for test
    
@@ -1106,15 +1111,15 @@ def generate_border_edges(obj):
     
     Args:
         #obj (numpy.ndarray):
-        "   The shape is (num,3,6,3), where num=numbre_of_tetrahedron.
+        #   The shape is (num,3,6,3), where num=numbre_of_tetrahedron. (original)
         obj (nda.qnndarray):
             The occupation domain
-            The shape is (num,3,n), where num=numbre_of_tetrahedron n=5 or 6 for dihed or icos.
+            The shape is (num,3,n), where num=numbre_of_tetrahedron n=2 or 3 for dihed or icos.
     
     Returns:
         Border edges of the occupation domains (numpy.ndarray):
-            The shape is (num,2,6,3), where num=numbre_of_edge.
-    
+            #The shape is (num,2,6,3), where num=numbre_of_edge. (original)
+            The shape is (num,2,n), where num=numbre_of_edge. (dihedral)    
     """
     triangle_surface=utl.generator_surface_1(obj)
     return utl.surface_cleaner(triangle_surface)

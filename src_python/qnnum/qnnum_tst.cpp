@@ -4,6 +4,7 @@
 #include <array>
 #include <iostream>
 #include <chrono>
+#include <iomanip>
 
 #include "crsys.hpp"
 #include "qnnum.hpp"
@@ -28,7 +29,8 @@ int main() {
     Qnnum qnn3(d1);
     printqnn("qnn2", qnn2);
     printqnn("qnn3", qnn3);
-    
+
+    cout << std::boolalpha;  // for boolian true and false 
     if (qnn1 == qnn2) {
         cout << "qnn1==qnn2" << endl;
     }
