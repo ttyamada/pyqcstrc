@@ -1,0 +1,4 @@
+to specify import file path use CXXFLAGS
+in makefile. for ixample
+
+CXXFLAGS += $(INCD)

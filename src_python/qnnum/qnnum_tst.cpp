@@ -69,7 +69,7 @@ int main() {
     printqnn("qnn5/2", qnn9);
 
     Qnnum qnt1=zero(); Qnnum qnt2=zero(); Qnnum qnt3=zero(); Qnnum qnt4=zero();
-    for (int i=0; i<1000000; ++i) {
+    for (int i=0; i<100000000; ++i) {
         qnt1 = qnn1+qnn2;
         qnt2 = qnn1-qnn2;
         qnt3 = qnn1*qnn3;
