@@ -18,7 +18,8 @@ all : $(PROG)
 
 #-fmodules-ts
 
-CCFLAGS = -g  -I../crsys -std=c++17
+#CCFLAGS = -g  -I../crsys -std=c++23
+CCFLAGS = -O  -I../crsys -std=c++23
 
 $(PROG):  $(OBJS)
 	$(CC) $(CCFLAGS) $(LNOPT) $(LIB) $^ -o $@ 
