@@ -787,10 +787,8 @@ def write_xyz(obj,path='.',basename='tmp',select='triangle',verbose=0):
         Generate object (set of triangles) object in XYZ format.
     
         Args:
-            #obj (numpy.ndarray): the occupation domain
-            #    The shape is (num,3,6,3), where num=numbre_of_triangle.
             obj (qna.qnndarray): the occupation domain
-                The shape is (num,3,n), where num=numbre_of_triangle, n=5 or 5 for dihed or icos.
+                The shape is (num,3,ni), where num=numbre_of_triangle, ni=2 or 3 for dihed or icos.
             filename (str): filename of the output XYZ file
         
         Returns:

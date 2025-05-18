@@ -12,7 +12,6 @@ import qnnum as qnn
 # they are represented by a[2][n] a[3][n] and a[4][n]
 # in nD space
 # as a special case, a point is represented by a[n]
-
 #add,sub,iadd,isub should be implemented in subclass
 
 class QnNdarray(NDArray):
