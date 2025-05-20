@@ -1,10 +1,10 @@
 #include <iostream>
 #include <vector>
-#include "crsys.h"
-#include "qnnum.h"
-#include "qnvec.h"
-#include "qnmat.h"
-#include "qnndarray.h"
+#include "crsys.hpp"
+#include "qnnum.hpp"
+#include "qnvec.hpp"
+#include "qnndarray.hpp"
+//#include "qnmat.hpp"
 
 int main() {
     // test
@@ -13,22 +13,22 @@ int main() {
     qnnum_init();
     qnvec_init();
     qnndarray_init();
-    qnmat_init();
+    //qnmat_init();
 
     int n = crsys_n;
     int N = crsys_N;
 
     std::vector<int> shape = {n, n};
-    QnNdarray qndm = qnmat::zerom(shape); // nxn qmnum zero matrix
-    std::cout << "qndm.shape: " << qndm.shape() << std::endl;
-    printqndm("zero qnmat", qndm);
-    QnNdarray unitm = qnmat::unitm(n);
-    std::cout << "unitm.shape: " << unitm.shape() << std::endl;
-    printqndm("unit qnmat", unitm);
+    //QnNdarray qndm = qnmat::zerom(shape); // nxn qmnum zero matrix
+    //std::cout << "qndm.shape: " << qndm.shape() << std::endl;
+    //printqndm("zero qnmat", qndm);
+    //QnNdarray unitm = qnmat::unitm(n);
+    //std::cout << "unitm.shape: " << unitm.shape() << std::endl;
+    //printqndm("unit qnmat", unitm);
 
-    QnNdarray unitmi = copy(unitm); // copy of qnmi
-    std::cout << "unitmi.shape: " << unitmi.shape() << std::endl;
-    printqndm("unitmi", unitmi);
+    //QnNdarray unitmi = copy(unitm); // copy of qnmi
+    //std::cout << "unitmi.shape: " << unitmi.shape() << std::endl;
+    //printqndm("unitmi", unitmi);
 
     int nr = 10;
     std::cout << "nr: " << nr << ", n: " << n << std::endl;

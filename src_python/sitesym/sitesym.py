@@ -1,6 +1,3 @@
-################ 
-# site symmetry
-################
 import sys
 import numpy as np
 import cython

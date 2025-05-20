@@ -46,34 +46,6 @@ def generate_random_vectors(n,ndim=6):
 def generate_random_triangle():
     return generate_random_vectors(3)
 
-"""
-print('check projection')
-
-nset=2
-vst=generate_random_vectors(nset)
-vsn=numerical_vectors(vst)
-#
-# TAU-style
-vset=get_internal_component_sets_numerical(vst)
-for v in vset:
-    print(v)
-# float
-viset=projection3_sets_numerical(vsn)
-for v in viset:
-    print(v)
-vset=projection_sets_numerical(vsn)
-for v in vset:
-    print(v)
-"""
-
-"""
-print('check tetrahedron')
-triangle=generate_random_triangle() # in TAU-style
-triangle_num=numerical_vectors(triangle) # in float
-#print(triangle_num)
-area=triangle_area_nd_numerical(triangle_num)
-print(area)
-"""
 
 isys=3  # decagonal
 crs.crsys_init(isys)

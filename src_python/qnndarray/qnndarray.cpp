@@ -2,8 +2,8 @@
 #include <vector>
 #include <iterator>
 #include <algorithm>
-#include "qnn.h" // Assuming qnn.h contains the necessary declarations for Qnnum and related functions
-#include "crsys.h" // Assuming crsys.h contains the necessary declarations for isys, n, N
+#include "qnnum.hpp" // Assuming qnn.h contains the necessary declarations for Qnnum and related functions
+#include "crsys.hpp" // Assuming crsys.h contains the necessary declarations for isys, n, N
 
 class QnNdarray : public std::vector<std::vector<std::vector<Qnnum>>> {
 public:
