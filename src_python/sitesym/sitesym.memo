@@ -1,0 +1,1 @@
+// sitesym.hpp should only depend on crsys, qnnum, point, qnsym, lattice 

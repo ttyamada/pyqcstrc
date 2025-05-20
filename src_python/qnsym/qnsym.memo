@@ -1,0 +1,1 @@
+qnsym.hpp should only depend on crsys, qnnum, qnmat, prjop
