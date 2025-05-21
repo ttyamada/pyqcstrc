@@ -11,8 +11,25 @@ PYIND11_MODULL(python_module_name, m) {
 	// cpp module geometry can be called as geom in the following example
 	// and its function name as geom.func(...) like def func(...):
 **/
-PYIND11_MODULL(geometry, geom) {
+PYIND11_MODULL(geometry, geom.point) {
+	geom.point.def("__init__",point);
+	geom.point.def("__add__",operator+,"operator overload for +");
+	geom.point.def("__sub__",operator-,"operator overload for -");
+	geom.point.def("__mul__",operator*,"operator overload for *");
+	geom.point.def("__div__",operator/,"operator overload for /");
+}
+
+PYIND11_MODULL(geometry, geom.edge) {
+	geom.edge.def("__init__",edge);
+	geom.edge.def("__add__",operator+,"operator overload for +");
+	geom.edge.def("__sub__",operator-,"operator overload for -");
 
 }
 
+PYIND11_MODULL(geometry, geom.teiang) {
+	geom.edge.def("__init__",triang);
+	geom.edge.def("__add__",operator+,"operator overload for +");
+	geom.edge.def("__sub__",operator-,"operator overload for -");
 }
+
+
