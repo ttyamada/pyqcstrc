@@ -1,0 +1,27 @@
+OBJD = obj_86
+BIND = bin_86
+LIBD = lib_86
+SRCD = .
+
+#CC = icx
+CC =g++
+
+vpath %.cpp $(SRCD)
+
+SRCS = delaunay_n.cpp
+OBJS = delaunay_n.o
+LIB = $(LIBD)/libdelaunay.so
+all : $(LIB)
+
+.SUFFIXES: .o .cpp
+
+CCFLAGS = -fPIC -shared -std=c++17
+
+$(LIB):  $(OBJS)
+	$(CC) $(CCFLAGS) $^ -o $@ 
+
+%.o : %.cpp
+	$(CC) $(CCFLAGS) -c $< -o $@
+
+clean :
+	rm -f $(LIB) $(OBJS)

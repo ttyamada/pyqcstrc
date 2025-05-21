@@ -1,0 +1,27 @@
+OBJD = obj_86
+BIND = bin_86
+LIBD = lib_86
+SRCD = .
+
+#CC = icx
+CC =g++
+
+vpath %.cpp $(SRCD)
+
+SRCS = geometry_n.cpp
+OBJS = geometry_n.o
+LIB = $(LIBD)/libgeometry.so
+all : $(LIB)
+
+.SUFFIXES: .o .cpp
+
+CCFLAGS = -fPIC -shared -std=c++17
+
+$(LIB):  $(OBJS)
+	$(CC) $(CCFLAGS) $^ -o $@ 
+
+%.o : %.cpp
+	$(CC) $(CCFLAGS) -c $< -o $@
+
+clean :
+	rm -f $(LIB) $(OBJS)

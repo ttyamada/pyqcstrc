@@ -1,0 +1,33 @@
+OBJD = obj_86
+BIND = bin_86
+SRCD = .
+
+#CC = icx -lstdc++
+CC =g++
+
+vpath %.cpp $(SRCD)
+
+SRCS = qnnum_tst.cpp
+COBJS = $(SRCS:.cpp=.o)
+OBJS = $(addprefix $(OBJD)/,$(COBJS))
+
+PROG = $(BIND)/qnnum_tst
+all : $(PROG)
+
+.SUFFIXES: .o .cpp
+#-fmodules-ts
+
+# -O equiv -O1
+#CCFLAGS = -g -std=c++23
+#CCFLAGS = -O -std=c++23
+#CCFLAGS = -O1 -std=c++23
+CCFLAGS = -O2 -std=c++23
+
+$(PROG):  $(OBJS)
+	$(CC) $(CCFLAGS) $(LNOPT) $(LIB) $^ -o $@ 
+
+$(OBJD)/%.o : %.cpp
+	$(CC) $(CCFLAGS) -c $< -o $@
+
+clean :
+	rm bin_86/qnnum_tst obj_86/*.o

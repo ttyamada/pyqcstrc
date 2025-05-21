@@ -1,0 +1,35 @@
+
+SRCD = .
+OBJD = obj_86
+BIND = bin_86
+#INC = -I.
+#INC = -I. -I/usr/include/c++/13 # ubuntu24.04
+INC = -I. -I/usr/include/c++/15 # fedora42 cachyos
+
+CC = g++
+#CC = icx
+LIB = -L./lib_86 -lgeometry -ldelaunay -lstdc++ # for icx
+
+vpath %.cpp $(SRCD)
+
+CSOURCES =  wt_off.cpp delaunay_tst_n.cpp 
+COBJS = $(CSOURCES:.cpp=.o)
+
+OBJS = $(addprefix $(OBJD)/,$(COBJS))
+PROG = $(BIND)/delaunay_tst_n
+
+CCFLAGS = $(INC) -std=c++23  # for gcd  c++20 or later 
+
+.SUFFIXES: .o .cpp
+
+# qnnum.cpp is a main file and not necessary for delaunay_tst_n
+
+ $(PROG): $(OBJS)
+	$(CC) $(CCFLAGS) $(LIB) $^ -o $@
+
+$(OBJD)/%.o : %.cpp
+	$(CC) $(CCFLAGS) -c $< -o $@
+
+clean :
+	rm -f $(OBJS) delaunay_tst_n
+	
