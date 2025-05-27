@@ -4,6 +4,7 @@
 #include <numeric>
 
 #include "qnnum.hpp"
+#include "geometry.hpp"
 
 // class number includes conventional number and qnnumber
 // interface
@@ -17,6 +18,7 @@ namespace number {
 	template<class T> T abs(T a);
 	template<class T> T min(T a, T b);
 	template<class T> T max(T a, T b);
+	//template<class T> vector<class<T>> remove_if(std::vector<class<T>>, classes, predicate pred);
 };
 
 // specialization

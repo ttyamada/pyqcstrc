@@ -10,7 +10,9 @@
 //#include "qnndarray.hpp"
 
 // this should be replaced by point (array<Qnnum>[2])
-// this hould be independent of qnvec and qnndarray
+// or 2D and 3D point can inherit this class
+// qnndarray in original code can be replaced by array (vector)
+// of points, edges, and triangles (tetrahedra)
 // use geometry instead (point edge circle triangle tetrahedron)
 // operators depend on each type (point, edge, circle, triangle, tetrahedron)
 // for point, many operations are defined, while for others

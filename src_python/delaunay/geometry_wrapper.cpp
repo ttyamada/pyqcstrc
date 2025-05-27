@@ -13,6 +13,7 @@ PYIND11_MODULL(python_module_name, m) {
 **/
 PYIND11_MODULL(geometry, geom.point) {
 	geom.point.def("__init__",point);
+	geom.point.def("__eq__",operator=,"operator overload for +");
 	geom.point.def("__add__",operator+,"operator overload for +");
 	geom.point.def("__sub__",operator-,"operator overload for -");
 	geom.point.def("__mul__",operator*,"operator overload for *");
@@ -28,8 +29,8 @@ PYIND11_MODULL(geometry, geom.edge) {
 
 PYIND11_MODULL(geometry, geom.teiang) {
 	geom.edge.def("__init__",triang);
-	geom.edge.def("__add__",operator+,"operator overload for +");
-	geom.edge.def("__sub__",operator-,"operator overload for -");
+	geom.point.def("__eq__",operator==,"operator overload for +");
+	geom.point.def("__not__",operator!=,"operator overload for +");
 }
 
 
