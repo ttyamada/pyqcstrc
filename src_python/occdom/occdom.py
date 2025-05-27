@@ -12,8 +12,9 @@ import cython
 
 import crsys as crs
 import qnnum as qnn
-import qnndarray as qna
-import qnvec as qnv
+#import qnndarray as qna
+#import qnvec as qnv
+import geometry as geom
 import qnmat as qnm
 import math1 as mth
 import numeric as num
@@ -23,8 +24,14 @@ import intsct as isct
 import prjop as prj
 import lattice as lt
 import sitesym as ssm
-from vesta import (write_vesta,write_xyz)
-from numpy.typing import (NDArray)
+import off
+#from vesta import (write_vesta,write_xyz)
+#from numpy.typing import (NDArray)
+
+#this version uses point- edge- triangle-arrays instead
+#of qnndarray
+#after transformint to c++ its template form will be used
+#for double and qnnum versions
     
 #except ImportError:
 #    print('import error\n')

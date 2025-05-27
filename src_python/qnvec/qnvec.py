@@ -7,6 +7,8 @@ import crsys as crs
 import qnnum as qnn
 import qnndarray as qna
 
+# 2 or 3D array for point?
+# 1D array for edge or triangle?
 class Qnvec(qna.QnNdarray):
 #class Qnvec(np.ndarray):
     def __new__(cls, n:np.int64):
@@ -54,6 +56,30 @@ class Qnvec(qna.QnNdarray):
     
     def __copy__(a:Self):
         return copy(a)
+
+    def uniquev(qnv1: NDArray[qnn.Qnnum]):
+        print("qnv1.shape",qnv1.shape) # for test
+        n=qnv1.shape[0]
+        m=0
+        qnv2 = np.zeros((0,2),dtype=qnn.Qnnum)
+        for i in range(n):
+            is_new=True
+            for j in range(m):
+                #printqnv("qnv1 ",qnv1[i]) # for test
+                #printqnv("qnv2 ",qnv2[j]) # for test
+                if qnv1[i][0]==qnv2[j][0] and qnv1[i][1]==qnv2[j][1]:
+                    is_new=False
+                    break
+            #print("is_new",is_new) # for test
+            if is_new:
+                #print(i,m,end=' ') # for test
+                m1=m+1
+                qnv2=np.append(qnv2,qnv1[i]).reshape(m1,2)  # only for 2D
+                #printqnv("qnv2[m]",qnv2[m]) # for test
+                m+=1
+                #print("m",m)  # for test
+        #printqnvs("unique qnv1",qnv2) # for test
+        return qnv2
     
 def qnvec_init():
     global n,N,isys,n_e,n_i
@@ -83,12 +109,12 @@ def zerov(n: np.int64)->Qnvec: # qnnumber zero vector
 
 def anyv(v:NDArray[qnn.Qnnum]) -> qna.QnNdarray:
     shape=v.shape
-    #print("shape in anyv",shape)  # for test
+    print("shape in anyv",shape)  # for test
     n=shape[0]
     v1=Qnvec(n)
     for i in range(n):
         v1[i]=v[i]
-    #printqnv("v1",v1)  # for test
+    printqnv("v1",v1)  # for test
     return v1
 
 def copy(v: Qnvec) -> Qnvec:
@@ -342,6 +368,7 @@ def not_eq(qnv1:Qnvec, qnv2:Qnvec):
         if qnv1[i]!=qnv2[i]:
             return True
     return False
-    
+
+
     
     
