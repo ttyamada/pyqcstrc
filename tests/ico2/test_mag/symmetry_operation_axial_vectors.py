@@ -58,7 +58,7 @@ if __name__ == "__main__":
     x_plt_m=[]
     y_plt_m=[]
     print('Symmetry operations on 3D positional vector')
-    vne=numericalc.projection_par_numerical(vn)
+    #vne=numericalc.projection_par_numerical(vn)
     #vne=np.array([10, 20, 90])
     vne=np.array([90, 10, 20])
     vne=vne/np.linalg.norm(vne)
@@ -98,9 +98,14 @@ if __name__ == "__main__":
     #-----------------------
     lst=[0,108,22,92,119,16,14,111,98,28,102,5]
     
+    vne=numericalc.projection_par_numerical(vn)
+    vne=vne/np.linalg.norm(vne)
+    
+    
     print('Symmetry operation on 6D axial vector')
     print("TEST :generator_obj_symmetric_vector_specific_symop_1()")
-    mus=symmetry_numerical.generator_obj_symmetric_vector_specific_symop_1(vn,lst,'axial')
+    #mus=symmetry_numerical.generator_obj_symmetric_vector_specific_symop_1(vn,lst,'axial')
+    mus=symmetry_numerical.generator_obj_symmetric_vector_specific_symop_1(vn,lst,'normal')
     poss=symmetry_numerical.generator_obj_symmetric_vector_specific_symop_1(vn,lst,'normal')
     out=[]
     for i1 in range(len(lst)):
@@ -109,12 +114,13 @@ if __name__ == "__main__":
         mu=mu/np.linalg.norm(mu)/2
         pos=pos/np.linalg.norm(pos)*2
         print('%d %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f'%(i1,pos[0],pos[1],pos[2],mu[0],mu[1],mu[2]))
-        out.append(['Yb',pos,i1,vn,mu,i1])
+        out.append(['Yb',pos,i1,vn,mu,i1,0])
     od.write_vesta(out,path='.',basename='test_6d_axial_vec',color='k',select='mag',verbose=0)
     
     print('Symmetry operation on 3D axial vector')
     print("TEST :generator_obj_symmetric_vector_specific_symop_1()")
     mus=symmetry_numerical.generator_obj_symmetric_vector_specific_symop_1(vne,lst,'axial')
+    #mus=symmetry_numerical.generator_obj_symmetric_vector_specific_symop_1(vne,lst,'normal')
     poss=symmetry_numerical.generator_obj_symmetric_vector_specific_symop_1(vne,lst,'normal')
     out=[]
     for i1 in range(len(lst)):
@@ -123,7 +129,7 @@ if __name__ == "__main__":
         mu=mu/np.linalg.norm(mu)/2
         pos=pos/np.linalg.norm(pos)*2
         print('%d %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f'%(i1,pos[0],pos[1],pos[2], mu[0],mu[1],mu[2]))
-        out.append(['Yb',pos,i1,vn,mu,i1])
+        out.append(['Yb',pos,i1,vn,mu,i1,0])
     od.write_vesta(out,path='.',basename='test_3d_axial_vec',color='k',select='mag',verbose=0)
     
     
