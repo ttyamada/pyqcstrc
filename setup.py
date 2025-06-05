@@ -9,7 +9,6 @@ import platform
 from numpy import get_include
 
 from setuptools import setup, find_packages, Extension
-from setuptools import setup, find_packages, Extension
 from setuptools import find_packages
 
 def _requires_from_file(filename):
