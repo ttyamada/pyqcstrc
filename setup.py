@@ -51,7 +51,7 @@ setup(
     author_email=EMAIL,
     url=URL,
     package_dir={"": "src"},
-    packages=find_packages(where="src", include=["pyqcstrc"]),
+    packages=find_packages(where="src", include=["pyqcstrc", "pyqcstrc.*"]),
     package_data={},
     python_requires=REQUIRES_PYTHON,
     install_requires=REQUIRED,
