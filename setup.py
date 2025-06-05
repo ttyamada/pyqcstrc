@@ -6,9 +6,14 @@
 #
 import os
 import platform
+from numpy import get_include
 
 from setuptools import setup, find_packages, Extension
-from numpy import get_include
+from setuptools import setup, find_packages, Extension
+from setuptools import find_packages
+
+def _requires_from_file(filename):
+    return open(filename).read().splitlines()
 
 VERSION="0.0.2a12"
 
@@ -20,10 +25,10 @@ AUTHOR = "Tsunetomo Yamada"
 EMAIL = "tsunetomo.yamada@rs.tus.ac.jp"
 REQUIRES_PYTHON = ">=3.7.0"
 
-REQUIRED=[
-    'numpy>=1.20.0',
-    'scipy>=1.6.0',
-]
+#REQUIRED=[
+#    'numpy>=1.20.0',
+#    'scipy>=1.6.0',
+#]
 
 EXTRAS = {
     "dev": [
@@ -54,7 +59,8 @@ setup(
     packages=find_packages(where="src", include=["pyqcstrc"]),
     package_data={},
     python_requires=REQUIRES_PYTHON,
-    install_requires=REQUIRED,
+    #install_requires=REQUIRED,
+    install_requires=_requires_from_file('requirements.txt'),
     extras_require=EXTRAS,
     include_package_data=True,
     zip_safe=False,
