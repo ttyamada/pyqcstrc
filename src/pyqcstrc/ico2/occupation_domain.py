@@ -1421,7 +1421,7 @@ def generate_border_edges(obj):
     return utils.surface_cleaner(triangle_surface)
 
 # new in version 0.0.2a2
-def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
+def obj2podatm(obj, serial_number=1, path='.', position=[0,0,0,0,0,0], basename='tmp', shift=[0,0,0,0,0,0]):
     
     def find_common_vertex(obj):
         #Find common vertex of tetrahedra in obj).
@@ -1468,9 +1468,16 @@ def obj2podatm(obj,serial_number=1,path='.',basename='tmp',shift=[0,0,0,0,0,0]):
         #--------
         fatm.write('%d \'Em\' 1 %d 1 2.0 0. 0. 1.0 0. 0. 0.\n'%(serial_number,serial_number))
         
+        #posn=numericalc.numerical_vector(position)
         vn=numericalc.numerical_vector(vrtx0)
         fatm.write('x=  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f\n'%(\
+        position[0],position[1],position[2],position[3],position[4],position[5]))
+        fatm.write('xe1= 1. 0.  0. 0.  0. 0. u1=0.0            5f\n')
+        fatm.write('xe2= 1. 0. -1. 0. -1. 0. u2=0.0            3f\n')
+        fatm.write('xe3= 1. 0.  0. 0. -1. 0. u3=0.0            2f\n')
+        fatm.write('xi=  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f v=1.0\n'%(\
         vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
+        
         
         # generate a list of verices and remove the common vertex from it.
         vtxs=utils.remove_doubling_in_perp_space(obj)
@@ -1587,7 +1594,7 @@ def simple_hand_step2(obj, merge_list):
 def site_symmetry(site):
     return symmetry.site_symmetry(site)
 
-def write_podatm(obj, position, vlist, path='.', basename='tmp', shift=[0.0,0.0,0.0,0.0,0.0,0.0], verbose=0):
+def write_podatm(obj, position, vlist, path='.', basename='tmp', shift=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0], verbose=0):
     """
     Generate pod and atom files.
     

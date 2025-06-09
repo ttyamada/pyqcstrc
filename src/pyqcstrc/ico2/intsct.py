@@ -954,7 +954,8 @@ def tetrahedron_not_obj_1(tetrahedron: NDArray[np.int64], obj: NDArray[np.int64]
             if counter2==0:
                 tmp=vrtx1.reshape(1,6,3)
             else:
-                tmp=np.vstack([tmp1a,[vrtx1]])
+                #tmp=np.vstack([tmp1a,[vrtx1]])
+                tmp=np.vstack([tmp,[vrtx1]])
             counter2+=1
         else:
             pass
