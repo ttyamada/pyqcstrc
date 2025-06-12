@@ -489,7 +489,7 @@ def generator_equivalent_numeric_vectors_specific_symop(vns,index_of_symmetry_op
 # site symmetry
 ################
 
-def site_symmetry_and_coset_new(site, brv, pg, verbose=0):
+def site_symmetry_and_coset(site, brv, pg, verbose=0):
     
     def site_symmetry(site, symop, brv, verbose=0):
         """symmetry operators in the site symmetry group G.
@@ -599,8 +599,9 @@ def site_symmetry_and_coset_new(site, brv, pg, verbose=0):
                 break
         
     return lst_idx_ssym, lst_idx_reps
-    
-def site_symmetry_and_coset(site,brv,pg,verbose=0):
+
+# old version, 2025.06.12
+def site_symmetry_and_coset_old(site,brv,pg,verbose=0):
     #symmetry operators in the site symmetry group G and its left coset decomposition.
     #
     #Args:
