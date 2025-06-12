@@ -489,6 +489,7 @@ def generator_equivalent_numeric_vectors_specific_symop(vns,index_of_symmetry_op
 # site symmetry
 ################
 
+# new version, 2025.06.12
 def site_symmetry_and_coset(site, brv, pg, verbose=0):
     
     def site_symmetry(site, symop, brv, verbose=0):
