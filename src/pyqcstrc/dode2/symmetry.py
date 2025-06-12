@@ -489,22 +489,9 @@ def generator_equivalent_numeric_vectors_specific_symop(vns,index_of_symmetry_op
 # site symmetry
 ################
 
-def site_symmetry_and_coset(site,brv,pg,verbose=0):
-    #symmetry operators in the site symmetry group G and its left coset decomposition.
-    #
-    #Args:
-    #    site (numpy.ndarray):
-    #        xyz coordinate of the site.
-    #        The shape is (6,3).
-    #
-    #Returns:
-    #    List of index of symmetry operators of the site symmetry group G (list):
-    #        The symmetry operators leaves xyz identical.
-    #    
-    #    List of index of symmetry operators in the left coset representatives of the poibt group G (list):
-    #        The symmetry operators generates equivalent positions of the site xyz.
+def site_symmetry_and_coset_new(site, brv, pg, verbose=0):
     
-    def site_symmetry(site,symop,brv):
+    def site_symmetry(site, symop, brv, verbose=0):
         """symmetry operators in the site symmetry group G.
         
         Args:
@@ -558,14 +545,137 @@ def site_symmetry_and_coset(site,brv,pg,verbose=0):
                 lst.append(i1)
             else:
                 pass
-        print('lst:',lst)
         return lst
         
-    def coset(site,symop,brv,pg,idx_site):
+    def are_matrices_equal(m1, m2, tol=1e-5):
+        return np.allclose(m1, m2, atol=tol)
+        
+    def is_matrix_in_set(matrix, matrix_set):
+        for m in matrix_set:
+            if are_matrices_equal(m, matrix):
+                return True
+        return False
+        
+    def compute_left_cosets(G, H):
+        cosets = []
+        used_representatives = []
+        
+        for g in G:
+            # gH = { g * h for h in H }
+            coset = [g @ h for h in H]
+            
+            # チェック：この coset が既出の剰余類と一致するか
+            is_new = True
+            for existing in cosets:
+                # 一致チェックは代表元で十分（g' ∈ same coset ⇔ ∃ h: g⁻¹g' ∈ H）
+                if is_matrix_in_set(coset[0], existing):
+                    is_new = False
+                    break
+                    
+            if is_new:
+                cosets.append(coset)
+                used_representatives.append(g)
+                
+        return cosets, used_representatives
+    
+    symop = dodesymop_array(pg)
+    
+    lst_idx_ssym = site_symmetry(site, symop, brv, verbose)
+    
+    G = []
+    for op in symop:
+        G.append(op)
+    H = []
+    for i in lst_idx_ssym:
+        H.append(symop[i])
+        
+    cosets, reps = compute_left_cosets(G, H)
+    
+    lst_idx_reps = []
+    for rep in reps:
+        for idx, op in enumerate(symop):
+            if are_matrices_equal(rep, op):
+                lst_idx_reps.append(idx)
+                break
+        
+    return lst_idx_ssym, lst_idx_reps
+    
+def site_symmetry_and_coset(site,brv,pg,verbose=0):
+    #symmetry operators in the site symmetry group G and its left coset decomposition.
+    #
+    #Args:
+    #    site (numpy.ndarray):
+    #        xyz coordinate of the site.
+    #        The shape is (6,3).
+    #
+    #Returns:
+    #    List of index of symmetry operators of the site symmetry group G (list):
+    #        The symmetry operators leaves xyz identical.
+    #    
+    #    List of index of symmetry operators in the left coset representatives of the poibt group G (list):
+    #        The symmetry operators generates equivalent positions of the site xyz.
+    
+    def site_symmetry(site,symop,brv,verbose=0):
+        """symmetry operators in the site symmetry group G.
+        
+        Args:
+            site (numpy.ndarray):
+                xyz coordinate of the site.
+                The shape is (6,3).
+            
+        Returns:
+            List of index of symmetry operators of the site symmetry group G (list):
+                The symmetry operators leaves xyz identical.
+        """
+        # サイト周りでvtgに対して対称操作を施す。
+        vtg=np.array([[1,0,3],[0,1,4],[1,0,5],[0,1,6],[1,0,7],[0,0,1]],dtype=np.int64)
+        #vtg=add_vectors(vtg,site)
+        a=np.zeros((len(symop),6,3),dtype=np.int64)
+        for i1,op in enumerate(symop):
+            a[i1]=symop_vec(op,vtg,site)
+            
+        if brv=='p':
+            flag=1
+        else:
+            pass
+        traop=translation_new(brv,flag)
+        lst=[]
+        for i1,a1 in enumerate(a):
+            # vtgに対して並進を含む全ての対称操作を施す。
+            #print('%3d     a1:'%(i1),numerical_vector(a1))
+            counter1=0
+            for op in symop:
+                tmp1=symop_vec(op,vtg,V0)
+                if np.all(a1==tmp1):
+                    counter1=1
+                    #print('      tmp1:',numerical_vector(tmp1))
+                    break
+                else:
+                    flag1=0
+                    for tr in traop:
+                        b=add_vectors(tmp1,tr)
+                        if np.all(a1==b):
+                            flag1=1
+                            #print('         b:',numerical_vector(b))
+                            break
+                        else:
+                            pass
+                    if flag1==1:
+                        counter1=1
+                        break
+                    else:
+                        pass
+            if counter1==1:
+                lst.append(i1)
+            else:
+                pass
+        return lst
+        
+    def coset(site,symop,brv,pg,idx_site,verbose=0):
         """
         """
         # coordinate of equivalent sites
-        pos_equiv=equivalent_positions(site,brv,pg)
+        pos_equiv=equivalent_positions(site,brv,pg,verbose-1)
         #print('  number of equivalent positions:',len(pos_equiv))
         #for xyz in pos_equiv:
         #    print(xyz)
@@ -610,35 +720,37 @@ def site_symmetry_and_coset(site,brv,pg,verbose=0):
         list4=[]
         for i2 in comb:
             for i1 in idx_site: # i1-th symmetry operation of the site symmetry (point group, H)
-                op1=symop[i2]@symop[i1]
+                op1 = symop[i2] @ symop[i1]
                 for i3,op in enumerate(symop):
-                    if np.all(op==op1):
-                        num=i3
+                    if np.all(op == op1):
+                        num = i3
                         break
                     else:
                         pass
                 list4.append(num)
-        c=remove_overlaps(list4)
-        if len(c)==len(list4):
+        c = remove_overlaps(list4)
+        if len(c) == len(list4):
             return True
         else:
             return False
             
-    def equivalent_positions(site,brv,pg):
+    def equivalent_positions(site,brv,pg,verbose=0):
         """
         siteに対して点群の対称性を施したサイトのうち、並進操作のみで結ばれない位置を求める。
         適切な名前を決める必要がある！！！
         """
-        print('equivalent_positions()')
-        print('  site:',numerical_vector(site))
+        if verbose>0:
+            print('\n equivalent_positions()')
+            print('    site:',numerical_vector(site))
         symop=dodesymop_array(pg)
         eqpos=np.zeros((len(symop),6,3),dtype=np.int64)
         for i,op in enumerate(symop):
             eqpos[i]=symop_vec(op,site,centre=V0)
         eqpos1=remove_doubling(eqpos)
-        print('  len(eqpos1)=',len(eqpos1))
-        for _eqpos1 in eqpos1:
-            print('  _eqpos1:',numerical_vector(_eqpos1))
+        if verbose>0:
+            print('  len(eqpos1)=',len(eqpos1))
+            for _eqpos1 in eqpos1:
+                print('  _eqpos1:',numerical_vector(_eqpos1))
         
         # 求めた等価なサイトのうち、並進操作を施して同一なのであれば、どちらか片方を選ぶようにする。
         if len(eqpos1)==1:
@@ -657,9 +769,10 @@ def site_symmetry_and_coset(site,brv,pg,verbose=0):
                         pass
                 if counter==0:
                     lst_saved.append(pos)
-        print('  len(lst_saved)=',len(lst_saved))
-        for _lst_saved in lst_saved:
-            print('  _lst_saved:',numerical_vector(_lst_saved))
+        if verbose>0:
+            print('  len(lst_saved)=',len(lst_saved))
+            for _lst_saved in lst_saved:
+                print('  _lst_saved:',numerical_vector(_lst_saved))
         
         
         # 求めたサイトのうち単位胞内にあるサイトを選ぶ
@@ -668,20 +781,24 @@ def site_symmetry_and_coset(site,brv,pg,verbose=0):
         for vt in lst_saved:
             vn=numerical_vector(vt)
             #if np.all(vn>=0.0):# and np.all(vn<1.0):
+            #if np.all(vn>=-0.5) and np.all(vn<=0.5):
             if np.all(vn>=0.0) and np.all(vn<=1.0):
                 out[num]=vt
-                print('  vt:',numerical_vector(vt))
+                if verbose>0:
+                    print('  vt:',numerical_vector(vt))
                 num+=1
             else:
                 pass
         return out[:num]
         
-        
+    
     symop=dodesymop_array(pg)
     
     if verbose>0:
+        print('\nsite_symmetry_and_coset()')
         vn=numerical_vector(site)
-        print(' site: %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f'%(vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
+        print(' site: {0:.4f} {1:.4f} {2:.4f} {3:.4f} {4:.4f} {5:.4f}'.format(vn[0], vn[1], vn[2], vn[3], vn[4], vn[5]))
+        #print(' site: %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f'%(vn[0],vn[1],vn[2],vn[3],vn[4],vn[5]))
     if np.all(site==V0):
         a=[]
         for i in range(len(symop)):
@@ -689,13 +806,81 @@ def site_symmetry_and_coset(site,brv,pg,verbose=0):
         idx_site=a
         idx_coset=[0]
     else:
-        idx_site=site_symmetry(site,symop,brv)
-        idx_coset=coset(site,symop,brv,pg,idx_site)
+        idx_site = site_symmetry(site, symop, brv, verbose)
+        idx_coset =coset(site, symop, brv, pg, idx_site, verbose)
     if verbose>0:
-        print('  order of site symmetry:',len(idx_site))
-        print('  number of equivalent positions:',len(idx_coset))
+        print('  Order of site symmetry:',len(idx_site))
+        print('    index of symmetry operation:',idx_site)
+        print('  Number of equivalent positions:',len(idx_coset))
+        print('    index of coset:',idx_coset)
     return idx_site,idx_coset
 
+def site_symmetry(site, brv, pg, verbose=0):
+    #symmetry operators in the site symmetry group G.
+    #    
+    #Args:
+    #    site (numpy.ndarray):
+    #        xyz coordinate of the site.
+    #        The shape is (6,3).
+    #    
+    #Returns:
+    #    List of index of symmetry operators of the site symmetry group G (list):
+    #        The symmetry operators leaves xyz identical.
+    #
+    
+    if verbose>0:
+        print(' site_symmetry()')
+        print('  site:',numerical_vector(site))
+    symop=dodesymop_array(pg)
+    
+    # サイト周りでvtgに対して対称操作を施す。
+    vtg=np.array([[1,0,3],[0,1,4],[1,0,5],[0,1,6],[1,0,7],[0,0,1]],dtype=np.int64)
+    #vtg=add_vectors(vtg,site)
+    a=np.zeros((len(symop),6,3),dtype=np.int64)
+    for i1,op in enumerate(symop):
+        a[i1]=symop_vec(op,vtg,site)
+        
+    if brv=='p':
+        flag=1
+    else:
+        pass
+    traop=translation_new(brv,flag)
+    lst=[]
+    for i1,a1 in enumerate(a):
+        # vtgに対して並進を含む全ての対称操作を施す。
+        if verbose>1:
+            print('%3d     a1:'%(i1),numerical_vector(a1))
+        counter1=0
+        for op in symop:
+            tmp1=symop_vec(op,vtg,V0)
+            if np.all(a1==tmp1):
+                counter1=1
+                if verbose>1:
+                    print('      tmp1:',numerical_vector(tmp1))
+                break
+            else:
+                flag1=0
+                for tr in traop:
+                    b=add_vectors(tmp1,tr)
+                    if np.all(a1==b):
+                        flag1=1
+                        #print('         b:',numerical_vector(b))
+                        break
+                    else:
+                        pass
+                if flag1==1:
+                    counter1=1
+                    break
+                else:
+                    pass
+        if counter1==1:
+            lst.append(i1)
+        else:
+            pass
+    if verbose>0:
+        print('  lst:',lst)
+    return lst
+    
 def equivalent_positions_in_unit_cell(site,brv,pg,verbose=0):
     """
     単位胞内にある等価なサイトを得る。
@@ -762,73 +947,6 @@ def equivalent_positions_in_unit_cell(site,brv,pg,verbose=0):
             return out1,out_idx_symop
         else:
             return
-
-def site_symmetry(site,brv,pg,verbose=0):
-    """symmetry operators in the site symmetry group G.
-        
-    Args:
-        site (numpy.ndarray):
-            xyz coordinate of the site.
-            The shape is (6,3).
-        
-    Returns:
-        List of index of symmetry operators of the site symmetry group G (list):
-            The symmetry operators leaves xyz identical.
-    """
-    
-    if verbose>0:
-        print(' site_symmetry()')
-        print('  site:',numerical_vector(site))
-    symop=dodesymop_array(pg)
-    
-    # サイト周りでvtgに対して対称操作を施す。
-    vtg=np.array([[1,0,3],[0,1,4],[1,0,5],[0,1,6],[1,0,7],[0,0,1]],dtype=np.int64)
-    #vtg=add_vectors(vtg,site)
-    a=np.zeros((len(symop),6,3),dtype=np.int64)
-    for i1,op in enumerate(symop):
-        a[i1]=symop_vec(op,vtg,site)
-        
-    if brv=='p':
-        flag=1
-    else:
-        pass
-    traop=translation_new(brv,flag)
-    lst=[]
-    for i1,a1 in enumerate(a):
-        # vtgに対して並進を含む全ての対称操作を施す。
-        if verbose>1:
-            print('%3d     a1:'%(i1),numerical_vector(a1))
-        counter1=0
-        for op in symop:
-            tmp1=symop_vec(op,vtg,V0)
-            if np.all(a1==tmp1):
-                counter1=1
-                if verbose>1:
-                    print('      tmp1:',numerical_vector(tmp1))
-                break
-            else:
-                flag1=0
-                for tr in traop:
-                    b=add_vectors(tmp1,tr)
-                    if np.all(a1==b):
-                        flag1=1
-                        #print('         b:',numerical_vector(b))
-                        break
-                    else:
-                        pass
-                if flag1==1:
-                    counter1=1
-                    break
-                else:
-                    pass
-        if counter1==1:
-            lst.append(i1)
-        else:
-            pass
-    if verbose>0:
-        print('  lst:',lst)
-    return lst
-    
 
 def equivalent_positions_in_unit_cell_dev(site,brv,pg,verbose=0):
     """
@@ -1463,8 +1581,8 @@ if __name__ == '__main__':
     """
     
     #pg='12/mmm'
-    #pg='12mm'
-    pg='-12m2'
+    pg='12mm'
+    #pg='-12m2'
     #pg='-12'
     #pg='12'
     symop=dodesymop_array(pg)
@@ -1503,14 +1621,22 @@ if __name__ == '__main__':
     
     #equivalent_positions_in_unit_cell_dev(site,brv,pg,verbose=2)
     
-    site =np.array([[0,0,1],[1,0,2],[1,0,2],[0,0,1],[0,0,1],[0,0,1]])
+    #site =np.array([[0,0,1],[1,0,2],[1,0,2],[0,0,1],[0,0,1],[0,0,1]])
+    site =np.array([[1,0,2],[0,0,1],[0,0,1],[1,0,2],[0,0,1],[0,0,1]])
     
-    num_ssym,num_coset=site_symmetry_and_coset(site, brv, pg, verbose=2)
-    print('num_ssym:',num_ssym)
-    print('num_coset:',num_coset)
+    #num_ssym,num_coset=site_symmetry_and_coset(site, brv, pg, verbose=3)
+    #print('num_ssym:',num_ssym)
+    #print('num_coset:',num_coset)
     
-    generator_equivalent_numeric_vector_specific_symop(vn,index_of_symmetry_operation,pg='-12m2')
+    #generator_equivalent_numeric_vector_specific_symop(vn,index_of_symmetry_operation,pg='-12m2')
     
+    #symop=dodesymop_array(pg)
+    
+    a, b = site_symmetry_and_coset_new(site, brv, pg)
+    print(a)
+    print(len(a))
+    print(b)
+    print(len(b))
     
     """
     
