@@ -860,7 +860,7 @@ def site_symmetry_and_coset_dev(site,brv,verbose=0):
                 lst.append(i1)
             else:
                 pass
-        print(lst)
+        #print(lst)
         return lst
         
     def are_matrices_equal(m1, m2, tol=1e-5):
@@ -913,7 +913,7 @@ def site_symmetry_and_coset_dev(site,brv,verbose=0):
             if are_matrices_equal(rep, op):
                 lst_idx_reps.append(idx)
                 break
-        
+                
     return lst_idx_ssym, lst_idx_reps
     
     
@@ -1730,4 +1730,5 @@ if __name__ == '__main__':
     site = np.array([[1,0,2], [0,0,1], [0,0,1], [0,0,1], [0,0,1], [0,0,1]])
     brv = 'p'
     lst_idx_ssym, lst_idx_reps = site_symmetry_and_coset_dev(site,brv)
-    
+    print('lst_idx_ssym:',lst_idx_ssym)
+    print('lst_idx_reps:',lst_idx_reps)
