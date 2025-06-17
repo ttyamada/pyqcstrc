@@ -801,6 +801,123 @@ def site_symmetry_and_coset(site,brv,verbose=0):
     #print('  idx_coset:',idx_coset)
     #print('  idx_site:',idx_site)
     return idx_site,idx_coset
+
+
+
+# 2025.06.17
+def site_symmetry_and_coset_dev(site,brv,verbose=0):
+    
+    def site_symmetry(site,symop,brv):
+        """symmetry operators in the site symmetry group G.
+        
+        Args:
+            site (numpy.ndarray):
+                xyz coordinate of the site.
+                The shape is (6,3).
+            
+        Returns:
+            List of index of symmetry operators of the site symmetry group G (list):
+                The symmetry operators leaves xyz identical.
+        """
+        # サイト周りでvtgに対して点群m35の対称操作を施す。
+        vtg=np.array([[1,0,3],[0,1,4],[1,0,5],[0,1,6],[1,0,7],[0,1,8]],dtype=np.int64)
+        a=np.zeros((len(symop),6,3),dtype=np.int64)
+        for i1,op in enumerate(symop):
+            a[i1]=symop_vec(op,vtg,site)
+            
+        if brv=='p':
+            flag=1
+        elif brv=='f' or brv=='s':
+            flag=0
+        traop=translation_new(brv,flag)
+        lst=[]
+        for i1,a1 in enumerate(a):
+            # vtgに対して並進を含む全ての対称操作を施す。
+            #print('%3d     a1:'%(i1),numerical_vector(a1))
+            counter1=0
+            for op in symop:
+                tmp1=symop_vec(op,vtg,V0)
+                if np.all(a1==tmp1):
+                    counter1+=1
+                    #print('      tmp1:',numerical_vector(tmp1))
+                    break
+                else:
+                    flag1=0
+                    for tr in traop:
+                        b=add_vectors(tmp1,tr)
+                        if np.all(a1==b):
+                            flag1+=1
+                            #print('         b:',numerical_vector(b))
+                            break
+                        else:
+                            pass
+                    if flag1==1:
+                        counter1+=1
+                        break
+                    else:
+                        pass
+            if counter1==1:
+                lst.append(i1)
+            else:
+                pass
+        print(lst)
+        return lst
+        
+    def are_matrices_equal(m1, m2, tol=1e-5):
+        return np.allclose(m1, m2, atol=tol)
+        
+    def is_matrix_in_set(matrix, matrix_set):
+        for m in matrix_set:
+            if are_matrices_equal(m, matrix):
+                return True
+        return False
+        
+    def compute_left_cosets(G, H):
+        cosets = []
+        used_representatives = []
+        
+        for g in G:
+            # gH = { g * h for h in H }
+            coset = [g @ h for h in H]
+            
+            # チェック：この coset が既出の剰余類と一致するか
+            is_new = True
+            for existing in cosets:
+                # 一致チェックは代表元で十分（g' ∈ same coset ⇔ ∃ h: g⁻¹g' ∈ H）
+                if is_matrix_in_set(coset[0], existing):
+                    is_new = False
+                    break
+                    
+            if is_new:
+                cosets.append(coset)
+                used_representatives.append(g)
+                
+        return cosets, used_representatives
+    
+    symop = icosasymop_array()
+    
+    lst_idx_ssym = site_symmetry(site, symop, brv)
+    
+    G = []
+    for op in symop:
+        G.append(op)
+    H = []
+    for i in lst_idx_ssym:
+        H.append(symop[i])
+        
+    cosets, reps = compute_left_cosets(G, H)
+    
+    lst_idx_reps = []
+    for rep in reps:
+        for idx, op in enumerate(symop):
+            if are_matrices_equal(rep, op):
+                lst_idx_reps.append(idx)
+                break
+        
+    return lst_idx_ssym, lst_idx_reps
+    
+    
+    
     
 def icosasymop3_array(flag=None):
     """
@@ -1480,7 +1597,7 @@ if __name__ == '__main__':
         lst.append(i)
     """
     
-    #"""
+    """
     sop=icosasymop3_array()
     counter=0
     for m in range(2): # 2, inversion
@@ -1494,8 +1611,7 @@ if __name__ == '__main__':
     lst=[0,108,22,92,119,16,14,111,98,28,102,5]
     for i in lst:
         print(np.linalg.det(sop[i]))
-    
-    #"""
+    """
     
     """
     vt=np.array([[-1,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]]) # along 5fold axis
@@ -1606,4 +1722,12 @@ if __name__ == '__main__':
         print(v)
     """
     
+    
+    
+    ##-----------------------------------------------
+    # TEST: site_symmetry_and_coset_dev()
+    ##-----------------------------------------------
+    site = np.array([[1,0,2], [0,0,1], [0,0,1], [0,0,1], [0,0,1], [0,0,1]])
+    brv = 'p'
+    lst_idx_ssym, lst_idx_reps = site_symmetry_and_coset_dev(site,brv)
     
