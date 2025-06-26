@@ -1180,7 +1180,15 @@ if __name__ == '__main__':
     # a tetrahedon
     obj=tetrahedron
     surface=generator_surface_1(obj.reshape(1,4,6,3))
-    generator_edge(surface)
+    #generator_edge(surface)
+    a = generator_all_edges(surface)
+    for _a in a:
+        print(_a[0])
+        print(_a[1])
+        print('\n')
     
-    
-    
+    a = generator_all_edges(obj.reshape(1,4,6,3))
+    for _a in a:
+        print(_a[0])
+        print(_a[1])
+        print('\n')
