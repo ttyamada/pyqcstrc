@@ -590,6 +590,7 @@ def translation_new(brv,flag=0):
 ################ 
 # site symmetry
 ################
+"""
 def site_symmetry_and_coset(site,brv,verbose=0):
     #symmetry operators in the site symmetry group G and its left coset decomposition.
     #
@@ -606,17 +607,17 @@ def site_symmetry_and_coset(site,brv,verbose=0):
     #        The symmetry operators generates equivalent positions of the site xyz.
     
     def site_symmetry(site,symop,brv):
-        """symmetry operators in the site symmetry group G.
+        #symmetry operators in the site symmetry group G.
+        #
+        #Args:
+        #    site (numpy.ndarray):
+        #        xyz coordinate of the site.
+        #        The shape is (6,3).
+        #    
+        #Returns:
+        #    List of index of symmetry operators of the site symmetry group G (list):
+        #        The symmetry operators leaves xyz identical.
         
-        Args:
-            site (numpy.ndarray):
-                xyz coordinate of the site.
-                The shape is (6,3).
-            
-        Returns:
-            List of index of symmetry operators of the site symmetry group G (list):
-                The symmetry operators leaves xyz identical.
-        """
         # サイト周りでvtgに対して点群m35の対称操作を施す。
         vtg=np.array([[1,0,3],[0,1,4],[1,0,5],[0,1,6],[1,0,7],[0,1,8]],dtype=np.int64)
         a=np.zeros((len(symop),6,3),dtype=np.int64)
@@ -662,8 +663,6 @@ def site_symmetry_and_coset(site,brv,verbose=0):
         return lst
         
     def coset(site,symop,brv,idx_site):
-        """
-        """
         #print('coset():')
         #idx_site=site_symmetry(site,brv)
         
@@ -705,8 +704,6 @@ def site_symmetry_and_coset(site,brv,verbose=0):
             return 
             
     def check_coset(site,comb,symop,idx_site):
-        """
-        """
         #symop=symop_array()
         #list1=site_symmetry(site)
         
@@ -728,10 +725,10 @@ def site_symmetry_and_coset(site,brv,verbose=0):
             return False
             
     def equivalent_positions(site,brv):
-        """
-        siteに対して点群の対称性を施したサイトのうち、並進操作のみで結ばれない位置を求める。
-        適切な名前を決める必要がある！！！
-        """
+        
+        #siteに対して点群の対称性を施したサイトのうち、並進操作のみで結ばれない位置を求める。
+        #適切な名前を決める必要がある！！！
+        
         #print('site:',numerical_vector(site))
         symop=icosasymop_array()
         eqpos=np.zeros((len(symop),6,3),dtype=np.int64)
@@ -801,11 +798,11 @@ def site_symmetry_and_coset(site,brv,verbose=0):
     #print('  idx_coset:',idx_coset)
     #print('  idx_site:',idx_site)
     return idx_site,idx_coset
-
+"""
 
 
 # 2025.06.17
-def site_symmetry_and_coset_dev(site,brv,verbose=0):
+def site_symmetry_and_coset(site,brv,verbose=0):
     
     def site_symmetry(site,symop,brv):
         """symmetry operators in the site symmetry group G.
