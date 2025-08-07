@@ -77,6 +77,34 @@ def symop_vec(symop,vt,centre):
 def generator_obj_symmetric_obj(obj,centre):
     
     if obj.ndim==2 or obj.ndim==3 or obj.ndim==4:
+        
+        if np.all(centre==POS_V):
+            lst_idx_ssym = numbers = list(range(0,120))
+        else:
+            lst_idx_ssym,_=site_symmetry_and_coset(centre,brv='p')
+            
+        mop=icosasymop_array()
+        num=len(lst_idx_ssym)
+        shape=tuple([num])
+        a=np.zeros(shape+obj.shape,dtype=np.int64)
+        for i,idx_ssym in enumerate(lst_idx_ssym):
+            a[i]=symop_obj(mop[idx_ssym],obj,V0)
+        if obj.ndim==4:
+            n1,n2,_,_=obj.shape
+            a=a.reshape(num*n1,n2,6,3)
+        else:
+            pass
+        return a
+    else:
+        print('object has an incorrect shape!')
+        return
+"""
+def generator_obj_symmetric_obj(obj,centre):
+    
+    if obj.ndim==2 or obj.ndim==3 or obj.ndim==4:
+        
+        lst_idx_ssym,_=site_symmetry_and_coset(centre,brv='p')
+        
         #mop=icosasymop()
         mop=icosasymop_array()
         num=len(mop)
@@ -93,7 +121,7 @@ def generator_obj_symmetric_obj(obj,centre):
     else:
         print('object has an incorrect shape!')
         return
-
+"""
 def generator_obj_symmetric_surface(obj,centre):
     return generator_obj_symmetric_obj(obj,centre)
     
@@ -1726,6 +1754,6 @@ if __name__ == '__main__':
     ##-----------------------------------------------
     site = np.array([[1,0,2], [0,0,1], [0,0,1], [0,0,1], [0,0,1], [0,0,1]])
     brv = 'p'
-    lst_idx_ssym, lst_idx_reps = site_symmetry_and_coset_dev(site,brv)
+    lst_idx_ssym, lst_idx_reps = site_symmetry_and_coset(site,brv)
     print('lst_idx_ssym:',lst_idx_ssym)
     print('lst_idx_reps:',lst_idx_reps)

@@ -59,7 +59,7 @@ V1=np.array([0, 0, 0, 0, 0, 0],dtype=np.float64)
 V2=np.array([0, 0, 0],dtype=np.float64)
 CONST1 = 1/np.sqrt(2.0+TAU)
 
-def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose,test_flag):
+def strc(aico, brv, model, nmax, oshift, x1, x2, x3, verbose = 1, test_flag = 0):
     """
     this function generates atomic and magnetic structures in 3-d physical space.
     
@@ -102,7 +102,7 @@ def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose,test_flag):
     if brv=='s':
         oshift=oshift/2
         
-    print('Generating nD structure:')
+    print('Generating nD structure...')
     lst_shape=[]
     lst_objs=[]
     lst_pos=[]
@@ -250,10 +250,10 @@ def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose,test_flag):
                 #print('objs1.shape:',objs1.shape)
                 n1,n2,n3,_,_,_=objs1.shape
                 objs1_=np.zeros((n1,n2,n3,4,3),dtype=np.float64)
-                for i2 in range(n1):
-                    for i3 in range(n2):
-                        for i4 in range(n3):
-                            objs1_[i2][i3][i4]=get_internal_component_sets_numerical(objs1[i2][i3][i4])
+                for j2 in range(n1):
+                    for j3 in range(n2):
+                        for j4 in range(n3):
+                            objs1_[j2][j3][j4]=get_internal_component_sets_numerical(objs1[j2][j3][j4])
                 #print('objs1_.shape',objs1_.shape)
                 lst_shape.append(pod[0])
                 lst_objs.append(objs1_)
@@ -426,6 +426,20 @@ def strc(aico,brv,model,nmax,oshift,x1,x2,x3,verbose,test_flag):
                                                     pass
                                             if counter!=0:
                                                 break
+    if verbose > 0:
+        print('Atomic coordinates:')
+        for j,a in enumerate(lst):
+            element=a[0]
+            xyz=a[1]
+            i1=a[2]
+            h123456=a[3]
+            mu=a[4]
+            i4=a[5]
+            if np.all(mu==0):
+                print('%d %s %8.6f %8.6f %8.6f %d %d '%(j+1,element,xyz[0],xyz[1],xyz[2],i1,i4))
+            else:
+                print('%d %s %8.6f %8.6f %8.6f %d %d %8.6f %8.6f %8.6f'%(j+1,element,xyz[0],xyz[1],xyz[2],i1,i4,mu[0],mu[1],mu[2]))
+        
     return lst
     
 def spherical_approximation_obj(obj):

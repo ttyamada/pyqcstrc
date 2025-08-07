@@ -33,7 +33,8 @@ def volume(obj):
     
 def symmetric(obj,centre):
     """
-    Generate symmterical occupation domain by symmetric elements of m-3-5 on the asymmetric unit.
+    Generate symmterical occupation domain by symmetric elements of the site symmetry on the asymmetric unit.
+    Note that primitive lattice is assumed.
     
     Args:
         obj (numpy.ndarray):
@@ -99,7 +100,7 @@ def shift(obj,shift):
     """
     return utils.shift_object(obj, shift)
 
-def write(obj, path='.',basename='tmp',format='xyz',color='k',verbose=0,select='tetrahedron'):
+def write(obj, path='.',basename='tmp',format='xyz',color='k',verbose=0, select='tetrahedron'):
     """
     Export occupation domains.
     
