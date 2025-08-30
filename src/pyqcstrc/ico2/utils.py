@@ -569,47 +569,49 @@ def surface_cleaner(surface: NDArray[np.int64]) -> NDArray[np.int64]:
                 edges_new=np.vstack([edges_new,edges])
             counter+=1
             
-    # ２辺を１つの辺にまとめられるのであれば、まとめる
-    #print('edges_new.shape',edges_new.shape)
-    edges_new=generator_unique_edges(edges_new)
-    #print('edges_new.shape',edges_new.shape)
-    num=len(edges_new)
-    lst0=[i for i in range(num)]
-    lst=lst0
-    flag=1
-    while flag>0:
-    #for _ in range(num_iteration):
-        counter=0
-        #print('lst',lst)
-        n0=len(edges_new)
-        #print('n0',n0)
-        for comb in list(itertools.combinations(lst, 2)):
-            a=two_segment_into_one(edges_new[comb[0]],edges_new[comb[1]])
-            if np.any(a==None):
-                pass
+    if counter>0:
+        # ２辺を１つの辺にまとめられるのであれば、まとめる
+        #print('edges_new.shape',edges_new.shape)
+        edges_new=generator_unique_edges(edges_new)
+        #print('edges_new.shape',edges_new.shape)
+        num=len(edges_new)
+        lst0=[i for i in range(num)]
+        lst=lst0
+        flag=1
+        while flag>0:
+        #for _ in range(num_iteration):
+            counter=0
+            #print('lst',lst)
+            n0=len(edges_new)
+            #print('n0',n0)
+            for comb in list(itertools.combinations(lst, 2)):
+                a=two_segment_into_one(edges_new[comb[0]],edges_new[comb[1]])
+                if np.any(a==None):
+                    pass
+                else:
+                    counter=1
+                    break
+            if counter==1:
+                lst=list(filter(lambda x: x not in list(comb), lst))
+                #print('  comb',comb)
+                #print('  lst',lst)
+                #print('  edges_new.shape',edges_new.shape)
+                #print('  a.shape',a.shape)
+                edges_new=np.vstack([edges_new,[a]])
+                lst.append(num)
+                num+=1
+                #print('  lst',lst)
             else:
-                counter=1
-                break
-        if counter==1:
-            lst=list(filter(lambda x: x not in list(comb), lst))
-            #print('  comb',comb)
-            #print('  lst',lst)
-            #print('  edges_new.shape',edges_new.shape)
-            #print('  a.shape',a.shape)
-            edges_new=np.vstack([edges_new,[a]])
-            lst.append(num)
-            num+=1
-            #print('  lst',lst)
-        else:
-            flag=0
-    #print('edges_new.shape',edges_new.shape)
-    n1=len(lst)
-    out=np.zeros((n1,2,6,3),dtype=np.int64)
-    for i1 in range(n1):
-        out[i1]=edges_new[lst[i1]]
-    #print('out.shape',out.shape)
-    
-    return out
+                flag=0
+        #print('edges_new.shape',edges_new.shape)
+        n1=len(lst)
+        out=np.zeros((n1,2,6,3),dtype=np.int64)
+        for i1 in range(n1):
+            out[i1]=edges_new[lst[i1]]
+        #print('out.shape',out.shape)
+        return out
+    else:
+        return np.array([0]))
 
 def get_sets_of_coplanar_triangles(surface: NDArray[np.int64]) -> NDArray[np.int64]:
     """
