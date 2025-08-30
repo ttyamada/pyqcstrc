@@ -1706,6 +1706,57 @@ def write_podatm(obj, position, vlist, path='.', basename='tmp', shift=[0.0, 0.0
         print('    written in %s/%s.pod'%(path,basename))
     return 0
 
+def asymmetric_unit(obj, position):
+    """
+    Asymmetric part of occupation domain.
+    New version of asymmetric()
+    
+    Args:
+        obj (numpy.ndarray):
+            Occupation domain of which the asymmetric part is calculated.
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+        position (numpy.ndarray):
+            6d coordinate of the site of which the occupation domain centres.
+            The shape is (6,3)
+    
+    Returns:
+        Asymmetric part of the occupation domains (numpy.ndarray):
+            The shape is (num,4,6,3), where num=numbre_of_tetrahedron.
+    """
+    v0 = np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]])
+    v1 = np.array([[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]]) # centre
+    v2 = np.array([[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]]) # edge centre
+    
+    if np.all(position == v0):
+        # Three vectors w1,w2,w3, which defines the asymmetric unit. m-3-5
+        w1 = np.array([[ 1, 0, 1],[-1, 0, 1],[-1, 0, 1],[-1, 0, 1],[-1, 0, 1],[-1, 0, 1]])
+        w2 = np.array([[ 1, 0, 1],[-1, 0, 1],[-1, 0, 1],[ 1, 0, 1],[-1, 0, 1],[-1, 0, 1]])
+        w3 = np.array([[ 1, 0, 1],[-1, 0, 1],[-1, 0, 1],[ 0, 0, 1],[-1, 0, 1],[ 0, 0, 1]])
+        vecs = np.vstack([w1,w2,w3]).reshape(3,6,3)
+        
+    elif np.all(position == v1):
+        # Three vectors w1,w2,w3, which defines the asymmetric unit. m-3-5
+        w1 = np.array([[ 1, 0, 1],[-1, 0, 1],[-1, 0, 1],[-1, 0, 1],[-1, 0, 1],[-1, 0, 1]])
+        w2 = np.array([[ 1, 0, 1],[-1, 0, 1],[-1, 0, 1],[ 1, 0, 1],[-1, 0, 1],[-1, 0, 1]])
+        w3 = np.array([[ 1, 0, 1],[-1, 0, 1],[-1, 0, 1],[ 0, 0, 1],[-1, 0, 1],[ 0, 0, 1]])
+        vecs = np.vstack([w1,w2,w3]).reshape(3,6,3)
+        
+    elif np.all(position == v2):
+        # Three vectors w1,w2,w3, which defines the asymmetric unit. -5m
+        w1 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2]])
+        w2 = np.array([[ 0, 0, 1],[-1, 0, 4],[-1, 0, 4],[ 1, 0, 2],[-1, 0, 2],[ 1, 0, 2]])
+        w3 = np.array([[ 0, 0, 1],[ 1, 0, 4],[-1, 0, 2],[ 1, 0, 2],[-1, 0, 2],[ 1, 0, 4]])
+        vecs = np.vstack([w1,w2,w3]).reshape(3,6,3)
+        
+    vecs = math1.mul_vectors(vecs,np.array([5,0,1]))
+    # vecs multiplied by [a,b,c], where [a,b,c]=(a+TAU*b)/c. 
+    # [a,b,c] has to be defined so that the tetrahedron whose vertices are defined 
+    # by v0, and vecs covers the asymmetric unit of the ocuppation domains.
+    # (default) [a,b,c]=[5,0,1].
+    aum = np.append(v0,vecs).reshape(1,4,6,3)
+    aum = shift(aum,position)
+    return intsct.intersection_two_obj_1(obj,aum)
+    
 def asymmetric(obj, position, vecs):
     """
     Asymmetric part of occupation domain.
