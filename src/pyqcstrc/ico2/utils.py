@@ -611,7 +611,7 @@ def surface_cleaner(surface: NDArray[np.int64]) -> NDArray[np.int64]:
         #print('out.shape',out.shape)
         return out
     else:
-        return np.array([0]))
+        return np.array([0])
 
 def get_sets_of_coplanar_triangles(surface: NDArray[np.int64]) -> NDArray[np.int64]:
     """
