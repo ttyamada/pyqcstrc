@@ -13,7 +13,7 @@ or in local:
 ```
 conda create -n pyqc python=3.10
 conda activate pyqc
-gh repo clone ttyamada/pyqcstrc
+git clone -b develop https://github.com/ttyamada/pyqcstrc.git
 cd pyqcstrc
 python3 setup.py bdist_wheel
 pip install ./dist/pyqcstrc-XXX.whl
