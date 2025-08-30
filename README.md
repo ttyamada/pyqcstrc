@@ -2,14 +2,7 @@
 
 ### Installation
 
-via PIP:
-
-```
-pip install --upgrade pip
-pip install pyqcstrc
-```
-
-or in local:
+in local:
 ```
 conda create -n pyqc python=3.10
 conda activate pyqc
