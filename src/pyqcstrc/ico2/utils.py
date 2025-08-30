@@ -554,14 +554,21 @@ def surface_cleaner(surface: NDArray[np.int64]) -> NDArray[np.int64]:
     #print('num. of lst_sets:',len(lst_sets))
     
     #同一平面上にある三角形の辺のうち、どの三角形とも共有していない独立な辺を求める．
+    counter=0
     for i in range(len(lst_sets)):
         #print('num. of coplanar triangles',len(lst_sets[i]))
         edges=gen_border_edges_of_coplanar_triangles(lst_sets[i])
-        if i==0:
-            edges_new=edges
+        #print(i)
+        #print(edges)
+        if np.all(edges == np.array([0])):
+            pass
         else:
-            edges_new=np.vstack([edges_new,edges])
-    
+            if counter==0:
+                edges_new=edges
+            else:
+                edges_new=np.vstack([edges_new,edges])
+            counter+=1
+            
     # ２辺を１つの辺にまとめられるのであれば、まとめる
     #print('edges_new.shape',edges_new.shape)
     edges_new=generator_unique_edges(edges_new)
@@ -663,8 +670,10 @@ def gen_border_edges_of_coplanar_triangles(coplanar_triangles: NDArray[np.int64]
             lst.append(edge1)
         else:
             pass
-    return np.array(lst,dtype=np.int64)
-
+    if lst != []:
+        return np.array(lst,dtype=np.int64)
+    else:
+        return np.array([0],dtype=np.int64)
 #----------------------------
 # Equivalence check
 #

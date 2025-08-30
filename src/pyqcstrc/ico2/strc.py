@@ -59,7 +59,7 @@ V1=np.array([0, 0, 0, 0, 0, 0],dtype=np.float64)
 V2=np.array([0, 0, 0],dtype=np.float64)
 CONST1 = 1/np.sqrt(2.0+TAU)
 
-def strc(aico, brv, model, nmax, oshift, x1, x2, x3, verbose = 1, test_flag = 0):
+def strc(aico, brv, model, nmax, oshift, x1, x2, x3, verbose = 0, test_flag = 0):
     """
     this function generates atomic and magnetic structures in 3-d physical space.
     
