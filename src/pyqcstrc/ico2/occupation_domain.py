@@ -329,10 +329,12 @@ def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0)
             \nFORMP\
             \n  1  1.0    0    0    0\
             \nATOMP\
-            \n 24  24    0  50  2.0    0\
-            \nBONDP\
-            \n  1  16  0.250  2.000 127 127 127\
-            \nPOLYP\
+            \n 24  24    0  50  2.0    0', file = f)
+            
+            print('nBONDP\
+            \n  1  16  0.250  2.000 %3d %3d %3d'%(clr[0], clr[1], clr[2]), file = f)
+            
+            print('nPOLYP\
             \n 204 1  1.000 180 180 180\
             \nISURF\
             \n  0    0    0    0\
