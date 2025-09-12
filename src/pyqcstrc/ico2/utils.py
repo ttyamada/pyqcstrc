@@ -44,6 +44,13 @@ def shift_object(obj: NDArray[np.int64], shift: NDArray[np.int64]) -> NDArray[np
                 i2+=1
             i1+=1
         return obj_new
+    elif obj.ndim==3:
+        obj_new=np.zeros(obj.shape,dtype=np.int64)
+        i1=0
+        for vertex in obj:
+            obj_new[i1]=add_vectors(vertex,shift)
+            i1+=1
+        return obj_new
     else:
         print('object has an incorrect shape!')
         return 
