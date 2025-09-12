@@ -58,8 +58,8 @@ if __name__ == "__main__":
     aico = 5.689 # in Ang. CdYb
     #select='atom'
     select='mag'
-    test_flag=0 # using 3x3 symmetry operators for magnetic moments
-    #test_flag=1 # using 6x6 symmetry operators for magnetic moments
+    #test_flag=0 # using 3x3 symmetry operators for magnetic moments
+    test_flag=1 # using 6x6 symmetry operators for magnetic moments
     ######################
     flag_od = 1  # asymmetric OD is used.
     xyzpath='../../../xyz/ico/kumazawa'
@@ -273,5 +273,5 @@ if __name__ == "__main__":
             print('%d %s %8.6f %8.6f %8.6f %d %d '%(j+1,element,xyz[0],xyz[1],xyz[2],i1,i4))
         else:
             print('%d %s %8.6f %8.6f %8.6f %d %d %8.6f %8.6f %8.6f'%(j+1,element,xyz[0],xyz[1],xyz[2],i1,i4,mu[0],mu[1],mu[2]))
-    od.write_vesta(out,path='.',basename='%s_nmax%d_%s'%(model_name,nmax,select),color='k',select=select,verbose=0)
+    od.write_vesta(out,path='.',basename='%s_nmax%d_%s_%d'%(model_name,nmax,select,test_flag),color='k',select=select,verbose=0)
     
