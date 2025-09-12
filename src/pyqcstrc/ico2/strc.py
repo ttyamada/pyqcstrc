@@ -450,8 +450,16 @@ def spherical_approximation_obj(obj):
     this function approximates an occupation domain located at 'position' to a sphere.
     
     """
-    n1,n2,_,_,_=obj.shape
-    num=n1*n2*4
+    dim=obj.ndim
+    if dim==5:
+        n1,n2,n3,_,_=obj.shape
+        num=n1*n2*n3
+    elif dim==6:
+        n1,n2,n3,n4,_,_=obj.shape
+        num=n1*n2*n3*n4
+    elif dim==4:
+        n1,n2,_,_=obj.shape
+        num=n1*n2
     vertices=obj.reshape(num,6,3)
     #position=get_internal_component_numerical(position)
     lst=[]
@@ -473,8 +481,12 @@ def spherical_approximation_tetrahedron(tetrahedron):
     return cen1,dd1
     
 def inside_outside_shpere(point,radius,postion):
+    """
+    numerical calc.
+    """
     p=point-postion
-    if np.sqrt(p[0]**2+p[1]**2+p[2]**2)<=radius:
+    #if np.sqrt(p[0]**2+p[1]**2+p[2]**2)<=radius:
+    if np.linalg.norm(p)<=radius:
         return True # inside
     else:
         return False # outside
@@ -482,7 +494,7 @@ def inside_outside_shpere(point,radius,postion):
 if __name__ == '__main__':
     
     #------------------------
-    # TEST: spherical_approximation_tetrahedron()
+    print('TEST: spherical_approximation_tetrahedron()')
     #------------------------
     v0 = np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
     v1 = np.array([[ 1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2],[-1, 0, 2]])
@@ -496,17 +508,34 @@ if __name__ == '__main__':
     
     
     #------------------------
-    # TEST: site_symmetry_and_coset()
+    print('TEST: site_symmetry_and_coset()')
     #------------------------
-    indx_site_sym,indx_coset=site_symmetry_and_coset(v0,'p',0)
+    indx_site_sym,indx_coset=site_symmetry_and_coset(site=v0,brv='p',verbose=0)
     print('indx_site_sym:',indx_site_sym)
     print('indx_site_sym:',indx_coset)
     
     
     #------------------------
-    # TEST: 
+    print('TEST: spherical_approximation_obj()')
     #------------------------
+    od1 = generator_obj_symmetric_obj(obj=od0,centre=v0)
+    dd_od1 = spherical_approximation_obj(obj=od1)
+    print('radius:',dd_od1)
     
+    
+    #------------------------
+    print('TEST: inside_outside_shpere(point,radius,postion)')
+    #------------------------
+    #shift=np.array([[ 1, 0, 4],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+    #point1 = shift_object(v3, shift)
+    if inside_outside_shpere(point=np.array([1.1, 0., 0.]), radius=1, postion=np.array([0., 0., 0.])):
+        print('inside')
+    else:
+        print('outside')
+        
+    
+    
+    """
     x1= np.array([0, 0, -1, 0, 0, 0],dtype=np.float64) #5f
     x2= np.array([0, 1, -1, 1, 0, 0],dtype=np.float64) #3f
     x3= np.array([0, 1, -1, 0, 0, 0],dtype=np.float64) #2f
@@ -514,6 +543,7 @@ if __name__ == '__main__':
     # symmetry operation on x1,x2,x3 for each subdevided OD. 
     #
     # in the independent OD (obj)
+    flg='axial'
     v1_=generator_obj_symmetric_vector_specific_symop(x1,V1,indx_site_sym) # 5f
     v2_=generator_obj_symmetric_vector_specific_symop(x2,V1,indx_site_sym) # 3f
     v3_=generator_obj_symmetric_vector_specific_symop(x3,V1,indx_site_sym) # 2f
@@ -540,14 +570,14 @@ if __name__ == '__main__':
     ve3=projection_sets_par_numerical_normalized(x3)
     #
     # in the independent OD (obj)
-    v1_=generator_obj_symmetric_vector_specific_symop_1(ve1,V2,indx_site_sym,'normal') # 5f
-    v2_=generator_obj_symmetric_vector_specific_symop_1(ve2,V2,indx_site_sym,'normal') # 3f
-    v3_=generator_obj_symmetric_vector_specific_symop_1(ve3,V2,indx_site_sym,'normal') # 2f
+    v1_=generator_obj_symmetric_vector_specific_symop_1(ve1,indx_site_sym,'normal') # 5f
+    v2_=generator_obj_symmetric_vector_specific_symop_1(ve2,indx_site_sym,'normal') # 3f
+    v3_=generator_obj_symmetric_vector_specific_symop_1(ve3,indx_site_sym,'normal') # 2f
     #
     # in the ODs at equivalent positions
-    v1_=generator_obj_symmetric_vectors_specific_symop_1(v1_,V2,indx_coset,'normal') # 5f
-    v2_=generator_obj_symmetric_vectors_specific_symop_1(v2_,V2,indx_coset,'normal') # 3f
-    v3_=generator_obj_symmetric_vectors_specific_symop_1(v3_,V2,indx_coset,'normal') # 2f
+    v1_=generator_obj_symmetric_vectors_specific_symop_1(v1_,indx_coset,'normal') # 5f
+    v2_=generator_obj_symmetric_vectors_specific_symop_1(v2_,indx_coset,'normal') # 3f
+    v3_=generator_obj_symmetric_vectors_specific_symop_1(v3_,indx_coset,'normal') # 2f
     
     i2=0
     i3=0
@@ -559,4 +589,4 @@ if __name__ == '__main__':
     mu=np.array([1,0,0])
     mu_=vec@mu
     print(mu_)
-    
+    """
