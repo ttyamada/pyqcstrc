@@ -655,34 +655,6 @@ def get_internal_component_numerical(vt: NDArray[np.int64]) -> NDArray[np.float6
     vn=numerical_vector(vt)
     return projection3_numerical(vn)
 
-def get_internal_component_obj_numerical(obj: NDArray[np.int64]) -> NDArray[np.float64]:
-    """parallel and perpendicular components of a 6D lattice vector in direct space.
-    
-    Parameters
-    ----------
-    obj: array
-        set of 6-dimensional vectors, xyzuvw1, xyzuvw2, ...
-    """
-    if obj.ndim == 6:
-        n1,n2,n3,n4,_,_=obj.shape
-        obj_ = np.zeros((n1,n2,n3,n4,3),dtype=np.float64)
-        for j2 in range(n1):
-            for j3 in range(n2):
-                for j4 in range(n3):
-                    obj_[j2][j3][j4] = get_internal_component_sets_numerical(objs1[j2][j3][j4])
-    elif obj.ndim == 5:
-        n1,n2,n3,_,_=obj.shape
-        obj_ = np.zeros((n1,n2,n3,3),dtype=np.float64)
-        for j2 in range(n1):
-            for j3 in range(n2):
-                obj_[j2][j3] = get_internal_component_sets_numerical(objs1[j2][j3])
-    elif obj.ndim == 4:
-        n1,n2,_,_=obj.shape
-        obj_ = np.zeros((n1,n2,3),dtype=np.float64)
-        for j2 in range(n1):
-            obj_[j2] = get_internal_component_sets_numerical(objs1[j2])
-    return obj_
-
 def get_internal_component_sets_numerical(vts: NDArray[np.int64]) -> NDArray[np.float64]:
     """parallel and perpendicular components of a 6D lattice vector in direct space.
     
