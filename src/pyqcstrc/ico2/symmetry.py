@@ -140,7 +140,7 @@ def generator_obj_symmetric_vector_specific_symop(vt,centre,list_of_symmetry_ope
     else:
         print('vt has an incorrect shape!')
         return
-        
+    
 def generator_obj_symmetric_tetrahedron_specific_symop(obj,centre,list_of_symmetry_operation_index):
     # using specific symmetry operations
     if obj.ndim==3 or obj.ndim==4:
