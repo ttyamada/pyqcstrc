@@ -919,30 +919,50 @@ def site_symmetry_and_coset(site,brv,verbose=0):
                 
         return cosets, used_representatives
     
-    symop = icosasymop_array()
+    #######################
+    flag = 0
+    if brv == 'p':
+        if np.all(site==POS_V) or np.all(site==POS_C1):
+            lst_idx_ssym=[]
+            for i in range(120):
+                lst_idx_ssym.append(i)
+            lst_idx_reps = [0]
+        elif np.all(site==POS_EC):
+            lst_idx_ssym = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69]
+            lst_idx_reps = [0, 10, 20, 30, 40, 50]
+        else:
+            flag = 1
+    elif brv == 'f':
+        if np.all(site==POS_V) or np.all(site==POS_C1) or np.all(site==POS_C2) or np.all(site==POS_EC):
+            lst_idx_ssym=[]
+            for i in range(120):
+                lst_idx_ssym.append(i)
+            lst_idx_reps = [0]
+        else:
+            flag=1
+    #######################
     
-    lst_idx_ssym = site_symmetry(site, symop, brv)
-    
-    G = []
-    for op in symop:
-        G.append(op)
-    H = []
-    for i in lst_idx_ssym:
-        H.append(symop[i])
+    if flag>0:
+        symop = icosasymop_array()
+        lst_idx_ssym = site_symmetry(site, symop, brv)
         
-    cosets, reps = compute_left_cosets(G, H)
-    
-    lst_idx_reps = []
-    for rep in reps:
-        for idx, op in enumerate(symop):
-            if are_matrices_equal(rep, op):
-                lst_idx_reps.append(idx)
-                break
-                
+        G = []
+        for op in symop:
+            G.append(op)
+        H = []
+        for i in lst_idx_ssym:
+            H.append(symop[i])
+        
+        cosets, reps = compute_left_cosets(G, H)
+        
+        lst_idx_reps = []
+        for rep in reps:
+            for idx, op in enumerate(symop):
+                if are_matrices_equal(rep, op):
+                    lst_idx_reps.append(idx)
+                    break
+                    
     return lst_idx_ssym, lst_idx_reps
-    
-    
-    
     
 def icosasymop3_array(flag=None):
     """
@@ -1752,7 +1772,9 @@ if __name__ == '__main__':
     ##-----------------------------------------------
     # TEST: site_symmetry_and_coset()
     ##-----------------------------------------------
-    site = np.array([[1,0,2], [0,0,1], [0,0,1], [0,0,1], [0,0,1], [0,0,1]])
+    #site = POS_V
+    site = POS_C1
+    #site = POS_EC
     brv = 'p'
     lst_idx_ssym, lst_idx_reps = site_symmetry_and_coset(site,brv)
     print('lst_idx_ssym:',lst_idx_ssym)
