@@ -8,12 +8,13 @@ import timeit
 import os
 import sys
 import numpy as np
+from numpy.typing import NDArray
 import cython
 
 import crsys as crs
 import qnnum as qnn
-#import qnndarray as qna
-#import qnvec as qnv
+import qnndarray as qna
+import qnvec as qnv
 import geometry as geom
 import qnmat as qnm
 import math1 as mth
@@ -25,7 +26,8 @@ import prjop as prj
 import lattice as lt
 import sitesym as ssm
 import off
-#from vesta import (write_vesta,write_xyz)
+#import vesta
+from vesta import (write_vesta,write_xyz)
 #from numpy.typing import (NDArray)
 
 #this version uses point- edge- triangle-arrays instead

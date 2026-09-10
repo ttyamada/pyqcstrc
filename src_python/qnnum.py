@@ -1,1 +1,1 @@
-qnnum.org/qnnum.py
+qnnum/qnnum.py

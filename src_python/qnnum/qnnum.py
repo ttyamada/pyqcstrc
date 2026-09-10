@@ -7,17 +7,15 @@ import crsys
 from numpy.typing import NDArray
 from typing import Self
 
-import crsys
-
 class Qnnum:
     def __init__(self, n: NDArray[np.int64]):
-        self.n=crsys.n
+        #self.n=crsys.n
         #N :2 5 3 for octagonal, decagonal and dodecagonal Qnnumber   
-        n_=np.array([n[0],n[1],n[2]])
+        nda=np.array([n[0],n[1],n[2]])
         #print("n in Qnnum__init__",n)
         #print("n_ in Qnnum__init__",n_)
-        self.n=n_
-        self.N=crsys.N
+        self.n=nda
+        #self.N=crsys.N
     
     def __add__(a:Self, b:Self):
         return add(a,b)
@@ -64,7 +62,7 @@ class Qnnum:
     def __neg__(self):
         return neg(self)
     
-def qnnum_init():
+def qnnum_init(nda: NDArray[np.int64]):
     global n,N
     isys=crsys.isys
     n=crsys.n
@@ -149,6 +147,7 @@ def isub(self:Qnnum, b:Qnnum) -> Qnnum:
 
 def mul(a:Qnnum, b:Qnnum) -> Qnnum:
     #N =(int)(a.N)
+    N=crsys.N
     c1=a.n[0]*b.n[0]+a.n[1]*b.n[1]*N
     c2=a.n[0]*b.n[1]+a.n[1]*b.n[0]
     c3=a.n[2]*b.n[2]
@@ -176,6 +175,7 @@ def mul_i(a:Qnnum, b:np.int64) -> Qnnum: # b should be int
 
 def div(a:Qnnum, b:Qnnum) -> Qnnum:
     #N = (int)(a.N)
+    N=crsys.N
     c1=b.n[0]*b.n[2]
     c2=-b.n[1]*b.n[2]
     c3=b.n[0]*b.n[0]-b.n[1]*b.n[1]*N
@@ -218,6 +218,7 @@ def eq(a:Qnnum, b:Qnnum) -> bool:
         return False
 
 def gt(a:Qnnum, b:Qnnum) -> bool:
+    N=crsys.N
     c=a-b
     if(np.sign(c.n[0])*c.n[0]**2+np.sign(c.n[1])*c.n[1]**2*N > 0):
         return True
@@ -233,6 +234,7 @@ def geq(a:Qnnum, b:Qnnum) -> bool:
 
 
 def lt(a:Qnnum, b:Qnnum) -> bool:
+    N=crsys.N
     c=a-b
     if(np.sign(c.n[0])*c.n[0]**2+np.sign(c.n[1])*c.n[1]**2*N < 0):
         return True
@@ -262,6 +264,7 @@ def qn2npa(a:Qnnum) -> np.ndarray:
     return np.array([a.n[0],a.n[1],a.n[2]])
 
 def qn2flt(a:Qnnum) -> float:
+    N=crsys.N
     return (a.n[0]+a.n[1]*np.sqrt(N))/a.n[2]
 
 def int2qn(i:np.int64,N:np.int64) -> Qnnum:
