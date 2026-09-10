@@ -8,10 +8,10 @@ import time
 import os
 import sys
 import numpy as np
-#import occdom.occdom as od
-#import twoods.twoods as ods
-from occdom import od # for new code
-from twoods import ods # for new code
+import occdom as od
+import twoods as ods
+#from occdom import od # for new code
+#from twoods import ods # for new code
 
 opath='./test2'
 try:

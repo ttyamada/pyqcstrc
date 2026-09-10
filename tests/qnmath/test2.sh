@@ -1,11 +1,11 @@
 export PYQCSTRC=$HOME/git/pyqcstrc/src_python
-#export OCTA2=$PYQCSTRC/octa2
-#export OCCDM=$PYQCSTRC/occdom
-#export TWOODS=$PYQCSTRC/twoods
-#export PYTHONPATH=$OCTA2:$OCCDM:$TWOODS:$PYTHONPATH
+#export CRSYS=$PYQCSTRC/crsys
+#export QNNUM=$PYQCSTRC/qnnum
+#export QNVEC=$PYQCSTRC/qnvec
+#export PYTHONPATH=$CRSYS:$QNNUM:$QNVEC:$PYTHONPATH
 export PYTHONPATH=$PYQCSTRC:$PYTHONPATH
 # for profiling
 #python -m cProfile -o test1.pstats test1.py
 
 # for no-profileing
-python test1.py
+python test2.py

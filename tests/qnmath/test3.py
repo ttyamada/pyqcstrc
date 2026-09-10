@@ -1,10 +1,11 @@
 #test qnmath operations
 import sys
 import numpy as np
-import qnnum.qnnum as qnn
-import qnvec.qnvec as qnv
-import qnmat.qnmat as qnm
-import prjop.prjop as pro
+import qnnum as qnn
+import qnvec as qnv
+import qnmat as qnm
+import prjop as pro
+import crsys
 
 def chkop(qnv1,qnv2,qnm1,N):
     qnv.printqnv("qnv1+qnv2",qnv1+qnv2)
@@ -33,12 +34,13 @@ print("np4",np4)
 
 # octagonal qnnumber
 print("octagonal")
-N=2 # for octagonal
-qn0=qnn.Qnnum(np0,N) # sqrt(N) type qnnumber
-qn1=qnn.Qnnum(np1,N)
-qn2=qnn.Qnnum(np2,N)
-qn3=qnn.Qnnum(np3,N)
-qn4=qnn.Qnnum(np4,N)
+#N=2 # for octagonal
+crsys.Crsys(4)
+qn0=qnn.Qnnum(np0) # sqrt(N) type qnnumber
+qn1=qnn.Qnnum(np1)
+qn2=qnn.Qnnum(np2)
+qn3=qnn.Qnnum(np3)
+qn4=qnn.Qnnum(np4)
 
 print("qn0",qnn.qn2npa(qn0))
 print("qn1",qnn.qn2npa(qn1))

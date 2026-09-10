@@ -9,12 +9,16 @@ import os
 import sys
 import cython
 import numpy as np
-import octa2.occupation_domain as od # use original code
-import octa2.two_occupation_domains as ods # use original code
-#import occdom.occdom as od
-#import twoods.twoods as ods
+#import octa2.occupation_domain as od # use original code
+#import octa2.two_occupation_domains as ods # use original code
+import occdom as od # for new code
+import vesta
+import twoods as ods
+import crsys as crs
+
 DTYPE_int = int
 
+crs = crs.crsys_init(3)  # for octagonal QCs
 opath='./test1'
 try:
     os.makedirs(opath)
