@@ -81,22 +81,22 @@ template<class T>
 edge<T>::edge(point<T> a, point<T> b) : a(a), b(b) {}
 
 template<class T>
-circle<T>::circle(point<T> center, T radius):
-    center(center), radius(radius) {}
+circle<T>::circle(point<T> center, T radius2):
+    center(center), radius2(radius2) {}
 
 template<class T>
 bool circle<T>::contains(point<T>& p) {
     T dx = (p.x - center.x);
     T dy = (p.y - center.y);
-    T dist = dx * dx + dy * dy;
+    T dist2 = dx * dx + dy * dy;
 
-    return dist < radius;
+    return dist2 < radius2;
 }
 
 template<class T>
 bool circle<T>::infinite() {    
-    return radius == number::inf<T>();
-    //return radius == std::numeric_limits<T>::infinity();
+    return radius2 == number::inf<T>();
+    //return radius2 == std::numeric_limits<T>::infinity();
 }
 
 template<class T>
@@ -199,16 +199,16 @@ circle<T> triangle<T>::circumcircle() const {
     **
     ** Due to this, a point on the circumference may be detected as within the
     ** circle. Similar issues still persist when using other formulas for the
-    ** radius (Ex: https://mathworld.wolfram.com/Circumradius.html).
+    ** radius2 (Ex: https://mathworld.wolfram.com/Circumradius.html).
     **
     ** Therefore, we're electing to find the smallest radius, such that no
     ** point on the circumference will be detected as within the circle.
      */
-    T radius = std::min(
+    T radius2 = std::min(
         std::min(a.distance_squared(center), b.distance_squared(center)),
         c.distance_squared(center)); // this works for qnnum.Qnnum?
 
-    return circle(center, radius);
+    return circle(center, radius2);
 }
 
 template<class T>

@@ -12,7 +12,6 @@ Robust checks disabled by default. May not work in degenerate set of points.
 import numpy as np
 from math import sqrt
 
-
 class Delaunay2D:
     """
     Class to compute a Delaunay triangulation in 2D
