@@ -135,7 +135,7 @@ def gen_window(aico, brv, model, x1, x2, x3, verbose = 0, test_flag = 0):
         else:
             pass
             
-        if pod[0]=='polyhedron'
+        if pod[0]=='polyhedron':
             if pod[2]==1: # asymmetric ODs
                 # generating i1-th symmetric occupation domain from its asymmetric unit.
                 obj=generator_obj_symmetric_obj_specific_symop(obj,V0,indx_site_sym)
