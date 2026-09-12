@@ -1505,7 +1505,8 @@ def obj2podatm(obj, serial_number=1, path='.', position=[0,0,0,0,0,0], basename=
                         break
                     else:
                         pass
-        fpod.write('nth= %d'%(len(vtxs)))
+        #fpod.write('nth= %d'%(len(vtxs)))
+        fpod.write('nth= %d'%(len(obj)))
         for indx in lst_indx:
             fpod.write(' %d'%(indx))
         fpod.write('\n')
