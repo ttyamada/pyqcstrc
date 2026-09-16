@@ -1,1 +1,0 @@
-qnprj/prjop.py

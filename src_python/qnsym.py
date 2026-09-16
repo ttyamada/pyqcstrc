@@ -1,1 +1,0 @@
-qnsym/qnsym.py

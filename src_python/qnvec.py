@@ -1,1 +1,0 @@
-qnvec/qnvec.py

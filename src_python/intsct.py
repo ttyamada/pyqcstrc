@@ -1,1 +1,0 @@
-intsct/intsct.py

@@ -1,1 +1,0 @@
-triang/triang.py

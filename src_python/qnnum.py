@@ -1,1 +1,0 @@
-qnnum/qnnum.py
