@@ -7,24 +7,13 @@
 import time
 import os
 import sys
-import cython
 import numpy as np
-import crsys as crs
-import qnnum as qnn
-import qnvec as qnv
-import qnmath as qnm
-import qnndarray as qna
 import occdom as od
-import vesta
 import twoods as ods
+#from occdom import od # for new code
+#from twoods import ods # for new code
 
-#import octa2.occupation_domain as od # use original code
-#import octa2.two_occupation_domains as ods # use original code
-
-DTYPE_int = int
-
-crs = crs.crsys_init(3)  # for octagonal QCs
-opath='./test1'
+opath='./test2'
 try:
     os.makedirs(opath)
 except FileExistsError:
@@ -32,16 +21,10 @@ except FileExistsError:
     
 # Three 6D vectors which define the asymmetric part of the occupation domain of Ammann–Beenker octagonal tiling.
 # Note that 5-th and 6-th components of each 6D vectors are dummy, and they correspond to Z coordinate in Epar and Eperp, respectively.
-#v0: DTYPE_int=np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]],dtype=int)
-#v1: DTYPE_int=np.array([[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]],dtype=int) # (1,0,0,0)
-#v2: DTYPE_int=np.array([[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1],[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1]],dtype=int) # (1,0,0,1)/2
-
-v0=qnv.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
-v1=qnv.array([[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]]) # (1,0,0,0)
-v2=qnv.array([[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1],[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1]]) # (1,0,0,1)/2
-
-#od_asym=np.vstack([v0,v1,v2]).reshape(1,3,6,3) # v0,v1,v2 in this version should be qnvec
-od_asym=np.vstack([v0,v1,v2]).reshape(1,6,3) # v0,v1,v2 in this version should be qnvec
+v0=np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+v1=np.array([[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]]) # (1,0,0,0)
+v2=np.array([[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1],[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1]]) # (1,0,0,1)/2
+od_asym=np.vstack([v0,v1,v2]).reshape(1,3,6,3)
 
 # Output 
 od.write(obj=od_asym, path=opath, basename='od_1_asym', format='vesta', color='r',select='normal')
@@ -50,11 +33,11 @@ od.write(obj=od_asym, path=opath, basename='od_1_asym', format='xyz')
 # Read XYZ file
 od_asym=od.read_xyz(path=opath,basename='od_1_asym',select='triangle')
 
+time1=time.time()
+print("start time",time1)
 #============================================
 # OBJ_1 at (0,0,0,0)
 #============================================
-time1=time.time()
-print("start time",time1)
 # make symmetric OD
 pos0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]]) # 0,0,0,0,0
 od_sym_1=od.symmetric(obj=od_asym, centre=pos0)
@@ -86,6 +69,7 @@ od.write(obj=od_sym_2_1,path=opath,basename='od_2_sym_outline',format='xyz',sele
 time3=time.time()
 print("elapsed time for OBJ2",time3-time2,"sec")
 
+
 #============================================
 # Intersection of two ODs, OBJ_1 and OBJ_2
 #============================================
@@ -108,6 +92,7 @@ od.write(obj=od_common_1_smpl_outline,path=opath,basename='od_common_simpl_outli
 od.write(obj=od_common_1_smpl_outline,path=opath,basename='od_common_simpl_outline',format='xyz',select='egdes')
 time6=time.time()
 print("elapsed time for outline of common_od",time6-time5,"sec")
+
 
 #============================================
 # Intersection of two ODs, OBJ_1 and OBJ_2 by using 'convex' option

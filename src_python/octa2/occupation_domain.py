@@ -11,13 +11,13 @@ import numpy as np
 import cython
 from numpy.typing import NDArray
 
-from octa2.projection import projection3
-import octa2.math1 as math1
-import octa2.utils as utils
-import octa2.numericalc as numericalc
-import octa2.symmetry as sym
-import octa2.intsct as intsct
-import octa2.projection as prj
+from projection import projection3
+import math1 as math1
+import utils as utils
+import numericalc as numericalc
+import symmetry as sym
+import intsct as intsct
+import projection as prj
 
 
 TAU=np.sqrt(2)

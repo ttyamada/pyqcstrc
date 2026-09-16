@@ -1,9 +1,8 @@
 #test qnmath operations
 import sys
 import numpy as np
-#from pyqcstrc.qnnum import qnnum
 import qnnum as qnn
-import crsys
+import crsys as crs
 
 def chkop(qn1,qn2):
     print("qn1",qnn.qn2flt(qn1))
@@ -32,7 +31,6 @@ def chkop(qn1,qn2):
     qnn.printqnn("qn1",qn1)
     fl1=qnn.qn2flt(qn1)
     print("fl1",fl1)
-    N=crsys.N
     print("N",N)
     #qnt=qnn.flt2qn(fl1,N)
     #qnn.printqnn("qnt",qnt)
@@ -44,27 +42,32 @@ print("np2",np2)
 
 # octagonal qnnumber
 print("octagonal")
-crsys.crsys_init(4)
-qn1=qnn.Qnnum(np1)  # sqrt(2) type
-qn2=qnn.Qnnum(np2)
+isys=4
+crs_o=crs.crsys_init(isys)
+N=crs_o.N
+qn1=qnn.qnnum_init(np1)  # sqrt(2) type
+qn2=qnn.qnnum_init(np2)
 print("qn1",qnn.qn2npa(qn1))
 print("qn2",qnn.qn2npa(qn2))
+
 chkop(qn1,qn2)
 
 # decagonal qnnumber
 print("decagonal")
-crsys.crsys_init(3)
-qn1=qnn.Qnnum(np1) # sqrt(5) type
-qn2=qnn.Qnnum(np2)
+isys=3
+crs_d=crs.crsys_init(isys)
+qn1=qnn.qnnum_init(np1) # sqrt(5) type
+qn2=qnn.qnnum_init(np2)
 print("qn1",qnn.qn2npa(qn1))
 print("qn2",qnn.qn2npa(qn2))
 chkop(qn1,qn2)
 
 #dodecagonal qnnumber
 print("dodecagonal")
-crsys.crsys_init(5)
-qn1=qnn.Qnnum(np1) # sqrt(3) type
-qn2=qnn.Qnnum(np2)
+isys=5
+isys=crs.crsys_init(isys)
+qn1=qnn.qnnum_init(np1) # sqrt(3) type
+qn2=qnn.qnnum_init(np2)
 print("qn1",qnn.qn2npa(qn1))
 print("qn2",qnn.qn2npa(qn2))
 chkop(qn1,qn2)

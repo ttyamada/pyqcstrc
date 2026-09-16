@@ -1,13 +1,18 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
 
 # PyQCstrc - Python library for Quasi-Crystal structure
 # Copyright (c) 2021 Tsunetomo Yamada <tsunetomo.yamada@rs.tus.ac.jp>
 
 import time
 import os
+
 import sys
 import numpy as np
+import crsys as crs
+import qnnum as qnn
+import qnvec as qnv
+import qnmath as qnm
+import qnndarray as qna
 import occdom as od
 import twoods as ods
 #from occdom import od # for new code
@@ -21,10 +26,15 @@ except FileExistsError:
     
 # Three 6D vectors which define the asymmetric part of the occupation domain of Ammann–Beenker octagonal tiling.
 # Note that 5-th and 6-th components of each 6D vectors are dummy, and they correspond to Z coordinate in Epar and Eperp, respectively.
-v0=np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
-v1=np.array([[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]]) # (1,0,0,0)
-v2=np.array([[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1],[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1]]) # (1,0,0,1)/2
-od_asym=np.vstack([v0,v1,v2]).reshape(1,3,6,3)
+#v0=np.array([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+#v1=np.array([[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]]) # (1,0,0,0)
+#v2=np.array([[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1],[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1]]) # (1,0,0,1)/2
+v0=qnv.qnvec_init([[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+v1=qnv.qnvec_init([[ 1, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]]) # (1,0,0,0)
+v2=qnv.qnvec_init([[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1],[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1]]) # (1,0,0,1)/2
+
+#od_asym=np.vstack([v0,v1,v2]).reshape(1,3,6,3)
+od_asym=np.vstack([v0,v1,v2]).reshape(3,6,3)
 
 # Output 
 od.write(obj=od_asym, path=opath, basename='od_1_asym', format='vesta', color='r',select='normal')

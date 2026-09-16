@@ -10,7 +10,7 @@ from numpy.typing import NDArray
 
 #sys.path.append('.')
 #from numericalc import coplanar_check_numeric_tau
-from octa2.numericalc import coplanar_check_numeric_tau
+from numericalc import coplanar_check_numeric_tau
 
 #from libcpp import bool
 #from cpython import bool as bool_t

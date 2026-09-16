@@ -3,7 +3,7 @@ import sys
 import numpy as np
 import qnnum as qnn
 import qnvec as qnv
-import crsys
+import crsys as crs
 
 def chkop(qnv1,qnv2):
     qnv.printqnv("qnv1+qnv2",qnv1+qnv2)
@@ -45,7 +45,7 @@ print("np4",np4)
 
 # octagonal qnnumber
 print("octagonal")
-crsys.Crsys(4)
+crs.crsys_init(4)
 qn1=qnn.Qnnum(np1) # sqrt(2) type qnnumber
 qn2=qnn.Qnnum(np2)
 qn3=qnn.Qnnum(np3)

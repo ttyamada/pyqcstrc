@@ -4,8 +4,8 @@ import numpy as np
 import qnnum as qnn
 import qnvec as qnv
 import qnmat as qnm
-import prjop as pro
-import crsys
+import qnprj as pro
+import crsys as crs
 
 def chkop(qnv1,qnv2,qnm1,N):
     qnv.printqnv("qnv1+qnv2",qnv1+qnv2)
@@ -31,11 +31,8 @@ print("np2",np2)
 print("np3",np3)
 print("np4",np4)
 
-
-# octagonal qnnumber
 print("octagonal")
-#N=2 # for octagonal
-crsys.Crsys(4)
+crs.crsys_init(4)
 qn0=qnn.Qnnum(np0) # sqrt(N) type qnnumber
 qn1=qnn.Qnnum(np1)
 qn2=qnn.Qnnum(np2)
@@ -61,9 +58,8 @@ qnv.printqnv("qnv1",qnv1)
 qnv.printqnv("qnv2",qnv2)
 chkop(qnv1,qnv2,qnm1,N)
 
-# for octagonal
 prj=pro.Octa()
-prjm=prj.mt
+prjm=prj.m
 print("prj",type(prj))
 print("prjm",type(prjm))
 qnm.printqnm("projection matrix for octaglnal lattice",prjm)

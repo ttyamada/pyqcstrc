@@ -5,21 +5,27 @@
 #
 import sys
 import os
-from octa2.projection import (projection3,
-                              distance_in_perp_space,
-                              )
+import numpy as np
+from numpy.typing import NDArray
+from scipy.spatial import Delaunay
+import itertools
+import intsct as ints
+import time
 
-from octa2.math1 import (add,
-                        sub,
-                        mul,
-                        div,
-                        add_vectors,
-                        sub_vectors,
-                        outer_product,
-                        inner_product,
-                        centroid,
-                        #coplanar_check,
-                        )
+from intsect import (distance_in_perp_space,
+                    )
+
+from math1 import (add,
+                    sub,
+                    mul,
+                    div,
+                    add_vectors,
+                    sub_vectors,
+                    outer_product,
+                    inner_product,
+                    centroid,
+                    #coplanar_check,
+                    )
 from octa2.numericalc import (numeric_value,
                             numerical_vector,
                             numerical_vectors,
@@ -28,12 +34,6 @@ from octa2.numericalc import (numeric_value,
                             get_internal_component_numerical,
                             get_internal_component_sets_numerical,
                             )
-
-import numpy as np
-from numpy.typing import NDArray
-from scipy.spatial import Delaunay
-import itertools
-import time
 
 TAU=np.sqrt(2)
 #DTYPE_int = int

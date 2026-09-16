@@ -1,0 +1,6 @@
+for using point edte circle triangle in geometry.cpp
+its python interface is necessary
+
+this is created by PyBind11 for  c++11 or later
+this wrapper should be written in c++
+

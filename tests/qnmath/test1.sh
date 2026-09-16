@@ -1,8 +1,9 @@
 export PYQCSTRC=$HOME/git/pyqcstrc/src_python
+#export PYTHONPATH=$PYQCSTRC:$PYTHONPATH
 export CRSYS=$PYQCSTRC/crsys
 export QNNUM=$PYQCSTRC/qnnum
 export PYTHONPATH=$CRSYS:$QNNUM:$PYTHONPATH
-#export PYTHONPATH=$PYQCSTRC:$PYTHONPATH
+
 # for profiling
 #python -m cProfile -o test1.pstats test1.py
 

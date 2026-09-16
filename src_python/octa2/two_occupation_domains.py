@@ -9,12 +9,12 @@ import os
 import sys
 import numpy as np
 try:
-    import octa2.math1 as math1
-    import octa2.intsct as intsct
-    import octa2.numericalc as numericalc
-    import octa2.symmetry as symmetry
-    import octa2.utils as utils
-    import octa2.occupation_domain as od
+    import math1 as math1
+    import intsct as intsct
+    import numericalc as numericalc
+    import symmetry as symmetry
+    import utils as utils
+    import occupation_domain as od
 except ImportError:
     print('import error\n')
 
