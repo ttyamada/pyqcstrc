@@ -1,0 +1,199 @@
+#include "delaunay_n.hpp"
+
+// implementation of point<T>::point, edge<T>::edge, triangle<T>::triangle classes 
+template<class T>
+point<T>::point(): x(0), y(0) {}  //constructor
+
+template<class T>
+point<T>::point(T x_, T y_): x(x_), y(y_) {}  // constructor
+
+template<class T>
+bool point<T>::operator==(const point<T>& other) {
+    if(x == other.x && y == other.y) return true;
+
+    T epsilon = std::numeric_limits<T>::epsilon();
+    return fabs(x - other.x) <= epsilon && fabs(y - other.y) <= epsilon;
+}
+
+template<class T>
+bool point<T>::finite() {
+    T inf = std::numeric_limits<T>::infinity();
+    return fabs(x) != inf && fabs(y) != inf;
+}
+
+template<class T>
+T point<T>::slope(point<T>& a, point<T>& b) {
+    return a.x - b.x == 0 ?  // 0.0 -> 0
+        std::numeric_limits<T>::infinity() :
+        (a.y - b.y) / (a.x - b.x);
+}
+
+template<class T>
+point<T> point<T>::midpoint(point<T>& a, point<T>& b) {
+    return point((a.x + b.x) / 2, (a.y + b.y) / 2);  // 2.0 -> 2
+}
+
+template<class T>
+T point<T>::distance_squared(point<T>& a) {
+    T dx = x - a.x;
+    T dy = y - a.y;
+    return (dx * dx + dy * dy);
+}
+
+template<class T>
+edge<T>::edge(point<T> a, point<T> b) : a(a), b(b) {}
+
+template<class T>
+circle<T>::circle(point<T> center, T radius):
+    center(center), radius(radius) {}
+
+template<class T>
+bool circle<T>::contains(point<T>& p) {
+    T dx = (p.x - center.x);
+    T dy = (p.y - center.y);
+    T dist = dx * dx + dy * dy;
+
+    return dist < radius;
+}
+
+template<class T>
+bool circle<T>::infinite() {
+    //return radius == std::numeric_limits<T>::infinity();
+    return radius == number::inf<T>();
+}
+
+template<class T>
+triangle<T>::triangle():
+    a(0), b(0), c(0) {}  // constructor
+
+template<class T>
+triangle<T>::triangle(point<T> a, point<T> b, point<T> c):
+    a(a), b(b), c(c) {}  // constructor
+
+template<class T>
+bool triangle<T>::valid() {
+    if(!a.finite() || !b.finite() || !c.finite()) return false;
+
+    /* Compute the triangle validity, e.g., whether the points are collinear.
+    ** We can do this by checking the area using the shoelace formula.
+    ** The determinant of a matrix with 2 vectors is the area of the
+    ** parallelogram spanning these vectors.
+    **
+    ** 1/2 of this area yields the area of the triangle spanning these vectors.
+     */
+
+    // | b.x - a.x  c.x - a.x |
+    // | b.y - a.y  c.y - a.y |
+    T area = ((b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y)) / 2; // 2.0 -> 2
+
+    // Check the actual area, not signed area
+    return fabs(area) > std::numeric_limits<T>::epsilon();
+}
+
+template<class T>
+bool triangle<T>::has_vertex(point<T>& p) {
+    return (a == p || b == p || c == p);
+}
+
+template<class T>
+circle<T> triangle<T>::circumcircle() {
+    // Circumcenter can be found by finding the intersection of two
+    // perpendicular bisectors
+
+    // Check for collinearity
+    if(!valid()) {
+        return circle(point<T>(0, 0), std::numeric_limits<T>::infinity());
+    }
+
+    T slope_ab = point<T>::slope(a, b);
+    T slope_bc = point<T>::slope(b, c);
+    T slope_ac = point<T>::slope(a, c);
+
+    point<T> midpoint_1 = point<T>::midpoint(a, b);
+
+    T slope_1 = slope_ab;
+
+    point<T> midpoint_2 = point<T>::midpoint(b, c);
+
+    T slope_2 = slope_bc;
+
+    if(slope_1 == 0) {  // 0.0 -> 0
+        midpoint_1 = point<T>::midpoint(a, c);
+        slope_1 = slope_ac;
+    } else if(slope_2 == 0) {  // 0.0 -> 0
+        midpoint_2 = point<T>::midpoint(a, c);
+        slope_2 = slope_ac;
+    }
+
+    // Calculate the slopes of the perpendicular bisectors
+    T m1 = -1/slope_1;
+    T m2 = -1/slope_2;
+
+    T b1 = midpoint_1.y - m1 * midpoint_1.x;
+    T b2 = midpoint_2.y - m2 * midpoint_2.x;
+
+    /*
+    ** Bisectors intersect when y1 = y2,
+    **   => m1(x) + b1 = m2(x) + b2
+    **   => x(m1 - m2) = b2 - b1
+    **   => x = (b2 - b1) / (m1 - m2)
+     */
+    T x = (b2 - b1) / (m1 - m2);
+    T y = m1 * x + b1;
+
+    point<T> center(x, y);
+
+    /*
+    ** While by definition of a circumcircle any point will be on the circle,
+    ** due to floating-point precision issues there may be a small difference
+    ** from a point to the circle's center.
+    **
+    ** Due to this, a point on the circumference may be detected as within the
+    ** circle. Similar issues still persist when using other formulas for the
+    ** radius (Ex: https://mathworld.wolfram.com/Circumradius.html).
+    **
+    ** Therefore, we're electing to find the smallest radius, such that no
+    ** point on the circumference will be detected as within the circle.
+     */
+    T radius = std::min(
+        std::min(a.distance_squared(center), b.distance_squared(center)),
+        c.distance_squared(center));
+
+    return circle(center, radius);
+}
+
+template<class T>
+bool triangle<T>::has_edge(edge<T> e) {
+    std::vector<edge<T>> list = edges();
+    for(edge<T>& v : list) {
+        // Undirected edges, so the order does not matter
+        if((v.a == e.a && v.b == e.b) || (v.a == e.b && v.b == e.a)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+template<class T>
+std::vector<edge<T>> triangle<T>::edges() {
+    std::vector<edge<T>> result;
+    result.emplace_back(a, b);
+    result.emplace_back(b, c);
+    result.emplace_back(a, c);
+
+    return result;
+}
+
+template<class T>
+bool triangle<T>::operator==(const triangle<T>& other) {
+    //return (a == other.a && b == other.b && c == other.c); 
+    // not correct permutation necessary in general
+    if(a=other.a && b=other.b && c=other.c) return true;
+    if(a=other.a && b=other.c && c=other.c) return true;
+    if(a=other.b && b=other.a && c=other.c) return true;
+    if(a=other.b && b=other.c && c=other.a) return true;
+    if(a=other.c && b=other.a && c=other.b) return true;
+    if(a=other.c && b=other.b && c=other.z) return true;
+    return false;
+}

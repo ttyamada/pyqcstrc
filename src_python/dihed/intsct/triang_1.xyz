@@ -1,0 +1,7 @@
+3
+triang_1
+Xx 0.000000 0.000000 0.000000 # 0-th triangle 0-th vertex  #  0 0 1  0 0 1
+Xx 1.207107 0.000000 0.000000 # 0-th triangle 1-th vertex  #  1 1 2  0 0 1
+Xx 1.207107 0.500000 0.000000 # 0-th triangle 2-th vertex  #  1 1 2  1 0 2
+volume = 1 1 16 (0.150888)
+  0-the triangle, 1 1 16 (0.150888)

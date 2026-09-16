@@ -1,0 +1,131 @@
+96
+obj_strt
+Xx 1.000000 0.000000 0.000000 # 0-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 2.207107 0.000000 0.000000 # 0-th triangle 1-th vertex  #  3 0 2  -1 0 2  0 0 1  1 0 2  0 0 1
+Xx 2.207107 0.500000 0.000000 # 0-th triangle 2-th vertex  #  3 0 2  -1 0 2  -1 0 2  1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 1-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 0.146447 -0.853553 0.000000 # 1-th triangle 1-th vertex  #  1 0 2  0 0 1  1 0 2  -1 0 2  0 0 1
+Xx 0.500000 -1.207107 0.000000 # 1-th triangle 2-th vertex  #  1 0 2  -1 0 2  1 0 2  -1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 2-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 1.000000 1.207107 0.000000 # 2-th triangle 1-th vertex  #  1 0 1  1 0 2  -1 0 2  1 0 2  0 0 1
+Xx 0.500000 1.207107 0.000000 # 2-th triangle 2-th vertex  #  1 0 2  1 0 2  -1 0 2  1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 3-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 1.853553 -0.853553 0.000000 # 3-th triangle 1-th vertex  #  3 0 2  -1 0 2  1 0 2  0 0 1  0 0 1
+Xx 2.207107 -0.500000 0.000000 # 3-th triangle 2-th vertex  #  3 0 2  -1 0 2  1 0 2  1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 4-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx -0.207107 0.000000 0.000000 # 4-th triangle 1-th vertex  #  1 0 2  1 0 2  0 0 1  -1 0 2  0 0 1
+Xx -0.207107 -0.500000 0.000000 # 4-th triangle 2-th vertex  #  1 0 2  1 0 2  1 0 2  -1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 5-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 1.853553 0.853553 0.000000 # 5-th triangle 1-th vertex  #  3 0 2  0 0 1  -1 0 2  1 0 2  0 0 1
+Xx 1.500000 1.207107 0.000000 # 5-th triangle 2-th vertex  #  3 0 2  1 0 2  -1 0 2  1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 6-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 1.000000 -1.207107 0.000000 # 6-th triangle 1-th vertex  #  1 0 1  -1 0 2  1 0 2  -1 0 2  0 0 1
+Xx 1.500000 -1.207107 0.000000 # 6-th triangle 2-th vertex  #  3 0 2  -1 0 2  1 0 2  -1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 7-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 0.146447 0.853553 0.000000 # 7-th triangle 1-th vertex  #  1 0 2  1 0 2  -1 0 2  0 0 1  0 0 1
+Xx -0.207107 0.500000 0.000000 # 7-th triangle 2-th vertex  #  1 0 2  1 0 2  -1 0 2  -1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 8-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 1.853553 0.853553 0.000000 # 8-th triangle 1-th vertex  #  3 0 2  0 0 1  -1 0 2  1 0 2  0 0 1
+Xx 2.207107 0.500000 0.000000 # 8-th triangle 2-th vertex  #  3 0 2  -1 0 2  -1 0 2  1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 9-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx -0.207107 0.000000 0.000000 # 9-th triangle 1-th vertex  #  1 0 2  1 0 2  0 0 1  -1 0 2  0 0 1
+Xx -0.207107 0.500000 0.000000 # 9-th triangle 2-th vertex  #  1 0 2  1 0 2  -1 0 2  -1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 10-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 1.853553 -0.853553 0.000000 # 10-th triangle 1-th vertex  #  3 0 2  -1 0 2  1 0 2  0 0 1  0 0 1
+Xx 1.500000 -1.207107 0.000000 # 10-th triangle 2-th vertex  #  3 0 2  -1 0 2  1 0 2  -1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 11-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 1.000000 1.207107 0.000000 # 11-th triangle 1-th vertex  #  1 0 1  1 0 2  -1 0 2  1 0 2  0 0 1
+Xx 1.500000 1.207107 0.000000 # 11-th triangle 2-th vertex  #  3 0 2  1 0 2  -1 0 2  1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 12-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 0.146447 -0.853553 0.000000 # 12-th triangle 1-th vertex  #  1 0 2  0 0 1  1 0 2  -1 0 2  0 0 1
+Xx -0.207107 -0.500000 0.000000 # 12-th triangle 2-th vertex  #  1 0 2  1 0 2  1 0 2  -1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 13-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 2.207107 0.000000 0.000000 # 13-th triangle 1-th vertex  #  3 0 2  -1 0 2  0 0 1  1 0 2  0 0 1
+Xx 2.207107 -0.500000 0.000000 # 13-th triangle 2-th vertex  #  3 0 2  -1 0 2  1 0 2  1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 14-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 0.146447 0.853553 0.000000 # 14-th triangle 1-th vertex  #  1 0 2  1 0 2  -1 0 2  0 0 1  0 0 1
+Xx 0.500000 1.207107 0.000000 # 14-th triangle 2-th vertex  #  1 0 2  1 0 2  -1 0 2  1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 15-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 1.000000 -1.207107 0.000000 # 15-th triangle 1-th vertex  #  1 0 1  -1 0 2  1 0 2  -1 0 2  0 0 1
+Xx 0.500000 -1.207107 0.000000 # 15-th triangle 2-th vertex  #  1 0 2  -1 0 2  1 0 2  -1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 16-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx -0.207107 0.000000 0.000000 # 16-th triangle 1-th vertex  #  1 0 2  1 0 2  0 0 1  -1 0 2  0 0 1
+Xx -0.207107 -0.500000 0.000000 # 16-th triangle 2-th vertex  #  1 0 2  1 0 2  1 0 2  -1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 17-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 1.853553 0.853553 0.000000 # 17-th triangle 1-th vertex  #  3 0 2  0 0 1  -1 0 2  1 0 2  0 0 1
+Xx 1.500000 1.207107 0.000000 # 17-th triangle 2-th vertex  #  3 0 2  1 0 2  -1 0 2  1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 18-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 1.000000 -1.207107 0.000000 # 18-th triangle 1-th vertex  #  1 0 1  -1 0 2  1 0 2  -1 0 2  0 0 1
+Xx 1.500000 -1.207107 0.000000 # 18-th triangle 2-th vertex  #  3 0 2  -1 0 2  1 0 2  -1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 19-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 0.146447 0.853553 0.000000 # 19-th triangle 1-th vertex  #  1 0 2  1 0 2  -1 0 2  0 0 1  0 0 1
+Xx -0.207107 0.500000 0.000000 # 19-th triangle 2-th vertex  #  1 0 2  1 0 2  -1 0 2  -1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 20-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 2.207107 0.000000 0.000000 # 20-th triangle 1-th vertex  #  3 0 2  -1 0 2  0 0 1  1 0 2  0 0 1
+Xx 2.207107 0.500000 0.000000 # 20-th triangle 2-th vertex  #  3 0 2  -1 0 2  -1 0 2  1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 21-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 0.146447 -0.853553 0.000000 # 21-th triangle 1-th vertex  #  1 0 2  0 0 1  1 0 2  -1 0 2  0 0 1
+Xx 0.500000 -1.207107 0.000000 # 21-th triangle 2-th vertex  #  1 0 2  -1 0 2  1 0 2  -1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 22-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 1.000000 1.207107 0.000000 # 22-th triangle 1-th vertex  #  1 0 1  1 0 2  -1 0 2  1 0 2  0 0 1
+Xx 0.500000 1.207107 0.000000 # 22-th triangle 2-th vertex  #  1 0 2  1 0 2  -1 0 2  1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 23-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 1.853553 -0.853553 0.000000 # 23-th triangle 1-th vertex  #  3 0 2  -1 0 2  1 0 2  0 0 1  0 0 1
+Xx 2.207107 -0.500000 0.000000 # 23-th triangle 2-th vertex  #  3 0 2  -1 0 2  1 0 2  1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 24-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 0.146447 -0.853553 0.000000 # 24-th triangle 1-th vertex  #  1 0 2  0 0 1  1 0 2  -1 0 2  0 0 1
+Xx -0.207107 -0.500000 0.000000 # 24-th triangle 2-th vertex  #  1 0 2  1 0 2  1 0 2  -1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 25-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 2.207107 0.000000 0.000000 # 25-th triangle 1-th vertex  #  3 0 2  -1 0 2  0 0 1  1 0 2  0 0 1
+Xx 2.207107 -0.500000 0.000000 # 25-th triangle 2-th vertex  #  3 0 2  -1 0 2  1 0 2  1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 26-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 0.146447 0.853553 0.000000 # 26-th triangle 1-th vertex  #  1 0 2  1 0 2  -1 0 2  0 0 1  0 0 1
+Xx 0.500000 1.207107 0.000000 # 26-th triangle 2-th vertex  #  1 0 2  1 0 2  -1 0 2  1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 27-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 1.000000 -1.207107 0.000000 # 27-th triangle 1-th vertex  #  1 0 1  -1 0 2  1 0 2  -1 0 2  0 0 1
+Xx 0.500000 -1.207107 0.000000 # 27-th triangle 2-th vertex  #  1 0 2  -1 0 2  1 0 2  -1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 28-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 1.853553 0.853553 0.000000 # 28-th triangle 1-th vertex  #  3 0 2  0 0 1  -1 0 2  1 0 2  0 0 1
+Xx 2.207107 0.500000 0.000000 # 28-th triangle 2-th vertex  #  3 0 2  -1 0 2  -1 0 2  1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 29-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx -0.207107 0.000000 0.000000 # 29-th triangle 1-th vertex  #  1 0 2  1 0 2  0 0 1  -1 0 2  0 0 1
+Xx -0.207107 0.500000 0.000000 # 29-th triangle 2-th vertex  #  1 0 2  1 0 2  -1 0 2  -1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 30-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 1.853553 -0.853553 0.000000 # 30-th triangle 1-th vertex  #  3 0 2  -1 0 2  1 0 2  0 0 1  0 0 1
+Xx 1.500000 -1.207107 0.000000 # 30-th triangle 2-th vertex  #  3 0 2  -1 0 2  1 0 2  -1 0 2  0 0 1
+Xx 1.000000 0.000000 0.000000 # 31-th triangle 0-th vertex  #  1 0 1  0 0 1  0 0 1  0 0 1  0 0 1
+Xx 1.000000 1.207107 0.000000 # 31-th triangle 1-th vertex  #  1 0 1  1 0 2  -1 0 2  1 0 2  0 0 1
+Xx 1.500000 1.207107 0.000000 # 31-th triangle 2-th vertex  #  3 0 2  1 0 2  -1 0 2  1 0 2  0 0 1
+volume = 3 0 4 (0.750000)
+  0-the triangle, 1 0 32 (0.031250)
+  1-the triangle, 1 0 32 (0.031250)
+  2-the triangle, 1 0 32 (0.031250)
+  3-the triangle, 0 0 4 (0.000000)
+  4-the triangle, 1 0 32 (0.031250)
+  5-the triangle, 1 0 32 (0.031250)
+  6-the triangle, 1 0 32 (0.031250)
+  7-the triangle, 0 0 4 (0.000000)
+  8-the triangle, 1 0 32 (0.031250)
+  9-the triangle, 1 0 32 (0.031250)
+ 10-the triangle, 0 0 4 (0.000000)
+ 11-the triangle, 1 0 32 (0.031250)
+ 12-the triangle, 1 0 32 (0.031250)
+ 13-the triangle, 1 0 32 (0.031250)
+ 14-the triangle, 0 0 4 (0.000000)
+ 15-the triangle, 1 0 32 (0.031250)
+ 16-the triangle, 1 0 32 (0.031250)
+ 17-the triangle, 1 0 32 (0.031250)
+ 18-the triangle, 1 0 32 (0.031250)
+ 19-the triangle, 0 0 4 (0.000000)
+ 20-the triangle, 1 0 32 (0.031250)
+ 21-the triangle, 1 0 32 (0.031250)
+ 22-the triangle, 1 0 32 (0.031250)
+ 23-the triangle, 0 0 4 (0.000000)
+ 24-the triangle, 1 0 32 (0.031250)
+ 25-the triangle, 1 0 32 (0.031250)
+ 26-the triangle, 0 0 4 (0.000000)
+ 27-the triangle, 1 0 32 (0.031250)
+ 28-the triangle, 1 0 32 (0.031250)
+ 29-the triangle, 1 0 32 (0.031250)
+ 30-the triangle, 0 0 4 (0.000000)
+ 31-the triangle, 1 0 32 (0.031250)

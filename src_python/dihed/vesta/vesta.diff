@@ -1,0 +1,403 @@
+1,3d0
+< # qnnumber version of vesta
+< # qnnumber should be transformed to float by qnn.qn2frt 
+< 
+10,14c7,11
+< import crsys as crs
+< import qnnum as qnn
+< import qnndarray as qna
+< import qnvec as qnv
+< import qnmath as qmt
+---
+> #import crsys as crs
+> #import qnnum as qnn
+> #import qnndarray as qna
+> #import qnvec as qnv
+> #import qnmath as qmt
+18,19c15,16
+< import prjop as prj
+< import math1 as mth
+---
+> #import prjop as prj
+> #import math1 as mth
+24,25c21,22
+<     
+< def write_vesta(obj:qna.QnNdarray,path='.',basename='tmp',color='k',select='normal',verbose=0):
+---
+> 
+> def write_vesta(obj,path='.',basename='tmp',color='k',select='normal',verbose=0):
+30,33c27,28
+<         # obj (qnndarray): the occupation domain
+<         #    The shape is (num,3,5), with num=numbre_of_triangles for dihedral QCs
+<         #              or (num,4,6) with num=number_of_tetrahedra for icosahedral QCs
+<         obj (qna.qnndarray): the occupation domain
+---
+>         obj (numpy.ndarray): the occupation domain
+>             The shape is (num,3,6,3), where num=numbre_of_triangles.
+80,84d74
+<     shape=obj.shape
+<     ndim=len(shape)
+<     print("shape in write_vesta",shape,"ndim",ndim)  # for test
+<    
+<     #objt=obj
+86,87c76
+<     print("file_name",file_name)  # for test
+<     f=open(file_name,'w')
+---
+>     f=open('%s'%(file_name),'w')
+150c139
+<                 xyz = prj.projection3(vrtx)
+---
+>                 xyz = math1.projection3(vrtx)
+319d307
+<             isys=crs.isys
+322,323d309
+<                 print("i1",i1)  # for test
+<                 qnv.printqnv("obj1",obj1) # for test
+351d336
+<                 qnv.printqnvs("obj1",obj1)  # for test
+353,365c338,341
+<                     print("i2",i2)  # for test
+<                     qnv.printqnv("vertx",vertx) # for test
+<                     qni=prj.prjvec_i(vertx)
+<                     print("qni.shape",qni.shape)  # for test
+<                     qnv.printqnv("qni",qni)  # for test
+<                     xyz=num.numerical_vector(qni)
+<                     print("xyz",xyz)  # for test
+<                     if isys==2:
+<                         print('%4d Xx        Xx%d  1.0000    %8.6f %8.6f %8.6f        1'%\
+<                         (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
+<                     else:
+<                         print('%4d Xx        Xx%d  1.0000    %8.6f %8.6f %8.6f        1'%\
+<                         (i2+1,i2+1,xyz[0],xyz[1],0.0), file=f)
+---
+>                     xyz=math1.projection3(vertx)
+>                     xyz=num.numerical_vector(xyz)
+>                     print('%4d Xx        Xx%d  1.0000    %8.6f %8.6f %8.6f        1'%\
+>                     (i2+1,i2+1,xyz[0],xyz[1],xyz[2]), file=f)
+582c558
+<                 xyz = prj.projection3(vrtx)
+---
+>                 xyz = math1.projection3(vrtx)
+584c560
+<                 (i2+1,i2+1,qnn.qn2flt(xyz[0]),qnn.qn2flt(xyz[1]),qnn.qn2flt(xyz[2])), file=f)
+---
+>                 (i2+1,i2+1,num.numeric_value(xyz[0]),num.numeric_value(xyz[1]),num.numeric_value(xyz[2])), file=f)
+757,760c733,734
+<         #obj (numpy.ndarray): the occupation domain
+<         #    The shape is (num,3,6,3), where num=numbre_of_triangles.
+<         obj (qna.qnndarray): the occupation domain
+<             The shape is (num,3,n), where num=numbre_of_triangles n=5 or 6 for dihed or icos.
+---
+>         obj (numpy.ndarray): the occupation domain
+>             The shape is (num,3,6,3), where num=numbre_of_triangles.
+778,781c752,753
+<             #obj (numpy.ndarray): the occupation domain
+<             #    The shape is (num,3,6,3), where num=numbre_of_triangle.
+<             obj (qna.qnndarray): the occupation domain
+<                 The shape is (num,3,n), where num=numbre_of_triangle, n=5 or 5 for dihed or icos.
+---
+>             obj (numpy.ndarray): the occupation domain
+>                 The shape is (num,3,6,3), where num=numbre_of_triangle.
+792,811d763
+<         n=crs.n
+<         for i1,triangle in enumerate(obj):  # i1-th triangle
+<             for i2,vt in enumerate(triangle): # i2-th vertex
+<                 #qnv.printqnv("vt",vt)  # for test
+<                 vi=prj.projection3(vt)  # projection into internal space
+<                 #qnv.printqnv("vi",vi)  # for test
+<                 vif=qnv.qnv2flt(vi)
+< 
+<                 if n==5:
+<                     f.write('Xx %8.6f %8.6f %8.6f'%(vif[0],vif[1],0.0))
+<                 else:
+<                     f.write('Xx %8.6f %8.6f %8.6f'%(vif[0],vif[1],vif[2]))
+<                 f.write(' # %s-th triangle %s-th vertex '%(i1,i2))
+<                 f.write(' #')
+<                 for i in range(n-1):
+<                     f.write('  %d %d %d'%(vt[i].n[0],vt[i].n[1],vt[i].n[2]))
+<                 f.write('  %d %d %d\n'%(vt[n-1].n[0],vt[n-1].n[1],vt[n-1].n[2]))
+<  
+<         v=utl.obj_area_nd(obj)
+<         f.write('volume = %d %d %d (%8.6f)\n'%(v.n[0],v.n[1],v.n[2],qnn.qn2flt(v)))
+813c765,781
+<             v=utl.triangle_area_nd(triangle)
+---
+>             for i2,vt in enumerate(triangle):
+>                 v=math1.projection3(vt)
+>                 f.write('Xx %8.6f %8.6f %8.6f # %3d-the triangle %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
+>                 (num.numeric_value(v[0]),\
+>                 num.numeric_value(v[1]),\
+>                 num.numeric_value(v[2]),\
+>                 i1,i2,\
+>                 vt[0][0],vt[0][1],vt[0][2],\
+>                 vt[1][0],vt[1][1],vt[1][2],\
+>                 vt[2][0],vt[2][1],vt[2][2],\
+>                 vt[3][0],vt[3][1],vt[3][2],\
+>                 vt[4][0],vt[4][1],vt[4][2],\
+>                 vt[5][0],vt[5][1],vt[5][2]))
+>         v=utl.obj_area_6d(obj)
+>         f.write('volume = %d %d %d (%8.6f)\n'%(v[0],v[1],v[2],num.numeric_value(v)))
+>         for i1,triangle in enumerate(obj):
+>             v=utl.triangle_area_6d(triangle)
+815c783
+<                     %(i1,v.n[0],v.n[1],v.n[2],qnn.qn2flt(v)))
+---
+>                     %(i1,v[0],v[1],v[2],num.numeric_value(v)))
+835d802
+<         n=crs.n
+838,845c805,816
+<                 v=prj.projection3(vt)
+<                 vf=qnv.qnv2flt(v)
+<                 f.write('Xx %8.6f %8.6f %8.6f'%(vf[0],vf[1],vf[2]))
+<                 f.write(' # %s-th triang %s-th vertex '%(i1,i2))
+<                 for i in range(n-1):
+<                     f.write(' %d %d %d'%(vt[0].n[0],vt[0].n[1],vt[0].n[2]))
+<                 f.write(' %d %d %d \n'%(vt[n-1].n[0],vt[n-1].n[1],vt[n-1].n[2]))
+<                 
+---
+>                 v=math1.projection3(vt)
+>                 f.write('Xx %8.6f %8.6f %8.6f # %3d-the edge %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
+>                 (num.numeric_value(v[0]),\
+>                 num.numeric_value(v[1]),\
+>                 num.numeric_value(v[2]),\
+>                 i1,i2,\
+>                 vt[0][0],vt[0][1],vt[0][2],\
+>                 vt[1][0],vt[1][1],vt[1][2],\
+>                 vt[2][0],vt[2][1],vt[2][2],\
+>                 vt[3][0],vt[3][1],vt[3][2],\
+>                 vt[4][0],vt[4][1],vt[4][2],\
+>                 vt[5][0],vt[5][1],vt[5][2]))
+854,855c825
+<             #obj (numpy.ndarray): the occupation domain
+<             obj (qna.qnndarray): the occupation domain
+---
+>             obj (numpy.ndarray): the occupation domain
+867,877c837,850
+<         n=crs.n
+<         for tri in range(len(obj)):
+<             for point in tri:
+<                 v=prj.projection3(point)
+<                 vf=qnv.qnv2flt(v)
+<                 f.write('Xx %8.6f %8.6f %8.6f'%(vf[0],vf[1],vf[2]))
+<                 f.write(counter)
+<                 f.write(' #')
+<                 for i in range(n-1):
+<                     f.write(' %d %d %d'%(point[i].n[0],point[i].n[1],point[i].n[2]))
+<                 f.write(' %d %d %d \n'%(point[n-1].n[0],point[n-1].n[1],point[n-1].n[2]))
+---
+>         for triangle in range(len(obj)):
+>             for point in range(len(triangle)):
+>                 v=math1.projection3(point)
+>                 f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # # # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
+>                 (num.numeric_value(v[0]),\
+>                 num.numeric_value(v[1]),\
+>                 num.numeric_value(v[2]),\
+>                 counter,\
+>                 point[0][0],point[0][1],point[0][2],\
+>                 point[1][0],point[1][1],point[1][2],\
+>                 point[2][0],point[2][1],point[2][2],\
+>                 point[3][0],point[3][1],point[3][2],\
+>                 point[4][0],point[4][1],point[4][2],\
+>                 point[5][0],point[5][1],point[5][2]))
+887,888c860
+<             #obj (numpy.ndarray): the occupation domain
+<             obj (qna.qnndarray)): the occupation domain
+---
+>             obj (numpy.ndarray): the occupation domain
+899d870
+<         n=crs.n
+901,910c872,883
+<             print("i1",i1)  # for test
+<             qnv.printqnv("point",point) # for test
+<             v=prj.projection3(point)
+<             vf=qnv.qnv2flt(v)
+<             f.write('Xx %8.6f %8.6f %8.6f'%(vt[0],vt[1],vt[2]))
+<             f.write(i1)
+<             for i in range(n-1):
+<                 f.write(' # %d %d %d '%(point[i].n[0],point[i][1],point[i].n[2]))
+<             f.write(' # %d %d %d \n'%(point[n-1].n[0],point[n-1].n[1],point[n-1].n[2]))
+< 
+---
+>             v=math1.projection3(point)
+>             f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # # # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
+>             (num.numeric_value(v[0]),\
+>             num.numeric_value(v[1]),\
+>             num.numeric_value(v[2]),\
+>             i1,\
+>             point[0][0],point[0][1],point[0][2],\
+>             point[1][0],point[1][1],point[1][2],\
+>             point[2][0],point[2][1],point[2][2],\
+>             point[3][0],point[3][1],point[3][2],\
+>             point[4][0],point[4][1],point[4][2],\
+>             point[5][0],point[5][1],point[5][2]))
+913,922c886,890
+<     
+<     shape=obj.shape
+<     #print("shape in write_xyz",shape)  # for test
+<     ndim=len(shape)
+<  
+<     #if np.all(objt==None):
+<     #    print('empty objt')
+<     #    return 
+<     #elif ndim<3 or ndim>4:
+<     if ndim<1 or ndim>4:  # ndim=1, 2 or 3 for vertex, triangle/tetrahedron (edge) or triangles/tetrahedra 
+---
+>         
+>     if np.all(obj==None):
+>         print('empty obj')
+>         return 
+>     elif obj.ndim<3 or obj.ndim>4:
+925c893
+<     elif ndim==1:
+---
+>     elif obj.ndim==3:
+982c950
+<             a=f.readline()  # read one line from a file f
+---
+>             a=f.readline()
+985c953
+<             line.append(a[:-1]) # list of str
+---
+>             line.append(a[:-1])
+990,1037c958,986
+<     f1=read_file(filename)  # read a file and return list of string
+<     f0=f1[0].split()  # first line
+<     num=int(f0[0]) # number of lines in the first line
+<     print("num",num)  # for test
+<     n=crs.n
+<     qnvs=qna.zeros((num,n))
+<     nv=np.zeros((3),dtype=np.int64)
+<     for i in range(num):  #for i in range(2,num+2):
+<         fi=f1[i+2]  #fi=f1[i]  # skip first 2 lines
+<         fj=fi.split() #fi=fi.split()
+<         #print("fj",fj)  # for test
+<         for j in range(n):
+<             nv[0]=int(fj[10+j*3])
+<             nv[1]=int(fj[11+j*3])
+<             nv[2]=int(fj[12+j*3])
+<             #print("nv",nv)  # for test
+<             qnvs[i][j]=qnn.any(nv)
+<         qnv.printqnv("qnv[i]",qnvs[i])
+< #        a1=int(fi[10])
+< #        b1=int(fi[11])
+< #        c1=int(fi[12])
+< 
+< #        a2=int(fi[13])
+< #        b2=int(fi[14])
+< #        c2=int(fi[15])
+< #        
+< #        a3=int(fi[16])
+< #        b3=int(fi[17])
+< #        c3=int(fi[18])
+< #        
+< #        a4=int(fi[19])
+< #        b4=int(fi[20])
+< #        c4=int(fi[21])
+< #        
+< #        a5=int(fi[22])
+< #        b5=int(fi[23])
+< #        c5=int(fi[24])
+< #        
+< #        a6=int(fi[25])
+< #        b6=int(fi[26])
+< #        c6=int(fi[27])
+<         
+<         # 6 ai bi ci i-th qnnumber elements
+< #        qn1=qnn.Qnnum([])
+< #        if i==2:
+< #            tmp=np.array([a1,b1,c1,a2,b2,c2,a3,b3,c3,a4,b4,c4,a5,b5,c5,a6,b6,c6])
+< #        else:
+< #            tmp=np.append(tmp,[a1,b1,c1,a2,b2,c2,a3,b3,c3,a4,b4,c4,a5,b5,c5,a6,b6,c6])
+---
+>     f1=read_file(filename)
+>     f0=f1[0].split()
+>     num=int(f0[0])
+>     
+>     for i in range(2,num+2):
+>         fi=f1[i]
+>         fi=fi.split()
+>         a1=int(fi[10])
+>         b1=int(fi[11])
+>         c1=int(fi[12])
+>         a2=int(fi[13])
+>         b2=int(fi[14])
+>         c2=int(fi[15])
+>         a3=int(fi[16])
+>         b3=int(fi[17])
+>         c3=int(fi[18])
+>         a4=int(fi[19])
+>         b4=int(fi[20])
+>         c4=int(fi[21])
+>         a5=int(fi[22])
+>         b5=int(fi[23])
+>         c5=int(fi[24])
+>         a6=int(fi[25])
+>         b6=int(fi[26])
+>         c6=int(fi[27])
+>         if i==2:
+>             tmp=np.array([a1,b1,c1,a2,b2,c2,a3,b3,c3,a4,b4,c4,a5,b5,c5,a6,b6,c6])
+>         else:
+>             tmp=np.append(tmp,[a1,b1,c1,a2,b2,c2,a3,b3,c3,a4,b4,c4,a5,b5,c5,a6,b6,c6])
+1041d989
+<     print("select",select)  # for test
+1043,1044c991
+<         return qnvs.reshape(int(num/3),3,n)
+<         #return tmp.reshape(int(num/3),3,n,3)
+---
+>         return tmp.reshape(int(num/3),3,6,3)
+1046,1047c993,994
+<         return qnvs
+<         #return tmp.reshape(int(num),6,3)
+---
+>         return tmp.reshape(int(num),6,3)
+> 
+1054,1057c1001,1002
+<         #obj (numpy.ndarray): the occupation domain
+<         #   The shape is (num,3,6,3), where num=numbre_of_trianges.
+<         obj (qna.qnndarray): the occupation domain
+<             The shape is (num,3,n), where num=numbre_of_trianges n=5 or 6 for dihed or icos.
+---
+>         obj (numpy.ndarray): the occupation domain
+>             The shape is (num,3,6,3), where num=numbre_of_trianges.
+1075c1020
+<         vol0=utl.obj_area_nd(obj)
+---
+>         vol0=utl.obj_area_6d(obj)
+1078c1023
+<         vol1=utl.obj_area_nd(obj_tmp)
+---
+>         vol1=utl.obj_area_6d(obj_tmp)
+1088a1034
+> 
+1094,1096c1040
+<         #obj (numpy.ndarray):
+<         "   The shape is (num,3,6,3), where num=numbre_of_tetrahedron.
+<         obj (nda.qnndarray):
+---
+>         obj (numpy.ndarray):
+1098c1042
+<             The shape is (num,3,n), where num=numbre_of_tetrahedron n=5 or 6 for dihed or icos.
+---
+>             The shape is (num,3,6,3), where num=numbre_of_tetrahedron.
+1113,1114c1057
+<         #obj (numpy.ndarray): the shape is (num,3,6,3), where num=numbre_of_triangle.
+<         obj (numpy.ndarray): the shape is (num,3,n), where num=numbre_of_triangle, n=5 or 6 for dihed or icos.
+---
+>         obj (numpy.ndarray): the shape is (num,3,6,3), where num=numbre_of_triangle.
+1131c1074
+<             xyz1=prj.projection3(vtx1)
+---
+>             xyz1=math1.projection3(vtx1)
+1136c1079
+<                     xyz2=prj.projection3(obj[i2][i3])
+---
+>                     xyz2=math1.projection3(obj[i2][i3])
+1216c1159
+<         position (numpy.ndarray): nd coordinates of the position of the occupation domain.
+---
+>         position (numpy.ndarray): 6D coordinates of the position of the occupation domain.
+1329c1272
+<                 b=mth.sub_vectors(b,a)
+---
+>                 b=math1.sub_vectors(b,a)

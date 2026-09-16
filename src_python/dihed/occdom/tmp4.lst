@@ -1,0 +1,2349 @@
+argument list ['occdom_tst.py', '4']
+isys 4
+qnsym_init isys 4 n 5 N 2
+mpltbl 1st block
+  0  1  2  3  4  5  6  7
+  1  2  3  4  5  6  7  0
+  2  3  4  5  6  7  0  1
+  3  4  5  6  7  0  1  2
+  4  5  6  7  0  1  2  3
+  5  6  7  0  1  2  3  4
+  6  7  0  1  2  3  4  5
+  7  0  1  2  3  4  5  6
+mpltbl 2nd block
+ 8 9 10 11 12 13 14 15
+ 15 8 9 10 11 12 13 14
+ 14 15 8 9 10 11 12 13
+ 13 14 15 8 9 10 11 12
+ 12 13 14 15 8 9 10 11
+ 11 12 13 14 15 8 9 10
+ 10 11 12 13 14 15 8 9
+ 9 10 11 12 13 14 15 8
+# 1
+[  1  0  0  0  0]
+[  0  1  0  0  0]
+[  0  0  1  0  0]
+[  0  0  0  1  0]
+[  0  0  0  0  1]
+ 
+# 2
+[  0  1  0  0  0]
+[  0  0  1  0  0]
+[  0  0  0  1  0]
+[ -1  0  0  0  0]
+[  0  0  0  0  1]
+ 
+# 3
+[  0  0  1  0  0]
+[  0  0  0  1  0]
+[ -1  0  0  0  0]
+[  0 -1  0  0  0]
+[  0  0  0  0  1]
+ 
+# 4
+[  0  0  0  1  0]
+[ -1  0  0  0  0]
+[  0 -1  0  0  0]
+[  0  0 -1  0  0]
+[  0  0  0  0  1]
+ 
+# 5
+[ -1  0  0  0  0]
+[  0 -1  0  0  0]
+[  0  0 -1  0  0]
+[  0  0  0 -1  0]
+[  0  0  0  0  1]
+ 
+# 6
+[  0 -1  0  0  0]
+[  0  0 -1  0  0]
+[  0  0  0 -1  0]
+[  1  0  0  0  0]
+[  0  0  0  0  1]
+ 
+# 7
+[  0  0 -1  0  0]
+[  0  0  0 -1  0]
+[  1  0  0  0  0]
+[  0  1  0  0  0]
+[  0  0  0  0  1]
+ 
+# 8
+[  0  0  0 -1  0]
+[  1  0  0  0  0]
+[  0  1  0  0  0]
+[  0  0  1  0  0]
+[  0  0  0  0  1]
+ 
+# 9
+[  0  0  0  1  0]
+[  0  0  1  0  0]
+[  0  1  0  0  0]
+[  1  0  0  0  0]
+[  0  0  0  0  1]
+ 
+# 10
+[ -1  0  0  0  0]
+[  0  0  0  1  0]
+[  0  0  1  0  0]
+[  0  1  0  0  0]
+[  0  0  0  0  1]
+ 
+# 11
+[  0 -1  0  0  0]
+[ -1  0  0  0  0]
+[  0  0  0  1  0]
+[  0  0  1  0  0]
+[  0  0  0  0  1]
+ 
+# 12
+[  0  0 -1  0  0]
+[  0 -1  0  0  0]
+[ -1  0  0  0  0]
+[  0  0  0  1  0]
+[  0  0  0  0  1]
+ 
+# 13
+[  0  0  0 -1  0]
+[  0  0 -1  0  0]
+[  0 -1  0  0  0]
+[ -1  0  0  0  0]
+[  0  0  0  0  1]
+ 
+# 14
+[  1  0  0  0  0]
+[  0  0  0 -1  0]
+[  0  0 -1  0  0]
+[  0 -1  0  0  0]
+[  0  0  0  0  1]
+ 
+# 15
+[  0  1  0  0  0]
+[  1  0  0  0  0]
+[  0  0  0 -1  0]
+[  0  0 -1  0  0]
+[  0  0  0  0  1]
+ 
+# 16
+[  0  0  1  0  0]
+[  0  1  0  0  0]
+[  1  0  0  0  0]
+[  0  0  0 -1  0]
+[  0  0  0  0  1]
+ 
+nr 16
+qnr
+qnr[0]
+[ [1 0 1] [0 0 1] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [1 0 1] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [1 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [1 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [0 0 1] [1 0 1] ]
+
+qnr[1]
+[ [0 1 2] [0 1 2] [0 0 1] [0 0 1] [0 0 1] ]
+[ [ 0 -1  2] [0 1 2] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [ 0 -1  2] [0 1 2] [0 0 1] ]
+[ [0 0 1] [0 0 1] [ 0 -1  2] [ 0 -1  2] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [0 0 1] [1 0 1] ]
+
+qnr[2]
+[ [0 0 1] [1 0 1] [0 0 1] [0 0 1] [0 0 1] ]
+[ [-1  0  1] [0 0 1] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [-1  0  1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [1 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [0 0 1] [1 0 1] ]
+
+qnr[3]
+[ [ 0 -1  2] [0 1 2] [0 0 1] [0 0 1] [0 0 1] ]
+[ [ 0 -1  2] [ 0 -1  2] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 1 2] [0 1 2] [0 0 1] ]
+[ [0 0 1] [0 0 1] [ 0 -1  2] [0 1 2] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [0 0 1] [1 0 1] ]
+
+qnr[4]
+[ [-1  0  1] [0 0 1] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [-1  0  1] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [-1  0  1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [-1  0  1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [0 0 1] [1 0 1] ]
+
+qnr[5]
+[ [ 0 -1  2] [ 0 -1  2] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 1 2] [ 0 -1  2] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 1 2] [ 0 -1  2] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 1 2] [0 1 2] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [0 0 1] [1 0 1] ]
+
+qnr[6]
+[ [0 0 1] [-1  0  1] [0 0 1] [0 0 1] [0 0 1] ]
+[ [1 0 1] [0 0 1] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [1 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [-1  0  1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [0 0 1] [1 0 1] ]
+
+qnr[7]
+[ [0 1 2] [ 0 -1  2] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 1 2] [0 1 2] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [ 0 -1  2] [ 0 -1  2] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 1 2] [ 0 -1  2] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [0 0 1] [1 0 1] ]
+
+qnr[8]
+[ [ 0 -1  2] [0 1 2] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 1 2] [0 1 2] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 1 2] [0 1 2] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 1 2] [ 0 -1  2] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [0 0 1] [1 0 1] ]
+
+qnr[9]
+[ [-1  0  1] [0 0 1] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [1 0 1] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [-1  0  1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [1 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [0 0 1] [1 0 1] ]
+
+qnr[10]
+[ [ 0 -1  2] [ 0 -1  2] [0 0 1] [0 0 1] [0 0 1] ]
+[ [ 0 -1  2] [0 1 2] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 1 2] [ 0 -1  2] [0 0 1] ]
+[ [0 0 1] [0 0 1] [ 0 -1  2] [ 0 -1  2] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [0 0 1] [1 0 1] ]
+
+qnr[11]
+[ [0 0 1] [-1  0  1] [0 0 1] [0 0 1] [0 0 1] ]
+[ [-1  0  1] [0 0 1] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [1 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [1 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [0 0 1] [1 0 1] ]
+
+qnr[12]
+[ [0 1 2] [ 0 -1  2] [0 0 1] [0 0 1] [0 0 1] ]
+[ [ 0 -1  2] [ 0 -1  2] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [ 0 -1  2] [ 0 -1  2] [0 0 1] ]
+[ [0 0 1] [0 0 1] [ 0 -1  2] [0 1 2] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [0 0 1] [1 0 1] ]
+
+qnr[13]
+[ [1 0 1] [0 0 1] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [-1  0  1] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [1 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [-1  0  1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [0 0 1] [1 0 1] ]
+
+qnr[14]
+[ [0 1 2] [0 1 2] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 1 2] [ 0 -1  2] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [ 0 -1  2] [0 1 2] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 1 2] [0 1 2] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [0 0 1] [1 0 1] ]
+
+qnr[15]
+[ [0 0 1] [1 0 1] [0 0 1] [0 0 1] [0 0 1] ]
+[ [1 0 1] [0 0 1] [0 0 1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [-1  0  1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [-1  0  1] [0 0 1] [0 0 1] ]
+[ [0 0 1] [0 0 1] [0 0 1] [0 0 1] [1 0 1] ]
+
+nr 16
+qnr_e
+qnr_e[0]
+[ [1 0 1] [0 0 1] ]
+[ [0 0 1] [1 0 1] ]
+
+qnr_e[1]
+[ [0 1 2] [0 1 2] ]
+[ [ 0 -1  2] [0 1 2] ]
+
+qnr_e[2]
+[ [0 0 1] [1 0 1] ]
+[ [-1  0  1] [0 0 1] ]
+
+qnr_e[3]
+[ [ 0 -1  2] [0 1 2] ]
+[ [ 0 -1  2] [ 0 -1  2] ]
+
+qnr_e[4]
+[ [-1  0  1] [0 0 1] ]
+[ [0 0 1] [-1  0  1] ]
+
+qnr_e[5]
+[ [ 0 -1  2] [ 0 -1  2] ]
+[ [0 1 2] [ 0 -1  2] ]
+
+qnr_e[6]
+[ [0 0 1] [-1  0  1] ]
+[ [1 0 1] [0 0 1] ]
+
+qnr_e[7]
+[ [0 1 2] [ 0 -1  2] ]
+[ [0 1 2] [0 1 2] ]
+
+qnr_e[8]
+[ [ 0 -1  2] [0 1 2] ]
+[ [0 1 2] [0 1 2] ]
+
+qnr_e[9]
+[ [-1  0  1] [0 0 1] ]
+[ [0 0 1] [1 0 1] ]
+
+qnr_e[10]
+[ [ 0 -1  2] [ 0 -1  2] ]
+[ [ 0 -1  2] [0 1 2] ]
+
+qnr_e[11]
+[ [0 0 1] [-1  0  1] ]
+[ [-1  0  1] [0 0 1] ]
+
+qnr_e[12]
+[ [0 1 2] [ 0 -1  2] ]
+[ [ 0 -1  2] [ 0 -1  2] ]
+
+qnr_e[13]
+[ [1 0 1] [0 0 1] ]
+[ [0 0 1] [-1  0  1] ]
+
+qnr_e[14]
+[ [0 1 2] [0 1 2] ]
+[ [0 1 2] [ 0 -1  2] ]
+
+qnr_e[15]
+[ [0 0 1] [1 0 1] ]
+[ [1 0 1] [0 0 1] ]
+
+type(od_asym) <class 'qnndarray.QnNdarray'> od_saym.shape (1, 3, 2) ndim 3
+od_asym[i][j] [ [0 0 1] [0 0 1] ]
+od_asym[i][j] [ [1 1 2] [0 0 1] ]
+od_asym[i][j] [ [1 1 2] [1 0 2] ]
+pos0 [ [0 0 1] [0 0 1] [0 0 1] [0 0 1] [0 0 1] ]
+sp0 (1, 3, 2)
+shape in symmetric (16, 3, 2)
+0-th triangle 0-th vertex  [ [0 0 1] [0 0 1] ]
+0-th triangle 1-th vertex  [ [1 1 2] [0 0 1] ]
+0-th triangle 2-th vertex  [ [1 1 2] [1 0 2] ]
+1-th triangle 0-th vertex  [ [0 0 1] [0 0 1] ]
+1-th triangle 1-th vertex  [ [-2 -1  4] [-2 -1  4] ]
+1-th triangle 2-th vertex  [ [-1  0  2] [-1 -1  2] ]
+2-th triangle 0-th vertex  [ [0 0 1] [0 0 1] ]
+2-th triangle 1-th vertex  [ [0 0 1] [1 1 2] ]
+2-th triangle 2-th vertex  [ [-1  0  2] [1 1 2] ]
+3-th triangle 0-th vertex  [ [0 0 1] [0 0 1] ]
+3-th triangle 1-th vertex  [ [2 1 4] [-2 -1  4] ]
+3-th triangle 2-th vertex  [ [1 1 2] [-1  0  2] ]
+4-th triangle 0-th vertex  [ [0 0 1] [0 0 1] ]
+4-th triangle 1-th vertex  [ [-1 -1  2] [0 0 1] ]
+4-th triangle 2-th vertex  [ [-1 -1  2] [-1  0  2] ]
+5-th triangle 0-th vertex  [ [0 0 1] [0 0 1] ]
+5-th triangle 1-th vertex  [ [2 1 4] [2 1 4] ]
+5-th triangle 2-th vertex  [ [1 0 2] [1 1 2] ]
+6-th triangle 0-th vertex  [ [0 0 1] [0 0 1] ]
+6-th triangle 1-th vertex  [ [0 0 1] [-1 -1  2] ]
+6-th triangle 2-th vertex  [ [1 0 2] [-1 -1  2] ]
+7-th triangle 0-th vertex  [ [0 0 1] [0 0 1] ]
+7-th triangle 1-th vertex  [ [-2 -1  4] [2 1 4] ]
+7-th triangle 2-th vertex  [ [-1 -1  2] [1 0 2] ]
+8-th triangle 0-th vertex  [ [0 0 1] [0 0 1] ]
+8-th triangle 1-th vertex  [ [2 1 4] [2 1 4] ]
+8-th triangle 2-th vertex  [ [1 1 2] [1 0 2] ]
+9-th triangle 0-th vertex  [ [0 0 1] [0 0 1] ]
+9-th triangle 1-th vertex  [ [-1 -1  2] [0 0 1] ]
+9-th triangle 2-th vertex  [ [-1 -1  2] [1 0 2] ]
+10-th triangle 0-th vertex  [ [0 0 1] [0 0 1] ]
+10-th triangle 1-th vertex  [ [2 1 4] [-2 -1  4] ]
+10-th triangle 2-th vertex  [ [1 0 2] [-1 -1  2] ]
+11-th triangle 0-th vertex  [ [0 0 1] [0 0 1] ]
+11-th triangle 1-th vertex  [ [0 0 1] [1 1 2] ]
+11-th triangle 2-th vertex  [ [1 0 2] [1 1 2] ]
+12-th triangle 0-th vertex  [ [0 0 1] [0 0 1] ]
+12-th triangle 1-th vertex  [ [-2 -1  4] [-2 -1  4] ]
+12-th triangle 2-th vertex  [ [-1 -1  2] [-1  0  2] ]
+13-th triangle 0-th vertex  [ [0 0 1] [0 0 1] ]
+13-th triangle 1-th vertex  [ [1 1 2] [0 0 1] ]
+13-th triangle 2-th vertex  [ [1 1 2] [-1  0  2] ]
+14-th triangle 0-th vertex  [ [0 0 1] [0 0 1] ]
+14-th triangle 1-th vertex  [ [-2 -1  4] [2 1 4] ]
+14-th triangle 2-th vertex  [ [-1  0  2] [1 1 2] ]
+15-th triangle 0-th vertex  [ [0 0 1] [0 0 1] ]
+15-th triangle 1-th vertex  [ [0 0 1] [-1 -1  2] ]
+15-th triangle 2-th vertex  [ [-1  0  2] [-1 -1  2] ]
+v0 [ [1 0 1] [0 0 1] ]
+od_sym.shape (16, 3, 2)
+od_sym1.shape (16, 3, 2)
+cross points of two triangles
+ [ [-1  1  2] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [ 3 -2  2] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [0 0 1] ]
+nx 3 ny 2
+z.shape (5, 2)
+common part
+ [ [-1  1  2] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [ 3 -2  2] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [0 0 1] ]
+number of vertices in common part 3
+common part
+ [ [-1  1  2] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [ 3 -2  2] ]
+nod 1
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [-1  1  2] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+common points in triangles
+ [ [-1  1  2] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+nx 2 ny 2
+z.shape (4, 2)
+common part
+ [ [-1  1  2] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 2
+common part
+ [ [-1  1  2] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [0 0 1] [0 0 1] ]
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [-1  0  2] [-1  0  2] ]
+ [ [-2  1  2] [-2  1  2] ]
+ [ [-2  1  2] [ 0 -1  2] ]
+ [ [-2  1  4] [ 0 -1  4] ]
+common points in triangles
+nx 4 ny 0
+z.shape (4, 2)
+common part
+ [ [-1  0  2] [-1  0  2] ]
+ [ [-2  1  2] [-2  1  2] ]
+ [ [-2  1  2] [ 0 -1  2] ]
+ [ [-2  1  4] [ 0 -1  4] ]
+number of vertices in common part 4
+common part
+ [ [-1  0  2] [-1  0  2] ]
+ [ [-2  1  2] [-2  1  2] ]
+ [ [-2  1  2] [ 0 -1  2] ]
+ [ [-2  1  4] [ 0 -1  4] ]
+nod 2
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [ 0 -1  2] [ 0 -1  2] ]
+ [ [-1  0  2] [-1 -1  2] ]
+common points in triangles
+ [ [-2 -1  4] [-2 -1  4] ]
+ [ [-1  0  2] [-1 -1  2] ]
+ [ [-1  0  2] [-1 -1  2] ]
+nx 2 ny 3
+z.shape (5, 2)
+common part
+ [ [ 0 -1  2] [ 0 -1  2] ]
+ [ [-1  0  2] [-1 -1  2] ]
+ [ [-2 -1  4] [-2 -1  4] ]
+ [ [-1  0  2] [-1 -1  2] ]
+ [ [-1  0  2] [-1 -1  2] ]
+number of vertices in common part 3
+common part
+ [ [ 0 -1  2] [ 0 -1  2] ]
+ [ [-1  0  2] [-1 -1  2] ]
+ [ [-2 -1  4] [-2 -1  4] ]
+nod 3
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [-1  0  2] [-1  0  2] ]
+ [ [ 0 -1  2] [ 0 -1  2] ]
+ [ [-1  0  2] [-1 -1  2] ]
+ [ [-2  1  2] [ 0 -1  2] ]
+common points in triangles
+ [ [-1  0  2] [-1 -1  2] ]
+ [ [-1  0  2] [-1 -1  2] ]
+nx 4 ny 2
+z.shape (6, 2)
+common part
+ [ [-1  0  2] [-1  0  2] ]
+ [ [ 0 -1  2] [ 0 -1  2] ]
+ [ [-1  0  2] [-1 -1  2] ]
+ [ [-2  1  2] [ 0 -1  2] ]
+ [ [-1  0  2] [-1 -1  2] ]
+ [ [-1  0  2] [-1 -1  2] ]
+number of vertices in common part 4
+common part
+ [ [-1  0  2] [-1  0  2] ]
+ [ [ 0 -1  2] [ 0 -1  2] ]
+ [ [-1  0  2] [-1 -1  2] ]
+ [ [-2  1  2] [ 0 -1  2] ]
+nod 4
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+ [ [-2  1  2] [-2  1  2] ]
+ [ [-2  1  4] [ 0 -1  4] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+nx 3 ny 1
+z.shape (4, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [-2  1  2] [-2  1  2] ]
+ [ [-2  1  4] [ 0 -1  4] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 3
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [-2  1  2] [-2  1  2] ]
+ [ [-2  1  4] [ 0 -1  4] ]
+nod 5
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [-1  1  1] ]
+ [ [-2  1  4] [0 1 4] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+nx 3 ny 1
+z.shape (4, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [-1  1  1] ]
+ [ [-2  1  4] [0 1 4] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 3
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [-1  1  1] ]
+ [ [-2  1  4] [0 1 4] ]
+nod 6
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [-1  0  2] [1 1 2] ]
+ [ [-2  1  2] [0 1 2] ]
+common points in triangles
+ [ [-2  1  4] [2 1 4] ]
+ [ [-1  0  2] [1 1 2] ]
+ [ [-1  0  2] [1 1 2] ]
+nx 2 ny 3
+z.shape (5, 2)
+common part
+ [ [-1  0  2] [1 1 2] ]
+ [ [-2  1  2] [0 1 2] ]
+ [ [-2  1  4] [2 1 4] ]
+ [ [-1  0  2] [1 1 2] ]
+ [ [-1  0  2] [1 1 2] ]
+number of vertices in common part 3
+common part
+ [ [-1  0  2] [1 1 2] ]
+ [ [-2  1  2] [0 1 2] ]
+ [ [-2  1  4] [2 1 4] ]
+nod 7
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [-1  1  1] ]
+ [ [0 0 1] [0 1 2] ]
+ [ [-2  1  2] [0 1 2] ]
+ [ [-2  1  4] [0 1 4] ]
+common points in triangles
+ [ [-2  1  4] [2 1 4] ]
+nx 4 ny 1
+z.shape (5, 2)
+common part
+ [ [0 0 1] [-1  1  1] ]
+ [ [0 0 1] [0 1 2] ]
+ [ [-2  1  2] [0 1 2] ]
+ [ [-2  1  4] [0 1 4] ]
+ [ [-2  1  4] [2 1 4] ]
+number of vertices in common part 5
+common part
+ [ [0 0 1] [-1  1  1] ]
+ [ [0 0 1] [0 1 2] ]
+ [ [-2  1  2] [0 1 2] ]
+ [ [-2  1  4] [0 1 4] ]
+ [ [-2  1  4] [2 1 4] ]
+nod 8
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [-1  0  2] [1 1 2] ]
+common points in triangles
+ [ [-1  0  2] [1 1 2] ]
+ [ [-1  0  2] [1 1 2] ]
+nx 1 ny 2
+z.shape (3, 2)
+common part
+ [ [-1  0  2] [1 1 2] ]
+ [ [-1  0  2] [1 1 2] ]
+ [ [-1  0  2] [1 1 2] ]
+number of vertices in common part 1
+common part
+ [ [-1  0  2] [1 1 2] ]
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [0 0 1] [0 0 1] ]
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [0 0 1] [0 0 1] ]
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [ 1 -1  2] ]
+ [ [-1  1  2] [-3  2  2] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+nx 3 ny 1
+z.shape (4, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [ 1 -1  2] ]
+ [ [-1  1  2] [-3  2  2] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 3
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [ 1 -1  2] ]
+ [ [-1  1  2] [-3  2  2] ]
+nod 9
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+nx 2 ny 2
+z.shape (4, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  0  1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 2
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [ 1 -1  2] ]
+ [ [-1 -1  2] [-1  0  2] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [-1  0  2] ]
+nx 3 ny 2
+z.shape (5, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [ 1 -1  2] ]
+ [ [-1 -1  2] [-1  0  2] ]
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [-1  0  2] ]
+number of vertices in common part 3
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [ 1 -1  2] ]
+ [ [-1 -1  2] [-1  0  2] ]
+nod 10
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [-1  0  1] [0 0 1] ]
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [ 0 -1  2] [-2  1  2] ]
+ [ [-1  0  2] [ 1 -1  2] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+nx 3 ny 1
+z.shape (4, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [ 0 -1  2] [-2  1  2] ]
+ [ [-1  0  2] [ 1 -1  2] ]
+ [ [-1  0  1] [0 0 1] ]
+number of vertices in common part 3
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [ 0 -1  2] [-2  1  2] ]
+ [ [-1  0  2] [ 1 -1  2] ]
+nod 11
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [0 0 1] ]
+ [ [-1 -1  2] [-3  2  2] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [0 0 1] ]
+nx 3 ny 2
+z.shape (5, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [0 0 1] ]
+ [ [-1 -1  2] [-3  2  2] ]
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [0 0 1] ]
+number of vertices in common part 3
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [0 0 1] ]
+ [ [-1 -1  2] [-3  2  2] ]
+nod 12
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [-1  0  1] [0 0 1] ]
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [ 1 -1  1] ]
+ [ [-2 -1  4] [ 0 -1  4] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+nx 3 ny 1
+z.shape (4, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [ 1 -1  1] ]
+ [ [-2 -1  4] [ 0 -1  4] ]
+ [ [-1  0  1] [0 0 1] ]
+number of vertices in common part 3
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [ 1 -1  1] ]
+ [ [-2 -1  4] [ 0 -1  4] ]
+nod 13
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [-1  0  1] [0 0 1] ]
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [-1  0  1] [0 0 1] ]
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [0 0 1] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [0 0 1] ]
+nx 2 ny 2
+z.shape (4, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [0 0 1] ]
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [0 0 1] ]
+number of vertices in common part 2
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [0 0 1] ]
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [ 0 -1  2] [-2  1  2] ]
+ [ [-2 -1  4] [ 0 -1  4] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+nx 3 ny 1
+z.shape (4, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [ 0 -1  2] [-2  1  2] ]
+ [ [-2 -1  4] [ 0 -1  4] ]
+ [ [-1  0  1] [0 0 1] ]
+number of vertices in common part 3
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [ 0 -1  2] [-2  1  2] ]
+ [ [-2 -1  4] [ 0 -1  4] ]
+nod 14
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [-1  0  1] [0 0 1] ]
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [ 1 -1  2] ]
+ [ [-1 -1  2] [-3  2  2] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+nx 3 ny 1
+z.shape (4, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [ 1 -1  2] ]
+ [ [-1 -1  2] [-3  2  2] ]
+ [ [-1  0  1] [0 0 1] ]
+number of vertices in common part 3
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [ 1 -1  2] ]
+ [ [-1 -1  2] [-3  2  2] ]
+nod 15
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  0  2] [ 1 -1  2] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  0  1] [0 0 1] ]
+nx 3 ny 2
+z.shape (5, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  0  2] [ 1 -1  2] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  0  1] [0 0 1] ]
+number of vertices in common part 3
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  0  2] [ 1 -1  2] ]
+nod 16
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [-1  0  1] [0 0 1] ]
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [-1  0  2] ]
+ [ [-1  0  1] [ 1 -1  1] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [-1  0  2] ]
+nx 3 ny 2
+z.shape (5, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [-1  0  2] ]
+ [ [-1  0  1] [ 1 -1  1] ]
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [-1  0  2] ]
+number of vertices in common part 3
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [-1  0  2] ]
+ [ [-1  0  1] [ 1 -1  1] ]
+nod 17
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [-1  1  2] ]
+ [ [-1  1  2] [1 0 2] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [1 0 2] ]
+nx 3 ny 2
+z.shape (5, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [-1  1  2] ]
+ [ [-1  1  2] [1 0 2] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [1 0 2] ]
+number of vertices in common part 3
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [-1  1  2] ]
+ [ [-1  1  2] [1 0 2] ]
+nod 18
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [-1  1  2] [1 0 2] ]
+common points in triangles
+ [ [-1  1  2] [1 0 2] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [-1  1  2] [1 0 2] ]
+ [ [-1  1  2] [1 0 2] ]
+number of vertices in common part 1
+common part
+ [ [-1  1  2] [1 0 2] ]
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [0 0 1] [0 0 1] ]
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [0 0 1] [0 0 1] ]
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [ 0 -1  2] ]
+ [ [0 0 1] [ 1 -1  1] ]
+ [ [-1  1  2] [-1  0  2] ]
+common points in triangles
+ [ [-1  1  2] [-1  0  2] ]
+nx 3 ny 1
+z.shape (4, 2)
+common part
+ [ [0 0 1] [ 0 -1  2] ]
+ [ [0 0 1] [ 1 -1  1] ]
+ [ [-1  1  2] [-1  0  2] ]
+ [ [-1  1  2] [-1  0  2] ]
+number of vertices in common part 3
+common part
+ [ [0 0 1] [ 0 -1  2] ]
+ [ [0 0 1] [ 1 -1  1] ]
+ [ [-1  1  2] [-1  0  2] ]
+nod 19
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [ 1 -1  1] ]
+ [ [-1  1  2] [-1  0  2] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [-1  0  2] ]
+nx 3 ny 2
+z.shape (5, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [ 1 -1  1] ]
+ [ [-1  1  2] [-1  0  2] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [-1  0  2] ]
+number of vertices in common part 3
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [ 1 -1  1] ]
+ [ [-1  1  2] [-1  0  2] ]
+nod 20
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+ [ [-2  1  2] [ 2 -1  2] ]
+ [ [-1  0  2] [-1  1  2] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+nx 3 ny 1
+z.shape (4, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [-2  1  2] [ 2 -1  2] ]
+ [ [-1  0  2] [-1  1  2] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 3
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [-2  1  2] [ 2 -1  2] ]
+ [ [-1  0  2] [-1  1  2] ]
+nod 21
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [-1  0  1] [0 1 2] ]
+ [ [-1 -1  2] [1 0 2] ]
+ [ [-1  0  1] [-1  1  1] ]
+common points in triangles
+ [ [-1 -1  2] [1 0 2] ]
+nx 3 ny 1
+z.shape (4, 2)
+common part
+ [ [-1  0  1] [0 1 2] ]
+ [ [-1 -1  2] [1 0 2] ]
+ [ [-1  0  1] [-1  1  1] ]
+ [ [-1 -1  2] [1 0 2] ]
+number of vertices in common part 3
+common part
+ [ [-1  0  1] [0 1 2] ]
+ [ [-1 -1  2] [1 0 2] ]
+ [ [-1  0  1] [-1  1  1] ]
+nod 22
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [-1  0  2] [1 0 2] ]
+ [ [ 0 -1  2] [0 1 2] ]
+ [ [ 0 -1  2] [ 2 -1  2] ]
+ [ [-2 -1  4] [0 1 4] ]
+common points in triangles
+nx 4 ny 0
+z.shape (4, 2)
+common part
+ [ [-1  0  2] [1 0 2] ]
+ [ [ 0 -1  2] [0 1 2] ]
+ [ [ 0 -1  2] [ 2 -1  2] ]
+ [ [-2 -1  4] [0 1 4] ]
+number of vertices in common part 4
+common part
+ [ [-1  0  2] [1 0 2] ]
+ [ [ 0 -1  2] [0 1 2] ]
+ [ [ 0 -1  2] [ 2 -1  2] ]
+ [ [-2 -1  4] [0 1 4] ]
+nod 23
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [-1  0  2] [1 0 2] ]
+ [ [-2  1  2] [ 2 -1  2] ]
+ [ [ 0 -1  2] [ 2 -1  2] ]
+ [ [-1  0  2] [-1  1  2] ]
+common points in triangles
+nx 4 ny 0
+z.shape (4, 2)
+common part
+ [ [-1  0  2] [1 0 2] ]
+ [ [-2  1  2] [ 2 -1  2] ]
+ [ [ 0 -1  2] [ 2 -1  2] ]
+ [ [-1  0  2] [-1  1  2] ]
+number of vertices in common part 4
+common part
+ [ [-1  0  2] [1 0 2] ]
+ [ [-2  1  2] [ 2 -1  2] ]
+ [ [ 0 -1  2] [ 2 -1  2] ]
+ [ [-1  0  2] [-1  1  2] ]
+nod 24
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [ 0 -1  2] [0 1 2] ]
+ [ [-1  0  1] [0 1 2] ]
+ [ [-1  0  1] [-1  1  1] ]
+ [ [-2 -1  4] [0 1 4] ]
+common points in triangles
+ [ [-2 -1  4] [2 1 4] ]
+nx 4 ny 1
+z.shape (5, 2)
+common part
+ [ [ 0 -1  2] [0 1 2] ]
+ [ [-1  0  1] [0 1 2] ]
+ [ [-1  0  1] [-1  1  1] ]
+ [ [-2 -1  4] [0 1 4] ]
+ [ [-2 -1  4] [2 1 4] ]
+number of vertices in common part 5
+common part
+ [ [ 0 -1  2] [0 1 2] ]
+ [ [-1  0  1] [0 1 2] ]
+ [ [-1  0  1] [-1  1  1] ]
+ [ [-2 -1  4] [0 1 4] ]
+ [ [-2 -1  4] [2 1 4] ]
+nod 25
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [0 0 1] [0 0 1] ]
+cross points of two triangles
+ [ [-1 -1  2] [1 0 2] ]
+common points in triangles
+ [ [-1 -1  2] [1 0 2] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [-1 -1  2] [1 0 2] ]
+ [ [-1 -1  2] [1 0 2] ]
+number of vertices in common part 1
+common part
+ [ [-1 -1  2] [1 0 2] ]
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [-1  1  2] ]
+ [ [-1  1  2] [ 3 -2  2] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+nx 3 ny 1
+z.shape (4, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [-1  1  2] ]
+ [ [-1  1  2] [ 3 -2  2] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 3
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [-1  1  2] ]
+ [ [-1  1  2] [ 3 -2  2] ]
+nod 26
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [0 0 1] [0 0 1] ]
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  0  2] [-1  1  2] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+nx 3 ny 2
+z.shape (5, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  0  2] [-1  1  2] ]
+ [ [-1  0  1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 3
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  0  2] [-1  1  2] ]
+nod 27
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [-1  0  1] [0 0 1] ]
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [-1  1  1] ]
+ [ [-1 -1  2] [1 0 2] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [1 0 2] ]
+nx 3 ny 2
+z.shape (5, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [-1  1  1] ]
+ [ [-1 -1  2] [1 0 2] ]
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [1 0 2] ]
+number of vertices in common part 3
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [-1  1  1] ]
+ [ [-1 -1  2] [1 0 2] ]
+nod 28
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [-1  0  1] [0 0 1] ]
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [0 0 1] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [0 0 1] ]
+nx 2 ny 2
+z.shape (4, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [0 0 1] ]
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [0 0 1] ]
+number of vertices in common part 2
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [0 0 1] ]
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [ 0 -1  2] [ 2 -1  2] ]
+ [ [-2 -1  4] [0 1 4] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+nx 3 ny 1
+z.shape (4, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [ 0 -1  2] [ 2 -1  2] ]
+ [ [-2 -1  4] [0 1 4] ]
+ [ [-1  0  1] [0 0 1] ]
+number of vertices in common part 3
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [ 0 -1  2] [ 2 -1  2] ]
+ [ [-2 -1  4] [0 1 4] ]
+nod 29
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [-1  0  1] [0 0 1] ]
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [-1  1  2] ]
+ [ [-1 -1  2] [ 3 -2  2] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+nx 3 ny 1
+z.shape (4, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [-1  1  2] ]
+ [ [-1 -1  2] [ 3 -2  2] ]
+ [ [-1  0  1] [0 0 1] ]
+number of vertices in common part 3
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [-1  1  2] ]
+ [ [-1 -1  2] [ 3 -2  2] ]
+nod 30
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [ 0 -1  2] [ 2 -1  2] ]
+ [ [-1  0  2] [-1  1  2] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+nx 3 ny 1
+z.shape (4, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [ 0 -1  2] [ 2 -1  2] ]
+ [ [-1  0  2] [-1  1  2] ]
+ [ [-1  0  1] [0 0 1] ]
+number of vertices in common part 3
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [ 0 -1  2] [ 2 -1  2] ]
+ [ [-1  0  2] [-1  1  2] ]
+nod 31
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [0 0 1] ]
+ [ [-1 -1  2] [ 3 -2  2] ]
+common points in triangles
+ [ [-1 -1  2] [0 0 1] ]
+ [ [-1  0  1] [0 0 1] ]
+nx 3 ny 2
+z.shape (5, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [0 0 1] ]
+ [ [-1 -1  2] [ 3 -2  2] ]
+ [ [-1 -1  2] [0 0 1] ]
+ [ [-1  0  1] [0 0 1] ]
+number of vertices in common part 3
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [0 0 1] ]
+ [ [-1 -1  2] [ 3 -2  2] ]
+nod 32
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [-1  0  1] [0 0 1] ]
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [-1  1  1] ]
+ [ [-2 -1  4] [0 1 4] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+nx 3 ny 1
+z.shape (4, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [-1  1  1] ]
+ [ [-2 -1  4] [0 1 4] ]
+ [ [-1  0  1] [0 0 1] ]
+number of vertices in common part 3
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [-1  1  1] ]
+ [ [-2 -1  4] [0 1 4] ]
+nod 33
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [-1  0  1] [0 0 1] ]
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+nx 2 ny 2
+z.shape (4, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  0  1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 2
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [1 0 2] ]
+ [ [-1 -1  2] [-1  1  2] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [1 0 2] ]
+nx 3 ny 2
+z.shape (5, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [1 0 2] ]
+ [ [-1 -1  2] [-1  1  2] ]
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [1 0 2] ]
+number of vertices in common part 3
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [1 0 2] ]
+ [ [-1 -1  2] [-1  1  2] ]
+nod 34
+cross points of two triangles
+ [ [-1  0  1] [0 0 1] ]
+common points in triangles
+ [ [-1  0  1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [-1  0  1] [0 0 1] ]
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [0 0 1] [0 0 1] ]
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [-1  1  2] [-1  0  2] ]
+common points in triangles
+ [ [-1  1  2] [-1  0  2] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [-1  1  2] [-1  0  2] ]
+ [ [-1  1  2] [-1  0  2] ]
+number of vertices in common part 1
+common part
+ [ [-1  1  2] [-1  0  2] ]
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [ 1 -1  2] ]
+ [ [-1  1  2] [-1  0  2] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [-1  0  2] ]
+nx 3 ny 2
+z.shape (5, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [ 1 -1  2] ]
+ [ [-1  1  2] [-1  0  2] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [-1  0  2] ]
+number of vertices in common part 3
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [ 1 -1  2] ]
+ [ [-1  1  2] [-1  0  2] ]
+nod 35
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [-1  1  1] ]
+ [ [-1  1  2] [1 0 2] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [1 0 2] ]
+nx 3 ny 2
+z.shape (5, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [-1  1  1] ]
+ [ [-1  1  2] [1 0 2] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [1 0 2] ]
+number of vertices in common part 3
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [-1  1  1] ]
+ [ [-1  1  2] [1 0 2] ]
+nod 36
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [-1  1  1] ]
+ [ [0 0 1] [0 1 2] ]
+ [ [-1  1  2] [1 0 2] ]
+common points in triangles
+ [ [-1  1  2] [1 0 2] ]
+nx 3 ny 1
+z.shape (4, 2)
+common part
+ [ [0 0 1] [-1  1  1] ]
+ [ [0 0 1] [0 1 2] ]
+ [ [-1  1  2] [1 0 2] ]
+ [ [-1  1  2] [1 0 2] ]
+number of vertices in common part 3
+common part
+ [ [0 0 1] [-1  1  1] ]
+ [ [0 0 1] [0 1 2] ]
+ [ [-1  1  2] [1 0 2] ]
+nod 37
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [0 0 1] [0 0 1] ]
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [0 0 1] [0 0 1] ]
+cross points of two triangles
+ [ [-1 -1  2] [-1  0  2] ]
+common points in triangles
+ [ [-1 -1  2] [-1  0  2] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [-1 -1  2] [-1  0  2] ]
+ [ [-1 -1  2] [-1  0  2] ]
+number of vertices in common part 1
+common part
+ [ [-1 -1  2] [-1  0  2] ]
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [-1  0  2] [-1  0  2] ]
+ [ [-2  1  2] [-2  1  2] ]
+ [ [ 0 -1  2] [-2  1  2] ]
+ [ [-1  0  2] [ 1 -1  2] ]
+common points in triangles
+nx 4 ny 0
+z.shape (4, 2)
+common part
+ [ [-1  0  2] [-1  0  2] ]
+ [ [-2  1  2] [-2  1  2] ]
+ [ [ 0 -1  2] [-2  1  2] ]
+ [ [-1  0  2] [ 1 -1  2] ]
+number of vertices in common part 4
+common part
+ [ [-1  0  2] [-1  0  2] ]
+ [ [-2  1  2] [-2  1  2] ]
+ [ [ 0 -1  2] [-2  1  2] ]
+ [ [-1  0  2] [ 1 -1  2] ]
+nod 38
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [ 0 -1  2] [ 0 -1  2] ]
+ [ [-1  0  1] [ 1 -1  1] ]
+ [ [-2 -1  4] [ 0 -1  4] ]
+ [ [-1  0  1] [ 0 -1  2] ]
+common points in triangles
+ [ [-2 -1  4] [-2 -1  4] ]
+nx 4 ny 1
+z.shape (5, 2)
+common part
+ [ [ 0 -1  2] [ 0 -1  2] ]
+ [ [-1  0  1] [ 1 -1  1] ]
+ [ [-2 -1  4] [ 0 -1  4] ]
+ [ [-1  0  1] [ 0 -1  2] ]
+ [ [-2 -1  4] [-2 -1  4] ]
+number of vertices in common part 5
+common part
+ [ [ 0 -1  2] [ 0 -1  2] ]
+ [ [-1  0  1] [ 1 -1  1] ]
+ [ [-2 -1  4] [ 0 -1  4] ]
+ [ [-1  0  1] [ 0 -1  2] ]
+ [ [-2 -1  4] [-2 -1  4] ]
+nod 39
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [-1  0  2] [-1  0  2] ]
+ [ [ 0 -1  2] [ 0 -1  2] ]
+ [ [ 0 -1  2] [-2  1  2] ]
+ [ [-2 -1  4] [ 0 -1  4] ]
+common points in triangles
+nx 4 ny 0
+z.shape (4, 2)
+common part
+ [ [-1  0  2] [-1  0  2] ]
+ [ [ 0 -1  2] [ 0 -1  2] ]
+ [ [ 0 -1  2] [-2  1  2] ]
+ [ [-2 -1  4] [ 0 -1  4] ]
+number of vertices in common part 4
+common part
+ [ [-1  0  2] [-1  0  2] ]
+ [ [ 0 -1  2] [ 0 -1  2] ]
+ [ [ 0 -1  2] [-2  1  2] ]
+ [ [-2 -1  4] [ 0 -1  4] ]
+nod 40
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+ [ [-2  1  2] [-2  1  2] ]
+ [ [-1  0  2] [ 1 -1  2] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+nx 3 ny 1
+z.shape (4, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [-2  1  2] [-2  1  2] ]
+ [ [-1  0  2] [ 1 -1  2] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 3
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [-2  1  2] [-2  1  2] ]
+ [ [-1  0  2] [ 1 -1  2] ]
+nod 41
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [-1  0  1] [ 1 -1  1] ]
+ [ [-1 -1  2] [-1  0  2] ]
+ [ [-1  0  1] [ 0 -1  2] ]
+common points in triangles
+ [ [-1 -1  2] [-1  0  2] ]
+nx 3 ny 1
+z.shape (4, 2)
+common part
+ [ [-1  0  1] [ 1 -1  1] ]
+ [ [-1 -1  2] [-1  0  2] ]
+ [ [-1  0  1] [ 0 -1  2] ]
+ [ [-1 -1  2] [-1  0  2] ]
+number of vertices in common part 3
+common part
+ [ [-1  0  1] [ 1 -1  1] ]
+ [ [-1 -1  2] [-1  0  2] ]
+ [ [-1  0  1] [ 0 -1  2] ]
+nod 42
+cross points of two triangles
+ [ [-1  1  2] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+common points in triangles
+ [ [-1  1  2] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+nx 2 ny 2
+z.shape (4, 2)
+common part
+ [ [-1  1  2] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 2
+common part
+ [ [-1  1  2] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [-1  1  2] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [-3  2  2] ]
+common points in triangles
+ [ [-1  1  2] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+nx 3 ny 2
+z.shape (5, 2)
+common part
+ [ [-1  1  2] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [-3  2  2] ]
+ [ [-1  1  2] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 3
+common part
+ [ [-1  1  2] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [-3  2  2] ]
+nod 43
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+ [ [-2  1  2] [ 2 -1  2] ]
+ [ [-2  1  4] [0 1 4] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+nx 3 ny 1
+z.shape (4, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [-2  1  2] [ 2 -1  2] ]
+ [ [-2  1  4] [0 1 4] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 3
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [-2  1  2] [ 2 -1  2] ]
+ [ [-2  1  4] [0 1 4] ]
+nod 44
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [-1  0  2] [1 0 2] ]
+ [ [ 0 -1  2] [0 1 2] ]
+ [ [-2  1  2] [0 1 2] ]
+ [ [-1  0  2] [1 1 2] ]
+common points in triangles
+ [ [-1  0  2] [1 1 2] ]
+ [ [-1  0  2] [1 1 2] ]
+nx 4 ny 2
+z.shape (6, 2)
+common part
+ [ [-1  0  2] [1 0 2] ]
+ [ [ 0 -1  2] [0 1 2] ]
+ [ [-2  1  2] [0 1 2] ]
+ [ [-1  0  2] [1 1 2] ]
+ [ [-1  0  2] [1 1 2] ]
+ [ [-1  0  2] [1 1 2] ]
+number of vertices in common part 4
+common part
+ [ [-1  0  2] [1 0 2] ]
+ [ [ 0 -1  2] [0 1 2] ]
+ [ [-2  1  2] [0 1 2] ]
+ [ [-1  0  2] [1 1 2] ]
+nod 45
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [-1  0  2] [1 0 2] ]
+ [ [-2  1  2] [ 2 -1  2] ]
+ [ [-2  1  2] [0 1 2] ]
+ [ [-2  1  4] [0 1 4] ]
+common points in triangles
+nx 4 ny 0
+z.shape (4, 2)
+common part
+ [ [-1  0  2] [1 0 2] ]
+ [ [-2  1  2] [ 2 -1  2] ]
+ [ [-2  1  2] [0 1 2] ]
+ [ [-2  1  4] [0 1 4] ]
+number of vertices in common part 4
+common part
+ [ [-1  0  2] [1 0 2] ]
+ [ [-2  1  2] [ 2 -1  2] ]
+ [ [-2  1  2] [0 1 2] ]
+ [ [-2  1  4] [0 1 4] ]
+nod 46
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [ 0 -1  2] [0 1 2] ]
+ [ [-1  0  2] [1 1 2] ]
+common points in triangles
+ [ [-2 -1  4] [2 1 4] ]
+ [ [-1  0  2] [1 1 2] ]
+ [ [-1  0  2] [1 1 2] ]
+nx 2 ny 3
+z.shape (5, 2)
+common part
+ [ [ 0 -1  2] [0 1 2] ]
+ [ [-1  0  2] [1 1 2] ]
+ [ [-2 -1  4] [2 1 4] ]
+ [ [-1  0  2] [1 1 2] ]
+ [ [-1  0  2] [1 1 2] ]
+number of vertices in common part 3
+common part
+ [ [ 0 -1  2] [0 1 2] ]
+ [ [-1  0  2] [1 1 2] ]
+ [ [-2 -1  4] [2 1 4] ]
+nod 47
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [0 0 1] [0 0 1] ]
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+nx 1 ny 1
+z.shape (2, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 1
+common part
+ [ [0 0 1] [0 0 1] ]
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [ 0 -1  2] ]
+ [ [0 0 1] [ 1 -1  1] ]
+ [ [-2  1  2] [ 0 -1  2] ]
+ [ [-2  1  4] [ 0 -1  4] ]
+common points in triangles
+ [ [-2  1  4] [-2 -1  4] ]
+nx 4 ny 1
+z.shape (5, 2)
+common part
+ [ [0 0 1] [ 0 -1  2] ]
+ [ [0 0 1] [ 1 -1  1] ]
+ [ [-2  1  2] [ 0 -1  2] ]
+ [ [-2  1  4] [ 0 -1  4] ]
+ [ [-2  1  4] [-2 -1  4] ]
+number of vertices in common part 5
+common part
+ [ [0 0 1] [ 0 -1  2] ]
+ [ [0 0 1] [ 1 -1  1] ]
+ [ [-2  1  2] [ 0 -1  2] ]
+ [ [-2  1  4] [ 0 -1  4] ]
+ [ [-2  1  4] [-2 -1  4] ]
+nod 48
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [-1  0  2] [-1 -1  2] ]
+common points in triangles
+ [ [-1  0  2] [-1 -1  2] ]
+ [ [-1  0  2] [-1 -1  2] ]
+nx 1 ny 2
+z.shape (3, 2)
+common part
+ [ [-1  0  2] [-1 -1  2] ]
+ [ [-1  0  2] [-1 -1  2] ]
+ [ [-1  0  2] [-1 -1  2] ]
+number of vertices in common part 1
+common part
+ [ [-1  0  2] [-1 -1  2] ]
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [-2  1  2] [ 0 -1  2] ]
+ [ [-1  0  2] [-1 -1  2] ]
+common points in triangles
+ [ [-2  1  4] [-2 -1  4] ]
+ [ [-1  0  2] [-1 -1  2] ]
+ [ [-1  0  2] [-1 -1  2] ]
+nx 2 ny 3
+z.shape (5, 2)
+common part
+ [ [-2  1  2] [ 0 -1  2] ]
+ [ [-1  0  2] [-1 -1  2] ]
+ [ [-2  1  4] [-2 -1  4] ]
+ [ [-1  0  2] [-1 -1  2] ]
+ [ [-1  0  2] [-1 -1  2] ]
+number of vertices in common part 3
+common part
+ [ [-2  1  2] [ 0 -1  2] ]
+ [ [-1  0  2] [-1 -1  2] ]
+ [ [-2  1  4] [-2 -1  4] ]
+nod 49
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [ 1 -1  1] ]
+ [ [-2  1  4] [ 0 -1  4] ]
+common points in triangles
+ [ [0 0 1] [0 0 1] ]
+nx 3 ny 1
+z.shape (4, 2)
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [ 1 -1  1] ]
+ [ [-2  1  4] [ 0 -1  4] ]
+ [ [0 0 1] [0 0 1] ]
+number of vertices in common part 3
+common part
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [ 1 -1  1] ]
+ [ [-2  1  4] [ 0 -1  4] ]
+nod 50
+cross points of two triangles
+common points in triangles
+cross points of two triangles
+common points in triangles
+ntr 38
+tria.shape (38, 3, 2)
+tria[i]
+ [ [-1  1  2] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [ 3 -2  2] ]
+tria[i]
+ [ [ 0 -1  2] [ 0 -1  2] ]
+ [ [-1  0  2] [-1 -1  2] ]
+ [ [-2 -1  4] [-2 -1  4] ]
+tria[i]
+ [ [0 0 1] [0 0 1] ]
+ [ [-2  1  2] [-2  1  2] ]
+ [ [-2  1  4] [ 0 -1  4] ]
+tria[i]
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [-1  1  1] ]
+ [ [-2  1  4] [0 1 4] ]
+tria[i]
+ [ [-1  0  2] [1 1 2] ]
+ [ [-2  1  2] [0 1 2] ]
+ [ [-2  1  4] [2 1 4] ]
+tria[i]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [ 1 -1  2] ]
+ [ [-1  1  2] [-3  2  2] ]
+tria[i]
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [ 1 -1  2] ]
+ [ [-1 -1  2] [-1  0  2] ]
+tria[i]
+ [ [-1  0  1] [0 0 1] ]
+ [ [ 0 -1  2] [-2  1  2] ]
+ [ [-1  0  2] [ 1 -1  2] ]
+tria[i]
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [0 0 1] ]
+ [ [-1 -1  2] [-3  2  2] ]
+tria[i]
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [ 1 -1  1] ]
+ [ [-2 -1  4] [ 0 -1  4] ]
+tria[i]
+ [ [-1  0  1] [0 0 1] ]
+ [ [ 0 -1  2] [-2  1  2] ]
+ [ [-2 -1  4] [ 0 -1  4] ]
+tria[i]
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [ 1 -1  2] ]
+ [ [-1 -1  2] [-3  2  2] ]
+tria[i]
+ [ [-1  0  1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  0  2] [ 1 -1  2] ]
+tria[i]
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [-1  0  2] ]
+ [ [-1  0  1] [ 1 -1  1] ]
+tria[i]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [-1  1  2] ]
+ [ [-1  1  2] [1 0 2] ]
+tria[i]
+ [ [0 0 1] [ 0 -1  2] ]
+ [ [0 0 1] [ 1 -1  1] ]
+ [ [-1  1  2] [-1  0  2] ]
+tria[i]
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [ 1 -1  1] ]
+ [ [-1  1  2] [-1  0  2] ]
+tria[i]
+ [ [0 0 1] [0 0 1] ]
+ [ [-2  1  2] [ 2 -1  2] ]
+ [ [-1  0  2] [-1  1  2] ]
+tria[i]
+ [ [-1  0  1] [0 1 2] ]
+ [ [-1 -1  2] [1 0 2] ]
+ [ [-1  0  1] [-1  1  1] ]
+tria[i]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [-1  1  2] ]
+ [ [-1  1  2] [ 3 -2  2] ]
+tria[i]
+ [ [-1  0  1] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  0  2] [-1  1  2] ]
+tria[i]
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [-1  1  1] ]
+ [ [-1 -1  2] [1 0 2] ]
+tria[i]
+ [ [-1  0  1] [0 0 1] ]
+ [ [ 0 -1  2] [ 2 -1  2] ]
+ [ [-2 -1  4] [0 1 4] ]
+tria[i]
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [-1  1  2] ]
+ [ [-1 -1  2] [ 3 -2  2] ]
+tria[i]
+ [ [-1  0  1] [0 0 1] ]
+ [ [ 0 -1  2] [ 2 -1  2] ]
+ [ [-1  0  2] [-1  1  2] ]
+tria[i]
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [0 0 1] ]
+ [ [-1 -1  2] [ 3 -2  2] ]
+tria[i]
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1  0  1] [-1  1  1] ]
+ [ [-2 -1  4] [0 1 4] ]
+tria[i]
+ [ [-1  0  1] [0 0 1] ]
+ [ [-1 -1  2] [1 0 2] ]
+ [ [-1 -1  2] [-1  1  2] ]
+tria[i]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [ 1 -1  2] ]
+ [ [-1  1  2] [-1  0  2] ]
+tria[i]
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [-1  1  1] ]
+ [ [-1  1  2] [1 0 2] ]
+tria[i]
+ [ [0 0 1] [-1  1  1] ]
+ [ [0 0 1] [0 1 2] ]
+ [ [-1  1  2] [1 0 2] ]
+tria[i]
+ [ [0 0 1] [0 0 1] ]
+ [ [-2  1  2] [-2  1  2] ]
+ [ [-1  0  2] [ 1 -1  2] ]
+tria[i]
+ [ [-1  0  1] [ 1 -1  1] ]
+ [ [-1 -1  2] [-1  0  2] ]
+ [ [-1  0  1] [ 0 -1  2] ]
+tria[i]
+ [ [-1  1  2] [0 0 1] ]
+ [ [0 0 1] [0 0 1] ]
+ [ [-1  1  2] [-3  2  2] ]
+tria[i]
+ [ [0 0 1] [0 0 1] ]
+ [ [-2  1  2] [ 2 -1  2] ]
+ [ [-2  1  4] [0 1 4] ]
+tria[i]
+ [ [ 0 -1  2] [0 1 2] ]
+ [ [-1  0  2] [1 1 2] ]
+ [ [-2 -1  4] [2 1 4] ]
+tria[i]
+ [ [-2  1  2] [ 0 -1  2] ]
+ [ [-1  0  2] [-1 -1  2] ]
+ [ [-2  1  4] [-2 -1  4] ]
+tria[i]
+ [ [0 0 1] [0 0 1] ]
+ [ [0 0 1] [ 1 -1  1] ]
+ [ [-2  1  4] [ 0 -1  4] ]
