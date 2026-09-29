@@ -79,7 +79,8 @@ def generator_obj_symmetric_obj(obj,centre):
     if obj.ndim==2 or obj.ndim==3 or obj.ndim==4:
         
         if np.all(centre==POS_V):
-            lst_idx_ssym = numbers = list(range(0,120))
+            #lst_idx_ssym = numbers = list(range(0,120))
+            lst_idx_ssym = list(range(0,120))
         else:
             lst_idx_ssym,_=site_symmetry_and_coset(centre,brv='p')
             
@@ -92,6 +93,11 @@ def generator_obj_symmetric_obj(obj,centre):
         if obj.ndim==4:
             n1,n2,_,_=obj.shape
             a=a.reshape(num*n1,n2,6,3)
+        elif obj.ndim==3:
+            n1,_,_=obj.shape
+            a=a.reshape(num*n1,6,3)
+        elif obj.ndim==2:
+            a=a.reshape(num,6,3)
         else:
             pass
         return a
@@ -830,7 +836,7 @@ def site_symmetry_and_coset(site,brv,verbose=0):
 
 
 # 2025.06.17
-def site_symmetry_and_coset(site,brv,verbose=0):
+def site_symmetry_and_coset(site,brv='p',verbose=0):
     
     def site_symmetry(site,symop,brv):
         """symmetry operators in the site symmetry group G.
