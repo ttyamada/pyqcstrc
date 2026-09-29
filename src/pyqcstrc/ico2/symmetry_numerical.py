@@ -520,51 +520,55 @@ if __name__ == '__main__':
     print(svts)
     """
     
-    
-    ############################
-    # TEST symmetry operations
-    ############################
-    print('')
-    print('Symmetry operation on 6D axial vector\n')
-    print("TEST :generator_obj_symmetric_vector_specific_symop_1()")
-    flag='axial'
-    lst=[0,108,22,92,119,16,14,111,98,28,102,5]
-    vn=np.array([1,0,0,0,0,0])
-    vns=generator_obj_symmetric_vector_specific_symop_1(vn,V0,lst,flag)
-    for vn in vns:
-        print(vn)
-    """
-    print("TEST :generator_obj_symmetric_vectors_specific_symop_1()")
-    print('Identity')
-    lst=[0]
-    vnss=generator_obj_symmetric_vectors_specific_symop_1(vns,V0,lst,flag)
-    for vns in vnss:
+    def do_test_symmetry_operations():
+        ############################
+        # TEST symmetry operations
+        ############################
+        print('')
+        print('Symmetry operation on 6D axial vector\n')
+        print("TEST :generator_obj_symmetric_vector_specific_symop_1()")
+        flag='axial'
+        lst=[0,108,22,92,119,16,14,111,98,28,102,5]
+        vn=np.array([1,0,0,0,0,0])
+        vns=generator_obj_symmetric_vector_specific_symop_1(vn,V0,lst,flag)
         for vn in vns:
             print(vn)
-    print('Inversion')
-    lst=[60]
-    vnss=generator_obj_symmetric_vectors_specific_symop_1(vns,V0,lst,flag)
-    for vns in vnss:
-        for vn in vns:
-            print(vn)
-    """
+        """
+        print("TEST :generator_obj_symmetric_vectors_specific_symop_1()")
+        print('Identity')
+        lst=[0]
+        vnss=generator_obj_symmetric_vectors_specific_symop_1(vns,V0,lst,flag)
+        for vns in vnss:
+            for vn in vns:
+                print(vn)
+        print('Inversion')
+        lst=[60]
+        vnss=generator_obj_symmetric_vectors_specific_symop_1(vns,V0,lst,flag)
+        for vns in vnss:
+            for vn in vns:
+                print(vn)
+        """
         
-    print('')
-    print('Symmetry operation on 3D axial vector\n')
-    V0=np.array([0.,0.,0.],dtype=np.float64)
-    print("TEST :generator_obj_symmetric_vector_specific_symop_1()")
-    flag='axial'
-    lst=[0,108,22,92,119,16,14,111,98,28,102,5]
-    vn=np.array([1.,1.618034,0.])
-    vns=generator_obj_symmetric_vector_specific_symop_1(vn,V0,lst,flag)
-    for i1,vn in enumerate(vns):
-        print('%d %8.6f %8.6f %8.6f'%(i1,vn[0],vn[1],vn[2]))
-    """
-    print("TEST :generator_obj_symmetric_vectors_specific_symop_1()")
-    lst=[0,60] # identity and inversion
-    vnss=generator_obj_symmetric_vectors_specific_symop_1(vns,V0,lst,flag)
-    for i1,vns in enumerate(vnss):
-        for i2,vn in enumerate(vns):
-            print('%d %d %8.6f %8.6f %8.6f'%(i1,i2,vn[0],vn[1],vn[2]))
-    """
+        print('')
+        print('Symmetry operation on 3D axial vector\n')
+        V0=np.array([0.,0.,0.],dtype=np.float64)
+        print("TEST :generator_obj_symmetric_vector_specific_symop_1()")
+        flag='axial'
+        lst=[0,108,22,92,119,16,14,111,98,28,102,5]
+        vn=np.array([1.,1.618034,0.])
+        vns=generator_obj_symmetric_vector_specific_symop_1(vn,V0,lst,flag)
+        for i1,vn in enumerate(vns):
+            print('%d %8.6f %8.6f %8.6f'%(i1,vn[0],vn[1],vn[2]))
+        """
+        print("TEST :generator_obj_symmetric_vectors_specific_symop_1()")
+        lst=[0,60] # identity and inversion
+        vnss=generator_obj_symmetric_vectors_specific_symop_1(vns,V0,lst,flag)
+        for i1,vns in enumerate(vnss):
+            for i2,vn in enumerate(vns):
+                print('%d %d %8.6f %8.6f %8.6f'%(i1,i2,vn[0],vn[1],vn[2]))
+        """
     
+    # do_test_symmetry_operations()
+    
+    
+
