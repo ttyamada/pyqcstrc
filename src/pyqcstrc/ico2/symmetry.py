@@ -30,7 +30,12 @@ V0=np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
 POS_V  = V0
 POS_C1  = np.array([[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]],dtype=np.int64)
 POS_C2  = np.array([[3,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]],dtype=np.int64)
-POS_EC = np.array([[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+POS_EC1 = np.array([[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+POS_EC2 = np.array([[0,0,1],[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+POS_EC3 = np.array([[0,0,1],[0,0,1],[1,0,2],[0,0,1],[0,0,1],[0,0,1]],dtype=np.int64)
+POS_EC4 = np.array([[0,0,1],[0,0,1],[0,0,1],[1,0,2],[0,0,1],[0,0,1]],dtype=np.int64)
+POS_EC5 = np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[1,0,2],[0,0,1]],dtype=np.int64)
+POS_EC6 = np.array([[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[1,0,2]],dtype=np.int64)
 #POS_EC1= np.array([[1,0,1],[1,0,2],[1,0,2],[1,0,2],[1,0,2],[1,0,2]],dtype=np.int64)
 
 def symop_obj(symop,obj,centre):
@@ -510,6 +515,7 @@ def translation_new(brv,flag=0):
     """
     if flag==1:
         lst=[0,1]
+        #lst=[0,1,2]
     elif flag==-1:
         lst=[-1,0]
     elif flag==-2:
@@ -531,7 +537,8 @@ def translation_new(brv,flag=0):
     if brv=='p':
         return tr
         
-    elif brv=='f' or brv=='s':
+    #elif brv=='f' or brv=='s':
+    elif brv=='f':
         tc=np.array([[[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],\
                     [[1,0,2],[1,0,2],[0,0,1],[0,0,1],[0,0,1],[0,0,1]],\
                     [[1,0,2],[0,0,1],[1,0,2],[0,0,1],[0,0,1],[0,0,1]],\
@@ -891,8 +898,49 @@ def site_symmetry_and_coset(site,brv='p',verbose=0):
                 lst.append(i1)
             else:
                 pass
+        print(lst)
+        return lst
+        
+    def site_symmetry_rev(site,symop,brv):
+        
+        a=np.zeros((len(symop),6,3),dtype=np.int64)
+        for i1,op in enumerate(symop):
+            a[i1]=symop_vec(op,site,V0)
+            
+        if brv=='p':
+            #flag=1
+            flag=0
+        elif brv=='f' or brv=='s':
+            flag=0
+        traop=translation_new(brv,flag)
+        
+        lst=[]
+        for i1,a1 in enumerate(a):
+            counter1=0
+            if np.all(a1==site):
+                counter1+=1
+            else:
+                flag1=0
+                for tr in traop:
+                    b=add_vectors(a1,tr)
+                    if np.all(b==site):
+                        flag1+=1
+                        break
+                    else:
+                        pass
+                if flag1==1:
+                    counter1+=1
+                else:
+                    pass
+            if counter1==1:
+                lst.append(i1)
+            else:
+                pass
         #print(lst)
         return lst
+        
+        
+        
         
     def are_matrices_equal(m1, m2, tol=1e-5):
         return np.allclose(m1, m2, atol=tol)
@@ -933,7 +981,7 @@ def site_symmetry_and_coset(site,brv='p',verbose=0):
             for i in range(120):
                 lst_idx_ssym.append(i)
             lst_idx_reps = [0]
-        elif np.all(site==POS_EC):
+        elif np.all(site==POS_EC1):
             lst_idx_ssym = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69]
             lst_idx_reps = [0, 10, 20, 30, 40, 50]
         else:
@@ -946,11 +994,14 @@ def site_symmetry_and_coset(site,brv='p',verbose=0):
             lst_idx_reps = [0]
         else:
             flag=1
+    elif brv == 'i':
+        pass
     #######################
     
     if flag>0:
         symop = icosasymop_array()
-        lst_idx_ssym = site_symmetry(site, symop, brv)
+        #lst_idx_ssym = site_symmetry(site, symop, brv)
+        lst_idx_ssym = site_symmetry_rev(site, symop, brv)
         
         G = []
         for op in symop:
@@ -1779,9 +1830,13 @@ if __name__ == '__main__':
     # TEST: site_symmetry_and_coset()
     ##-----------------------------------------------
     #site = POS_V
-    site = POS_C1
+    #site = POS_C1
     #site = POS_EC
+    #site = np.array([[ 0, 0, 1],[ 1, 0, 2],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
+    site = np.array([[ 0, 0, 1],[-1, 0, 2],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1],[ 0, 0, 1]])
     brv = 'p'
+    #lst_idx_ssym = site_symmetry_rev(site,symop,brv)
     lst_idx_ssym, lst_idx_reps = site_symmetry_and_coset(site,brv)
     print('lst_idx_ssym:',lst_idx_ssym)
     print('lst_idx_reps:',lst_idx_reps)
+    
