@@ -9,17 +9,17 @@ import cython
 import numpy as np
 from numpy.typing import NDArray
 
-from octa2.math1 import (add, 
+from math1 import (add, 
                         matrixpow, 
                         dot_product, 
                         dot_product_1, 
                         sub_vectors, 
                         add_vectors,
                         )
-from octa2.utils import (remove_doubling_in_perp_space, 
+from utils import (remove_doubling_in_perp_space, 
                         remove_doubling,
                         )
-from octa2.numericalc import (projection_numerical,
+from numericalc import (projection_numerical,
                         projection3_numerical,
                         numerical_vector,
                         length_numerical,

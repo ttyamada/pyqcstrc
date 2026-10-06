@@ -11,11 +11,11 @@ import itertools
 import cython
 #from dtype import *
 
-from octa2.projection import (
+from projection import (
         projection3,
         )
 
-from octa2.math1 import (
+from math1 import (
         centroid, 
         centroid_obj,
         #coplanar_check,
@@ -31,7 +31,7 @@ from octa2.math1 import (
         add_vectors, 
         mul_vector,
         )
-from octa2.numericalc import (
+from numericalc import (
         numeric_value,
         numerical_vector,
         length_numerical,
@@ -45,7 +45,8 @@ from octa2.numericalc import (
         inside_outside_triangle_tau,
         on_out_surface,
         )
-from octa2.utils import (
+from utils import (
+        distance_in_perp_space,
         remove_doubling_in_perp_space,
         triangle_area_6d,
         obj_area_6d,
@@ -100,11 +101,11 @@ def ball_radius(triangle: NDArray[DTYPE_int], centroid: NDArray[DTYPE_int]) -> f
     #  the centre of the boll is the centroid of the triangle.
     return ball_radius_obj(triangle,centroid)
 
-def distance_in_perp_space(vt1: NDArray[DTYPE_int], vt2: NDArray[DTYPE_int]) -> float:
 #def distance_in_perp_space(vt1: NDArray[DTYPE_int], vt2: NDArray[DTYPE_int]) -> float:
-    a=sub_vectors(vt1,vt2)
-    a=projection3(a)
-    return length_numerical(a)
+##def distance_in_perp_space(vt1: NDArray[DTYPE_int], vt2: NDArray[DTYPE_int]) -> float:
+#    a=sub_vectors(vt1,vt2)
+#    a=projection3(a)
+#    return length_numerical(a)
 
 #def rough_check_intersection_triangle_obj(triangle: NDArray[DTYPE_int],\
 # cententer: NDArray[DTYPE_int], distance: float) -> bool:

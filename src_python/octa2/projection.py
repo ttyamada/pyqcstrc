@@ -2,11 +2,11 @@ import numpy as np
 import cython
 
 from numpy.typing import NDArray
-from octa2.math1 import (mul,
+from math1 import (mul,
                          add,
                          sub_vectors,
                          )
-from octa2.numericalc import (length_numerical,
+from numericalc import (length_numerical,
                               )
 
 DTYPE_int = cython.long

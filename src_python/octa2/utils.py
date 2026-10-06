@@ -9,10 +9,13 @@ import numpy as np
 from numpy.typing import NDArray
 from scipy.spatial import Delaunay
 import itertools
-import intsct as ints
+#import intsct as ints
 import time
 
-from intsect import (distance_in_perp_space,
+#from intsct import (distance_in_perp_space,
+#                    )
+
+from projection import(projection3,
                     )
 
 from math1 import (add,
@@ -26,19 +29,26 @@ from math1 import (add,
                     centroid,
                     #coplanar_check,
                     )
-from octa2.numericalc import (numeric_value,
-                            numerical_vector,
-                            numerical_vectors,
-                            point_on_segment,
-                            coplanar_check_numeric_tau,
-                            get_internal_component_numerical,
-                            get_internal_component_sets_numerical,
-                            )
+from numericalc import (numeric_value,
+                    numerical_vector,
+                    numerical_vectors,
+                    point_on_segment,
+                    coplanar_check_numeric_tau,
+                    get_internal_component_numerical,
+                    get_internal_component_sets_numerical,
+                    )
 
 TAU=np.sqrt(2)
 #DTYPE_int = int
 DTYPE_int =np.int64
 #TYPE2D_int =cython.long[:,:]
+
+
+def distance_in_perp_space(vt1: NDArray[DTYPE_int], vt2: NDArray[DTYPE_int]) -> float:
+#def distance_in_perp_space(vt1: NDArray[DTYPE_int], vt2: NDArray[DTYPE_int]) -> float:
+    a=sub_vectors(vt1,vt2)
+    a=projection3(a)
+    return length_numerical(a)
 
 def shift_object(obj: NDArray[DTYPE_int], shift: NDArray[DTYPE_int]) -> NDArray[DTYPE_int]:
     """shift an object

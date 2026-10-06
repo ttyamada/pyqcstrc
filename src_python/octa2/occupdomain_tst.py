@@ -5,14 +5,17 @@ import sys
 import numpy as np
 import cython
 from numpy.typing import NDArray
-import octa2.occupation_domain as od
-import octa2.vesta as vst
-import octa2.utils as utl
+import occupation_domain as od
+import vesta as vst
+import utils as utl
+import prjop as prj
+import crsys as crs
 
 #from occupation_domain import (
 #    symmetric,read_xyz,write)
 
 import symmetry as symmetry
+
 if cython.compiled:
     DTYPE_int = cython.long
 else:
@@ -20,6 +23,10 @@ else:
 
 test_dir='../../tests/octa/test'
 xyz_dir='../../xyz/octa'
+
+isys = 4 # for octagonal QCs
+crs=crs.crsys_init(isys)
+prj=prj.prjop_init1(isys) # initialize prjop module
 # import asymmetric part of OD(occupation domain) located at origin,0,0,0,0,0,0.
 od_asym0 = utl.read_xyz(path=xyz_dir,basename='od_1_asym')
 od_asym=cython.declare(cython.long[:,:],od_asym0)
