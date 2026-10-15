@@ -14,7 +14,7 @@ from setuptools import find_packages
 def _requires_from_file(filename):
     return open(filename).read().splitlines()
 
-VERSION="0.0.2a12"
+VERSION="0.0.2a13"
 
 # Package meta-data.
 NAME = "pyqcstrc"
