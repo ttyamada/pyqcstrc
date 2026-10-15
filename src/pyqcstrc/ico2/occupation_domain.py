@@ -1542,7 +1542,7 @@ def simple_hand_step1(obj, path, basename_tmp):
         f.write('%s\n'%(basename))
         for i1,b in enumerate(a):
             xyz=math1.projection3(b)
-            f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
+            f.write('Xx %8.6f %8.6f %8.6f # %d-th vertex # # # %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n'%\
             (numericalc.numeric_value(xyz[0]),\
             numericalc.numeric_value(xyz[1]),\
             numericalc.numeric_value(xyz[2]),\
@@ -1595,6 +1595,22 @@ def simple_hand_step2(obj, merge_list):
         else:
             od1=np.vstack([od1,od2])
     return od1
+
+def simple_hand_step3(obj):
+    """
+    Check manual simplification
+    """
+    for i,tet1 in enumerate(obj):
+        for j,tet2 in enumerate(obj):
+            if i!=j:
+                common=intsct.intersection_two_tetrahedron_4(tet1,tet2)
+                if np.all(common!=None):
+                    pass
+                else:
+                    print("Overlapping tetrahedra found: %d and %d th tetrahedra"%(i,j))
+            else:
+                pass
+    return
 
 def site_symmetry(site):
     return symmetry.site_symmetry(site)
