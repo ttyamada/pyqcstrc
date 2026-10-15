@@ -1615,7 +1615,7 @@ def simple_hand_step3(obj):
 def site_symmetry(site):
     return symmetry.site_symmetry(site)
 
-def write_podatm(obj, position, vlist, path='.', basename='tmp', shift=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0], verbose=0):
+def write_podatm(obj, position, vlist, path='.', basename='tmp', shift=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0], verbose=0, starting_serial_number=1):
     """
     Generate pod and atom files.
     
@@ -1654,7 +1654,7 @@ def write_podatm(obj, position, vlist, path='.', basename='tmp', shift=[0.0, 0.0
         # .atm file
         for i in range(len(vlist)):
             a=v[vlist[i][0]-1]
-            fatm.write('%d \'Em\' 1 %d 1 2.0 0. 0. 1.0 0. 0. 0.\n'%(i+1,i+1))
+            fatm.write('%d \'Em\' 1 %d 1 2.0 0. 0. 1.0 0. 0. 0.\n'%(i+starting_serial_number,i+starting_serial_number))
             fatm.write('x=  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f  %4.3f\n'%(\
             numericalc.numeric_value(position[0]),\
             numericalc.numeric_value(position[1]),\
@@ -1705,7 +1705,7 @@ def write_podatm(obj, position, vlist, path='.', basename='tmp', shift=[0.0, 0.0
                         break
                     else:
                         pass
-            fpod.write('%d %d %d \'comment\'\n'%(i1+1,len(tmp2),2))
+            fpod.write('%d %d %d \'comment\'\n'%(i1+starting_serial_number,len(tmp2),2))
             for i2 in range(len(tmp2)):
                 b=v[tmp2[i2]]
                 fpod.write('ej=  %8.6f %8.6f %8.6f %8.6f %8.6f %8.6f\n'%(\
